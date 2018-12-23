@@ -33,6 +33,11 @@ SITES = [{
     'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
     'class': 'Phimmoi',
     'plugin': 'phimmoi.plugin'
+}, {
+    'name': 'tvhay.org',
+    'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
+    'class': 'Tvhay',
+    'plugin': 'tvhay.plugin'
 }]
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
