@@ -14,11 +14,10 @@ class Parser:
             if menu.get('href') == './': continue
             category.append({
                 'title': menu.text.encode("utf-8"),
-                'link': "",
+                'link': menu.get("href"),
                 'subcategory': self.getsubmenu(item)
             })
 
-        print(category)
         return category
 
     def getsubmenu(self, xpath):

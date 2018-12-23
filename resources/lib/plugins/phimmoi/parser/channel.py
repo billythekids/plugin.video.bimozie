@@ -45,11 +45,3 @@ class Parser:
 
         print(channel['page_patten'])
         return channel
-
-    def create_link(self, link):
-        link = urllib.quote(link)
-        link = link.replace("%3F", "?")
-        link = link.replace("%3D", "=")
-        link = link.replace("%26", "&")
-        link = link.replace("%25", "%")
-        return link

@@ -9,7 +9,7 @@ import xbmcaddon
 import xbmc
 import json
 from importlib import import_module
-import urlresolver
+# import urlresolver
 
 ADDON = xbmcaddon.Addon()
 HANDLE = int(sys.argv[1])
@@ -27,14 +27,12 @@ SITES = [{
     'logo': 'http://www.phimmedia.tv/templates/themes/phim/images/phimmedia-s.png',
     'class': 'Phimmedia',
     'plugin': 'phimmedia.plugin'
+}, {
+    'name': 'phimmoi.net',
+    'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
+    'class': 'Phimmoi',
+    'plugin': 'phimmoi.plugin'
 }]
-    # , {
-    # 'name': 'phimmoi.net',
-    # 'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
-    # 'class': 'Phimmoi',
-    # 'plugin': 'phimmoi.plugin'
-# }
-
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
 if not os.path.exists(addon_data_dir):
@@ -161,6 +159,7 @@ def play_video(path, title=None, thumb=None):
     play_item = xbmcgui.ListItem(path=path)
     play_item.setLabel(title)
     play_item.setArt({'thumb': thumb})
+    import urlresolver
     stream_url = urlresolver.HostedMediaFile(url=path).resolve()
     # stream_url = False
 
@@ -201,6 +200,7 @@ def router():
     elif mode[0] == 'movies':
         link = ARGS.get('url')[0]
         page = int(ARGS.get('page')[0])
+        print("*********************** Display %s page %s" % (link, page))
         movies = instance().getChannel(link, page)
         list_movie(movies, link, page, module, classname)
 
@@ -209,7 +209,8 @@ def router():
         thumb = ARGS.get('thumb')[0]
         title = ARGS.get('title')[0]
         movie = instance().getMovie(id)
-        if len(movie['episode']) > 1 or len(movie['group']) > 1:
+        print("*********************** Display movie %s %s" % (title, id))
+        if len(movie['episode']) > 0 or len(movie['group']) > 0:
             show_episode(movie, thumb, title, module, classname)
         else:
             show_links(movie, title, thumb, module, classname)

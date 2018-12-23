@@ -2,7 +2,7 @@
 from bs4 import BeautifulSoup
 import re
 import json
-from bilutv.aes import CryptoAES
+from aes import CryptoAES
 from mozie_request import Request
 
 
