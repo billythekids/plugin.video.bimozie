@@ -44,7 +44,6 @@ class Parser:
                 'type': type.encode("utf-8"),
             })
 
-        print(channel['page_patten'])
         return channel
 
     def create_link(self, link):

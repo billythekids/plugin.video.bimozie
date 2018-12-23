@@ -2,6 +2,7 @@ from mozie_request import Request
 from bilutv.parser.category import Parser as Category
 from bilutv.parser.channel import Parser as Channel
 from bilutv.parser.movie import Parser as Movie
+import urllib
 
 
 class Bilutv:
@@ -25,3 +26,8 @@ class Bilutv:
         url = "%s%s" % (self.domain, url)
         response = Request().get(url)
         return Movie().get(response, True)
+
+    def search(self, text, page=1):
+        url = "%s/tim-kiem.html?q=%s" % (self.domain, urllib.quote_plus(text))
+        response = Request().get(url)
+        return Channel().get(response)

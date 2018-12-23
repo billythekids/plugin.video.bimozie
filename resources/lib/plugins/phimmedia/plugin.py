@@ -2,6 +2,7 @@ from mozie_request import Request
 from phimmedia.parser.category import Parser as Category
 from phimmedia.parser.channel import Parser as Channel
 from phimmedia.parser.movie import Parser as Movie
+import urllib
 
 
 class Phimmedia:
@@ -27,3 +28,9 @@ class Phimmedia:
     def getLink(self, url):
         response = Request().get(url)
         return Movie().get(response, True)
+
+    def search(self, text, page=1):
+        url = "%s/index.php?keyword=%s&do=phim&act=search&page=%s" % (self.domain, urllib.quote_plus(text), page)
+        response = Request().get(url)
+        return Channel().get(response)
+

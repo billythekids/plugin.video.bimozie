@@ -9,6 +9,7 @@ import xbmcaddon
 import xbmc
 import json
 from importlib import import_module
+
 # import urlresolver
 
 ADDON = xbmcaddon.Addon()
@@ -60,6 +61,12 @@ def onInit():
 def list_category(cats, module, classname):
     xbmcplugin.setPluginCategory(HANDLE, 'Categories')
     xbmcplugin.setContent(HANDLE, 'files')
+
+    # show search link
+    url = build_url({'mode': 'search', 'module': module, 'class': classname})
+    xbmcplugin.addDirectoryItem(HANDLE, url,
+                                xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Search ..."), True)
+
     for cat in cats:
         list_item = xbmcgui.ListItem(label=cat['title'])
         if 'subcategory' in cat and len(cat['subcategory']) > 0:
@@ -100,7 +107,8 @@ def list_movie(movies, link, page, module, classname):
 
             url = build_url({'mode': 'movies', 'url': link, 'page': page + 1, 'module': module, 'class': classname})
             xbmcplugin.addDirectoryItem(HANDLE, url, next_item, True)
-    else: return
+    else:
+        return
     xbmcplugin.endOfDirectory(HANDLE)
 
 
@@ -117,7 +125,9 @@ def show_episode(movie, thumb, title, module, classname):
 
     elif len(movie['group']) > 0:
         for key, items in movie['group'].iteritems():
-            xbmcplugin.addDirectoryItem(HANDLE, None, xbmcgui.ListItem(label="[COLOR red][B] [---- %s ----] [/B][/COLOR]" % key), False)
+            xbmcplugin.addDirectoryItem(HANDLE, None,
+                                        xbmcgui.ListItem(label="[COLOR red][B] [---- %s ----] [/B][/COLOR]" % key),
+                                        False)
             for item in items:
                 li = xbmcgui.ListItem(label=item['title'])
                 li.setArt({'thumb': thumb})
@@ -125,7 +135,8 @@ def show_episode(movie, thumb, title, module, classname):
                 url = build_url({'mode': 'links', 'title': title, 'thumb': thumb, 'url': item['link'], 'module': module,
                                  'class': classname})
                 xbmcplugin.addDirectoryItem(HANDLE, url, li, True)
-    else: return
+    else:
+        return
 
     xbmcplugin.setPluginCategory(HANDLE, title)
     xbmcplugin.setContent(HANDLE, 'movies')
@@ -133,7 +144,8 @@ def show_episode(movie, thumb, title, module, classname):
 
 
 def show_links(movie, title, thumb, module, classname):
-    if len(movie['links']) == 0: return
+    if len(movie['links']) == 0:
+        return
     elif len(movie['links']) == 1:
         title = "%s - %s" % (movie['links'][0]['title'], title)
         return play_video(movie['links'][0]['link'], title, thumb)
@@ -173,6 +185,55 @@ def play_video(path, title=None, thumb=None):
         xbmc.Player().play(stream_url, play_item)
 
     # xbmcplugin.setResolvedUrl(HANDLE, True, listitem=play_item)
+
+
+def dosearch(plugin, module, classname, text, page=1):
+
+    xbmcplugin.setPluginCategory(HANDLE, 'Search Result')
+    xbmcplugin.setContent(HANDLE, 'movies')
+    if text is None:
+        keyboard = xbmc.Keyboard('', 'Search iPlayer')
+        keyboard.doModal()
+        if keyboard.isConfirmed():
+            text = keyboard.getText()
+
+    print("*********************** searching %s" % text)
+    movies = plugin().search(text)
+
+    if movies is not None:
+        for item in movies['movies']:
+            try:
+                list_item = xbmcgui.ListItem(label=item['label'])
+                list_item.setLabel2(item['realtitle'])
+                list_item.setIconImage('DefaultVideo.png')
+                list_item.setArt({
+                    'thumb': item['thumb'],
+                })
+                url = build_url(
+                    {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
+                     'module': module, 'class': classname})
+                is_folder = True
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+            except:
+                print(item)
+    else:
+        return
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+
+def search(module, classname):
+    xbmcplugin.setPluginCategory(HANDLE, 'Search')
+    xbmcplugin.setContent(HANDLE, 'movies')
+    url = build_url({'mode': 'dosearch', 'module': module, 'class': classname})
+    xbmcplugin.addDirectoryItem(HANDLE,
+                                url,
+                                xbmcgui.ListItem(label="[COLOR orange][B]%s[/B][/COLOR]" % "Enter search text ..."),
+                                True)
+
+    # Support to save search history
+
+    xbmcplugin.endOfDirectory(HANDLE)
 
 
 def get_plugin(arg):
@@ -228,3 +289,10 @@ def router():
         title = ARGS.get('title')[0]
         thumb = ARGS.get('thumb')[0]
         play_video(path, title, thumb)
+
+    elif mode[0] == 'search':
+        search(module, classname)
+
+    elif mode[0] == 'dosearch':
+        text = ARGS.get('url') and ARGS.get('url')[0] or None
+        dosearch(instance, module, classname, text)

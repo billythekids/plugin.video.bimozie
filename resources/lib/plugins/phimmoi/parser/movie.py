@@ -25,14 +25,15 @@ class Parser:
         servers = soup.select('div.list-server > div.server')
         if skipEps is False and len(servers) > 0:
             print("***********************Get Movie Episode*****************************")
-            for server in servers:
-                server_name = server.select_one('h3').text.strip().replace("\n", "").encode('utf-8')
-                if server_name not in movie['group']: movie['group'][server_name] = []
-                for episode in server.select('ul.list-episode li a'):
-                    movie['group'][server_name].append({
-                        'link': episode.get('href'),
-                        'title': episode.get('title').encode('utf-8'),
-                    })
+            found = False
+            items = self.get_server_list(servers)
+            if items is not None and len(items) > 0:
+                movie['group'] = items
+                found = True
+            else: found = False
+            if found is False:
+                servers = soup.select('ul.server-list > li.backup-server')
+                movie['group'] = self.get_server_list(servers)
 
         else:
             print("***********************Get Movie Link*****************************")
@@ -54,6 +55,25 @@ class Parser:
                 })
 
         return movie
+
+    def get_server_list(self, servers):
+        items = {}
+        for server in servers:
+            if server.select_one('h3') is not None:
+                server_name = server.select_one('h3').text.strip().replace("\n", "").encode('utf-8')
+            else:
+                return None
+
+            if server_name not in items: items[server_name] = []
+
+            if len(server.select('ul.list-episode li a')) > 0:
+                for episode in server.select('ul.list-episode li a'):
+                    items[server_name].append({
+                        'link': episode.get('href'),
+                        'title': episode.get('title').encode('utf-8'),
+                    })
+
+        return items
 
     def search_tokenize(self, response):
         m = re.search("eval\(.*\);}\('(.*)','(.*)','(.*)','(.*)'\)\);", response)

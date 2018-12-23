@@ -1,3 +1,4 @@
+import urllib
 from mozie_request import Request
 from phimmoi.parser.category import Parser as Category
 from phimmoi.parser.channel import Parser as Channel
@@ -29,3 +30,9 @@ class Phimmoi:
         url = "%s%s" % (self.domain, url)
         response = Request().get(url)
         return Movie().get(response, True)
+
+    def search(self, text):
+        print(text)
+        url = "%stim-kiem/%s/" % (self.domain, urllib.quote_plus(text))
+        response = Request().get(url)
+        return Channel().get(response, 1)

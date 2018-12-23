@@ -24,24 +24,21 @@ class Parser:
                         'link': ep.get('href').encode('utf-8'),
                         'title': ep.get('title').encode('utf-8'),
                     })
-                    # movie['episode'].append({
-                    #     'link': ep.get('href'),
-                    #     'title': ep.get('title').encode('utf-8'),
-                    # })
         else:
             print("***********************Get Movie Link*****************************")
-            # test2 = define18("aHR0cHM6Ly9iaXQubHkvMnpFN0ttZz90ZXN0PXUwMDAwaHR0cHM6Ly9iaXQubHkvMnpFN0ttZz90ZXN0PQ==");
-            matches = re.findall("test\d=define18\(\"(.*)\"\);", response)
-            matches = list(set(matches))
-            if matches is not None:
-                for idx, m in enumerate(matches):
-                    link = self.decode(m)
-                    if len(link) > 20 or re.findall('(u0000)', link) is None:
-                        movie['links'].append({
-                            'link': link,
-                            'title': 'Link %d' % idx,
-                            'type': idx
-                        })
+            sources = re.findall("file: (.*), label: \"(\d+)\"", response, re.MULTILINE)
+            sources = sorted(sources, key=lambda elem: elem[1], reverse=True)
+            for source in sources:
+                # test2 = define18("aHR0cHM6Ly9iaXQubHkvMnpFN0ttZz90ZXN0PXUwMDAwaHR0cHM6Ly9iaXQubHkvMnpFN0ttZz90ZXN0PQ==");
+                match = re.search(source[0]+"=.*\(\"(.*)\"\);", response)
+                if match is not None:
+                    link = self.decode(match.group(1))
+                    movie['links'].append({
+                        'link': link,
+                        'title': 'Link %sp' % source[1],
+                        'type': source[1]
+                    })
+                    if source[1] >= 720: break
         return movie
 
     def decode(self, link):
@@ -55,4 +52,14 @@ class Parser:
         r = r.replace("bbc.com/55.mp4/", "=m37")
         r = r.replace("bbc.com/56.mp4/", "=m22")
         r = r.replace("bbc.com/57.mp4/", "=m18")
+
+        r = r.replace("ms.com/51.mp4/", "https://3.bp.blogspot.com/")
+        r = r.replace("ms.com/52.mp4/", "https://video.xx.fbcdn.net/")
+        r = r.replace("ms.com/53.mp4/", "v/t42.9040-2/")
+        r = r.replace("ms.com/54.mp4/", "https://lh3.googleusercontent.com/")
+        r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
+        r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
+        r = r.replace("ms.com/55.mp4/", "=m37")
+        r = r.replace("ms.com/56.mp4/", "=m22")
+        r = r.replace("ms.com/57.mp4/", "=m18")
         return r
