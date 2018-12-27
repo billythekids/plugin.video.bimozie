@@ -43,7 +43,9 @@ class Parser:
             'episode': [],
             'links': [],
         }
-        sources = re.search("var sources = (\[{.*}\]);", response)
+        sources = re.search("var sources = (\[{.*}\]);", response) \
+                  or re.search("var sources[\s]?=[\s]?(\[{.*}\]);var", response)
+
         if sources is not None:
             sources = json.loads(sources.group(1))
             for source in sources:

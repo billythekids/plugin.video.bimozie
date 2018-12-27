@@ -125,8 +125,7 @@ def show_episode(movie, thumb, title, module, classname):
             list_item.setArt({'thumb': thumb})
             url = build_url({'mode': 'links', 'title': title, 'thumb': thumb, 'url': item['link'], 'module': module,
                              'class': classname})
-            is_folder = True
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, isFolder=True)
 
     elif len(movie['group']) > 0:
         for key, items in movie['group'].iteritems():
@@ -136,10 +135,9 @@ def show_episode(movie, thumb, title, module, classname):
             for item in items:
                 li = xbmcgui.ListItem(label=item['title'])
                 li.setArt({'thumb': thumb})
-                li.setProperty('IsPlayable', 'False')
                 url = build_url({'mode': 'links', 'title': title, 'thumb': thumb, 'url': item['link'], 'module': module,
                                  'class': classname})
-                xbmcplugin.addDirectoryItem(HANDLE, url, li, True)
+                xbmcplugin.addDirectoryItem(HANDLE, url, li, isFolder=True)
     else:
         return
 
