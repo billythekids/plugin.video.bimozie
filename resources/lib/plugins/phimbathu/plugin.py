@@ -1,0 +1,37 @@
+import urllib
+from mozie_request import Request
+from phimbathu.parser.category import Parser as Category
+from phimbathu.parser.channel import Parser as Channel
+from phimbathu.parser.movie import Parser as Movie
+
+
+class Phimbathu:
+    domain = "http://phimbathu.com/"
+
+    def getCategory(self):
+        response = Request().get(self.domain)
+        return Category().get(response)
+
+    def getChannel(self, channel, page=1):
+        channel = channel.replace(self.domain, "")
+        if page > 1:
+            url = '%s%s?page-%d' % (self.domain, channel, page)
+        else:
+            url = '%s%s' % (self.domain, channel)
+        response = Request().get(url)
+        return Channel().get(response, page)
+
+    def getMovie(self, id):
+        url = '%sxem-phim/phim-test-%s' % (self.domain, id)
+        response = Request().get(url)
+        return Movie().get(response)
+
+    def getLink(self, url):
+        response = Request().get(url)
+        return Movie().get_link(response)
+
+    def search(self, text):
+        # http://phimbathu.com/tim-kiem.html?q=kiem
+        url = "%stim-kiem.html?q=%s" % (self.domain, urllib.quote_plus(text))
+        response = Request().get(url)
+        return Channel().get(response, 1)

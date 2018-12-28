@@ -43,6 +43,11 @@ SITES = [{
     'logo': 'http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium',
     'class': 'Phim3s',
     'plugin': 'phim3s.plugin'
+}, {
+    'name': 'phimbathu.com',
+    'logo': 'http://media.phimbathu.com/images/logo.png',
+    'class': 'Phimbathu',
+    'plugin': 'phimbathu.plugin'
 }]
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)

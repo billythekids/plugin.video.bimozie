@@ -15,10 +15,10 @@ class Parser:
 
         soup = BeautifulSoup(response, "html.parser")
         # get total page
-        last_page = soup.select('span.page_nav > span.item > a')[-2]
+        last_page = soup.select('span.page_nav > span.item > a')
         print("*********************** Get pages ")
-        if last_page is not None:
-            channel['page'] = int(last_page.text.strip())
+        if last_page is not None and len(last_page) > 2:
+            channel['page'] = int(last_page[-2].text.strip())
 
         for movie in soup.select('ul.list-film > li > div.inner'):
             title = movie.select_one('div.name > a').find(text=True, recursive=False).strip()
