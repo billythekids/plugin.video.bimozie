@@ -17,12 +17,14 @@ HANDLE = int(sys.argv[1])
 BASEURL = sys.argv[0]
 ARGS = urlparse.parse_qs(sys.argv[2][1:])
 ADDON_ID = ADDON.getAddonInfo('id')
+KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 
 SITES = [{
     'name': 'bilutv.net',
     'logo': 'http://media.bilutv.net/images/logo.png',
     'class': 'Bilutv',
-    'plugin': 'bilutv.plugin'
+    'plugin': 'bilutv.plugin',
+    'version': 18
 }, {
     'name': 'phimmedia.tv',
     'logo': 'http://www.phimmedia.tv/templates/themes/phim/images/phimmedia-s.png',
@@ -32,10 +34,11 @@ SITES = [{
     'name': 'phimmoi.net',
     'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
     'class': 'Phimmoi',
-    'plugin': 'phimmoi.plugin'
+    'plugin': 'phimmoi.plugin',
+    'version': 18
 }, {
     'name': 'tvhay.org',
-    'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
+    'logo': 'https://kodi-addons.club/data/d1/d14a048c56373761664ca89a773d694d.png',
     'class': 'Tvhay',
     'plugin': 'tvhay.plugin'
 }, {
@@ -47,7 +50,8 @@ SITES = [{
     'name': 'phimbathu.com',
     'logo': 'http://media.phimbathu.com/images/logo.png',
     'class': 'Phimbathu',
-    'plugin': 'phimbathu.plugin'
+    'plugin': 'phimbathu.plugin',
+    'version': 18
 }]
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
@@ -64,6 +68,7 @@ def onInit():
     xbmcplugin.setPluginCategory(HANDLE, 'My Video Collection')
     xbmcplugin.setContent(HANDLE, 'movies')
     for site in SITES:
+        if 'version' in site and site['version'] < KODI_VERSION: continue
         list_item = xbmcgui.ListItem(label=site['name'])
         list_item.setArt({'thumb': site['logo'], 'icon': site['logo']})
         url = build_url({'mode': 'category', 'module': site['plugin'], 'class': site['class']})
