@@ -12,10 +12,13 @@ class Parser:
         }
 
         soup = BeautifulSoup(response, "html.parser")
-        #get total page
+        # get total page
         for page in soup.select('div.pagination a'):
             if page.get('class') is None or 'navigation' not in page.get('class'):
-                channel['page'] = int(page.text)
+                try:
+                    channel['page'] = int(page.text)
+                except:
+                    pass
 
         for movie in soup.select('div.left-content > div.block-film > ul.list-film > li.film-item'):
             title = movie.select_one('p.name').text

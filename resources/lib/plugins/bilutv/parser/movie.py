@@ -2,7 +2,7 @@
 from bs4 import BeautifulSoup
 import urllib
 import re
-import json
+import json, ast
 from mozie_request import Request
 
 
@@ -57,15 +57,20 @@ class Parser:
 
         m = re.search("playerInstance.setup\({sources:\[(.*)\]", response)
         if m is not None:
-            sources = json.loads('[%s]' % m.group(1))
-            sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
-            source = sources[0]
-            movie['links'].append({
-                'link': source['file'],
-                'title': 'Link %s' % source['label'].encode('utf-8'),
-                'type': source['label'].encode('utf-8'),
-                'resolvable': True
-            })
+            sources = '[%s]' % m.group(1)
+            valid_json = re.sub(r'(?<={|,)([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources)
+            sources = json.loads(valid_json)
+            if len(sources) > 1:
+                sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
+            if len(sources) > 0:
+                source = sources[0]
+                label = 'label' in source and source['label'] or ''
+                movie['links'].append({
+                    'link': source['file'],
+                    'title': 'Link %s' % label.encode('utf-8'),
+                    'type': label.encode('utf-8'),
+                    'resolvable': True
+                })
 
             return movie
 

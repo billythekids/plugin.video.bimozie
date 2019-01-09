@@ -13,7 +13,7 @@ class Bilutv:
         return Category().get(response)
 
     def getChannel(self, channel, page=1):
-        url = '%s?page=%s' % (channel, page)
+        url = '%s&page=trang-%s.html' % (channel, page)
         response = Request().get(url)
         return Channel().get(response)
 
