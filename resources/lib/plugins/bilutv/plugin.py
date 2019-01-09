@@ -6,26 +6,34 @@ import urllib
 
 
 class Bilutv:
-    domain = "http://bilutv.net"
+    domain = "http://bilutv.org"
 
     def getCategory(self):
         response = Request().get(self.domain)
         return Category().get(response)
 
     def getChannel(self, channel, page=1):
-        url = '%s%s?page=%s' % (self.domain, channel, page)
+        url = '%s?page=%s' % (channel, page)
         response = Request().get(url)
         return Channel().get(response)
 
     def getMovie(self, id):
-        url = "%s/xem-phim/phim-0-%s" % (self.domain, id)
+        url = "%s/phim-0-%s.html" % (self.domain, id)
+        response = Request().get(url)
+        url = Movie().get_movie_link(response)
         response = Request().get(url)
         return Movie().get(response)
 
-    def getLink(self, url):
-        url = "%s%s" % (self.domain, url)
-        response = Request().get(url)
-        return Movie().get(response, True)
+    def getLink(self, id):
+        url = "%s/ajax/player/" % self.domain
+        data = id.split(",")
+        params = {
+            'id': data[0],
+            'ep': data[1],
+            'sv': data[2]
+        }
+        response = Request().post(url, params)
+        return Movie().get_link(response)
 
     def search(self, text, page=1):
         url = "%s/tim-kiem.html?q=%s" % (self.domain, urllib.quote_plus(text))

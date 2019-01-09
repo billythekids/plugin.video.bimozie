@@ -24,6 +24,7 @@ class Request:
 
     def post(self, url, params):
         data = urllib.urlencode(params)
+        print("Post URL: %s params: %s" % (url, data))
         request = urllib2.Request(url, data=data, headers=self.DEFAULT_HEADERS)
         response = urllib2.urlopen(request)
         content = response.read()

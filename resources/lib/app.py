@@ -19,17 +19,20 @@ ARGS = urlparse.parse_qs(sys.argv[2][1:])
 ADDON_ID = ADDON.getAddonInfo('id')
 KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 
+print("***********************Current version %d" % KODI_VERSION)
+
 SITES = [{
-    'name': 'bilutv.net',
-    'logo': 'http://media.bilutv.net/images/logo.png',
+    'name': 'bilutv.org',
+    'logo': 'http://bilutv.org/Theme/images/bilutv-logo-noel.png',
     'class': 'Bilutv',
     'plugin': 'bilutv.plugin',
-    'version': 18
+    'version': 1
 }, {
     'name': 'phimmedia.tv',
     'logo': 'http://www.phimmedia.tv/templates/themes/phim/images/phimmedia-s.png',
     'class': 'Phimmedia',
-    'plugin': 'phimmedia.plugin'
+    'plugin': 'phimmedia.plugin',
+    'version': 1
 }, {
     'name': 'phimmoi.net',
     'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
@@ -40,12 +43,14 @@ SITES = [{
     'name': 'tvhay.org',
     'logo': 'https://kodi-addons.club/data/d1/d14a048c56373761664ca89a773d694d.png',
     'class': 'Tvhay',
-    'plugin': 'tvhay.plugin'
+    'plugin': 'tvhay.plugin',
+    'version': 1
 }, {
     'name': 'phim3s.pw',
     'logo': 'http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium',
     'class': 'Phim3s',
-    'plugin': 'phim3s.plugin'
+    'plugin': 'phim3s.plugin',
+    'version': 1
 }, {
     'name': 'phimbathu.com',
     'logo': 'http://media.phimbathu.com/images/logo.png',
@@ -68,7 +73,10 @@ def onInit():
     xbmcplugin.setPluginCategory(HANDLE, 'My Video Collection')
     xbmcplugin.setContent(HANDLE, 'movies')
     for site in SITES:
-        if 'version' in site and site['version'] < KODI_VERSION: continue
+        if site['version'] > KODI_VERSION:
+            print("***********************Skip version %d" % site['version'])
+            continue
+
         list_item = xbmcgui.ListItem(label=site['name'])
         list_item.setArt({'thumb': site['logo'], 'icon': site['logo']})
         url = build_url({'mode': 'category', 'module': site['plugin'], 'class': site['class']})
