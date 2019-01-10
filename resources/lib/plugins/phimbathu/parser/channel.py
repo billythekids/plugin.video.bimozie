@@ -18,23 +18,26 @@ class Parser:
         last_page = soup.select('div.pagination > ul > li > a')
         print("*********************** Get pages ")
         if last_page is not None and len(last_page) > 2:
-            channel['page'] = int(last_page[-2].text.strip())
+            try:
+                channel['page'] = int(last_page[-1].text.strip())
+            except:
+                pass
 
-        for movie in soup.select('div.film-new > ul > li'):
-            title = movie.select_one('div.name > span').find(text=True, recursive=False).strip()
+        for movie in soup.select('div.block-film > ul.list-film > li'):
+            title = movie.select_one('div.title > p.name').find(text=True, recursive=False).strip()
             type = ""
             realtitle = ""
 
-            if movie.select_one('span.label') is not None:
-                type = movie.select_one('span.label').text.strip()
-            if movie.select_one('div.name-real > span') is not None:
-                realtitle = movie.select_one('div.name-real > span').text.strip()
+            if movie.select_one('label.current-status') is not None:
+                type = movie.select_one('label.current-status').text.strip()
+            if movie.select_one('div.title > p.real-name') is not None:
+                realtitle = movie.select_one('div.title > p.real-name').text.strip()
             if realtitle is not None:
                 label = "[%s] %s - %s" % (type, title, realtitle)
             else:
                 label = "[%s] %s" % (type, title)
 
-            thumb = movie.select_one('img.img-film').get('data-original') or movie.select_one('img.img-film').get('src')
+            thumb = movie.select_one('img').get('src')
 
             movie_id = re.search("(\d+)\.html$", movie.select_one('a').get('href')).group(1)
 

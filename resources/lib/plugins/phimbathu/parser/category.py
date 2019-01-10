@@ -8,12 +8,12 @@ class Parser:
         category = []
         soup = BeautifulSoup(response, "html.parser")
 
-        for item in soup.select('div.main-menu > ul > li'):
+        for item in soup.select('div#main-menu > div.container > ul > li'):
+            if item.get('class') and 'menu-home' in item.get('class'): continue
             menu = item.select_one('a')
-            if menu.get('href') == '/': continue
             link = self.getLink(menu)
             cat = {
-                'title': menu.text.encode("utf-8"),
+                'title': menu.select_one('span').text.encode("utf-8"),
                 'link': link,
                 'subcategory': self.getsubmenu(item)
             }

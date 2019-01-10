@@ -6,7 +6,7 @@ from phimbathu.parser.movie import Parser as Movie
 
 
 class Phimbathu:
-    domain = "http://phimbathu.com/"
+    domain = "http://phimbathu.org/"
 
     def getCategory(self):
         response = Request().get(self.domain)
@@ -15,19 +15,28 @@ class Phimbathu:
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
         if page > 1:
-            url = '%s%s?page-%d' % (self.domain, channel, page)
+            url = '%s%s&page=trang-%d.html' % (self.domain, channel, page)
         else:
             url = '%s%s' % (self.domain, channel)
         response = Request().get(url)
         return Channel().get(response, page)
 
     def getMovie(self, id):
-        url = '%sxem-phim/phim-test-%s' % (self.domain, id)
+        url = "%sphim-0-%s.html" % (self.domain, id)
+        response = Request().get(url)
+        url = Movie().get_movie_link(response)
         response = Request().get(url)
         return Movie().get(response)
 
-    def getLink(self, url):
-        response = Request().get(url)
+    def getLink(self, id):
+        url = "%sajax/player/" % self.domain
+        data = id.split(",")
+        params = {
+            'id': data[0],
+            'ep': data[1],
+            'sv': data[2]
+        }
+        response = Request().post(url, params)
         return Movie().get_link(response)
 
     def search(self, text):

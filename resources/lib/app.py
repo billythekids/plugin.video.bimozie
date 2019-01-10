@@ -52,11 +52,11 @@ SITES = [{
     'plugin': 'phim3s.plugin',
     'version': 1
 }, {
-    'name': 'phimbathu.com',
+    'name': 'phimbathu.org',
     'logo': 'http://media.phimbathu.com/images/logo.png',
     'class': 'Phimbathu',
     'plugin': 'phimbathu.plugin',
-    'version': 18
+    'version': 1
 }]
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
