@@ -11,6 +11,6 @@ bimozie is a plugin for Kodi Media Center -  Kodi is a registered trademark of t
 
 ## FAQ
 
-- [Does it work with Kodi 17] No
+- [Does it work with Kodi 17] Yes
 - [Does it work on a RPI] Not sure
 - [Which video resolutions are supported] Depend on the source
