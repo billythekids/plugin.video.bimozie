@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import urllib
 import re
 import json
-from mozie_request import Request
+from utils.mozie_request import Request
 from utils.link_parser import LinkParser
 
 
@@ -93,13 +93,13 @@ class Parser:
         if m is not None:
             source = urllib.unquote(m.group(1))
             source = LinkParser(source).get_link()
-            movie['links'].append({
-                'link': source,
-                'title': '',
-                'type': '',
-                'resolvable': True
-            })
-
-            return movie
+            if source:
+                movie['links'].append({
+                    'link': source[0],
+                    'title': source[1],
+                    'type': source[1],
+                    'resolvable': True
+                })
+                return movie
 
         return movie

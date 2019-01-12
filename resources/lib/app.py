@@ -57,7 +57,15 @@ SITES = [{
     'class': 'Phimbathu',
     'plugin': 'phimbathu.plugin',
     'version': 1
-}]
+    },
+    {
+    'name': 'kenh88.com',
+    'logo': 'http://www.kenh88.com/images/logo_kenh88.png',
+    'class': 'Kenh88',
+    'plugin': 'kenh88.plugin',
+    'version': 1
+    },
+]
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
 if not os.path.exists(addon_data_dir):

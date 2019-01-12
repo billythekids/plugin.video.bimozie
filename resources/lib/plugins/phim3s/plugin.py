@@ -1,5 +1,5 @@
 import urllib
-from mozie_request import Request
+from utils.mozie_request import Request
 from phim3s.parser.category import Parser as Category
 from phim3s.parser.channel import Parser as Channel
 from phim3s.parser.movie import Parser as Movie

@@ -1,4 +1,4 @@
-from mozie_request import Request
+from utils.mozie_request import Request
 from bilutv.parser.category import Parser as Category
 from bilutv.parser.channel import Parser as Channel
 from bilutv.parser.movie import Parser as Movie

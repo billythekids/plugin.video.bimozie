@@ -1,12 +1,12 @@
 import urllib
 from utils.mozie_request import Request
-from phimmoi.parser.category import Parser as Category
-from phimmoi.parser.channel import Parser as Channel
-from phimmoi.parser.movie import Parser as Movie
+from kenh88.parser.category import Parser as Category
+from kenh88.parser.channel import Parser as Channel
+from kenh88.parser.movie import Parser as Movie
 
 
-class Phimmoi:
-    domain = "http://www.phimmoi.net/"
+class Kenh88:
+    domain = "http://www.kenh88.com"
 
     def getCategory(self):
         response = Request().get(self.domain)
@@ -15,24 +15,23 @@ class Phimmoi:
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
         if page > 1:
-            url = '%s%spage-%d.html' % (self.domain, channel, page)
+            url = '%s%s/page/%d' % (self.domain, channel, page)
         else:
             url = '%s%s' % (self.domain, channel)
         response = Request().get(url)
-        return Channel().get(response, page)
+        return Channel().get(response, page, self.domain)
 
     def getMovie(self, id):
-        url = "%s%sxem-phim.html" % (self.domain, id)
+        url = '%s%s' % (self.domain, id.replace('/phim/', '/xem-phim-online/'))
         response = Request().get(url)
         return Movie().get(response)
 
     def getLink(self, url):
-        url = "%s%s" % (self.domain, url)
+        url = '%s%s' % (self.domain, url)
         response = Request().get(url)
-        return Movie().get(response, True)
+        return Movie().get_link(response)
 
     def search(self, text):
-        print(text)
-        url = "%stim-kiem/%s/" % (self.domain, urllib.quote_plus(text))
+        url = "%ssearch/%s" % (self.domain, urllib.quote_plus(text))
         response = Request().get(url)
         return Channel().get(response, 1)

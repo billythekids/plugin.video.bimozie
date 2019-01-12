@@ -4,7 +4,10 @@ import cookielib
 
 
 class Request:
-    DEFAULT_HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'}
+    DEFAULT_HEADERS = {
+        'referer': 'http://tvhay.org',
+       'User-Agent': 'Mozilla/5.0'
+    }
 
     def __init__(self):
         self.cookies = cookielib.LWPCookieJar()

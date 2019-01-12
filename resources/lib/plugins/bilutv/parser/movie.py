@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 import urllib
 import re
 import json
-from mozie_request import Request
+from utils.mozie_request import Request
+from utils.link_parser import LinkParser
 
 
 class Parser:
@@ -59,7 +60,6 @@ class Parser:
         if m is not None:
             sources = '[%s]' % m.group(1)
             valid_json = re.sub(r'(?<={|,)([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources)
-            print(valid_json)
             sources = json.loads(valid_json)
             if len(sources) > 1:
                 sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
@@ -86,5 +86,18 @@ class Parser:
             })
 
             return movie
+
+        m = re.search('<iframe.*src="(.*)" frameborder', response)
+        if m is not None:
+            source = urllib.unquote(m.group(1)).replace('\\', '')
+            source = LinkParser(source).get_link()
+            if source:
+                movie['links'].append({
+                    'link': source[0],
+                    'title': source[1],
+                    'type': source[1],
+                    'resolvable': True
+                })
+                return movie
 
         return movie

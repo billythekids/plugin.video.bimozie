@@ -1,5 +1,5 @@
 import urllib
-from mozie_request import Request
+from utils.mozie_request import Request
 from tvhay.parser.category import Parser as Category
 from tvhay.parser.channel import Parser as Channel
 from tvhay.parser.movie import Parser as Movie
