@@ -46,7 +46,7 @@ class Parser:
 
             media = sorted(jsonresponse['medias'], key=lambda elem: elem['resolution'], reverse=True)
             for item in media:
-                if item['resolution'] <= 480: continue
+                # if item['resolution'] <= 480: continue
                 url = CryptoAES().decrypt(item['url'], bytes(self.key.encode('utf-8')))
                 movie['links'].append({
                     'link': url,

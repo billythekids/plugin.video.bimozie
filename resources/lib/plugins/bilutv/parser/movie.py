@@ -41,7 +41,7 @@ class Parser:
             for episode in episodes:
                 movie['group'][server_name].append({
                     'link': '%s,%s,%s' % (movie_id, ep_id, server.get('data-index')),
-                    'title': "Tap %s" % episode.select_one('a').text
+                    'title': "Tap %s" % episode.select_one('a').text.encode('utf-8')
                 })
 
     def get_movie_link(self, response):
@@ -59,6 +59,7 @@ class Parser:
         if m is not None:
             sources = '[%s]' % m.group(1)
             valid_json = re.sub(r'(?<={|,)([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources)
+            print(valid_json)
             sources = json.loads(valid_json)
             if len(sources) > 1:
                 sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)

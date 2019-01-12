@@ -48,7 +48,7 @@ class Parser:
             for episode in episodes:
                 movie['group'][server_name].append({
                     'link': '%s,%s,%s' % (movie_id, ep_id, server.get('data-index')),
-                    'title': "Tap %s" % episode.select_one('a').text
+                    'title': "Tap %s" % episode.select_one('a').text.encode('utf-8')
                 })
 
     def get_link(self, response):
@@ -89,18 +89,17 @@ class Parser:
 
             return movie
 
-        # m = re.search('<iframe.*src="(.*)" frameborder', response)
-        # if m is not None:
-        #     source = urllib.unquote(m.group(1))
-        #     print(source)
-        #     LinkParser(source).get_link()
-        #     # movie['links'].append({
-        #     #     'link': source,
-        #     #     'title': '',
-        #     #     'type': '',
-        #     #     'resolvable': True
-        #     # })
-        #
-        #     return movie
+        m = re.search('<iframe.*src="(.*)" frameborder', response)
+        if m is not None:
+            source = urllib.unquote(m.group(1))
+            source = LinkParser(source).get_link()
+            movie['links'].append({
+                'link': source,
+                'title': '',
+                'type': '',
+                'resolvable': True
+            })
+
+            return movie
 
         return movie
