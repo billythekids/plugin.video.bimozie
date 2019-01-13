@@ -32,6 +32,6 @@ class Kenh88:
         return Movie().get_link(response)
 
     def search(self, text):
-        url = "%ssearch/%s" % (self.domain, urllib.quote_plus(text))
+        url = "%s/film/search?keyword=%s" % (self.domain, urllib.quote_plus(text))
         response = Request().get(url)
-        return Channel().get(response, 1)
+        return Channel().get(response, 1, self.domain)

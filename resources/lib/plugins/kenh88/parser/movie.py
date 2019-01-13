@@ -77,6 +77,19 @@ class Parser:
                 })
                 return movie
 
+        sources = re.search('sources: ({.*}),', response)
+        if sources is not None:
+            source = sources.group(1).replace('\\', '')
+            source = json.loads(source)
+            if source:
+                movie['links'].append({
+                    'link': source['file'],
+                    'title': 'Link %s' % 'Auto',
+                    'type': 'Auto',
+                    'resolvable': False
+                })
+                return movie
+
         return movie
 
     def remove_duplicate(self, items):

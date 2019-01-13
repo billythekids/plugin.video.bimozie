@@ -54,7 +54,8 @@ class LinkParser:
 
     def get_link_openload(self):
         try:
-            import urlresolver
-            stream_url = urlresolver.HostedMediaFile(url=self.url).resolve()
+            import resolveurl
+            stream_url = resolveurl.resolve(self.url)
+            print(stream_url)
             return stream_url, '720'
         except: return None

@@ -4,9 +4,10 @@ import cookielib
 
 
 class Request:
+    TIMEOUT = 15
     DEFAULT_HEADERS = {
         'referer': 'http://tvhay.org',
-       'User-Agent': 'Mozilla/5.0'
+        'User-Agent': 'Mozilla/5.0'
     }
 
     def __init__(self):
@@ -18,7 +19,7 @@ class Request:
         # try:
         print("Request URL: %s" % url)
         request = urllib2.Request(url, headers=self.DEFAULT_HEADERS)
-        response = urllib2.urlopen(request)
+        response = urllib2.urlopen(request, timeout=self.TIMEOUT)
         content = response.read()
         response.close()
         return content
