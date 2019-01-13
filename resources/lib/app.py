@@ -65,6 +65,13 @@ SITES = [{
     'plugin': 'kenh88.plugin',
     'version': 1
     },
+    {
+    'name': 'phim14.net',
+    'logo': 'http://phim14.net/application/views/frontend/default/images/logo.png',
+    'class': 'Phim14',
+    'plugin': 'phim14.plugin',
+    'version': 1
+    },
 ]
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
