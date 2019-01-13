@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 from utils.mozie_request import Request
 import re
 import urllib
@@ -32,6 +32,7 @@ class LinkParser:
     def get_link(self):
         print("Find link source of %s" % self.url)
         if re.search('ok.ru', self.url):
+            self.url.replace('?autoplay=1', '')
             return self.get_link_ok()
         if re.search('openload.co', self.url):
             return self.get_link_openload()
@@ -42,7 +43,10 @@ class LinkParser:
         response = Request().get(self.url)
         m = re.search('data-options="(.+?)"', response)
         h = HTMLParser.HTMLParser()
-        s = json.loads(h.unescape(m.group(1)))
+        s = m.group(1)
+        s = unicode(s, 'utf-8')
+        s = h.unescape(s)
+        s = json.loads(s)
         s = json.loads(s['flashvars']['metadata'])
         items = [(i['url'], rsl(i['name'])) for i in s['videos']]
         items = sorted(items, key=lambda elem: int(elem[1]), reverse=True)

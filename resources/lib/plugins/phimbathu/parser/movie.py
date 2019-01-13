@@ -36,19 +36,19 @@ class Parser:
         return movie
 
     def get_server_link(self, soup, response, movie_type, movie):
-        ep_id = re.search("EpisodeID = '(.*)',", response).group(1)
         movie_id = re.search("MovieID = '(.*)';", response).group(1)
 
         servers = soup.select('div.list-server > div.server-item > div.option > span')
-        episodes = soup.select('ul.list-episode > li')
+        episodes = soup.select('ul.list-episode > li > a')
         for server in servers:
             server_name = "%s - %s" % (server.text.strip().encode('utf-8'), movie_type.text.strip().encode('utf-8'))
             if server_name not in movie['group']: movie['group'][server_name] = []
             # if skipEps is False and len(episodes) > 0:
             for episode in episodes:
+                ep_id = episode.get('data-id')
                 movie['group'][server_name].append({
                     'link': '%s,%s,%s' % (movie_id, ep_id, server.get('data-index')),
-                    'title': "Tap %s" % episode.select_one('a').text.encode('utf-8')
+                    'title': "Tap %s" % episode.text.encode('utf-8')
                 })
 
     def get_link(self, response):
