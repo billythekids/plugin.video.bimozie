@@ -21,8 +21,10 @@ def rsl(s):
         .replace('AUTO', '640')
 
     result = re.search('(\d+)', s)
-    if result: return result.group(1)
-    else: return '240'
+    if result:
+        return result.group(1)
+    else:
+        return '240'
 
 
 class LinkParser:
@@ -40,7 +42,10 @@ class LinkParser:
         return self.url
 
     def get_link_ok(self):
-        response = Request().get(self.url)
+        response = Request({
+            'referer': 'http://tvhay.org',
+            'User-Agent': 'Mozilla/5.0'
+        }).get(self.url)
         m = re.search('data-options="(.+?)"', response)
         h = HTMLParser.HTMLParser()
         s = m.group(1)
@@ -58,4 +63,5 @@ class LinkParser:
             stream_url = resolveurl.resolve(self.url)
             print(stream_url)
             return stream_url, '720'
-        except: return None
+        except:
+            return None

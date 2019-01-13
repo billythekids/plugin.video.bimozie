@@ -6,14 +6,15 @@ import cookielib
 class Request:
     TIMEOUT = 15
     DEFAULT_HEADERS = {
-        'referer': 'http://tvhay.org',
         'User-Agent': 'Mozilla/5.0'
     }
 
-    def __init__(self):
+    def __init__(self, header=None):
         self.cookies = cookielib.LWPCookieJar()
         self.handlers = (urllib2.HTTPHandler(), urllib2.HTTPSHandler(), urllib2.HTTPCookieProcessor(self.cookies))
         self.opener = urllib2.build_opener(*self.handlers)
+        if header:
+            self.DEFAULT_HEADERS = header
 
     def get(self, url):
         # try:
