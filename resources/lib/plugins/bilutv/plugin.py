@@ -13,7 +13,14 @@ class Bilutv:
         return Category().get(response)
 
     def getChannel(self, channel, page=1):
-        url = '%s&page=trang-%s.html' % (channel, page)
+        channel = channel.replace(self.domain, "")
+        if page > 1:
+            channel = channel.replace('.html/', "/")
+            channel = channel.replace('.html', "/")
+            url = '%s%s&page=trang-%d.html' % (self.domain, channel, page)
+        else:
+            url = '%s%s' % (self.domain, channel)
+
         response = Request().get(url)
         return Channel().get(response)
 
