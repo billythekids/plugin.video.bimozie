@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 import urllib
+from utils.link_parser import LinkParser
 
 
 def from_char_code(*args):
@@ -27,7 +28,8 @@ class Parser:
         servers = soup.select("div#servers > div.server")
         for server in servers:
             server_name = server.select_one('div.label').text.strip().encode('utf-8')
-            if server_name != 'F.PRO:'.encode('utf-8'): continue
+            # if server_name != 'F.PRO:'.encode('utf-8') or server_name != 'R.PRO:'.encode('utf-8'): continue
+            if not re.search('[R|F].PRO:', server_name): continue
             if server_name not in movie['group']: movie['group'][server_name] = []
             for ep in server.select('ul.episodelist li a'):
                 movie['group'][server_name].append({
@@ -56,6 +58,23 @@ class Parser:
                     'type': source['label'].encode('utf-8'),
                     'resolvable': False
                 })
+
+            return movie
+
+        m = re.search('<iframe.*src=".*\?link=(.*)">', response)
+        if m is not None:
+            print(m.group(1))
+            source = urllib.unquote(m.group(1)).replace('\\', '')
+            source = LinkParser(source).get_link()
+            if source:
+                movie['links'].append({
+                    'link': source[0],
+                    'title': source[1],
+                    'type': source[1],
+                    'resolvable': True
+                })
+                return movie
+
 
         return movie
 

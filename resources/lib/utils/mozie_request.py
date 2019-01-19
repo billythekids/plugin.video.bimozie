@@ -4,7 +4,7 @@ import cookielib
 
 
 class Request:
-    TIMEOUT = 15
+    TIMEOUT = 30
     DEFAULT_HEADERS = {
         'User-Agent': 'Mozilla/5.0'
     }

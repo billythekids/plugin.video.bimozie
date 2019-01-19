@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 import urllib
+from utils.link_parser import LinkParser
 
 
 def from_char_code(*args):
@@ -42,23 +43,31 @@ class Parser:
             'episode': [],
             'links': [],
         }
-        sources = re.search("<iframe .* src=\\\"(.*)\\\" frameborder", response)
-        print(response)
+        sources = re.search("<iframe.*src=\\\"(.*)\\\" frameborder", response)
         if sources is not None:
-            print(sources.group(1))
+            source = urllib.unquote(sources.group(1)).replace('\\', '')
+            source = LinkParser(source).get_link()
+            if source:
+                movie['links'].append({
+                    'link': source[0],
+                    'title': source[1],
+                    'type': source[1],
+                    'resolvable': True
+                })
+                return movie
         else:
+            sources = json.loads(response)
             try:
-                sources = json.loads(response)
                 sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
-                for source in sources:
-                    movie['links'].append({
-                        'link': source['file'],
-                        'title': 'Link %s' % source['label'].encode('utf-8'),
-                        'type': source['label'].encode('utf-8'),
-                        'resolvable': True
-                    })
-                    if int(source['label'][0:-1]) >= 720: break
             except:
                 pass
+            for source in sources:
+                movie['links'].append({
+                    'link': source['file'],
+                    'title': 'Link %s' % source['label'].encode('utf-8'),
+                    'type': source['label'].encode('utf-8'),
+                    'resolvable': True
+                })
+                if len(sources) == 1 or int(source['label'][0:-1]) >= 720: break
 
         return movie
