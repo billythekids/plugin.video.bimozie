@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 import os
 import urllib
 import urlparse
@@ -70,6 +72,13 @@ SITES = [{
         'logo': 'http://phim14.net/application/views/frontend/default/images/logo.png',
         'class': 'Phim14',
         'plugin': 'phim14.plugin',
+        'version': 1
+    },
+    {
+        'name': 'fcine.net',
+        'logo': 'https://fcine.net/uploads/monthly_2019_01/FCINE-LOGO.png.0d4b6b0253c4fd8a4dbefa7067ac0ac4.png',
+        'class': 'Fcine',
+        'plugin': 'fcine.plugin',
         'version': 1
     },
 ]
