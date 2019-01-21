@@ -49,7 +49,10 @@ class LinkParser:
         m = re.search('data-options="(.+?)"', response)
         h = HTMLParser.HTMLParser()
         s = m.group(1)
-        s = unicode(s, 'utf-8')
+        try:
+            s = unicode(s, 'utf-8')
+        except:
+            s = s.encode("utf-8")
         s = h.unescape(s)
         s = json.loads(s)
         s = json.loads(s['flashvars']['metadata'])

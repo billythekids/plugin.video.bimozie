@@ -1,6 +1,5 @@
 import urllib
-import urllib2
-import cookielib
+import requests
 
 
 class Request:
@@ -8,30 +7,28 @@ class Request:
     DEFAULT_HEADERS = {
         'User-Agent': 'Mozilla/5.0'
     }
+    session = None
 
-    def __init__(self, header=None):
-        self.cookies = cookielib.LWPCookieJar()
-        self.handlers = (urllib2.HTTPHandler(), urllib2.HTTPSHandler(), urllib2.HTTPCookieProcessor(self.cookies))
-        self.opener = urllib2.build_opener(*self.handlers)
+    def __init__(self, header=None, session=False):
         if header:
             self.DEFAULT_HEADERS = header
+        if session:
+            self.session = requests.session()
 
     def get(self, url):
-        # try:
         print("Request URL: %s" % url)
-        request = urllib2.Request(url, headers=self.DEFAULT_HEADERS)
-        response = urllib2.urlopen(request, timeout=self.TIMEOUT)
-        content = response.read()
-        response.close()
-        return content
-        # except:
-        #     return ""
+        if self.session:
+            r = self.session.get(url, headers=self.DEFAULT_HEADERS)
+        else:
+            r = requests.get(url, headers=self.DEFAULT_HEADERS)
+        return r.text
 
     def post(self, url, params):
-        data = urllib.urlencode(params)
-        print("Post URL: %s params: %s" % (url, data))
-        request = urllib2.Request(url, data=data, headers=self.DEFAULT_HEADERS)
-        response = urllib2.urlopen(request)
-        content = response.read()
-        response.close()
-        return content
+        print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
+        if self.session:
+            r = self.session.post(url, data=params, headers=self.DEFAULT_HEADERS)
+            for resp in r.history:
+                print(resp.status_code, resp.url)
+        else:
+            r = requests.post(url, data=params, headers=self.DEFAULT_HEADERS)
+        return r.text
