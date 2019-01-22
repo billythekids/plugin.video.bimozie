@@ -26,9 +26,8 @@ class Phim3s:
         response = Request().get(url)
         return Movie().get(response)
 
-    def getLink(self, url):
-        # https://sub4.phim3s.pw/v3/?link=&is_encrypt=1&json=1&reload=0&s=40
-        url = 'https://sub4.phim3s.pw/v3/?link=%s&is_encrypt=1&json=1&reload=0&s=40' % url
+    def getLink(self, movie):
+        url = 'https://sub4.phim3s.pw/v3/?link=%s&is_encrypt=1&json=1&reload=0&s=40' % movie['link']
         response = Request().get(url)
         return Movie().get_link(response)
 

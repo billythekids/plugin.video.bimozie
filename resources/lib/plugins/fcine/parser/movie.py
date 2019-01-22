@@ -1,6 +1,5 @@
 # coding: utf8
 from bs4 import BeautifulSoup
-import re
 
 
 def from_char_code(*args):
@@ -18,19 +17,26 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         # get all server list
         servers = soup.select("ul.ipsDataList > div#extraFields > li")
-        for server in servers[-1:]:
-            items = server.select('> span.ipsDataItem_main > p')
-            for item in items:
-                link = self.get_link(item)
-                if link: movie['links'].append(link)
+
+        # get subtitle link
+        subtitle = servers[-2:-1][0].select_one('span.ipsDataItem_main > a').get('href')
+        server = servers[-1:][0]
+        items = server.select('> span.ipsDataItem_main > p')
+        for item in items:
+            link = self.get_link(item, subtitle)
+            if link:
+                movie['links'].append(link)
 
         return movie
 
-    def get_link(self, item):
-        try:
-            link = item.select_one('a').get('href')
-            return {
-                'link': link,
-                'title': item.getText().strip().encode('utf-8')
-            }
-        except: pass
+    def get_link(self, item, subtitle):
+        link = self.parse_link(item.select_one('a').get('href'))
+        return {
+            'link': link,
+            'title': item.getText().strip().encode('utf-8'),
+            'resolve': False,
+            'subtitle': subtitle
+        }
+
+    def parse_link(self, url):
+        return url

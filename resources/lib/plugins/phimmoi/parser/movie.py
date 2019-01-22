@@ -51,7 +51,8 @@ class Parser:
                 movie['links'].append({
                     'link': url,
                     'title': 'Link %s' % item['resolution'],
-                    'type': item['resolution']
+                    'type': item['resolution'],
+                    'resolve': True
                 })
 
         return movie

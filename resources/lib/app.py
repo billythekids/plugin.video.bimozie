@@ -9,6 +9,7 @@ import xbmcaddon
 import xbmc
 import json
 from importlib import import_module
+from utils.media_helper import MediaHelper
 
 # import urlresolver
 
@@ -163,7 +164,7 @@ def list_movie(movies, link, page, module, classname):
 
 
 def show_episode(movie, thumb, title, module, class_name):
-    if len(movie['episode']) > 0:
+    if len(movie['episode']) > 0: # should not in use anymore
         for item in movie['episode']:
             li = xbmcgui.ListItem(label=item['title'])
             li.setInfo('video', {'title': item['title']})
@@ -172,7 +173,7 @@ def show_episode(movie, thumb, title, module, class_name):
             url = build_url({'mode': 'play',
                              'title': title,
                              'thumb': thumb,
-                             'url': item['link'],
+                             'url': json.dumps(item),
                              'direct': 0,
                              'module': module,
                              'class': class_name})
@@ -219,7 +220,7 @@ def _build_ep_list(items, title, thumb, module, class_name):
         url = build_url({'mode': 'play',
                          'title': title,
                          'thumb': thumb,
-                         'url': item['link'],
+                         'url': json.dumps(item),
                          'direct': 0,
                          'module': module,
                          'class': class_name})
@@ -237,6 +238,7 @@ def show_server_links(items, title, thumb, server, module, class_name):
     _build_ep_list(items, title, thumb, module, class_name)
     xbmcplugin.endOfDirectory(HANDLE)
 
+
 def show_links(movie, title, thumb, module, class_name):
     if len(movie['links']) == 0:
         return
@@ -253,7 +255,7 @@ def show_links(movie, title, thumb, module, class_name):
         url = build_url({'mode': 'play',
                          'title': title,
                          'thumb': thumb,
-                         'url': item['link'],
+                         'url': json.dumps(item),
                          'direct': 1,
                          'module': module,
                          'class': class_name})
@@ -267,14 +269,21 @@ def play(movie, title=None, thumb=None, direct=False):
     print("*********************** playing ")
     print(movie)
     if direct:
-        play_item = xbmcgui.ListItem(path=movie)
+        if 'resolve' in movie and movie['resolve'] is not True:
+            helper = MediaHelper(movie)
+            link = helper.resolve_link()
+        else:
+            link = movie['link']
+        play_item = xbmcgui.ListItem(path=link)
     else:
         if len(movie['links']) == 0:
             return
         else:
             movie = movie['links'][0]
             play_item = xbmcgui.ListItem(path=movie['link'])
-            title = "%s - %s" % (movie['title'], title)
+            try:
+                title = "%s - %s" % (movie['title'].encode('utf-8'), title.encode('utf-8'))
+            except: pass
 
     play_item.setLabel(title)
     play_item.setArt({'thumb': thumb})
@@ -391,9 +400,9 @@ def router():
         thumb = ARGS.get('thumb')[0]
         direct = int(ARGS.get('direct')[0])
         if direct is 0:
-            movie = instance().getLink(url)
+            movie = instance().getLink(json.loads(url))
         else:
-            movie = url
+            movie = json.loads(url)
         play(movie, title, thumb, direct)
 
     elif mode[0] == 'search':

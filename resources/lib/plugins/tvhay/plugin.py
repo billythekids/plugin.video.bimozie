@@ -26,8 +26,8 @@ class Tvhay:
         response = Request().get(url)
         return Movie().get(response)
 
-    def getLink(self, url):
-        response = Request().get(url)
+    def getLink(self, movie):
+        response = Request().get(movie['link'])
         return Movie().get_link(response)
 
     def search(self, text):

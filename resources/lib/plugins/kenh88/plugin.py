@@ -26,8 +26,8 @@ class Kenh88:
         response = Request().get(url)
         return Movie().get(response)
 
-    def getLink(self, url):
-        url = '%s%s' % (self.domain, url)
+    def getLink(self, movie):
+        url = '%s%s' % (self.domain, movie['link'])
         response = Request().get(url)
         return Movie().get_link(response)
 

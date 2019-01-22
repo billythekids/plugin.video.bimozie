@@ -31,9 +31,9 @@ class Phimbathu:
         response = Request().get(url)
         return Movie().get(response)
 
-    def getLink(self, id):
-        url = "%sajax/player/" % self.domain
-        data = id.split(",")
+    def getLink(self, movie):
+        url = "%s/ajax/player/" % self.domain
+        data = movie['link'].split(",")
         params = {
             'id': data[0],
             'ep': data[1],

@@ -1,4 +1,3 @@
-import urllib
 import re
 from utils.mozie_request import Request
 from fcine.parser.category import Parser as Category
@@ -8,6 +7,8 @@ from fcine.parser.movie import Parser as Movie
 
 class Fcine:
     domain = "https://fcine.net"
+    token = None
+    member_id = None
 
     def __init__(self):
         self.request = Request(header={
@@ -16,12 +17,17 @@ class Fcine:
             'referer': 'https://fcine.net/login/',
         }, session=True)
 
-    def get_token(self, response):
+
+    def get_token(self, response=None):
+        if not response:
+            response = self.request.get('%s/page/help/' % self.domain)
+
         self.token = re.search('csrfKey: "(.*)",', response).group(1)
         self.member_id = re.search('memberID: (\d+)', response).group(1)
+
         return self.token, self.member_id
 
-    def login(self, username, password):
+    def login(self, username, password, header):
         params = {
             'login__standard_submitted': 1,
             'csrfKey': self.token,
@@ -30,7 +36,7 @@ class Fcine:
             'remember_me': 0,
             'remember_me_checkbox': 1
         }
-        self.request.post('%s/login/' % self.domain, params)
+        return self.request.post('%s/login/' % self.domain, params, headers=header)
 
     def getCategory(self):
         response = self.request.get(self.domain)
@@ -42,10 +48,8 @@ class Fcine:
         return Channel().get(response, page)
 
     def getMovie(self, id):
-        response = self.request.get(id)
-        self.get_token(response)
-        self.login('billythekidsde@gmail.com', '123456')
-        response = self.request.get(id)
+        self.get_token()
+        response = self.login('billythekidsde@gmail.com', '123456', {'referer': id})
         return Movie().get(response)
 
     def getLink(self, url):

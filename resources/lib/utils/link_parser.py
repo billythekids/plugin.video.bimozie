@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from utils.mozie_request import Request
+from utils.fshare import FShare
 import re
 import urllib
 import HTMLParser
@@ -38,6 +39,8 @@ class LinkParser:
             return self.get_link_ok()
         if re.search('openload.co', self.url):
             return self.get_link_openload()
+        if re.search('fshare.vn', self.url):
+            return self.get_link_fshare()
 
         return self.url
 
@@ -64,7 +67,10 @@ class LinkParser:
         try:
             import resolveurl
             stream_url = resolveurl.resolve(self.url)
-            print(stream_url)
             return stream_url, '720'
         except:
             return None
+
+    def get_link_fshare(self):
+        return FShare(self.url).get_link(), '1080'
+

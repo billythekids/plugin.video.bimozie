@@ -15,20 +15,24 @@ class Request:
         if session:
             self.session = requests.session()
 
-    def get(self, url):
+    def get(self, url, headers=None):
         print("Request URL: %s" % url)
+        if not headers:
+            headers = self.DEFAULT_HEADERS
         if self.session:
-            r = self.session.get(url, headers=self.DEFAULT_HEADERS)
+            r = self.session.get(url, headers=headers)
         else:
-            r = requests.get(url, headers=self.DEFAULT_HEADERS)
+            r = requests.get(url, headers=headers)
         return r.text
 
-    def post(self, url, params):
+    def post(self, url, params, headers=None):
         print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
+        if not headers:
+            headers = self.DEFAULT_HEADERS
         if self.session:
-            r = self.session.post(url, data=params, headers=self.DEFAULT_HEADERS)
+            r = self.session.post(url, data=params, headers=headers)
             for resp in r.history:
                 print(resp.status_code, resp.url)
         else:
-            r = requests.post(url, data=params, headers=self.DEFAULT_HEADERS)
+            r = requests.post(url, data=params, headers=headers)
         return r.text

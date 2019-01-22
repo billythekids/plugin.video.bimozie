@@ -48,7 +48,7 @@ class Parser:
                 'link': source['link'],
                 'title': 'Link',
                 'type': '',
-                'resolvable': False
+                'resolve': True
             })
             return movie
 
@@ -61,7 +61,7 @@ class Parser:
                     'link': source['file'],
                     'title': 'Link %s' % source['label'].encode('utf-8'),
                     'type': source['label'].encode('utf-8'),
-                    'resolvable': False
+                    'resolve': True
                 })
             return movie
 
@@ -73,7 +73,7 @@ class Parser:
                     'link': source[0],
                     'title': 'Link %s' % source[1].encode('utf-8'),
                     'type': source[1].encode('utf-8'),
-                    'resolvable': False
+                    'resolve': True
                 })
                 return movie
 
@@ -86,7 +86,7 @@ class Parser:
                     'link': source['file'],
                     'title': 'Link %s' % 'Auto',
                     'type': 'Auto',
-                    'resolvable': False
+                    'resolve': True
                 })
                 return movie
 

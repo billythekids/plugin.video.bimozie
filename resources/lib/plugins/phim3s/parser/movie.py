@@ -52,7 +52,7 @@ class Parser:
                     'link': source[0],
                     'title': source[1],
                     'type': source[1],
-                    'resolvable': True
+                    'resolve': True
                 })
                 return movie
         else:
@@ -66,7 +66,7 @@ class Parser:
                     'link': source['file'],
                     'title': 'Link %s' % source['label'].encode('utf-8'),
                     'type': source['label'].encode('utf-8'),
-                    'resolvable': True
+                    'resolve': True
                 })
                 if len(sources) == 1 or int(source['label'][0:-1]) >= 720: break
 

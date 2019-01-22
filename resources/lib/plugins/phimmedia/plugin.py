@@ -25,8 +25,8 @@ class Phimmedia:
         response = Request().get(url)
         return Movie().get(response)
 
-    def getLink(self, url):
-        response = Request().get(url)
+    def getLink(self, movie):
+        response = Request().get(movie['link'])
         return Movie().get(response, True)
 
     def search(self, text, page=1):
