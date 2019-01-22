@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import requests
 import re
 import json
+import utils.xbmc_helper as helper
 
 
 class FShare:
-    # url = 'https://www.fshare.vn/file/9SX159OBA6OP'
     def __init__(self, url, username="", password=""):
         self.request = requests.session()
         self.url = url
@@ -48,5 +49,12 @@ class FShare:
         })
 
         item = json.loads(r.text)
+        self.logout()
+        if 'errors' in item:
+            helper.message(item['errors']['linkcode'][0])
+            return
         # should block ui to wait until able retrieve a link
         return item[u'url']
+
+    def logout(self):
+        self.request.get('https://www.fshare.vn/site/logout', allow_redirects=False)

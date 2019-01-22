@@ -3,6 +3,7 @@ from utils.mozie_request import Request
 from fcine.parser.category import Parser as Category
 from fcine.parser.channel import Parser as Channel
 from fcine.parser.movie import Parser as Movie
+import utils.xbmc_helper as helper
 
 
 class Fcine:
@@ -49,7 +50,10 @@ class Fcine:
 
     def getMovie(self, id):
         self.get_token()
-        response = self.login('billythekidsde@gmail.com', '123456', {'referer': id})
+        response = self.login(
+            helper.getSetting('fcine.username'),
+            helper.getSetting('fcine.password'),
+            {'referer': id})
         return Movie().get(response)
 
     def getLink(self, url):

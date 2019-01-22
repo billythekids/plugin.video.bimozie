@@ -11,7 +11,6 @@ import json
 from importlib import import_module
 from utils.media_helper import MediaHelper
 
-# import urlresolver
 
 ADDON = xbmcaddon.Addon()
 HANDLE = int(sys.argv[1])
@@ -19,6 +18,7 @@ BASEURL = sys.argv[0]
 ARGS = urlparse.parse_qs(sys.argv[2][1:])
 ADDON_ID = ADDON.getAddonInfo('id')
 KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
+
 
 print("***********************Current version %d" % KODI_VERSION)
 
@@ -136,17 +136,19 @@ def list_movie(movies, link, page, module, classname):
 
     if movies is not None:
         for item in movies['movies']:
-            list_item = xbmcgui.ListItem(label=item['label'])
-            list_item.setLabel2(item['realtitle'])
-            list_item.setIconImage('DefaultVideo.png')
-            list_item.setArt({
-                'thumb': item['thumb'],
-            })
-            url = build_url(
-                {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
-                 'module': module, 'class': classname})
-            is_folder = True
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+            try:
+                list_item = xbmcgui.ListItem(label=item['label'])
+                list_item.setLabel2(item['realtitle'])
+                list_item.setIconImage('DefaultVideo.png')
+                list_item.setArt({
+                    'thumb': item['thumb'],
+                })
+                url = build_url(
+                    {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
+                     'module': module, 'class': classname})
+                is_folder = True
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+            except: print(item)
 
         print("***********************Current page %d" % page)
         # show next page
@@ -267,7 +269,6 @@ def show_links(movie, title, thumb, module, class_name):
 
 def play(movie, title=None, thumb=None, direct=False):
     print("*********************** playing ")
-    print(movie)
     if direct:
         if 'resolve' in movie and movie['resolve'] is not True:
             helper = MediaHelper(movie)

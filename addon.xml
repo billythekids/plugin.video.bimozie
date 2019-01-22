@@ -6,7 +6,6 @@
         <import addon="script.module.pycryptodome" version="3.4.1" optional="true"/>
         <import addon="script.module.resolveurl" version="5.0.24"/>
         <import addon="script.module.requests" version="2.7.0" />
-        <import addon="script.common.plugin.cache" version="2.5.5"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>

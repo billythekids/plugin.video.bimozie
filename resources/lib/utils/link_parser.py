@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from utils.mozie_request import Request
+import utils.xbmc_helper as helper
 from utils.fshare import FShare
 import re
-import urllib
 import HTMLParser
 import json
 
@@ -72,5 +72,11 @@ class LinkParser:
             return None
 
     def get_link_fshare(self):
-        return FShare(self.url).get_link(), '1080'
-
+        if helper.getSetting('fshare.enable'):
+            return FShare(
+                self.url,
+                helper.getSetting('fshare.username'),
+                helper.getSetting('fshare.password')
+            ).get_link(), '1080'
+        else:
+            return FShare(self.url).get_link(), '1080'

@@ -35,7 +35,7 @@ class Parser:
             thumb = re.search('url\((.*)\);', movie.select_one('div.movie-thumbnail').get('style')).group(1)
 
             channel['movies'].append({
-                'id': movie.get('href'),
+                'id': movie.get('href').encode("utf-8"),
                 'label': label.encode("utf-8"),
                 'title': title.encode("utf-8"),
                 'realtitle': realtitle.encode("utf-8"),
@@ -43,5 +43,4 @@ class Parser:
                 'type': type.encode("utf-8"),
             })
 
-        print(channel['page_patten'])
         return channel
