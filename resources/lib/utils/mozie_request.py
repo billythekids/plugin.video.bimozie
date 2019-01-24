@@ -5,8 +5,13 @@ import requests
 
 class Request:
     TIMEOUT = 30
+    user_agent = (
+        "Mozilla/5.0 (X11; Linux x86_64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/59.0.3071.115 Safari/537.36"
+    )
     DEFAULT_HEADERS = {
-        'User-Agent': 'Mozilla/5.0'
+        'User-Agent': user_agent
     }
     session = None
 

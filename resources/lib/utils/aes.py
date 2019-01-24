@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding: utf8
+# -*- coding: utf-8 -*-
 import base64
 from hashlib import md5
 from Cryptodome.Cipher import AES

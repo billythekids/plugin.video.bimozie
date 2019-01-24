@@ -3,11 +3,12 @@ import requests
 import re
 import json
 import utils.xbmc_helper as helper
+import utils.mozie_request as Request
 
 
 class FShare:
     def __init__(self, url, username="", password=""):
-        self.request = requests.session()
+        self.request = Request(session=True)
         self.url = url
         self.username = username
         self.password = password
@@ -49,12 +50,13 @@ class FShare:
         })
 
         item = json.loads(r.text)
-        self.logout()
+        # self.logout()
         if 'errors' in item:
-            helper.message(item['errors']['linkcode'][0])
+            helper.message("Fshare error: %s" % item['errors']['linkcode'][0])
+            raise Exception('Fshare', 'error')
             return
         # should block ui to wait until able retrieve a link
         return item[u'url']
 
     def logout(self):
-        self.request.get('https://www.fshare.vn/site/logout', allow_redirects=False)
+        self.request.get('https://www.fshare.vn/site/logout')

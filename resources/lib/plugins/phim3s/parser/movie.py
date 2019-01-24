@@ -1,9 +1,8 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import re
 import json
 import urllib
-from utils.link_parser import LinkParser
 
 
 def from_char_code(*args):
@@ -46,13 +45,12 @@ class Parser:
         sources = re.search("<iframe.*src=\\\"(.*)\\\" frameborder", response)
         if sources is not None:
             source = urllib.unquote(sources.group(1)).replace('\\', '')
-            source = LinkParser(source).get_link()
             if source:
                 movie['links'].append({
-                    'link': source[0],
-                    'title': source[1],
-                    'type': source[1],
-                    'resolve': True
+                    'link': source,
+                    'title': source,
+                    'type': 'Unknow',
+                    'resolve': False
                 })
                 return movie
         else:

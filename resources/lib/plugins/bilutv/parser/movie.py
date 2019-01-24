@@ -1,10 +1,9 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import urllib
 import re
 import json
 from utils.mozie_request import Request
-from utils.link_parser import LinkParser
 
 
 class Parser:
@@ -88,13 +87,12 @@ class Parser:
         m = re.search('<iframe.*src="(.*)" frameborder', response)
         if m is not None:
             source = urllib.unquote(m.group(1)).replace('\\', '')
-            source = LinkParser(source).get_link()
             if source:
                 movie['links'].append({
-                    'link': source[0],
-                    'title': source[1],
-                    'type': source[1],
-                    'resolve': True
+                    'link': source,
+                    'title': source,
+                    'type': 'Unknow',
+                    'resolve': False
                 })
                 return movie
 

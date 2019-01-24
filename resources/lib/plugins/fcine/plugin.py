@@ -34,7 +34,7 @@ class Fcine:
             'csrfKey': self.token,
             'auth': username,
             'password': password,
-            'remember_me': 0,
+            'remember_me': 1,
             'remember_me_checkbox': 1
         }
         return self.request.post('%s/login/' % self.domain, params, headers=header)

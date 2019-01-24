@@ -45,17 +45,10 @@ class LinkParser:
         return self.url
 
     def get_link_ok(self):
-        response = Request({
-            'referer': 'http://tvhay.org',
-            'User-Agent': 'Mozilla/5.0'
-        }).get(self.url)
+        response = Request().get(self.url)
         m = re.search('data-options="(.+?)"', response)
         h = HTMLParser.HTMLParser()
         s = m.group(1)
-        try:
-            s = unicode(s, 'utf-8')
-        except:
-            s = s.encode("utf-8")
         s = h.unescape(s)
         s = json.loads(s)
         s = json.loads(s['flashvars']['metadata'])

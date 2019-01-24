@@ -11,7 +11,6 @@ import json
 from importlib import import_module
 from utils.media_helper import MediaHelper
 
-
 ADDON = xbmcaddon.Addon()
 HANDLE = int(sys.argv[1])
 BASEURL = sys.argv[0]
@@ -19,46 +18,51 @@ ARGS = urlparse.parse_qs(sys.argv[2][1:])
 ADDON_ID = ADDON.getAddonInfo('id')
 KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 
-
 print("***********************Current version %d" % KODI_VERSION)
 
-SITES = [{
-    'name': 'bilutv.org',
-    'logo': 'http://bilutv.org/Theme/images/bilutv-logo-noel.png',
-    'class': 'Bilutv',
-    'plugin': 'bilutv.plugin',
-    'version': 1
-}, {
-    'name': 'phimmedia.tv',
-    'logo': 'http://www.phimmedia.tv/templates/themes/phim/images/phimmedia-s.png',
-    'class': 'Phimmedia',
-    'plugin': 'phimmedia.plugin',
-    'version': 1
-}, {
-    'name': 'phimmoi.net',
-    'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
-    'class': 'Phimmoi',
-    'plugin': 'phimmoi.plugin',
-    'version': 18
-}, {
-    'name': 'tvhay.org',
-    'logo': 'https://kodi-addons.club/data/d1/d14a048c56373761664ca89a773d694d.png',
-    'class': 'Tvhay',
-    'plugin': 'tvhay.plugin',
-    'version': 1
-}, {
-    'name': 'phim3s.pw',
-    'logo': 'http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium',
-    'class': 'Phim3s',
-    'plugin': 'phim3s.plugin',
-    'version': 1
-}, {
-    'name': 'phimbathu.org',
-    'logo': 'http://phimbathu.org/Theme/images/phimbathu-logo.png',
-    'class': 'Phimbathu',
-    'plugin': 'phimbathu.plugin',
-    'version': 1
-},
+SITES = [
+    {
+        'name': 'bilutv.org',
+        'logo': 'http://bilutv.org/Theme/images/bilutv-logo-noel.png',
+        'class': 'Bilutv',
+        'plugin': 'bilutv.plugin',
+        'version': 1
+    },
+    {
+        'name': 'phimmedia.tv',
+        'logo': 'http://www.phimmedia.tv/templates/themes/phim/images/phimmedia-s.png',
+        'class': 'Phimmedia',
+        'plugin': 'phimmedia.plugin',
+        'version': 1
+    },
+    {
+        'name': 'phimmoi.net',
+        'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
+        'class': 'Phimmoi',
+        'plugin': 'phimmoi.plugin',
+        'version': 18
+    },
+    {
+        'name': 'tvhay.org',
+        'logo': 'https://kodi-addons.club/data/d1/d14a048c56373761664ca89a773d694d.png',
+        'class': 'Tvhay',
+        'plugin': 'tvhay.plugin',
+        'version': 1
+    },
+    {
+        'name': 'phim3s.pw',
+        'logo': 'http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium',
+        'class': 'Phim3s',
+        'plugin': 'phim3s.plugin',
+        'version': 1
+    },
+    {
+        'name': 'phimbathu.org',
+        'logo': 'http://phimbathu.org/Theme/images/phimbathu-logo.png',
+        'class': 'Phimbathu',
+        'plugin': 'phimbathu.plugin',
+        'version': 1
+    },
     {
         'name': 'kenh88.com',
         'logo': 'http://www.kenh88.com/images/logo_kenh88.png',
@@ -148,7 +152,8 @@ def list_movie(movies, link, page, module, classname):
                      'module': module, 'class': classname})
                 is_folder = True
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
-            except: print(item)
+            except:
+                print(item)
 
         print("***********************Current page %d" % page)
         # show next page
@@ -166,7 +171,7 @@ def list_movie(movies, link, page, module, classname):
 
 
 def show_episode(movie, thumb, title, module, class_name):
-    if len(movie['episode']) > 0: # should not in use anymore
+    if len(movie['episode']) > 0:  # should not in use anymore
         for item in movie['episode']:
             li = xbmcgui.ListItem(label=item['title'])
             li.setInfo('video', {'title': item['title']})
@@ -183,7 +188,7 @@ def show_episode(movie, thumb, title, module, class_name):
             xbmcplugin.addDirectoryItem(HANDLE, url, li, isFolder=True)
 
     elif len(movie['group']) > 0:
-        idx=0
+        idx = 0
         for key, items in movie['group'].iteritems():
             idx += 1
             print(idx, idx is len(movie['group']))
@@ -269,27 +274,35 @@ def show_links(movie, title, thumb, module, class_name):
 
 def play(movie, title=None, thumb=None, direct=False):
     print("*********************** playing ")
+    print(movie)
     if direct:
-        if 'resolve' in movie and movie['resolve'] is not True:
-            helper = MediaHelper(movie)
-            link = helper.resolve_link()
-        else:
-            link = movie['link']
-        play_item = xbmcgui.ListItem(path=link)
+        movie = resolve_media(movie)
+        play_item = xbmcgui.ListItem(path=movie['link'])
     else:
         if len(movie['links']) == 0:
             return
         else:
             movie = movie['links'][0]
+            movie = resolve_media(movie)
             play_item = xbmcgui.ListItem(path=movie['link'])
             try:
                 title = "%s - %s" % (movie['title'].encode('utf-8'), title.encode('utf-8'))
-            except: pass
+            except:
+                pass
+
+    if 'subtitle' in movie:
+        play_item.setSubtitles([movie['subtitle']])
 
     play_item.setLabel(title)
     play_item.setArt({'thumb': thumb})
     play_item.setProperty('IsPlayable', 'true')
     xbmcplugin.setResolvedUrl(HANDLE, True, listitem=play_item)
+
+
+def resolve_media(movie):
+    helper = MediaHelper(movie)
+    movie['link'] = helper.resolve_link()
+    return movie
 
 
 def dosearch(plugin, module, classname, text, page=1):

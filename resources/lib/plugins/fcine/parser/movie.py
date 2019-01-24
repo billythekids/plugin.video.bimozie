@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 
 
@@ -30,7 +30,9 @@ class Parser:
         return movie
 
     def get_link(self, item, subtitle):
-        link = self.parse_link(item.select_one('a').get('href'))
+        link = item.select_one('a')
+        if link:
+            link = link.get('href')
         return {
             'link': link,
             'title': item.getText().strip().encode('utf-8'),

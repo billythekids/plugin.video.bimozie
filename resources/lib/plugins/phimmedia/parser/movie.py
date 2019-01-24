@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import re
 import base64

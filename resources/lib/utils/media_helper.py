@@ -1,4 +1,5 @@
 from utils.link_parser import LinkParser
+import re
 
 
 class MediaHelper:
@@ -6,8 +7,16 @@ class MediaHelper:
         self.media = media
 
     def resolve_link(self):
-        if self.media and 'link' in self.media:
-            return LinkParser(self.media['link']).get_link()[0]
+        link = self.media['link']
+        if 'resolve' in self.media and self.media['resolve'] is not True:
+            if self.media and 'link' in self.media:
+                link =  LinkParser(link).get_link()[0]
+
+        r = re.search('http:', link)
+        if not r:
+            link = 'http:%s' % link
+
+        return link
 
     def resolve_subtitle(self):
         if 'subtitle' in self.media:
