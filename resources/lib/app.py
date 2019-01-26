@@ -98,6 +98,13 @@ SITES = [
         'plugin': 'vuviphim.plugin',
         'version': 1
     },
+    {
+        'name': 'vtv16.com',
+        'logo': 'https://yt3.ggpht.com/a-/AN66SAx84wKI577rKgX2IeQUiG31GaOhmVIu2le2rQ=s900-mo-c-c0xffffffff-rj-k-no',
+        'class': 'Vtv16',
+        'plugin': 'vtv16.plugin',
+        'version': 1
+    },
 ]
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
