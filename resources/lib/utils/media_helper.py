@@ -12,7 +12,7 @@ class MediaHelper:
             if self.media and 'link' in self.media:
                 link =  LinkParser(link).get_link()[0]
 
-        r = re.search('http[s]:', link)
+        r = re.search('^https?:', link)
         if not r:
             link = 'http:%s' % link
 

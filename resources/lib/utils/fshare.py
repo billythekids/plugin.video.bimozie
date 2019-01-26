@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-import requests
 import re
 import json
 import utils.xbmc_helper as helper
-import utils.mozie_request as Request
+from utils.mozie_request import Request
 
 
 class FShare:
@@ -27,7 +26,7 @@ class FShare:
         return r
 
     def get_token(self):
-        r = self.request.get(self.url).text
+        r = self.request.get(self.url)
         return self.extract_token(r)
 
     def extract_token(self, response):
@@ -38,7 +37,7 @@ class FShare:
             token = self.get_token()
         else:
             r = self.login()
-            token = self.extract_token(r.text)
+            token = self.extract_token(r)
 
         code = re.search('/file/([^\?]+)', self.url).group(1)
 
@@ -49,7 +48,7 @@ class FShare:
             'fcode': ''
         })
 
-        item = json.loads(r.text)
+        item = json.loads(r)
         # self.logout()
         if 'errors' in item:
             helper.message("Fshare error: %s" % item['errors']['linkcode'][0])
