@@ -41,6 +41,8 @@ class LinkParser:
             return self.get_link_openload()
         if re.search('fshare.vn', self.url):
             return self.get_link_fshare()
+        if re.search('dailymotion.com', self.url):
+            return self.get_link_dailymotion()
 
         return self.url
 
@@ -57,6 +59,14 @@ class LinkParser:
         return items[0]
 
     def get_link_openload(self):
+        try:
+            import resolveurl
+            stream_url = resolveurl.resolve(self.url)
+            return stream_url, '720'
+        except:
+            return None
+
+    def get_link_dailymotion(self):
         try:
             import resolveurl
             stream_url = resolveurl.resolve(self.url)
