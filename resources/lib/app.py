@@ -84,6 +84,13 @@ SITES = [
         'plugin': 'fcine.plugin',
         'version': 1
     },
+    {
+        'name': 'animehay.tv',
+        'logo': 'https://i1.wp.com/www.albertgyorfi.com/wp-content/uploads/2017/05/anime-pack.png?fit=256%2C256&ssl=1',
+        'class': 'Animehay',
+        'plugin': 'animehay.plugin',
+        'version': 1
+    },
 ]
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
