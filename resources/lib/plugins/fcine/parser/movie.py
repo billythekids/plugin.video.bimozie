@@ -19,7 +19,11 @@ class Parser:
         servers = soup.select("ul.ipsDataList > div#extraFields > li")
 
         # get subtitle link
-        subtitle = servers[-2:-1][0].select_one('span.ipsDataItem_main > a').get('href')
+        subtitle = None
+        try:
+            subtitle = servers[-2:-1][0].select_one('span.ipsDataItem_main > a').get('href')
+        except:
+            pass
         server = servers[-1:][0]
         items = server.select('> span.ipsDataItem_main > p')
         for item in items:

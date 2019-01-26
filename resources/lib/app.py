@@ -311,7 +311,7 @@ def play(movie, title=None, thumb=None, direct=False):
             except:
                 pass
 
-    if 'subtitle' in movie:
+    if 'subtitle' in movie and movie['subtitle']:
         play_item.setSubtitles([movie['subtitle']])
 
     play_item.setLabel(title)
