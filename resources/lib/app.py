@@ -91,6 +91,13 @@ SITES = [
         'plugin': 'animehay.plugin',
         'version': 1
     },
+    {
+        'name': 'vuviphim.com',
+        'logo': 'https://vuviphim.com/wp-content/uploads/2017/08/logo-vuviphim.png',
+        'class': 'Vuviphim',
+        'plugin': 'vuviphim.plugin',
+        'version': 1
+    },
 ]
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
@@ -154,6 +161,8 @@ def list_movie(movies, link, page, module, classname):
                 list_item.setArt({
                     'thumb': item['thumb'],
                 })
+                if 'intro' in item:
+                    list_item.setInfo(type='video', infoLabels={'plot': item['intro']})
                 url = build_url(
                     {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
                      'module': module, 'class': classname})
@@ -198,7 +207,6 @@ def show_episode(movie, thumb, title, module, class_name):
         idx = 0
         for key, items in movie['group'].iteritems():
             idx += 1
-            print(idx, idx is len(movie['group']))
             label = "[COLOR red][B][---- %s : [COLOR yellow]%d eps[/COLOR] ----][/B][/COLOR]" % (key, len(items))
             sli = xbmcgui.ListItem(label=label)
             if len(items) < 2 or len(movie['group']) == 1:
@@ -281,7 +289,6 @@ def show_links(movie, title, thumb, module, class_name):
 
 def play(movie, title=None, thumb=None, direct=False):
     print("*********************** playing ")
-    print(movie)
     if direct:
         movie = resolve_media(movie)
         play_item = xbmcgui.ListItem(path=movie['link'])
