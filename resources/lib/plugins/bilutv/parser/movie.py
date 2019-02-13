@@ -53,11 +53,14 @@ class Parser:
             'links': [],
         }
 
-        m = re.search("playerInstance.setup\({sources:\[(.*)\]", response)
+        m = re.search("playerInstance.setup\({sources:\[(.*)\]", response) or re.search(
+            "playerInstance.setup.*sources:\[(.*)\],", response)
+
         if m is not None:
             sources = '[%s]' % m.group(1)
             valid_json = re.sub(r'(?<={|,)([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources)
             sources = json.loads(valid_json)
+            print(sources)
             if len(sources) > 1:
                 sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
             if len(sources) > 0:
