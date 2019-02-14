@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import xbmc
 import xbmcaddon
+import os
 
 addon = xbmcaddon.Addon()
-
+ADDON_ID = addon.getAddonInfo('id')
+addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
 
 def s2u(s): return s.decode('utf-8') if isinstance(s, str) else s
 
@@ -23,3 +25,9 @@ def message(message='', title='', timeShown=5000):
     else:
         xbmc.executebuiltin("Dialog.Close(all, true)")
 
+def write_file(name, content):
+    path = os.path.join(addon_data_dir, name)
+    f = open(path, mode='w')
+    f.write(content)
+    f.close()
+    return path
