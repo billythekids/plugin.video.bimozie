@@ -10,6 +10,7 @@ import xbmc
 import json
 from importlib import import_module
 from utils.media_helper import MediaHelper
+import utils.xbmc_helper as XbmcHelper
 
 ADDON = xbmcaddon.Addon()
 HANDLE = int(sys.argv[1])
@@ -329,12 +330,16 @@ def resolve_media(movie):
 def dosearch(plugin, module, classname, text, page=1):
     xbmcplugin.setPluginCategory(HANDLE, 'Search Result')
     xbmcplugin.setContent(HANDLE, 'movies')
-    if text is None:
+    if not text:
         keyboard = xbmc.Keyboard('', 'Search iPlayer')
         keyboard.doModal()
         if keyboard.isConfirmed():
             text = keyboard.getText()
 
+    if not text:
+        return
+
+    XbmcHelper.search_history_save(text)
     print("*********************** searching %s" % text)
     movies = plugin().search(text)
 
@@ -369,7 +374,15 @@ def search(module, classname):
                                 True)
 
     # Support to save search history
-
+    contents = XbmcHelper.search_history_get()
+    if contents:
+        for txt in contents:
+            url = build_url({'mode': 'dosearch', 'module': module, 'class': classname, 'url': txt})
+            xbmcplugin.addDirectoryItem(HANDLE,
+                                        url,
+                                        xbmcgui.ListItem(
+                                            label="[COLOR blue][B]%s[/B][/COLOR]" % txt),
+                                        True)
     xbmcplugin.endOfDirectory(HANDLE)
 
 

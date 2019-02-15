@@ -4,7 +4,7 @@ import requests
 
 
 class Request:
-    TIMEOUT = 30
+    TIMEOUT = 15
     user_agent = (
         "Mozilla/5.0 (X11; Linux x86_64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -14,6 +14,7 @@ class Request:
         'User-Agent': user_agent
     }
     session = None
+    r = None
 
     def __init__(self, header=None, session=False):
         if header:
@@ -26,19 +27,22 @@ class Request:
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
-            r = self.session.get(url, headers=headers)
+            self.r = self.session.get(url, headers=headers, timeout=self.TIMEOUT)
         else:
-            r = requests.get(url, headers=headers)
-        return r.text
+            self.r = requests.get(url, headers=headers, timeout=self.TIMEOUT)
+        return self.r.text
 
     def post(self, url, params, headers=None):
         print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
-            r = self.session.post(url, data=params, headers=headers)
-            for resp in r.history:
+            self.r = self.session.post(url, data=params, headers=headers, timeout=self.TIMEOUT)
+            for resp in self.r.history:
                 print(resp.status_code, resp.url)
         else:
-            r = requests.post(url, data=params, headers=headers)
-        return r.text
+            self.r = requests.post(url, data=params, headers=headers, timeout=self.TIMEOUT)
+        return self.r.text
+
+    def get_request(self):
+        return self.r

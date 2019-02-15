@@ -43,6 +43,6 @@ class Bilutv:
         return Movie().get_link(response)
 
     def search(self, text, page=1):
-        url = "%s/tim-kiem.html?q=%s" % (self.domain, urllib.quote_plus(text))
+        url = "%s/tim-kiem/%s.html" % (self.domain, urllib.quote_plus(text))
         response = Request().get(url)
         return Channel().get(response)

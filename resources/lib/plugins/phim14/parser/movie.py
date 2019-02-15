@@ -3,6 +3,8 @@ import re
 import json
 import urllib
 from bs4 import BeautifulSoup
+from utils.mozie_request import Request
+import utils.xbmc_helper as helper
 
 
 def from_char_code(*args):
@@ -41,7 +43,7 @@ class Parser:
         if sources is not None:
             source = urllib.unquote(sources.group(1))
             movie['links'].append({
-                'link': source,
+                'link': self.parse_link(source),
                 'title': '',
                 'type': '',
                 'resolve': True
@@ -53,7 +55,7 @@ class Parser:
             source = sources.group(1).replace('"', '')
             if source:
                 movie['links'].append({
-                    'link': source,
+                    'link': self.parse_link(source),
                     'title': 'Link %s' % source,
                     'type': 'Unknow',
                     'resolve': False
@@ -91,3 +93,15 @@ class Parser:
                 movies.append(item)
 
         return movies
+
+    def parse_link(self, url):
+        r = re.search('stream.phim14.net/public/dist/index.html\?id=(.*)', url)
+        if r:
+            id = r.group(1)
+            url = "http://stream.phim14.net/hls/%s/%s.playlist.m3u8" % (id, id)
+            # res = Request().get(url)
+            # abs_url = 'http://stream.phim14.net/hls/%s/drive/' % id
+            # res = res.replace('/drive/', abs_url)
+            url = helper.write_file('stream.strm', url)
+
+        return url

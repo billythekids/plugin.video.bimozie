@@ -60,13 +60,14 @@ class Parser:
             sources = sources.group(1)
             response = Request().get(sources)
             sources = re.search("var sources = (.*);", response)
-            for source in json.loads(sources.group(1)):
-                    movie['links'].append({
-                        'link': source['file'].replace('\\', ''),
-                        'title': 'Link %s' % source['type'].encode('utf-8'),
-                        'type': source['type'].encode('utf-8'),
-                        'resolve': True
-                    })
+            if sources:
+                for source in json.loads(sources.group(1)):
+                        movie['links'].append({
+                            'link': source['file'].replace('\\', ''),
+                            'title': 'Link %s' % source['type'].encode('utf-8'),
+                            'type': source['type'].encode('utf-8'),
+                            'resolve': True
+                        })
 
             return movie
 
