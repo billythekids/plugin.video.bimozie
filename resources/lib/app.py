@@ -23,6 +23,13 @@ print("***********************Current version %d" % KODI_VERSION)
 
 SITES = [
     {
+        'name': 'fimfast.com',
+        'logo': 'https://fimfast.com/assets/img/logo.png',
+        'class': 'Fimfast',
+        'plugin': 'fimfast.plugin',
+        'version': 1
+    },
+    {
         'name': 'bilutv.org',
         'logo': 'http://bilutv.org/Theme/images/bilutv-logo-noel.png',
         'class': 'Bilutv',
