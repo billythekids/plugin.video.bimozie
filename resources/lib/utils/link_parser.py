@@ -43,8 +43,10 @@ class LinkParser:
             return self.get_link_fshare()
         if re.search('dailymotion.com', self.url):
             return self.get_link_dailymotion()
+        if self.url.endswith('m3u8'):
+            return self.get_m3u8()
 
-        return self.url
+        return self.url, 'unknow'
 
     def get_link_ok(self):
         response = Request().get(self.url)
@@ -83,3 +85,7 @@ class LinkParser:
             ).get_link(), '1080'
         else:
             return FShare(self.url).get_link(), '1080'
+
+    def get_m3u8(self):
+        self.url = self.url.replace('//', '/')
+        return self.url, 'hls'

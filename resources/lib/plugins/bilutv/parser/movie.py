@@ -67,7 +67,7 @@ class Parser:
                 source = sources[0]
                 label = 'label' in source and source['label'] or ''
                 movie['links'].append({
-                    'link': source['file'],
+                    'link': self.parse_link(source['file']),
                     'title': 'Link %s' % label.encode('utf-8'),
                     'type': label.encode('utf-8'),
                     'resolve': True
@@ -79,7 +79,7 @@ class Parser:
         if m is not None:
             source = urllib.unquote(m.group(1))
             movie['links'].append({
-                'link': source,
+                'link': self.parse_link(source),
                 'title': '',
                 'type': '',
                 'resolve': True
@@ -92,7 +92,7 @@ class Parser:
             source = urllib.unquote(m.group(1)).replace('\\', '')
             if source:
                 movie['links'].append({
-                    'link': source,
+                    'link': self.parse_link(source),
                     'title': source,
                     'type': 'Unknow',
                     'resolve': False
@@ -100,3 +100,12 @@ class Parser:
                 return movie
 
         return movie
+
+    def parse_link(self, url):
+        r = re.search('getLinkSimple', url)
+        if r:
+            res = Request()
+            res.get(url)
+            url = res.get_request().url
+
+        return url

@@ -72,7 +72,7 @@ class Parser:
                     #         'link': self.get_hydrax(url),
                     #         'title': 'Link 720p',
                     #         'type': '720p',
-                    #         'resolve': True
+                    #         'resolve': False
                     #     })
         return movie
 
@@ -158,6 +158,7 @@ class Parser:
         return ''.join(result)
 
     def get_hydrax(self, url):
+        return "C:\\Users\\Billy Nguyen\\AppData\\Roaming\\Kodi\\userdata\\addon_data\\plugin.video.bimozie\\phimmoi.m3u8"
         response = Request().get(url)
         id = re.search('"key":"(.*?)",', response).group(1)
         params = {
@@ -174,13 +175,12 @@ class Parser:
         if response['hd']:
             response = response['hd']
             i, j = 0, 0
-            playlist = '''
-            #EXTM3U
-            #EXT-X-VERSION:4
-            #EXT-X-PLAYLIST-TYPE:VOD
-            #EXT-X-TARGETDURATION:%s
-            #EXT-X-MEDIA-SEQUENCE:0
-            ''' % response['duration']
+            playlist = '''#EXTM3U
+#EXT-X-VERSION:4
+#EXT-X-PLAYLIST-TYPE:VOD
+#EXT-X-TARGETDURATION:%s
+#EXT-X-MEDIA-SEQUENCE:0
+''' % response['duration']
 
             for ranges in response['multiRange']:
                 for range in ranges:
@@ -188,7 +188,7 @@ class Parser:
                     playlist += "#EXT-X-BYTERANGE:%s\n" % range
                     url = "%s/%s/%s" % (
                         'http://immortal.hydrax.net', response['expired'], response['multiData'][j]['file'])
-                    # url = self.fetch_hydrax_link(url)
+                    url = self.fetch_hydrax_link(url)
                     playlist += "%s\n" % url
                     i += 1
                 j += 1

@@ -1,39 +1,31 @@
 # -*- coding: utf-8 -*-
-from bs4 import BeautifulSoup
 import re
 import json
-import urllib
-
-
-def from_char_code(*args):
-    return ''.join(map(chr, args))
 
 
 class Parser:
-    key = "PhimMoi.Net@"
+    def get_movie_id(self, response):
+        r = re.search('data-id="(.*)" data-episode-id="(.*)"', response)
+        fid = int(r.group(1))
+        epid = int(r.group(2))
 
-    def get_movie_link(self, response):
-        soup = BeautifulSoup(response, "html.parser")
-        return soup.select_one('a.btn-watch').get('href')
+        return fid, epid
 
-    def get(self, response, skipEps=False):
+    def get(self, response, fid):
         movie = {
             'group': {},
             'episode': [],
             'links': [],
         }
-        soup = BeautifulSoup(response, "html.parser")
-        # get all server list
-        servers = soup.select("div#servers > div.server")
-        for server in servers:
-            server_name = server.select_one('div.label').text.strip().encode('utf-8')
-            # if server_name != 'F.PRO:'.encode('utf-8') or server_name != 'R.PRO:'.encode('utf-8'): continue
-            if not re.search('[R|F].PRO:', server_name): continue
-            if server_name not in movie['group']: movie['group'][server_name] = []
-            for ep in server.select('ul.episodelist li a'):
-                movie['group'][server_name].append({
-                    'link': ep.get('href').encode('utf-8'),
-                    'title': ep.get('title').encode('utf-8'),
+
+        movies = json.loads(response)['data']
+        movie['group']['fimfast'] = []
+        for video in movies:
+            movie['group']['fimfast'].append({
+                    # 'link': '%s,%s' % (fid, video['id']),
+                    'link': video['link'],
+                    'title': video['full_name'].encode('utf-8'),
+                    'thumb': video['thumbnail']
                 })
 
         return movie
@@ -44,34 +36,32 @@ class Parser:
             'episode': [],
             'links': [],
         }
-        sources = re.search("var sources = (\[{.*}\]);", response) \
-                  or re.search("var sources[\s]?=[\s]?(\[{.*}\]);var", response)
 
-        if sources is not None:
-            sources = json.loads(sources.group(1))
-            for source in sources:
-                url = urllib.unquote(re.search('\?url=(.*)', source['file']).group(1))
-                movie['links'].append({
-                    'link': url,
-                    'title': 'Link %s' % source['label'].encode('utf-8'),
-                    'type': source['label'].encode('utf-8'),
-                    'resolve': True
-                })
+        videos = json.loads(response)
+        subtitle = None
+        # https://fimfast.com/subtitle
+        if 'subtitle' in videos and len(videos['subtitle']) > 0 and 'vi' in videos['subtitle']:
+            subtitle = 'https://fimfast.com/subtitle/%s' % videos['subtitle']['vi']
 
-            return movie
-
-        m = re.search('<iframe.*src=".*\?link=(.*)">', response)
-        if m is not None:
-            source = urllib.unquote(m.group(1)).replace('\\', '')
-            if source:
-                movie['links'].append({
-                    'link': source,
-                    'title': source,
-                    'type': 'Unknow',
-                    'resolve': False
-                })
-                return movie
-
+        videos = videos['sources']
+        for videotype in videos:
+            if videos[videotype]:
+                if type(videos[videotype]) is not unicode:
+                    for key, link in enumerate(videos[videotype]):
+                        movie['links'].append({
+                            'link': link['src'],
+                            'title': 'Link %s' % link['quality'].encode('utf-8'),
+                            'type': link['type'].encode('utf-8'),
+                            'resolve': True,
+                            'subtitle': subtitle
+                        })
+                else:
+                    movie['links'].append({
+                        'link': videos[videotype],
+                        'title': 'Link %s' % videotype.encode('utf-8'),
+                        'type': videotype.encode('utf-8'),
+                        'resolve': False,
+                        'subtitle': subtitle
+                    })
 
         return movie
-

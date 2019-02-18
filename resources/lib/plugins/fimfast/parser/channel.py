@@ -1,15 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from bs4 import BeautifulSoup
 import re
+import json
+from HTMLParser import HTMLParser
 
 
 class Parser:
     def get_api_type(self, response):
         r = re.search('id="api-type" value="(.*)"', response)
-        return r.group(1)
+        if r:
+            return 'type', r.group(1)
+        r = re.search('id="genre-slug" value="(.*)"', response)
+        if r:
+            return 'genre', r.group(1)
 
-    def get(self, response, page):
+    def get(self, response, page, api_type, api_value):
 
         channel = {
             'page': page,
@@ -17,38 +22,32 @@ class Parser:
             'movies': []
         }
 
-        soup = BeautifulSoup(response, "html.parser")
-        # get total page
-        last_page = soup.select_one('div.wp-pagenavi > a.last')
-        print("*********************** Get pages ")
-        if last_page is not None:
-            page = re.search('/(\d+)/$', last_page.get('href')).group(1)
-            channel['page'] = int(page)
-            print(page)
+        response = json.loads(response)
+        movies = response['data']
+        if response['total'] > 24:
+            channel['page'] = int(round(response['total']/24))
+        channel['page_patten'] = '%s|%s' % (api_type, api_value)
 
-        for movie in soup.select('ul.list-film > li > div.inner'):
-            title = movie.select_one('div.name > a').find(text=True, recursive=False).strip()
-            type = ""
-            realtitle = ""
-
-            if movie.select_one('div.status') is not None:
-                type = movie.select_one('div.status').text.strip()
-            if movie.select_one('div.name2') is not None:
-                realtitle = movie.select_one('div.name2').text.strip()
-            if realtitle is not None:
-                label = "[%s] %s - %s" % (type, title, realtitle)
-            else:
-                label = "[%s] %s" % (type, title)
-
-            thumb = movie.select_one('a img.lazy').get('data-original')
+        h = HTMLParser()
+        for movie in movies:
+            type = self.get_quality(int(movie['quality']))
+            label = "[%s] %s" % (type, movie['name'])
+            if not movie['is_movie']:
+                label = "[%s/%s] %s" % (movie['meta']['max_episode_name'], movie['time'], movie['name'])
 
             channel['movies'].append({
-                'id': movie.select_one('div.name > a').get('href'),
+                'id': movie['slug'],
                 'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
-                'thumb': thumb,
-                'type': type.encode("utf-8"),
+                'title': movie['name'].encode("utf-8"),
+                'realtitle': movie['name'].encode("utf-8"),
+                'thumb': movie['thumbnail'],
+                'poster': movie['poster'],
+                'type': type,
+                'intro': h.unescape(movie['description'])
             })
 
         return channel
+
+    def get_quality(self, type):
+        quality = ('SD', 'HD', 'HD')
+        return quality[type-1]

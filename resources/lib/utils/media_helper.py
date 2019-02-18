@@ -3,21 +3,23 @@ import re
 
 
 class MediaHelper:
-    def __init__(self, media):
-        self.media = media
-
-    def resolve_link(self):
-        link = self.media['link']
-        if 'resolve' in self.media and self.media['resolve'] is not True:
-            if self.media and 'link' in self.media:
-                link =  LinkParser(link).get_link()[0]
+    @staticmethod
+    def resolve_link(media):
+        link = media['link']
+        mediatype = '720'
+        print(link)
+        if 'resolve' in media and media['resolve'] is not True:
+            if media and 'link' in media:
+                link, mediatype = LinkParser(link).get_link()
 
         r = re.search('^https?:', link)
         if not r:
             link = 'http:%s' % link
 
-        return link
+        media['link'] = link
+        return mediatype
 
-    def resolve_subtitle(self):
-        if 'subtitle' in self.media:
+    @staticmethod
+    def resolve_subtitle(media):
+        if 'subtitle' in media:
             pass

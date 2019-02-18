@@ -79,3 +79,7 @@ def search_history_get():
         content = []
 
     return content
+
+
+def wait(sec):
+    xbmc.sleep(sec*1000)

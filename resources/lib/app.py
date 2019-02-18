@@ -173,9 +173,9 @@ def list_movie(movies, link, page, module, classname):
                 list_item = xbmcgui.ListItem(label=item['label'])
                 list_item.setLabel2(item['realtitle'])
                 list_item.setIconImage('DefaultVideo.png')
-                list_item.setArt({
-                    'thumb': item['thumb'],
-                })
+                list_item.setArt({'thumb': item['thumb']})
+                if 'poster' in item:
+                    list_item.setArt({'poster': item['poster']})
                 if 'intro' in item:
                     list_item.setInfo(type='video', infoLabels={'plot': item['intro']})
                 url = build_url(
@@ -305,14 +305,14 @@ def show_links(movie, title, thumb, module, class_name):
 def play(movie, title=None, thumb=None, direct=False):
     print("*********************** playing ")
     if direct:
-        movie = resolve_media(movie)
+        mediatype = MediaHelper.resolve_link(movie)
         play_item = xbmcgui.ListItem(path=movie['link'])
     else:
         if len(movie['links']) == 0:
             return
         else:
             movie = movie['links'][0]
-            movie = resolve_media(movie)
+            mediatype = MediaHelper.resolve_link(movie)
             play_item = xbmcgui.ListItem(path=movie['link'])
             try:
                 title = "%s - %s" % (movie['title'].encode('utf-8'), title.encode('utf-8'))
@@ -322,16 +322,16 @@ def play(movie, title=None, thumb=None, direct=False):
     if 'subtitle' in movie and movie['subtitle']:
         play_item.setSubtitles([movie['subtitle']])
 
-    play_item.setLabel(title)
-    play_item.setArt({'thumb': thumb})
-    play_item.setProperty('IsPlayable', 'true')
+    if mediatype == 'hls':
+        play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+        play_item.setContentLookup(False)
+    else:
+        play_item.setProperty('IsPlayable', 'true')
+        play_item.setLabel(title)
+        play_item.setArt({'thumb': thumb})
+
     xbmcplugin.setResolvedUrl(HANDLE, True, listitem=play_item)
-
-
-def resolve_media(movie):
-    helper = MediaHelper(movie)
-    movie['link'] = helper.resolve_link()
-    return movie
 
 
 def dosearch(plugin, module, classname, text, page=1):
