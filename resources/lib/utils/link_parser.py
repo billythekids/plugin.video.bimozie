@@ -87,5 +87,4 @@ class LinkParser:
             return FShare(self.url).get_link(), '1080'
 
     def get_m3u8(self):
-        self.url = self.url.replace('//', '/')
         return self.url, 'hls'

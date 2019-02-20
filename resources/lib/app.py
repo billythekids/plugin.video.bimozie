@@ -27,7 +27,7 @@ SITES = [
         'logo': 'https://fimfast.com/assets/img/logo.png',
         'class': 'Fimfast',
         'plugin': 'fimfast.plugin',
-        'version': 1
+        'version': 20
     },
     {
         'name': 'bilutv.org',

@@ -33,7 +33,7 @@ class Request:
         return self.r.text
 
     def post(self, url, params, headers=None):
-        print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
+        # print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
