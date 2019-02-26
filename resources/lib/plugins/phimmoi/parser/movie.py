@@ -51,12 +51,20 @@ class Parser:
                 for item in media:
                     # if item['resolution'] <= 480: continue
                     url = CryptoAES().decrypt(item['url'], bytes(self.key.encode('utf-8')))
-                    movie['links'].append({
-                        'link': url,
-                        'title': 'Link %s' % item['resolution'],
-                        'type': item['resolution'],
-                        'resolve': True
-                    })
+                    if not re.search('hls.phimmoi.net', url):
+                        movie['links'].append({
+                            'link': url,
+                            'title': 'Link %s' % item['resolution'],
+                            'type': item['resolution'],
+                            'resolve': True
+                        })
+                    else:
+                        movie['links'].append({
+                            'link': self.get_hls(url),
+                            'title': 'Link hls',
+                            'type': 'hls',
+                            'resolve': False
+                        })
             elif jsonresponse['embedUrls']:
                 for item in jsonresponse['embedUrls']:
                     url = CryptoAES().decrypt(item, bytes(self.key.encode('utf-8')))
@@ -70,9 +78,9 @@ class Parser:
                     else:
                         movie['links'].append({
                             'link': self.get_hydrax(url),
-                            'title': 'Link 720p',
-                            'type': '720p',
-                            'resolve': False
+                            'title': 'Link hls',
+                            'type': 'hls',
+                            'resolve': True
                         })
         return movie
 
@@ -177,24 +185,24 @@ class Parser:
         r = "#EXTM3U\n#EXT-X-VERSION:3\n"
         if 'origin' in response:
             r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
-            r += "%s\n" % self.create_stream(response['origin'])
+            r += "%s\n" % self.get_hydrax_stream(response['origin'])
         if 'fullhd' in response:
             r += "#EXT-X-STREAM-INF:BANDWIDTH=2998000,RESOLUTION=1920x1080\n"
-            r += "%s\n" % self.create_stream(response['fullhd'])
+            r += "%s\n" % self.get_hydrax_stream(response['fullhd'])
         if 'hd' in response:
             r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
-            r += "%s\n" % self.create_stream(response['hd'])
+            r += "%s\n" % self.get_hydrax_stream(response['hd'])
         if 'mhd' in response:
             r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
-            r += "%s\n" % self.create_stream(response['mhd'])
+            r += "%s\n" % self.get_hydrax_stream(response['mhd'])
         if 'sd' in response:
             r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
-            r += "%s\n" % self.create_stream(response['sd'])
+            r += "%s\n" % self.get_hydrax_stream(response['sd'])
 
         url = PasteBin().paste(r, name=url, expire=60)
-        return url
+        return url + '|Origin=http%3A%2F%2Fwww.phimmoi.net'
 
-    def create_stream(self, stream):
+    def get_hydrax_stream(self, stream):
         txt = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:" + stream['duration'] + "\n#EXT-X-MEDIA-SEQUENCE:0\n";
         if stream['type'] == 2:
             i, j = 0, 0
@@ -213,7 +221,7 @@ class Parser:
                     url = "%s/%s/%s/%s/%s/%s" % (
                         'http://immortal.hydrax.net',
                         stream['id'],
-                        stream['range'][i],
+                        stream['range'][j],
                         stream['expired'],
                         stream['multiData'][j]['file'],
                         part
@@ -225,3 +233,24 @@ class Parser:
         txt += "#EXT-X-ENDLIST\n"
         url = PasteBin().paste(txt, name=stream['id'], expire=60)
         return url
+
+    def get_hls(self, url):
+        response = Request().get(url)
+        # matches = re.findall('(http.*)', response)
+        # if matches:
+        #     for i in matches:
+        #         url = '%s|referer=http://www.phimmoi.net/' % i
+        #         response = response.replace(i, url)
+
+        url = PasteBin().paste(response, name=url, expire=60)
+        url = self.get_hls_playlist(url)
+        return '%s|referer=http://www.phimmoi.net/' % url
+
+    def get_hls_playlist(self, url):
+        r = "#EXTM3U\n#EXT-X-VERSION:3\n"
+        r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
+        r += "%s\n" % url
+
+        url = PasteBin().paste(r, name=url, expire=60)
+        return url
+

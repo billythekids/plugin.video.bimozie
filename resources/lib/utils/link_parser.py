@@ -43,7 +43,7 @@ class LinkParser:
             return self.get_link_fshare()
         if re.search('dailymotion.com', self.url):
             return self.get_link_dailymotion()
-        if self.url.endswith('m3u8'):
+        if self.url.endswith('m3u8') or re.search('hastebin', self.url):
             return self.get_m3u8()
 
         return self.url, 'unknow'

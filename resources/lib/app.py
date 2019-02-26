@@ -27,7 +27,7 @@ SITES = [
         'logo': 'https://fimfast.com/assets/img/logo.png',
         'class': 'Fimfast',
         'plugin': 'fimfast.plugin',
-        'version': 20
+        'version': 1
     },
     {
         'name': 'bilutv.org',
@@ -325,6 +325,10 @@ def play(movie, title=None, thumb=None, direct=False):
     if mediatype == 'hls':
         play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
         play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+        link = movie['link'].split('|')
+        if link and len(link) > 1:
+            play_item.setProperty('inputstream.adaptive.stream_headers', link[1])
+
         play_item.setContentLookup(False)
     else:
         play_item.setProperty('IsPlayable', 'true')
