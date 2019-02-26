@@ -23,7 +23,12 @@ class Fimfast:
             api_type, api_value = channel.split('|')
 
         # https://fimfast.com/api/v2/films/cinema?offset=24&limit=24
-        url = '%s/films?offset=%d&limit=24&%s=%s' % (self.api, (page - 1) * 24, api_type, api_value)
+        if api_type:
+            if api_type == 'cinema':
+                url = '%s/films/cinema?offset=%d&limit=24' % (self.api, (page - 1) * 24)
+            else:
+                url = '%s/films?offset=%d&limit=24&%s=%s' % (self.api, (page - 1) * 24, api_type, api_value)
+
         response = Request().get(url, headers={
             'referer': baseurl,
             'authority': 'fimfast.com',

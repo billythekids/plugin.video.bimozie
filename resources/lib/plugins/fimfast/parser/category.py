@@ -10,7 +10,7 @@ class Parser:
         category = []
         soup = BeautifulSoup(response, "html.parser")
 
-        for item in soup.select('div#navbar-left > div.navbar-menu > li.navbar-menu-item'):
+        for item in soup.select('div#navbar-left > div.navbar-menu > li.navbar-menu-item')[:-1]:
             menu = item.select_one('a')
             category.append({
                 'title': menu.text.encode("utf-8"),

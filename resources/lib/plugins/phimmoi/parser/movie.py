@@ -199,7 +199,7 @@ class Parser:
             r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
             r += "%s\n" % self.get_hydrax_stream(response['sd'])
 
-        url = PasteBin().paste(r, name=url, expire=60)
+        url = PasteBin().dpaste(r, name=url, expire=60)
         return url + '|Origin=http%3A%2F%2Fwww.phimmoi.net'
 
     def get_hydrax_stream(self, stream):
@@ -211,6 +211,7 @@ class Parser:
                 for range in ranges:
                     txt += "#EXTINF:%s,\n" % stream['extinf'][i]
                     txt += "#EXT-X-BYTERANGE:%s\n" % range
+                    # txt += "#EXTVLCOPT:%s\n" % 'Origin=http://www.phimmoi.net'
                     g, y = range.split('@')
                     g = int(g)
                     y = int(y)
@@ -226,23 +227,20 @@ class Parser:
                         stream['multiData'][j]['file'],
                         part
                     )
+
+                    # res = Request()
+                    # res.get(url, headers={'Origin': 'http://www.phimmoi.net'})
                     txt += "%s\n" % url
                     i += 1
                 j += 1
 
         txt += "#EXT-X-ENDLIST\n"
-        url = PasteBin().paste(txt, name=stream['id'], expire=60)
-        return url
+
+
+        url = PasteBin().dpaste(txt, name=stream['id'], expire=60)
+        return url + '|Origin=http://www.phimmoi.net'
 
     def get_hls(self, url):
-        response = Request().get(url)
-        # matches = re.findall('(http.*)', response)
-        # if matches:
-        #     for i in matches:
-        #         url = '%s|referer=http://www.phimmoi.net/' % i
-        #         response = response.replace(i, url)
-
-        url = PasteBin().paste(response, name=url, expire=60)
         url = self.get_hls_playlist(url)
         return '%s|referer=http://www.phimmoi.net/' % url
 
@@ -251,6 +249,6 @@ class Parser:
         r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
         r += "%s\n" % url
 
-        url = PasteBin().paste(r, name=url, expire=60)
+        url = PasteBin().dpaste(r, name=url, expire=60)
         return url
 

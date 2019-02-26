@@ -7,12 +7,17 @@ from HTMLParser import HTMLParser
 
 class Parser:
     def get_api_type(self, response):
-        r = re.search('id="api-type" value="(.*)"', response)
-        if r:
-            return 'type', r.group(1)
-        r = re.search('id="genre-slug" value="(.*)"', response)
-        if r:
-            return 'genre', r.group(1)
+        enable = re.search('<div class="tray-more ">', response)
+        if enable:
+            r = re.search('id="api-type" value="(.*)"', response)
+            if r:
+                return 'type', r.group(1)
+            r = re.search('id="genre-slug" value="(.*)"', response)
+            if r:
+                return 'genre', r.group(1)
+
+            return 'cinema', 'cinema'
+        return None, None
 
     def get(self, response, page, api_type, api_value):
 
