@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from utils.mozie_request import Request
-import utils.xbmc_helper as helper
-from utils.fshare import FShare
 import re
 import HTMLParser
 import json
+import utils.xbmc_helper as helper
+from utils.mozie_request import Request
+from utils.fshare import FShare
+from utils.pastebin import PasteBin
 
 
 def rsl(s):
@@ -45,6 +46,8 @@ class LinkParser:
             return self.get_link_dailymotion()
         if self.url.endswith('m3u8') or re.search('hastebin', self.url) or re.search('dpaste', self.url):
             return self.get_m3u8()
+        if re.search('fptplay.net', self.url):
+            return self.get_fptplay()
 
         return self.url, 'unknow'
 
@@ -88,3 +91,27 @@ class LinkParser:
 
     def get_m3u8(self):
         return self.url, 'hls'
+
+    def get_fptplay(self):
+        base_url = self.url.rpartition('/')[0]
+        response = Request().get(self.url)
+
+        matches = re.findall('(chunklist_.*)', response)
+
+        for m in matches:
+            stream_url = base_url + '/' + m
+            response = response.replace(m, self.__get_fptplay_stream(stream_url, base_url))
+
+        url = PasteBin().dpaste(response, name=self.url, expire=60)
+        return url, '1080'
+
+    def __get_fptplay_stream(self, url, base_url):
+        response = Request().get(url)
+        matches = re.findall('(media_.*)', response)
+
+        for m in matches:
+            stream_url = base_url + '/' + m
+            response = response.replace(m, stream_url)
+
+        url = PasteBin().dpaste(response, name=url, expire=60)
+        return url

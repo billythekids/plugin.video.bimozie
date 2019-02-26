@@ -71,7 +71,7 @@ class Parser:
                     'link': self.parse_link(source['file']),
                     'title': 'Link %s' % label.encode('utf-8'),
                     'type': label.encode('utf-8'),
-                    'resolve': True
+                    'resolve': False
                 })
 
             return movie
