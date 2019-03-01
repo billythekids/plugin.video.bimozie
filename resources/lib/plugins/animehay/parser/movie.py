@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 from utils.mozie_request import Request
+from utils.pastebin import PasteBin
 import re
 import json
-import urllib
 
 
 def from_char_code(*args):
@@ -45,24 +45,68 @@ class Parser:
             'links': [],
         }
 
-        try:
+        sources = re.search("document.getElementById\('ah-player'\).innerHTML.*src=\"(.*)\"", response)
+        if sources:
+            movie['links'].append({
+                'link': self.get_playlist(sources.group(1)),
+                'title': 'Link hls',
+                'type': 'hls',
+                'resolve': False
+            })
+        else:
             sources = re.search('<script rel="nofollow" src="(.*)" async>', response)
             response = Request().get(sources.group(1))
             sources = json.loads(re.search('links: (.*),', response).group(1))
 
-            for key, value in sources.items():
-                if value:
-                    label = key[1:].encode('utf-8')
-                    movie['links'].append({
-                        'link': value,
-                        'title': 'Link %s' % label,
-                        'type': label,
-                        'resolve': True
-                    })
+            if len(sources) > 0:
+                for key, value in sources.items():
+                    if value:
+                        label = key[1:].encode('utf-8')
+                        movie['links'].append({
+                            'link': value,
+                            'title': 'Link %s' % label,
+                            'type': label,
+                            'resolve': True
+                        })
 
-            movie['links'] = sorted(movie['links'], key=lambda elem: int(elem['type']), reverse=True)
-            print(movie)
-        except:
-            pass
+                movie['links'] = sorted(movie['links'], key=lambda elem: int(elem['type']), reverse=True)
 
         return movie
+
+    def get_playlist(self, url):
+        resp = Request().get(url)
+        params = re.search('this.urls=(\[.*?\]);', resp)
+        params = json.loads(params.group(1))[0]
+
+        data = {
+            'url': params['url'],
+            'bk_url': params['burl'],
+            'pr_url': params['purl'],
+            'ex_hls[]': params['exhls'],
+            'v': 2,
+            'len': 0,
+            'prefer': 'https://dd.ntl.clhcdn.net',
+            'ts': '1551437409204',
+            'item_id': 'gu3d5A0S',
+            'username': 'animehay'
+        }
+
+        url = 'http://ch.animehay.tv/content/parseUrl'
+        resp = Request().get(url, params=data)
+        return self.create_effective_playlist(json.loads(resp)['formats'])
+
+    def create_effective_playlist(self, sources):
+        r = "#EXTM3U\n#EXT-X-VERSION:3\n"
+        for key, value in sources.items():
+            if '360' in key:
+                r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
+                r += "%s\n" % value
+            if '480' in key:
+                r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
+                r += "%s\n" % value
+            if '720' in key:
+                r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
+                r += "%s\n" % value
+
+        url = PasteBin().dpaste(r, name='animiehay', expire=60)
+        return url
