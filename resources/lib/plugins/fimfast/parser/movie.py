@@ -25,7 +25,6 @@ class Parser:
         movie['group']['fimfast'] = []
         for video in movies:
             movie['group']['fimfast'].append({
-                # 'link': '%s,%s' % (fid, video['id']),
                 'link': video['link'],
                 'title': video['full_name'].encode('utf-8'),
                 'thumb': video['thumbnail']
@@ -44,28 +43,30 @@ class Parser:
         subtitle = None
         # https://fimfast.com/subtitle
         if 'subtitle' in videos and len(videos['subtitle']) > 0 and 'vi' in videos['subtitle']:
-            subtitle = 'https://fimfast.com/subtitle/%s' % videos['subtitle']['vi']
+            subtitle = 'https://fimfast.com/subtitle/%s.vtt' % videos['subtitle']['vi']
 
         videos = videos['sources']
-        for videotype in videos:
-            if videos[videotype]:
-                if type(videos[videotype]) is not unicode:
-                    for key, link in enumerate(videos[videotype]):
-                        movie['links'].append({
-                            'link': link['src'],
-                            'title': 'Link %s' % link['quality'].encode('utf-8'),
-                            'type': link['type'].encode('utf-8'),
-                            'resolve': True,
-                            'subtitle': subtitle
-                        })
-                else:
-                    movie['links'].append({
-                        'link': self.get_hls(videos[videotype]),
-                        'title': 'Link %s' % videotype.encode('utf-8'),
-                        'type': videotype.encode('utf-8'),
-                        'resolve': True,
-                        'subtitle': subtitle
-                    })
+        if u'hls' in videos and videos['hls']:
+            movie['links'].append({
+                'link': self.get_hls(videos['hls']),
+                'title': 'Link hls',
+                'type': 'hls',
+                'resolve': True,
+                'subtitle': subtitle
+            })
+            return movie
+        else:
+            for videotype in videos:
+                if videos[videotype] and videotype != u'hff':
+                    if type(videos[videotype]) is not unicode:
+                        for key, link in enumerate(videos[videotype]):
+                            movie['links'].append({
+                                'link': link['src'],
+                                'title': 'Link %s' % link['quality'].encode('utf-8'),
+                                'type': link['type'].encode('utf-8'),
+                                'resolve': True,
+                                'subtitle': subtitle
+                            })
         return movie
 
     def get_hls(self, url):
@@ -91,9 +92,9 @@ class Parser:
         response = None
         while retry >= 0:
             try:
+                print('Retry %d: %s' % (retry, url))
                 response = res.get(url)
-                if response != 'error':
-                    break
+                if response != 'error': break
             except:
                 pass
             finally:
