@@ -7,8 +7,8 @@ class MediaHelper:
     def resolve_link(media):
         link = media['link']
         mediatype = '720'
-        print(link)
-        if 'resolve' in media and media['resolve'] is not True:
+        if 'resolve' in media and not media['resolve']:
+            print('Resolve %s' % link)
             if media and 'link' in media:
                 link, mediatype = LinkParser(link).get_link()
 

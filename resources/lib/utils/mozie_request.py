@@ -44,5 +44,15 @@ class Request:
             self.r = requests.post(url, data=params, headers=headers, timeout=self.TIMEOUT)
         return self.r.text
 
+    def head(self, url, params=None, headers=None, redirect=True):
+        if not headers:
+            headers = self.DEFAULT_HEADERS
+        if self.session:
+            self.r = self.session.head(url, headers=headers, timeout=self.TIMEOUT, params=params,
+                                       allow_redirects=redirect)
+        else:
+            self.r = requests.head(url, headers=headers, timeout=self.TIMEOUT, params=params, allow_redirects=redirect)
+        return self.r
+
     def get_request(self):
         return self.r

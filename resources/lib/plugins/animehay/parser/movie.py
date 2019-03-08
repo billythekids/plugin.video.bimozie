@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 from utils.mozie_request import Request
 from utils.pastebin import PasteBin
+from multiprocessing import Pool
 import re
 import json
 
@@ -51,7 +52,7 @@ class Parser:
                 'link': self.get_playlist(sources.group(1)),
                 'title': 'Link hls',
                 'type': 'hls',
-                'resolve': False
+                'resolve': True
             })
         else:
             sources = re.search('<script rel="nofollow" src="(.*)" async>', response)
@@ -92,21 +93,47 @@ class Parser:
         }
 
         url = 'http://ch.animehay.tv/content/parseUrl'
-        resp = Request().get(url, params=data)
-        return self.create_effective_playlist(json.loads(resp)['formats'])
+        resp = json.loads(Request().get(url, params=data))
+        if not resp['hls']:
+            sorted(resp['formats'].iterkeys(), reverse=True)
+            movie_link = resp['formats'].itervalues().next()
+            if Request().head(movie_link).status_code < 400:
+                return movie_link
+            else:
+                data['err[pr][dr][]'] = 'https://redirector.googlevideo.com'
+                data['err[pr][num]'] = len(resp['formats'])
+                data['err[pr][dr_s]'] = resp['sig']
+                resp = json.loads(Request().get(url, params=data))
+                return self.create_effective_playlist(resp['formats'])
+        else:
+            return self.create_effective_playlist(resp['formats'])
 
     def create_effective_playlist(self, sources):
         r = "#EXTM3U\n#EXT-X-VERSION:3\n"
         for key, value in sources.items():
-            if '360' in key:
-                r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
-                r += "%s\n" % value
-            if '480' in key:
-                r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
-                r += "%s\n" % value
+            # if '360' in key:
+            #     r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
+            #     r += "%s\n" % value
+            # if '480' in key:
+            #     r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
+            #     r += "%s\n" % value
             if '720' in key:
                 r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
-                r += "%s\n" % value
+                r += "%s\n" % self.get_stream(value)
 
         url = PasteBin().dpaste(r, name='animiehay', expire=60)
+        return url
+
+    def get_stream(self, url):
+        r = Request().get(url)
+        str = ""
+        # res = Request(session=True)
+        for line in r.splitlines():
+            if len(line) > 0:
+                # if re.match('http', line):
+                #     str += '%s\n' % res.head(line, redirect=False).headers['Location ']
+                # else:
+                str += '%s\n' % line
+
+        url = PasteBin().dpaste(str, name='animiehay', expire=60)
         return url
