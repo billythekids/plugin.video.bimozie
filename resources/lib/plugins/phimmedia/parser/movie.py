@@ -32,6 +32,7 @@ class Parser:
                 match = re.search(source[0]+"=.*\(\"(.*)\"\);", response)
                 if match is not None:
                     link = self.decode(match.group(1))
+                    print(link)
                     movie['links'].append({
                         'link': link,
                         'title': 'Link %sp' % source[1],
@@ -46,7 +47,10 @@ class Parser:
         r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
         r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
         try:
-            rep_text = re.search('(?:net/)+(.*/\d)+[1-7].mp4/', r) or re.search('(.*/\d)+1.mp4/', r)
+            rep_text = re.search('(?:net/)+(.*/\d)+[1-7].mp4/', r) \
+                       or re.search('(.*/\d)+1.mp4/', r) \
+                       or re.search('(.*/\d)+[1-7].mp4/', r)
+
             rep_text = rep_text.group(1)
             r = r.replace('%s1.mp4/' % rep_text, 'https://3.bp.blogspot.com/')
             r = r.replace('%s2.mp4/' % rep_text, 'https://video.xx.fbcdn.net/')
