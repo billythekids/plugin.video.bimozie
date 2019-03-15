@@ -55,6 +55,16 @@ class Parser:
                 'subtitle': subtitle
             })
             return movie
+        elif u'hff' in videos and videos['hff']:
+            url = self.encodeString(videos['hff'], 69)
+            movie['links'].append({
+                'link': self.get_hls(url),
+                'title': 'Link hls',
+                'type': 'hls',
+                'resolve': True,
+                'subtitle': subtitle
+            })
+            return movie
         else:
             for videotype in videos:
                 if videos[videotype] and videotype != u'hff':
@@ -108,3 +118,12 @@ class Parser:
 
             url = PasteBin().dpaste(response, name=url, expire=60)
             return url
+
+    def encodeString(self, e, t):
+        a = ""
+        for i in range(0, len(e)):
+            r = ord(e[i])
+            o = r ^ t
+            a += chr(o)
+
+        return a
