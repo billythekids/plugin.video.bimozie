@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 from utils.mozie_request import Request
+from utils.mozie_request import AsyncRequest
 from utils.aes import CryptoAES
 from utils.pastebin import PasteBin
 import re
 import json
+import requests
 
 
 def from_char_code(*args):
@@ -12,15 +14,14 @@ def from_char_code(*args):
 
 
 class Parser:
-    key = "PhimMoi.Net@"
-
-    def get(self, response, skipEps=False):
+    def get(self, response, url, skipEps=False):
         movie = {
             'group': {},
             'episode': [],
             'links': [],
         }
         soup = BeautifulSoup(response, "html.parser")
+        self.originURL = url
 
         # get episode if possible
         servers = soup.select('div.list-server > div.server')
@@ -49,7 +50,6 @@ class Parser:
             if jsonresponse['medias']:
                 media = sorted(jsonresponse['medias'], key=lambda elem: elem['resolution'], reverse=True)
                 for item in media:
-                    # if item['resolution'] <= 480: continue
                     url = CryptoAES().decrypt(item['url'], bytes(self.key.encode('utf-8')))
                     if not re.search('hls.phimmoi.net', url):
                         movie['links'].append({
@@ -60,7 +60,7 @@ class Parser:
                         })
                     else:
                         movie['links'].append({
-                            'link': self.get_hls(url),
+                            'link': self.get_hls_playlist(url),
                             'title': 'Link hls',
                             'type': 'hls',
                             'resolve': False
@@ -179,40 +179,41 @@ class Parser:
         })
 
         response = json.loads(response)
-        return self.create_effective_playlist(url, response)
+        return self.create_hydrax_playlist(url, response)
 
-    def create_effective_playlist(self, url, response):
+    def create_hydrax_playlist(self, url, response):
         r = "#EXTM3U\n#EXT-X-VERSION:3\n"
-        if 'origin' in response:
-            r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
-            r += "%s\n" % self.get_hydrax_stream(response['origin'])
-        if 'fullhd' in response:
-            r += "#EXT-X-STREAM-INF:BANDWIDTH=2998000,RESOLUTION=1920x1080\n"
-            r += "%s\n" % self.get_hydrax_stream(response['fullhd'])
+        # if 'origin' in response:
+        #     r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
+        #     r += "%s\n" % self.get_hydrax_stream(response['origin'])
+        # if 'fullhd' in response:
+        #     r += "#EXT-X-STREAM-INF:BANDWIDTH=2998000,RESOLUTION=1920x1080\n"
+        #     r += "%s\n" % self.get_hydrax_stream(response['fullhd'])
         if 'hd' in response:
             r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
             r += "%s\n" % self.get_hydrax_stream(response['hd'])
-        if 'mhd' in response:
-            r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
-            r += "%s\n" % self.get_hydrax_stream(response['mhd'])
-        if 'sd' in response:
-            r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
-            r += "%s\n" % self.get_hydrax_stream(response['sd'])
+        # if 'mhd' in response:
+        #     r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
+        #     r += "%s\n" % self.get_hydrax_stream(response['mhd'])
+        # if 'sd' in response:
+        #     r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
+        #     r += "%s\n" % self.get_hydrax_stream(response['sd'])
 
         url = PasteBin().dpaste(r, name=url, expire=60)
-        return url + '|Origin=http%3A%2F%2Fwww.phimmoi.net'
+        return url
 
     def get_hydrax_stream(self, stream):
-        txt = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:" + stream['duration'] + "\n#EXT-X-MEDIA-SEQUENCE:0\n";
+        txt = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:" + stream[
+            'duration'] + "\n#EXT-X-MEDIA-SEQUENCE:0\n"
+        links = []
         if stream['type'] == 2:
             i, j = 0, 0
             for ranges in stream['multiRange']:
                 p = 0
-                for range in ranges:
+                for xrange in ranges:
                     txt += "#EXTINF:%s,\n" % stream['extinf'][i]
-                    txt += "#EXT-X-BYTERANGE:%s\n" % range
-                    # txt += "#EXTVLCOPT:%s\n" % 'Origin=http://www.phimmoi.net'
-                    g, y = range.split('@')
+                    txt += "#EXT-X-BYTERANGE:%s\n" % xrange
+                    g, y = xrange.split('@')
                     g = int(g)
                     y = int(y)
                     f = i > 0 and p + 1 or y
@@ -228,27 +229,55 @@ class Parser:
                         part
                     )
 
-                    # res = Request()
-                    # res.get(url, headers={'Origin': 'http://www.phimmoi.net'})
+                    links.append(url)
                     txt += "%s\n" % url
                     i += 1
                 j += 1
 
         txt += "#EXT-X-ENDLIST\n"
 
+        arequest = AsyncRequest()
+        results = arequest.head(links, headers={
+            'origin': 'http://www.phimmoi.net'
+        })
+        for i in range(len(links)):
+            try:
+                txt.replace(links[i], results[i].headers['location'])
+            except:
+                print(links[i])
+                # print(results[i].headers)
 
         url = PasteBin().dpaste(txt, name=stream['id'], expire=60)
-        return url + '|Origin=http://www.phimmoi.net'
-
-    def get_hls(self, url):
-        url = self.get_hls_playlist(url)
-        return '%s|referer=http://www.phimmoi.net/' % url
+        return url
 
     def get_hls_playlist(self, url):
         r = "#EXTM3U\n#EXT-X-VERSION:3\n"
         r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
-        r += "%s\n" % url
+        r += "%s\n" % self.get_hls_playlist_stream(url)
 
         url = PasteBin().dpaste(r, name=url, expire=60)
         return url
 
+    def get_hls_playlist_stream(self, url):
+        req = Request()
+        response = req.get(url)
+
+        links = re.findall('(https?://(?!so-trym).*)\r', response)
+        if links:
+            arequest = AsyncRequest(request=req)
+            results = arequest.head(links, headers={
+                'origin': 'http://www.phimmoi.net',
+                'referer': self.originURL
+            }, redirect=False)
+
+            for i in range(len(links)):
+                response = response.replace(links[i], results[i].headers['location'])
+
+        links = re.findall('(http://so-trym.*)\r', response)
+        if links:
+            for i in range(len(links)):
+                url = '%s|referer=%s' % (links[i], self.originURL)
+                response = response.replace(links[i], url)
+
+        url = PasteBin().dpaste(response, name=url, expire=60)
+        return url

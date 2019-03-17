@@ -62,7 +62,7 @@ SITES = [
         'logo': 'http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium',
         'class': 'Phim3s',
         'plugin': 'phim3s.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'phimbathu.org',
@@ -319,21 +319,21 @@ def play(movie, title=None, thumb=None, direct=False):
             except:
                 pass
 
-    if 'subtitle' in movie and movie['subtitle']:
-        play_item.setSubtitles([movie['subtitle']])
-
-    if mediatype == 'hls':
-        play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
-        play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
-        link = movie['link'].split('|')
-        if link and len(link) > 1:
-            play_item.setProperty('inputstream.adaptive.stream_headers', link[1])
-
-        play_item.setContentLookup(False)
-    else:
-        play_item.setProperty('IsPlayable', 'true')
-        play_item.setLabel(title)
-        play_item.setArt({'thumb': thumb})
+    # if 'subtitle' in movie and movie['subtitle']:
+    #     play_item.setSubtitles([movie['subtitle']])
+    #
+    # if mediatype == 'hls':
+    #     play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+    #     play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+    #     link = movie['link'].split('|')
+    #     if link and len(link) > 1:
+    #         play_item.setProperty('inputstream.adaptive.stream_headers', link[1])
+    #
+    #     play_item.setContentLookup(False)
+    # else:
+    play_item.setProperty('IsPlayable', 'true')
+    play_item.setLabel(title)
+    play_item.setArt({'thumb': thumb})
 
     xbmcplugin.setResolvedUrl(HANDLE, True, listitem=play_item)
 
@@ -387,6 +387,11 @@ def search(module, classname):
     # Support to save search history
     contents = XbmcHelper.search_history_get()
     if contents:
+        url = build_url({'mode': 'clearsearch', 'module': module, 'class': classname})
+        xbmcplugin.addDirectoryItem(HANDLE,
+                                    url,
+                                    xbmcgui.ListItem(label="[COLOR red][B]%s[/B][/COLOR]" % "Clear search text ..."),
+                                    True)
         for txt in contents:
             url = build_url({'mode': 'dosearch', 'module': module, 'class': classname, 'url': txt})
             xbmcplugin.addDirectoryItem(HANDLE,
@@ -470,3 +475,7 @@ def router():
     elif mode[0] == 'dosearch':
         text = ARGS.get('url') and ARGS.get('url')[0] or None
         dosearch(instance, module, classname, text)
+
+    elif mode[0] == 'clearsearch':
+        XbmcHelper.search_history_clear()
+        return

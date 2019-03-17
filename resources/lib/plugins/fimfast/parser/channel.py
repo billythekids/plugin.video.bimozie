@@ -29,7 +29,7 @@ class Parser:
 
         response = json.loads(response)
         movies = response['data']
-        if response['total'] > 24:
+        if 'total' in response and response['total'] > 24:
             channel['page'] = int(round(response['total']/24))
         channel['page_patten'] = '%s|%s' % (api_type, api_value)
 

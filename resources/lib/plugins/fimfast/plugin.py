@@ -75,6 +75,11 @@ class Fimfast:
         return Movie().get_link(response)
 
     def search(self, text):
-        url = "%ssearch/%s" % (self.domain, urllib.quote_plus(text))
-        response = Request().get(url)
-        return Channel().get(response, 1)
+        # https://fimfast.com/api/v2/search?q=nu%20hon&limit=12
+        url = "%s/search?q=%s&limit=12" % (self.api, urllib.quote_plus(text))
+        response = Request().get(url, headers={
+            'referer': self.domain,
+            'x-requested-with': 'XMLHttpRequest',
+        })
+
+        return Channel().get(response, 1, None, None)

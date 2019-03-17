@@ -58,9 +58,9 @@ def search_history_save(search_key):
     else:
         content = []
 
-    idx = next((content.index(i) for i in content if search_key == i), 0)
-    if idx > 0:
-        content.pop(idx)
+    idx = next((content.index(i) for i in content if search_key == i), -1)
+    if idx >= 0 and len(content) > 0:
+        del content[idx]
     elif len(content) >= 20:
         content.pop()
 
@@ -69,6 +69,11 @@ def search_history_save(search_key):
     path = os.path.join(addon_data_dir, 'history.json')
     with open(path, 'w') as outfile:
         json.dump(content, outfile)
+
+def search_history_clear():
+    path = os.path.join(addon_data_dir, 'history.json')
+    with open(path, 'w') as outfile:
+        json.dump([], outfile)
 
 
 def search_history_get():

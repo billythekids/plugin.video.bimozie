@@ -2,7 +2,7 @@ import urllib
 from utils.mozie_request import Request
 from phimbathu.parser.category import Parser as Category
 from phimbathu.parser.channel import Parser as Channel
-from phimbathu.parser.movie import Parser as Movie
+from bilutv.parser.movie import Parser as Movie
 
 
 class Phimbathu:

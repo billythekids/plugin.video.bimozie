@@ -18,14 +18,15 @@ bimozie is a plugin for Kodi Media Center -  Kodi is a registered trademark of t
  - Go to Add-ons and select ` Install from zip file`
  - Select Fusion repo you installed from above
  - Select `kodi-scripts`
- - And select `script.module.resolveurl-5.0.xxx.zip` to install
+ - And select `script.module.resolveurl-5.x.xxx.zip` to install
  
-#### Install inputstream.adaptive
-inputstream.adaptive comes as standard package from kodi but disabled by default, you need to enable it
-- Go to `Add-ons` -> Select `My add-ons`
-- Select `VideoPlayer InputStream`
-- Select `InputStream Adaptive `
-- Click on `Enable` to turn it on
+#### ~~Install inputstream.adaptive~~
+
+~~inputstream.adaptive comes as standard package from kodi but disabled by default, you need to enable it~~
+- ~~Go to `Add-ons` -> Select My add-ons~~
+- ~~Select VideoPlayer InputStream~~
+- ~~Select InputStream Adaptive~~
+- ~~Click on `Enable` to turn it on~~
 
 
 ## FAQ

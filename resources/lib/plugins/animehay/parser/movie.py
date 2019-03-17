@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 from utils.mozie_request import Request
+from utils.mozie_request import AsyncRequest
 from utils.pastebin import PasteBin
-from multiprocessing import Pool
 import re
 import json
 
@@ -125,15 +125,20 @@ class Parser:
         return url
 
     def get_stream(self, url):
-        r = Request().get(url)
+        req = Request()
+        r = req.get(url)
         str = ""
-        # res = Request(session=True)
+        links = []
         for line in r.splitlines():
             if len(line) > 0:
-                # if re.match('http', line):
-                #     str += '%s\n' % res.head(line, redirect=False).headers['Location ']
-                # else:
+                if re.match('http', line):
+                    links.append(line)
                 str += '%s\n' % line
+
+        arequest = AsyncRequest(request=req)
+        results = arequest.head(links)
+        for i in range(len(links)):
+            str = str.replace(links[i], results[i].headers['Location '])
 
         url = PasteBin().dpaste(str, name='animiehay', expire=60)
         return url

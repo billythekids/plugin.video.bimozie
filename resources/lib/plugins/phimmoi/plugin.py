@@ -40,12 +40,12 @@ class Phimmoi:
     def getMovie(self, id):
         url = "%s%sxem-phim.html" % (self.domain, id)
         response = self.request.get(url, headers=h)
-        return Movie().get(response)
+        return Movie().get(response, url)
 
     def getLink(self, movie):
         url = "%s%s" % (self.domain, movie['link'])
         response = self.request.get(url, headers=h)
-        return Movie().get(response, True)
+        return Movie().get(response, url, True)
 
     def search(self, text):
         url = "%stim-kiem/%s/" % (self.domain, urllib.quote_plus(text))
