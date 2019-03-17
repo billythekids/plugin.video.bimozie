@@ -5,12 +5,31 @@ bimozie is a plugin for Kodi Media Center -  Kodi is a registered trademark of t
 ## Prerequisites
 
 - Kodi 18 [nightlybuild](http://mirrors.kodi.tv/nightlies/)
-- Urlresolver
+- resolveurl 5.0.24
+- inputstream.adaptive
+- beautifulsoup4
+- requests
 - Cryptdome python library (for Linux systems, install using `pip install --user pycryptodomex` as the user that will run Kodi)
+
+## Installation
+
+#### Install Fusion Repo & resolveurl
+ - Add new Fusion repo to install dependency plugins https://www.tvaddons.co/fusion-kodi-krypton/
+ - Go to Add-ons and select ` Install from zip file`
+ - Select Fusion repo you installed from above
+ - Select `kodi-scripts`
+ - And select `script.module.resolveurl-5.0.xxx.zip` to install
+ 
+#### Install inputstream.adaptive
+inputstream.adaptive comes as standard package from kodi but disabled by default, you need to enable it
+- Go to `Add-ons` -> Select `My add-ons`
+- Select `VideoPlayer InputStream`
+- Select `InputStream Adaptive `
+- Click on `Enable` to turn it on
 
 
 ## FAQ
 
-- [Does it work with Kodi 17] Yes
+- [Does it work with Kodi 17] Yes, but for some results, you want have full features of this plugin
 - [Does it work on a RPI] Not sure
 - [Which video resolutions are supported] Depend on the source
