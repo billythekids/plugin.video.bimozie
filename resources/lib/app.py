@@ -319,9 +319,9 @@ def play(movie, title=None, thumb=None, direct=False):
             except:
                 pass
 
-    # if 'subtitle' in movie and movie['subtitle']:
-    #     play_item.setSubtitles([movie['subtitle']])
-    #
+    if 'subtitle' in movie and movie['subtitle']:
+        play_item.setSubtitles([movie['subtitle']])
+
     # if mediatype == 'hls':
     #     play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
     #     play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
