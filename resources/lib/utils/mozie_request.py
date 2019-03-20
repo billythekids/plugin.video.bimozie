@@ -76,7 +76,7 @@ class Request:
 
 
 class AsyncRequest:
-    MIN_THREAD = 50
+    MIN_THREAD = 40
 
     def __init__(self, request=None):
         self.q = Queue(maxsize=0)

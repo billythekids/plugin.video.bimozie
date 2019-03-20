@@ -6,7 +6,6 @@ from utils.aes import CryptoAES
 from utils.pastebin import PasteBin
 import re
 import json
-import requests
 
 
 def from_char_code(*args):
@@ -243,8 +242,9 @@ class Parser:
                     else:
                         s = 1
                         c = n[0]
-                        txt += "#EXTINF:%s,\n" % stream['extinf'][r]
-                        txt += "#EXT-X-BYTERANGE:%s\n" % l[t][d]
+
+                    txt += "#EXTINF:%s,\n" % stream['extinf'][r]
+                    txt += "#EXT-X-BYTERANGE:%s\n" % l[t][d]
 
                     y = l[t][d]
 
@@ -257,8 +257,8 @@ class Parser:
                         p = y and f + g - 1 or g - 1
                         y = '%s-%s' % (f, p)
 
-                    url = a and c + "/" + a + "/" + u + "/" + y or c + "/" + r + "/" + u + "/" + y
-                    url += stream['id'] and ".js" or ".jpg"
+                    url = a and c + "/" + a + "/" + u or c + "/" + r + "/" + u
+                    url += stream['id'] and "/" + y + ".js" or "/" + y + ".jpg"
                     links.append(url)
                     txt += url + "\n"
                     r += 1
@@ -280,7 +280,21 @@ class Parser:
                 print(links[i])
 
         # remove duplicate media_url
+        media_urls = list(dict.fromkeys(media_urls))
 
+        # ltxt = txt.split('\n')
+        # for media in media_urls:
+        #     found = 0
+        #     for idx, line in enumerate(ltxt):
+        #         if media in line:
+        #             if found > 0:
+        #                 del ltxt[idx-2:idx+1]
+        #             else:
+        #                 found = 1
+        # txt = '\n'.join(ltxt)
+        #
+        # print(txt)
+        #
         url = PasteBin().dpaste(txt, name=stream['id'], expire=60)
         return url
 
@@ -305,7 +319,11 @@ class Parser:
             }, redirect=False)
 
             for i in range(len(links)):
-                response = response.replace(links[i], results[i].headers['location'])
+                try:
+                    response = response.replace(links[i], results[i].headers['location'])
+                except:
+                    print(links[i], results[i].headers)
+
 
         links = re.findall('(http://so-trym.*)\r', response)
         if links:
