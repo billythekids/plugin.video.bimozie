@@ -83,6 +83,7 @@ class AsyncRequest:
         self.request = request or Request()
 
     def __create_queue(self, urls):
+        print("*********************** Start Queue %d" % len(urls))
         self.num_theads = min(self.MIN_THREAD, len(urls))
         self.results = [{} for x in urls]
         for i in range(len(urls)):
@@ -100,7 +101,9 @@ class AsyncRequest:
                     data = self.request.post(work[1], params, headers)
                 if parser:
                     data = parser(data, self.request)
+                # print('Requested %s' % work[1])
                 self.results[work[0]] = data
+
             except:
                 self.results[work[0]] = {}
             self.q.task_done()

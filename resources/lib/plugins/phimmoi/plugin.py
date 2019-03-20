@@ -43,9 +43,10 @@ class Phimmoi:
         return Movie().get(response, url)
 
     def getLink(self, movie):
-        url = "%s%s" % (self.domain, movie['link'])
+        url = movie['link'].replace(self.domain, '')
+        url = "%s%s" % (self.domain, url)
         response = self.request.get(url, headers=h)
-        return Movie().get(response, url, True)
+        return Movie().get_link(response, url)
 
     def search(self, text):
         url = "%stim-kiem/%s/" % (self.domain, urllib.quote_plus(text))

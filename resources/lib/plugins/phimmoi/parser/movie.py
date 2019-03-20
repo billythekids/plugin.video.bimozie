@@ -39,49 +39,64 @@ class Parser:
                 movie['group'] = self.get_server_list(servers)
 
         else:
-            print("***********************Get Movie Link*****************************")
-            url = self.get_token_url(response)
-            response = Request().get(url)
+            movie['group']['phimmoi'] = [{
+                'link': self.originURL,
+                'title': 'Unknown link'
+            }]
 
-            self.key = self.get_decrypt_key(response)
-            jsonresponse = re.search("_responseJson='(.*)';", response).group(1)
-            jsonresponse = json.loads(jsonresponse.decode('utf-8'))
+        return movie
 
-            if jsonresponse['medias']:
-                media = sorted(jsonresponse['medias'], key=lambda elem: elem['resolution'], reverse=True)
-                for item in media:
-                    url = CryptoAES().decrypt(item['url'], bytes(self.key.encode('utf-8')))
-                    if not re.search('hls.phimmoi.net', url):
-                        movie['links'].append({
-                            'link': url,
-                            'title': 'Link %s' % item['resolution'],
-                            'type': item['resolution'],
-                            'resolve': True
-                        })
-                    else:
-                        movie['links'].append({
-                            'link': self.get_hls_playlist(url),
-                            'title': 'Link hls',
-                            'type': 'hls',
-                            'resolve': False
-                        })
-            elif jsonresponse['embedUrls']:
-                for item in jsonresponse['embedUrls']:
-                    url = CryptoAES().decrypt(item, bytes(self.key.encode('utf-8')))
-                    if not re.search('hydrax', url):
-                        movie['links'].append({
-                            'link': url,
-                            'title': 'Link Unknow',
-                            'type': 'Unknow',
-                            'resolve': False
-                        })
-                    else:
-                        movie['links'].append({
-                            'link': self.get_hydrax(url),
-                            'title': 'Link hls',
-                            'type': 'hls',
-                            'resolve': True
-                        })
+    def get_link(self, response, url):
+        print("***********************Get Movie Link*****************************")
+        movie = {
+            'group': {},
+            'episode': [],
+            'links': [],
+        }
+        self.originURL = url
+        url = self.get_token_url(response)
+        response = Request().get(url)
+
+        self.key = self.get_decrypt_key(response)
+        jsonresponse = re.search("_responseJson='(.*)';", response).group(1)
+        jsonresponse = json.loads(jsonresponse.decode('utf-8'))
+
+        if jsonresponse['medias']:
+            media = sorted(jsonresponse['medias'], key=lambda elem: elem['resolution'], reverse=True)
+            for item in media:
+                url = CryptoAES().decrypt(item['url'], bytes(self.key.encode('utf-8')))
+                if not re.search('hls.phimmoi.net', url):
+                    movie['links'].append({
+                        'link': url,
+                        'title': 'Link %s' % item['resolution'],
+                        'type': item['resolution'],
+                        'resolve': True
+                    })
+                else:
+                    movie['links'].append({
+                        'link': self.get_hls_playlist(url),
+                        'title': 'Link hls',
+                        'type': 'hls',
+                        'resolve': False
+                    })
+        elif jsonresponse['embedUrls']:
+            for item in jsonresponse['embedUrls']:
+                url = CryptoAES().decrypt(item, bytes(self.key.encode('utf-8')))
+                if not re.search('hydrax', url):
+                    movie['links'].append({
+                        'link': url,
+                        'title': 'Link Unknow',
+                        'type': 'Unknow',
+                        'resolve': False
+                    })
+                else:
+                    movie['links'].append({
+                        'link': self.get_hydrax(url),
+                        'title': 'Link hydrax',
+                        'type': 'hls',
+                        'resolve': True
+                    })
+
         return movie
 
     def get_server_list(self, servers):
@@ -98,7 +113,7 @@ class Parser:
                 for episode in server.select('ul.list-episode li a'):
                     items[server_name].append({
                         'link': episode.get('href'),
-                        'title': episode.get('title').encode('utf-8'),
+                        'title': episode.get('title').encode('utf-8')
                     })
 
         return items
@@ -183,69 +198,88 @@ class Parser:
 
     def create_hydrax_playlist(self, url, response):
         r = "#EXTM3U\n#EXT-X-VERSION:3\n"
-        # if 'origin' in response:
-        #     r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
-        #     r += "%s\n" % self.get_hydrax_stream(response['origin'])
-        # if 'fullhd' in response:
-        #     r += "#EXT-X-STREAM-INF:BANDWIDTH=2998000,RESOLUTION=1920x1080\n"
-        #     r += "%s\n" % self.get_hydrax_stream(response['fullhd'])
         if 'hd' in response:
             r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
-            r += "%s\n" % self.get_hydrax_stream(response['hd'])
-        # if 'mhd' in response:
-        #     r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
-        #     r += "%s\n" % self.get_hydrax_stream(response['mhd'])
-        # if 'sd' in response:
-        #     r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
-        #     r += "%s\n" % self.get_hydrax_stream(response['sd'])
+            r += "%s\n" % self.get_hydrax_stream(response['hd'], response['servers'])
+        elif 'fullhd' in response:
+            r += "#EXT-X-STREAM-INF:BANDWIDTH=2998000,RESOLUTION=1920x1080\n"
+            r += "%s\n" % self.get_hydrax_stream(response['fullhd'], response['servers'])
+        elif 'mhd' in response:
+            r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
+            r += "%s\n" % self.get_hydrax_stream(response['mhd'], response['servers'])
+        elif 'sd' in response:
+            r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
+            r += "%s\n" % self.get_hydrax_stream(response['sd'], response['servers'])
+        elif 'origin' in response:
+            r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
+            r += "%s\n" % self.get_hydrax_stream(response['origin'], response['servers'])
 
         url = PasteBin().dpaste(r, name=url, expire=60)
         return url
 
-    def get_hydrax_stream(self, stream):
+    def get_hydrax_stream(self, stream, n):
         txt = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:" + stream[
             'duration'] + "\n#EXT-X-MEDIA-SEQUENCE:0\n"
         links = []
+
+        r = len(stream['range'])
+        o = len(n)
+        a = stream['expired']
+        s = 0
         if stream['type'] == 2:
-            i, j = 0, 0
-            for ranges in stream['multiRange']:
+            r = 0
+            l = stream['multiRange']
+            h = len(l)
+
+            for t in range(h):
+                u = stream['multiData'][t]['file']
+                f = 0
                 p = 0
-                for xrange in ranges:
-                    txt += "#EXTINF:%s,\n" % stream['extinf'][i]
-                    txt += "#EXT-X-BYTERANGE:%s\n" % xrange
-                    g, y = xrange.split('@')
-                    g = int(g)
-                    y = int(y)
-                    f = i > 0 and p + 1 or y
-                    p = y and f + g - 1 or g - 1
-                    part = '%s-%s.js' % (f, p)
 
-                    url = "%s/%s/%s/%s/%s/%s" % (
-                        'http://immortal.hydrax.net',
-                        stream['id'],
-                        stream['range'][j],
-                        stream['expired'],
-                        stream['multiData'][j]['file'],
-                        part
-                    )
+                for d in range(len(l[t])):
+                    if s < o:
+                        c = n[s]
+                        s += 1
+                    else:
+                        s = 1
+                        c = n[0]
+                        txt += "#EXTINF:%s,\n" % stream['extinf'][r]
+                        txt += "#EXT-X-BYTERANGE:%s\n" % l[t][d]
 
+                    y = l[t][d]
+
+                    c = "http://" + c + "/" + stream['id'] + "/" + stream['range'][t]
+                    if '@' in l[t][d]:
+                        g, y = l[t][d].split('@')
+                        g, y = int(g), int(y)
+                        if not g or not y: continue
+                        f = d and p + 1 or y
+                        p = y and f + g - 1 or g - 1
+                        y = '%s-%s' % (f, p)
+
+                    url = a and c + "/" + a + "/" + u + "/" + y or c + "/" + r + "/" + u + "/" + y
+                    url += stream['id'] and ".js" or ".jpg"
                     links.append(url)
-                    txt += "%s\n" % url
-                    i += 1
-                j += 1
-
-        txt += "#EXT-X-ENDLIST\n"
+                    txt += url + "\n"
+                    r += 1
+                if h == t + 1:
+                    txt += "#EXT-X-ENDLIST"
 
         arequest = AsyncRequest()
         results = arequest.head(links, headers={
             'origin': 'http://www.phimmoi.net'
         })
+
+        media_urls = list()
         for i in range(len(links)):
             try:
-                txt.replace(links[i], results[i].headers['location'])
+                media_url = results[i].headers['location']
+                txt = txt.replace(links[i], media_url)
+                media_urls.append(media_url)
             except:
                 print(links[i])
-                # print(results[i].headers)
+
+        # remove duplicate media_url
 
         url = PasteBin().dpaste(txt, name=stream['id'], expire=60)
         return url

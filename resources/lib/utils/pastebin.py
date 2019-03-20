@@ -23,4 +23,6 @@ class PasteBin:
         r = requests.post(url, data=params, timeout=30)
 
         if r.status_code == requests.codes.ok:
-            return r.text.replace('\n', '') + '/raw'
+            url = r.text.replace('\n', '') + '/raw'
+            print('Dpaste url: %s' % url)
+            return url
