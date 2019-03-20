@@ -77,10 +77,12 @@ class Request:
 
 class AsyncRequest:
     MIN_THREAD = 40
+    RETRY = 1
 
-    def __init__(self, request=None):
+    def __init__(self, request=None, retry=1):
         self.q = Queue(maxsize=0)
         self.request = request or Request()
+        self.RETRY = retry
 
     def __create_queue(self, urls):
         print("*********************** Start Queue %d" % len(urls))
@@ -92,20 +94,24 @@ class AsyncRequest:
     def __request(self, action, params=None, headers=None, redirect=False, parser=None):
         while not self.q.empty():
             work = self.q.get()
-            try:
-                if action is 'head':
-                    data = self.request.head(work[1], params, headers, redirect)
-                if action is 'get':
-                    data = self.request.get(work[1], params, headers)
-                if action is 'post':
-                    data = self.request.post(work[1], params, headers)
-                if parser:
-                    data = parser(data, self.request)
-                # print('Requested %s' % work[1])
-                self.results[work[0]] = data
-
-            except:
-                self.results[work[0]] = {}
+            retry = self.RETRY
+            while retry > 0:
+                try:
+                    if action is 'head':
+                        data = self.request.head(work[1], params, headers, redirect)
+                    if action is 'get':
+                        data = self.request.get(work[1], params, headers)
+                    if action is 'post':
+                        data = self.request.post(work[1], params, headers)
+                    if parser:
+                        data = parser(data, self.request)
+                    # print('Requested %s' % work[1])
+                    self.results[work[0]] = data
+                    retry = 0
+                except:
+                    print('Request fail retry %d' % retry)
+                    self.results[work[0]] = {}
+                    retry -= 1
             self.q.task_done()
         return True
 

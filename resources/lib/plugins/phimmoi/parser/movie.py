@@ -312,7 +312,7 @@ class Parser:
 
         links = re.findall('(https?://(?!so-trym).*)\r', response)
         if links:
-            arequest = AsyncRequest(request=req)
+            arequest = AsyncRequest(request=req, retry=3)
             results = arequest.head(links, headers={
                 'origin': 'http://www.phimmoi.net',
                 'referer': self.originURL
