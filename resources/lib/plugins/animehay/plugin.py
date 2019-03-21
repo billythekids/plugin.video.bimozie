@@ -3,6 +3,7 @@ from utils.mozie_request import Request
 from animehay.parser.category import Parser as Category
 from animehay.parser.channel import Parser as Channel
 from animehay.parser.movie import Parser as Movie
+import utils.xbmc_helper as XbmcHelper
 
 
 class Animehay:
@@ -31,6 +32,8 @@ class Animehay:
         return Movie().get_link(response)
 
     def search(self, text):
-        url = "%s/tim-kiem?q=%s" % (self.domain, urllib.quote_plus(text))
-        response = Request().get(url)
-        return Channel().get(response, 1)
+        XbmcHelper.message('This site doesnt support searching', 'Not searchable')
+
+    #     url = "%s/tim-kiem?q=%s" % (self.domain, urllib.quote_plus(text))
+    #     response = Request().get(url)
+    #     return Channel().get(response, 1)

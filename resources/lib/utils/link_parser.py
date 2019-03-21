@@ -48,6 +48,8 @@ class LinkParser:
             return self.get_m3u8()
         if re.search('fptplay.net', self.url):
             return self.get_fptplay()
+        if re.search('sstreamgg.xyz', self.url) or re.search('ggstream.me', self.url) :
+            return self.get_sstreamgg()
 
         return self.url, 'unknow'
 
@@ -115,3 +117,7 @@ class LinkParser:
 
         url = PasteBin().dpaste(response, name=url, expire=60)
         return url
+
+    def get_sstreamgg(self):
+        url = self.url + "|Referer=https://vuviphim.com/"
+        return url, '720'

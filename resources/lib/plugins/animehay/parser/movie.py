@@ -111,15 +111,18 @@ class Parser:
     def create_effective_playlist(self, sources):
         r = "#EXTM3U\n#EXT-X-VERSION:3\n"
         for key, value in sources.items():
-            # if '360' in key:
-            #     r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
-            #     r += "%s\n" % value
-            # if '480' in key:
-            #     r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
-            #     r += "%s\n" % value
             if '720' in key:
                 r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
                 r += "%s\n" % self.get_stream(value)
+                break
+            if '480' in key:
+                r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
+                r += "%s\n" % value
+                break
+            if '360' in key:
+                r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
+                r += "%s\n" % value
+                break
 
         url = PasteBin().dpaste(r, name='animiehay', expire=60)
         return url
@@ -138,7 +141,9 @@ class Parser:
         arequest = AsyncRequest(request=req)
         results = arequest.head(links)
         for i in range(len(links)):
-            str = str.replace(links[i], results[i].headers['Location '])
+            try:
+                str = str.replace(links[i], results[i].headers['Location '])
+            except: pass
 
         url = PasteBin().dpaste(str, name='animiehay', expire=60)
         return url

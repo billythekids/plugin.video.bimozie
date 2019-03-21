@@ -47,12 +47,20 @@ class Parser:
             sources = Packer().unpack(sources)
             sources = re.search('sources:(.*?]),', sources)
             sources = re.sub(r'(?<={|,)([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources.group(1))
-            for source in json.loads(sources):
+            sources = json.loads(sources)
+            score = {'sd': 1, 'hd': 2}
+            if len(sources) > 1:
+                try:
+                    sources = sorted(sources, key=lambda elem: elem['label'].lower() in score and score[elem['label'].lower()] or 3, reverse=True)
+                except:
+                    pass
+
+            for source in sources:
                 movie['links'].append({
                     'link': source['file'].replace('\\', ''),
                     'title': 'Link %s' % source['type'].encode('utf-8'),
                     'type': source['type'].encode('utf-8'),
-                    'resolve': True
+                    'resolve': False
                 })
 
             return movie
