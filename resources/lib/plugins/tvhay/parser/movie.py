@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
+from utils.wisepacker import WisePacker
 import re
 import json
 import urllib
@@ -72,6 +73,7 @@ class Parser:
                 })
                 return movie
 
+        print(WisePacker.decode(response))
 
         return movie
 

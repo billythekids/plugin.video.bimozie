@@ -4,6 +4,7 @@ from utils.mozie_request import Request
 from utils.mozie_request import AsyncRequest
 from utils.aes import CryptoAES
 from utils.pastebin import PasteBin
+from utils.wisepacker import WisePacker
 import re
 import json
 
@@ -117,67 +118,13 @@ class Parser:
 
         return items
 
-    def search_tokenize(self, response):
-        m = re.search("eval\(.*\);}\('(.*)','(.*)','(.*)','(.*)'\)\);", response)
-        a = self.decode_token(m.group(1), m.group(2), m.group(3), m.group(4))
-        m = re.search("join\(''\);}\('(.*)','(.*)','(.*)','(.*)'\)\);$", a)
-        a = self.decode_token(m.group(1), m.group(2), m.group(3), m.group(4))
-        m = re.search("join\(''\);}\('(.*)','(.*)','(.*)','(.*)'\)\);$", a)
-        a = self.decode_token(m.group(1), m.group(2), m.group(3), m.group(4))
-        return a
-
     def get_decrypt_key(self, response):
-        a = self.search_tokenize(response)
+        a = WisePacker.decode(response)
         return re.search("setDecryptKey\('(.*)'\);watching", a).group(1)
 
     def get_token_url(self, response):
-        a = self.search_tokenize(response)
+        a = WisePacker.decode(response)
         return re.search("'url':'(.*)','method'", a).group(1).replace("ip='+window.CLIENT_IP+'&", "")
-
-    def decode_token(self, w, i, s, e):
-        a = 0
-        b = 0
-        c = 0
-        string1 = []
-        string2 = []
-        string_len = len(w + i + s + e)
-
-        while True:
-            if a < 5:
-                string2.append(w[a])
-            else:
-                if a < len(w):
-                    string1.append(w[a])
-            a += 1
-            if b < 5:
-                string2.append(i[b])
-            else:
-                if b < len(i):
-                    string1.append(i[b])
-            b += 1
-            if c < 5:
-                string2.append(s[c])
-            else:
-                if c < len(s):
-                    string1.append(s[c])
-            c += 1
-            if string_len == len(string1) + len(string2) + len(e):
-                break
-
-        raw_string1 = ''.join(string1)
-        raw_string2 = ''.join(string2)
-        b = 0
-        result = []
-        for a in range(0, len(string1), 2):
-            ll11 = -1
-            if ord(raw_string2[b]) % 2: ll11 = 1
-            part = raw_string1[a:a + 2]
-            result.append(from_char_code(int(part, 36) - ll11))
-            b += 1
-            if b >= len(string2):
-                b = 0
-
-        return ''.join(result)
 
     def get_hydrax(self, url):
         response = Request().get(url)
@@ -323,7 +270,6 @@ class Parser:
                     response = response.replace(links[i], results[i].headers['location'])
                 except:
                     print(links[i], results[i].headers)
-
 
         links = re.findall('(http://so-trym.*)\r', response)
         if links:
