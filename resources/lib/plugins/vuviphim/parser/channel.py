@@ -27,7 +27,10 @@ class Parser:
 
             type = movie.select_one('div.poster > span.quality').text.strip()
             label = "[%s] %s" % (type, title)
-            intro = movie.select_one('div.dtinfo > div.texto').find(text=True, recursive=False).strip()
+            try:
+                intro = movie.select_one('div.dtinfo > div.texto').find(text=True, recursive=False).strip()
+            except:
+                intro = ""
 
             channel['movies'].append({
                 'id': movie.select_one('div.poster > a').get('href'),

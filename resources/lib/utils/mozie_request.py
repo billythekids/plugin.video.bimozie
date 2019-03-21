@@ -109,7 +109,7 @@ class AsyncRequest:
                     self.results[work[0]] = data
                     retry = 0
                 except:
-                    print('Request fail retry %d' % retry)
+                    print('Request %s fail retry %d' % (work[1], retry))
                     self.results[work[0]] = {}
                     retry -= 1
             self.q.task_done()

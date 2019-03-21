@@ -66,7 +66,13 @@ class Parser:
             if sources:
                 sources = json.loads(sources.group(1))
                 if type(sources) is dict:
-                    pass
+                    if 'file' in sources:
+                        movie['links'].append({
+                            'link': sources['file'].replace('\\', ''),
+                            'title': 'Link %s' % sources['type'].encode('utf-8'),
+                            'type': sources['type'].encode('utf-8'),
+                            'resolve': False
+                        })
                 else:
                     for source in sources:
                             movie['links'].append({
