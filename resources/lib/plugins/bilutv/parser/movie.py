@@ -58,14 +58,13 @@ class Parser:
 
         if m is not None:
             sources = '[%s]' % m.group(1)
-            valid_json = re.sub(r'(?<={|,)([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources)
-            print(valid_json)
+            valid_json = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources)
+            valid_json = valid_json.replace(',]', ']')
             sources = json.loads(valid_json)
-            try:
-                if len(sources) > 1:
-                    sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
-            except:
-                pass
+            if len(sources) > 1:
+                try: sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
+                except: pass
+
             if len(sources) > 0:
                 source = sources[0]
                 label = 'label' in source and source['label'] or ''
