@@ -59,7 +59,7 @@ class Parser:
             url = self.encodeString(videos['hff'], 69)
             movie['links'].append({
                 'link': self.get_hls(url),
-                'title': 'Link hls',
+                'title': 'Link hff',
                 'type': 'hls',
                 'resolve': True,
                 'subtitle': subtitle
@@ -93,7 +93,13 @@ class Parser:
 
         if len(resolutions) > 1:
             play_list += "#EXTM3U\n"
-            if '720' in resolutions:
+            if '1080' in resolutions:
+                idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
+                url = matches[idx]
+                stream_url = base_url + url
+                play_list += "#EXT-X-STREAM-INF:BANDWIDTH=3000000,RESOLUTION=1920x1080\n"
+                play_list += "%s\n" % self.create_stream(stream_url, base_url)
+            elif '720' in resolutions:
                 idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
                 url = matches[idx]
                 stream_url = base_url + url
@@ -120,7 +126,7 @@ class Parser:
         response = None
         while retry >= 0:
             try:
-                print('Retry %d: %s' % (retry, url))
+                print('Retry %d' % retry)
                 response = res.get(url)
                 if response != 'error': break
             except:

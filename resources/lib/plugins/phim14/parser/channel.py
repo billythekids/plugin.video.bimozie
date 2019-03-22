@@ -25,7 +25,7 @@ class Parser:
             pass
 
         for movie in soup.select('ul.list-film > li > div.inner'):
-            title = movie.select_one('div.info > h2 > a').text.strip()
+            title = movie.select_one('div.info > h2 > a').get('title').strip()
             type = ''
 
             if movie.select_one('div.status > span.status_r'):
@@ -35,14 +35,14 @@ class Parser:
                 type = '%s - %s' % (type, movie.select_one('span.process > span.process_r').text.strip())
 
             realtitle = movie.select_one('div.info > div.name2').text.strip()
-            label = "[%s] %s - %s" % (type, title, realtitle)
+            label = "[%s] %s" % (type, title)
             thumb = movie.select_one('a > img').get('src').replace('/thumb', '')
 
             channel['movies'].append({
                 'id': movie.select_one('h2 > a').get('href'),
                 'label': label.encode("utf-8"),
                 'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
+                'realtitle': "",
                 'thumb': thumb,
                 'type': type.encode("utf-8"),
             })
