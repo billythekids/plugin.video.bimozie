@@ -29,7 +29,7 @@ class Parser:
         for server in servers:
             server_name = server.select_one('div.label').text.strip().encode('utf-8')
             # if server_name != 'F.PRO:'.encode('utf-8') or server_name != 'R.PRO:'.encode('utf-8'): continue
-            if not re.search('[R|F].PRO:', server_name): continue
+            if not re.search('[R].PRO:', server_name): continue
             if server_name not in movie['group']: movie['group'][server_name] = []
             for ep in server.select('ul.episodelist li a'):
                 movie['group'][server_name].append({

@@ -111,7 +111,7 @@ SITES = [
         'logo': 'https://yt3.ggpht.com/a-/AN66SAx84wKI577rKgX2IeQUiG31GaOhmVIu2le2rQ=s900-mo-c-c0xffffffff-rj-k-no',
         'class': 'Vtv16',
         'plugin': 'vtv16.plugin',
-        'version': 1
+        'version': 41
     },
 ]
 
@@ -319,18 +319,20 @@ def play(movie, title=None, thumb=None, direct=False):
             except:
                 pass
 
+    if not movie['link']: return
+
     if 'subtitle' in movie and movie['subtitle']:
         play_item.setSubtitles([movie['subtitle']])
 
-    # if mediatype == 'hls':
-    #     play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
-    #     play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
-    #     link = movie['link'].split('|')
-    #     if link and len(link) > 1:
-    #         play_item.setProperty('inputstream.adaptive.stream_headers', link[1])
-    #
-    #     play_item.setContentLookup(False)
-    # else:
+    if mediatype == 'hls':
+        play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+        link = movie['link'].split('|')
+        if link and len(link) > 1:
+            play_item.setProperty('inputstream.adaptive.stream_headers', link[1])
+
+        play_item.setContentLookup(False)
+
     play_item.setProperty('IsPlayable', 'true')
     play_item.setLabel(title)
     play_item.setArt({'thumb': thumb})

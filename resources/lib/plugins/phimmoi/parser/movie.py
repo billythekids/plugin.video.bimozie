@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 from utils.mozie_request import Request
-from utils.mozie_request import AsyncRequest
 from utils.aes import CryptoAES
-from utils.pastebin import PasteBin
 from utils.wisepacker import WisePacker
 import re
 import json
@@ -73,11 +71,13 @@ class Parser:
                         'resolve': True
                     })
                 else:
+                    # hls.phimmoi.net
                     movie['links'].append({
-                        'link': self.get_hls_playlist(url),
+                        'link': url,
                         'title': 'Link hls',
                         'type': 'hls',
-                        'resolve': False
+                        'resolve': False,
+                        'origin_url': self.originURL
                     })
         elif jsonresponse['embedUrls']:
             for item in jsonresponse['embedUrls']:
@@ -86,15 +86,15 @@ class Parser:
                     movie['links'].append({
                         'link': url,
                         'title': 'Link Unknow',
-                        'type': 'Unknow',
+                        'type': 'mp4',
                         'resolve': False
                     })
                 else:
                     movie['links'].append({
-                        'link': self.get_hydrax(url),
+                        'link': url,
                         'title': 'Link hydrax',
                         'type': 'hls',
-                        'resolve': True
+                        'resolve': False
                     })
 
         return movie
@@ -125,157 +125,3 @@ class Parser:
     def get_token_url(self, response):
         a = WisePacker.decode(response)
         return re.search("'url':'(.*)','method'", a).group(1).replace("ip='+window.CLIENT_IP+'&", "")
-
-    def get_hydrax(self, url):
-        response = Request().get(url)
-        id = re.search('"key":"(.*?)",', response).group(1)
-        params = {
-            'key': id,
-            'type': 'slug',
-            'value': re.search('#slug=(.*)', url).group(1)
-        }
-        response = Request().post('https://multi.hydrax.net/vip', params, {
-            'Origin': 'http://www.phimmoi.net',
-            'Referer': 'http://www.phimmoi.net/hydrax.html'
-        })
-
-        response = json.loads(response)
-        return self.create_hydrax_playlist(url, response)
-
-    def create_hydrax_playlist(self, url, response):
-        r = "#EXTM3U\n#EXT-X-VERSION:3\n"
-        if 'hd' in response:
-            r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
-            r += "%s\n" % self.get_hydrax_stream(response['hd'], response['servers'])
-        elif 'fullhd' in response:
-            r += "#EXT-X-STREAM-INF:BANDWIDTH=2998000,RESOLUTION=1920x1080\n"
-            r += "%s\n" % self.get_hydrax_stream(response['fullhd'], response['servers'])
-        elif 'mhd' in response:
-            r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
-            r += "%s\n" % self.get_hydrax_stream(response['mhd'], response['servers'])
-        elif 'sd' in response:
-            r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
-            r += "%s\n" % self.get_hydrax_stream(response['sd'], response['servers'])
-        elif 'origin' in response:
-            r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
-            r += "%s\n" % self.get_hydrax_stream(response['origin'], response['servers'])
-
-        url = PasteBin().dpaste(r, name=url, expire=60)
-        return url
-
-    def get_hydrax_stream(self, stream, n):
-        txt = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:" + stream[
-            'duration'] + "\n#EXT-X-MEDIA-SEQUENCE:0\n"
-        links = []
-
-        r = len(stream['range'])
-        o = len(n)
-        a = stream['expired']
-        s = 0
-        if stream['type'] == 2:
-            r = 0
-            l = stream['multiRange']
-            h = len(l)
-
-            for t in range(h):
-                u = stream['multiData'][t]['file']
-                f = 0
-                p = 0
-
-                for d in range(len(l[t])):
-                    if s < o:
-                        c = n[s]
-                        s += 1
-                    else:
-                        s = 1
-                        c = n[0]
-
-                    txt += "#EXTINF:%s,\n" % stream['extinf'][r]
-                    txt += "#EXT-X-BYTERANGE:%s\n" % l[t][d]
-
-                    y = l[t][d]
-
-                    c = "http://" + c + "/" + stream['id'] + "/" + stream['range'][t]
-                    if '@' in l[t][d]:
-                        g, y = l[t][d].split('@')
-                        g, y = int(g), int(y)
-                        if not g or not y: continue
-                        f = d and p + 1 or y
-                        p = y and f + g - 1 or g - 1
-                        y = '%s-%s' % (f, p)
-
-                    url = a and c + "/" + a + "/" + u or c + "/" + r + "/" + u
-                    url += stream['id'] and "/" + y + ".js" or "/" + y + ".jpg"
-                    links.append(url)
-                    txt += url + "\n"
-                    r += 1
-                if h == t + 1:
-                    txt += "#EXT-X-ENDLIST"
-
-        arequest = AsyncRequest()
-        results = arequest.head(links, headers={
-            'origin': 'http://www.phimmoi.net'
-        })
-
-        media_urls = list()
-        for i in range(len(links)):
-            try:
-                media_url = results[i].headers['location']
-                txt = txt.replace(links[i], media_url)
-                media_urls.append(media_url)
-            except:
-                print(links[i])
-
-        # remove duplicate media_url
-        media_urls = list(dict.fromkeys(media_urls))
-
-        # ltxt = txt.split('\n')
-        # for media in media_urls:
-        #     found = 0
-        #     for idx, line in enumerate(ltxt):
-        #         if media in line:
-        #             if found > 0:
-        #                 del ltxt[idx-2:idx+1]
-        #             else:
-        #                 found = 1
-        # txt = '\n'.join(ltxt)
-        #
-        # print(txt)
-        #
-        url = PasteBin().dpaste(txt, name=stream['id'], expire=60)
-        return url
-
-    def get_hls_playlist(self, url):
-        r = "#EXTM3U\n#EXT-X-VERSION:3\n"
-        r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
-        r += "%s\n" % self.get_hls_playlist_stream(url)
-
-        url = PasteBin().dpaste(r, name=url, expire=60)
-        return url
-
-    def get_hls_playlist_stream(self, url):
-        req = Request()
-        response = req.get(url)
-
-        links = re.findall('(https?://(?!so-trym).*)\r', response)
-        if links:
-            arequest = AsyncRequest(request=req, retry=3)
-            results = arequest.head(links, headers={
-                'origin': 'http://www.phimmoi.net',
-                'referer': self.originURL
-            }, redirect=False)
-
-            for i in range(len(links)):
-                try:
-                    response = response.replace(links[i], results[i].headers['location'])
-                except:
-                    print(links[i], results[i].headers)
-
-        links = re.findall('(http://so-trym.*)\r', response)
-        if links:
-            for i in range(len(links)):
-                url = '%s|referer=%s' % (links[i], self.originURL)
-                response = response.replace(links[i], url)
-
-        url = PasteBin().dpaste(response, name=url, expire=60)
-        return url

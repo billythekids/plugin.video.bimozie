@@ -53,17 +53,17 @@ class Parser:
             'links': [],
         }
 
-        m = re.search("playerInstance.setup\({sources:\[(.*)\]", response) or re.search(
-            "playerInstance.setup.*sources:\[(.*)\],", response)
-
+        m = re.search("sources:\s?(\[.*?\])", response)
         if m is not None:
-            sources = '[%s]' % m.group(1)
+            sources = m.group(1)
             valid_json = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources)
             valid_json = valid_json.replace(',]', ']')
             sources = json.loads(valid_json)
             if len(sources) > 1:
-                try: sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
-                except: pass
+                try:
+                    sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
+                except:
+                    pass
 
             if len(sources) > 0:
                 source = sources[0]
@@ -109,5 +109,9 @@ class Parser:
             res = Request()
             res.get(url)
             url = res.get_request().url
+
+        r = re.search('128.199.198.106/video\?url=(.*)', url)
+        if r:
+            url = urllib.unquote(r.group(1))
 
         return url
