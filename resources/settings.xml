@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-	<category label="Host">
+    <category label="Websites Credential">
+		<setting label="Fcine.net" type="lsep"/>
+        <setting label="Fcine username" type="text" id="fcine.username" default=""/>
+        <setting label="Fcine password" type="text" id="fcine.password" option="hidden"  enable="!eq(-1,)" default=""/>
+    </category>
+	<category label="Sharing host">
 		<setting label="Fshare Account" type="lsep"/>
         <setting label="Use my Fshare" type="bool" id="fshare.enable" default="false"/>
         <setting label="Fshare username" type="text" id="fshare.username" default=""/>
         <setting label="Fshare password" type="text" id="fshare.password" option="hidden"  enable="!eq(-1,)" default=""/>
-    </category>
-	<category label="Sites">
-		<setting label="Fcine.net" type="lsep"/>
-        <setting label="Fcine username" type="text" id="fcine.username" default=""/>
-        <setting label="Fcine password" type="text" id="fcine.password" option="hidden"  enable="!eq(-1,)" default=""/>
     </category>
 </settings>

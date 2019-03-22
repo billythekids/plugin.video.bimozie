@@ -49,7 +49,7 @@ class FShare:
         })
 
         item = json.loads(r)
-        # self.logout()
+        self.logout()
         if 'errors' in item:
             helper.message("Fshare error: %s" % item['errors']['linkcode'][0])
             raise Exception('Fshare', 'error')

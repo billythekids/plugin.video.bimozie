@@ -101,6 +101,9 @@ class LinkParser:
             return None
 
     def get_link_fshare(self):
+        if not helper.getSetting('fshare.username'):
+            helper.message('Required username/password to get fshare.vn link, open addon settings', 'Login Required')
+
         if helper.getSetting('fshare.enable'):
             return FShare(
                 self.url,

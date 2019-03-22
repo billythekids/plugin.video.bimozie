@@ -12,6 +12,9 @@ class Fcine:
     member_id = None
 
     def __init__(self):
+        if not helper.getSetting('fcine.username'):
+            helper.message('Please login to fcine.net', 'Login Required')
+
         self.request = Request(header={
             'User-Agent': 'Mozilla/5.0',
             'origin': 'https://fcine.net',
@@ -61,7 +64,7 @@ class Fcine:
         return Movie().get_link(response)
 
     def search(self, text):
-        url = "%s/findContent/" % (self.domain)
+        url = "%s/findContent/" % self.domain
         params = {
             'term': text
         }
