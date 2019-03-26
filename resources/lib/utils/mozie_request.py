@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib
 import requests
+import xbmcgui
 from Queue import Queue
 from threading import Thread
 
@@ -61,8 +62,6 @@ class Request:
     def options(self, url, params=None, headers=None, redirect=True):
         # if headers:
         #     headers = self.DEFAULT_HEADERS.update(headers)
-
-        print(headers)
         if self.session:
             self.r = self.session.options(url, headers=headers, timeout=self.TIMEOUT, params=params,
                                           allow_redirects=redirect)
@@ -86,7 +85,10 @@ class AsyncRequest:
 
     def __create_queue(self, urls):
         print("*********************** Start Queue %d" % len(urls))
-        self.num_theads = min(self.MIN_THREAD, len(urls))
+        self.length = len(urls)
+        self.num_theads = min(self.MIN_THREAD, self.length)
+        self.dialog = xbmcgui.DialogProgress()
+        self.dialog.create('Get URL', "Loading 0/%d urls" % self.length)
         self.results = [{} for x in urls]
         for i in range(len(urls)):
             self.q.put((i, urls[i]))
@@ -104,15 +106,20 @@ class AsyncRequest:
                     if action is 'post':
                         data = self.request.post(work[1], params, headers)
                     if parser:
-                        data = parser(data, self.request, args)
+                        data = parser(data, self.request, args, work[1])
                     # print('Requested %s' % work[1])
                     self.results[work[0]] = data
                     retry = 0
                 except:
                     print('Request %s fail retry %d' % (work[1], retry))
                     self.results[work[0]] = {}
+                finally:
                     retry -= 1
+
             self.q.task_done()
+            done = self.q.qsize()
+            progress = 100-(done * 100 / self.length)
+            self.dialog.update(progress, 'Processing %d/%d urls' % (self.length-done, self.length))
         return True
 
     def head(self, urls, params=None, headers=None, redirect=False, parser=None, args=None):
@@ -125,6 +132,7 @@ class AsyncRequest:
 
         self.q.join()
         print("*********************** All %s thread done" % len(urls))
+        self.dialog.close()
         return self.results
 
     def get(self, urls, headers=None, params=None, redirect=False, parser=None, args=None):
@@ -137,6 +145,7 @@ class AsyncRequest:
 
         self.q.join()
         print("*********************** All %s thread done" % len(urls))
+        self.dialog.close()
         return self.results
 
     def post(self, urls, params, headers=None, redirect=False, parser=None, args=None):
@@ -149,4 +158,5 @@ class AsyncRequest:
 
         self.q.join()
         print("*********************** All %s thread done" % len(urls))
+        self.dialog.close()
         return self.results

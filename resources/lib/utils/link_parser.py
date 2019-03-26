@@ -114,6 +114,7 @@ class LinkParser:
             return FShare(self.url).get_link(), '1080'
 
     def get_m3u8(self):
+        # support to run with inputstream.adaptive
         if re.search('51.15.90.176', self.url):  # skip this for phimbathu & bilutv
             return self.url, 'hls5'
 
@@ -167,6 +168,25 @@ class LinkParser:
     def get_hls_phimmoi(self):
         req = Request()
         response = req.get(self.url)
+
+        # found playlist
+        if re.search('EXT-X-STREAM-INF', response):
+            resolutions = re.findall('RESOLUTION=\d+x(\d+)', response)
+            matches = re.findall('(http.*)\r', response)
+            if '1080' in resolutions:
+                idx = next((resolutions.index(i) for i in resolutions if '1080' == i), -1)
+                url = matches[idx]
+            elif '720' in resolutions:
+                idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
+                url = matches[idx]
+            elif '480' in resolutions:
+                idx = next((resolutions.index(i) for i in resolutions if '480' == i), -1)
+                url = matches[idx]
+
+            response = Request().get(url, headers={
+                'origin': 'http://www.phimmoi.net'
+            })
+
         links = re.findall('(https?://(?!so-trym).*)\r', response)
         if links:
             media_type = 'hls4'
