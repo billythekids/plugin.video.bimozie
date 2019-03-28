@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import json
+import utils.xbmc_helper as helper
 from urlparse import urlparse
 from utils.mozie_request import Request
 from utils.pastebin import PasteBin
@@ -47,21 +48,25 @@ class Parser:
 
         videos = videos['sources']
         if u'hls' in videos and videos['hls']:
+            helper.message('Fimfast HLS', 'Movie Found')
             movie['links'].append({
-                'link': self.get_hls(videos['hls']),
+                'link': videos['hls'],
+                # 'link': self.get_hls(videos['hls']),
                 'title': 'Link hls',
                 'type': 'hls',
-                'resolve': True,
+                'resolve': False,
                 'subtitle': subtitle
             })
             return movie
-        elif u'hff' in videos and videos['hff']:
+        elif u'hff' in videos and videos['hff'] and self.encodeString(videos['hff'], 69).find('No link') == -1:
             url = self.encodeString(videos['hff'], 69)
+            helper.message('Fimfast HFF', 'Movie Found')
             movie['links'].append({
-                'link': self.get_hls(url),
+                'link': url,
+                # 'link': self.get_hls(url),
                 'title': 'Link hff',
                 'type': 'hls',
-                'resolve': True,
+                'resolve': False,
                 'subtitle': subtitle
             })
             return movie
@@ -140,8 +145,9 @@ class Parser:
                 stream_url = base_url + m
                 response = response.replace(m, stream_url)
 
-            url = PasteBin().dpaste(response, name=url, expire=60)
-            return url
+        response - response.replace('EXT-X-VERSION:5', 'EXT-X-VERSION:3')
+        url = PasteBin().dpaste(response, name=url, expire=60)
+        return url
 
     def encodeString(self, e, t):
         a = ""

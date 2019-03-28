@@ -70,6 +70,7 @@ def search_history_save(search_key):
     with open(path, 'w') as outfile:
         json.dump(content, outfile)
 
+
 def search_history_clear():
     path = os.path.join(addon_data_dir, 'history.json')
     with open(path, 'w') as outfile:
@@ -87,4 +88,4 @@ def search_history_get():
 
 
 def wait(sec):
-    xbmc.sleep(sec*1000)
+    xbmc.sleep(sec * 1000)

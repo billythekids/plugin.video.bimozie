@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from utils.mozie_request import Request
 from utils.aes import CryptoAES
 from utils.wisepacker import WisePacker
+import utils.xbmc_helper as helper
 import re
 import json
 
@@ -20,6 +21,13 @@ class Parser:
         }
         soup = BeautifulSoup(response, "html.parser")
         self.originURL = url
+
+        try:
+            error = soup.select_one('div.error-not-available div.alert-subheading').find(text=True, recursive=False).encode('utf-8')
+            if error:
+                helper.message(error, 'Not Found')
+                return movie
+        except: pass
 
         # get episode if possible
         servers = soup.select('div.list-server > div.server')

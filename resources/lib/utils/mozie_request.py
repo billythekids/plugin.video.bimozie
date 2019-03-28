@@ -79,13 +79,13 @@ class AsyncRequest:
     RETRY = 1
 
     def __init__(self, request=None, retry=1):
-        self.q = Queue(maxsize=0)
         self.request = request or Request()
         self.RETRY = retry
 
     def __create_queue(self, urls):
         print("*********************** Start Queue %d" % len(urls))
         self.length = len(urls)
+        self.q = Queue(maxsize=self.length)
         self.num_theads = min(self.MIN_THREAD, self.length)
         self.dialog = xbmcgui.DialogProgress()
         self.dialog.create('Get URL', "Loading 0/%d urls" % self.length)

@@ -7,7 +7,11 @@ from utils.mozie_request import Request
 
 
 class Parser:
-    def get(self, response, skipEps=False):
+    def get_movie_link(self, response):
+        soup = BeautifulSoup(response, "html.parser")
+        return soup.select_one("a.btn-see").get('href')
+
+    def get(self, response):
         movie = {
             'links': [],
             'episode': [],
@@ -41,10 +45,6 @@ class Parser:
                     'link': '%s,%s,%s' % (movie_id, ep_id, server.get('data-index')),
                     'title': "Tap %s" % episode.text.encode('utf-8')
                 })
-
-    def get_movie_link(self, response):
-        soup = BeautifulSoup(response, "html.parser")
-        return soup.select_one("a.btn-see").get('href')
 
     def get_link(self, response):
         movie = {

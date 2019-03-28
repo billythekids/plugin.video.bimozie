@@ -404,12 +404,13 @@ def search(module, classname):
                                     xbmcgui.ListItem(label="[COLOR red][B]%s[/B][/COLOR]" % "Clear search text ..."),
                                     True)
         for txt in contents:
-            url = build_url({'mode': 'dosearch', 'module': module, 'class': classname, 'url': txt})
-            xbmcplugin.addDirectoryItem(HANDLE,
-                                        url,
-                                        xbmcgui.ListItem(
-                                            label="[COLOR blue][B]%s[/B][/COLOR]" % txt),
-                                        True)
+            try:
+                url = build_url({'mode': 'dosearch', 'module': module, 'class': classname, 'url': txt})
+                xbmcplugin.addDirectoryItem(HANDLE,
+                                            url,
+                                            xbmcgui.ListItem(label="[COLOR blue][B]%s[/B][/COLOR]" % txt),
+                                            True)
+            except: pass
     xbmcplugin.endOfDirectory(HANDLE)
 
 
