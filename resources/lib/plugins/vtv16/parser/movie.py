@@ -82,6 +82,27 @@ class Parser:
                                 'resolve': True
                             })
 
+            # source = re.search('"(http.*hydrax.html.*)"', response)
+            # if source:
+            #     source = source.group(1)
+            #     movie['links'].append({
+            #         'link': source,
+            #         'title': source,
+            #         'type': 'file',
+            #         'resolve': False
+            #     })
+
+            return movie
+
+        sources = re.search("<iframe.*src=\"(.*)\"", response)
+        if sources:
+            source = sources.group(1)
+            movie['links'].append({
+                'link': source,
+                'title': source,
+                'type': 'file',
+                'resolve': False
+            })
             return movie
 
         return movie

@@ -81,11 +81,12 @@ class AsyncRequest:
     def __init__(self, request=None, retry=1):
         self.request = request or Request()
         self.RETRY = retry
-        self.q = Queue(maxsize=0)
+
 
     def __create_queue(self, urls):
         print("*********************** Start Queue %d" % len(urls))
         self.length = len(urls)
+        self.q = Queue(maxsize=self.length)
         self.num_theads = min(self.MIN_THREAD, self.length)
         print('Total thread %d' % self.num_theads)
         self.dialog = xbmcgui.DialogProgress()
