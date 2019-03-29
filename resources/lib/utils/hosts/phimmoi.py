@@ -5,6 +5,11 @@ from utils.pastebin import PasteBin
 
 
 def get_link(url, originURL):
+    url += '|referer=' + urllib.quote_plus(originURL)
+    return url, 'hls3'
+
+
+def get_link_deprecated(url, originURL):
     req = Request()
     response = req.get(url)
 

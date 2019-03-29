@@ -4,7 +4,7 @@ bimozie is a plugin for Kodi Media Center -  Kodi is a registered trademark of t
 
 ## Prerequisites
 
-- Kodi 18 [nightlybuild](http://mirrors.kodi.tv/nightlies/)
+- Kodi 18 (https://kodi.tv/download)
 - resolveurl 5.0.24
 - inputstream.adaptive
 - beautifulsoup4
@@ -20,13 +20,13 @@ bimozie is a plugin for Kodi Media Center -  Kodi is a registered trademark of t
  - Select `kodi-scripts`
  - And select `script.module.resolveurl-5.x.xxx.zip` to install
  
-#### ~~Install inputstream.adaptive~~
+#### Install inputstream.adaptive
 
-~~inputstream.adaptive comes as standard package from kodi but disabled by default, you need to enable it~~
-- ~~Go to `Add-ons` -> Select My add-ons~~
-- ~~Select VideoPlayer InputStream~~
-- ~~Select InputStream Adaptive~~
-- ~~Click on `Enable` to turn it on~~
+inputstream.adaptive comes as standard package from kodi but disabled by default, you need to enable it
+- Go to `Add-ons` -> Select My add-ons
+- Select VideoPlayer InputStream
+- Select InputStream Adaptive
+- Click on `Enable` to turn it on
 
 
 ## FAQ

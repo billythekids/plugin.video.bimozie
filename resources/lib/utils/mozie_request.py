@@ -81,17 +81,28 @@ class AsyncRequest:
     def __init__(self, request=None, retry=1):
         self.request = request or Request()
         self.RETRY = retry
+        self.q = Queue(maxsize=0)
 
     def __create_queue(self, urls):
         print("*********************** Start Queue %d" % len(urls))
         self.length = len(urls)
-        self.q = Queue(maxsize=self.length)
         self.num_theads = min(self.MIN_THREAD, self.length)
+        print('Total thread %d' % self.num_theads)
         self.dialog = xbmcgui.DialogProgress()
         self.dialog.create('Get URL', "Loading 0/%d urls" % self.length)
         self.results = [{} for x in urls]
         for i in range(len(urls)):
             self.q.put((i, urls[i]))
+
+    def __start_thread(self, args):
+        for i in range(self.num_theads):
+            worker = Thread(target=self.__request, args=args)
+            worker.setDaemon(True)
+            worker.start()
+
+        self.q.join()
+        print("*********************** All %s thread done" % self.length)
+        self.dialog.close()
 
     def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None):
         while not self.q.empty():
@@ -116,47 +127,23 @@ class AsyncRequest:
                 finally:
                     retry -= 1
 
-            self.q.task_done()
             done = self.q.qsize()
-            progress = 100-(done * 100 / self.length)
-            self.dialog.update(progress, 'Processing %d/%d urls' % (self.length-done, self.length))
+            progress = 100 - (done * 100 / self.length)
+            self.dialog.update(progress, 'Processing %d/%d urls' % (self.length - done, self.length))
+            self.q.task_done()
         return True
 
     def head(self, urls, params=None, headers=None, redirect=False, parser=None, args=None):
         self.__create_queue(urls)
-
-        for i in range(self.num_theads):
-            worker = Thread(target=self.__request, args=('head', params, headers, redirect, parser, args))
-            worker.setDaemon(True)
-            worker.start()
-
-        self.q.join()
-        print("*********************** All %s thread done" % len(urls))
-        self.dialog.close()
+        self.__start_thread(('head', params, headers, redirect, parser, args))
         return self.results
 
     def get(self, urls, headers=None, params=None, redirect=False, parser=None, args=None):
         self.__create_queue(urls)
-
-        for i in range(self.num_theads):
-            worker = Thread(target=self.__request, args=('get', params, headers, redirect, parser, args))
-            worker.setDaemon(True)
-            worker.start()
-
-        self.q.join()
-        print("*********************** All %s thread done" % len(urls))
-        self.dialog.close()
+        self.__start_thread(('get', params, headers, redirect, parser, args))
         return self.results
 
     def post(self, urls, params, headers=None, redirect=False, parser=None, args=None):
         self.__create_queue(urls)
-
-        for i in range(self.num_theads):
-            worker = Thread(target=self.__request, args=('post', params, headers, redirect, parser, args))
-            worker.setDaemon(True)
-            worker.start()
-
-        self.q.join()
-        print("*********************** All %s thread done" % len(urls))
-        self.dialog.close()
+        self.__start_thread(('post', params, headers, redirect, parser, args))
         return self.results

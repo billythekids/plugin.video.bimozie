@@ -34,10 +34,10 @@ class LinkParser:
 
             return self.get_sstreamgg()
         elif re.search('hls.phimmoi.net', self.url):
-
+            helper.message('Phimmoi hls link parsing', 'Get Link')
             return phimmoi.get_link(self.url, self.media['origin_url'])
         elif re.search('phimmoi.net/hydrax.html', self.url):
-
+            helper.message('hydrax link is not full supported yet', 'Get Link')
             return hydrax.get_link(self.url)
         elif re.search('youtube.com', self.url):
 
