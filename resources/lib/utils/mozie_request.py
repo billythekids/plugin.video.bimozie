@@ -25,28 +25,30 @@ class Request:
         if session:
             self.session = requests.session()
 
-    def get(self, url, headers=None, params=None, redirect=True):
+    def get(self, url, headers=None, params=None, redirect=True, cookies=None):
         print("Request URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
             self.r = self.session.get(url, headers=headers, timeout=self.TIMEOUT, params=params,
-                                      allow_redirects=redirect)
+                                      allow_redirects=redirect, cookies=cookies)
         else:
-            self.r = requests.get(url, headers=headers, timeout=self.TIMEOUT, params=params, allow_redirects=redirect)
+            self.r = requests.get(url, headers=headers, timeout=self.TIMEOUT, params=params, allow_redirects=redirect,
+                                  cookies=cookies)
         return self.r.text
 
-    def post(self, url, params=None, headers=None, redirect=True):
+    def post(self, url, params=None, headers=None, redirect=True, cookies=None):
         # print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
             self.r = self.session.post(url, data=params, headers=headers, timeout=self.TIMEOUT,
-                                       allow_redirects=redirect)
+                                       allow_redirects=redirect, cookies=cookies)
             for resp in self.r.history:
                 print(resp.status_code, resp.url)
         else:
-            self.r = requests.post(url, data=params, headers=headers, timeout=self.TIMEOUT, allow_redirects=redirect)
+            self.r = requests.post(url, data=params, headers=headers, timeout=self.TIMEOUT, allow_redirects=redirect,
+                                   cookies=cookies)
         return self.r.text
 
     def head(self, url, params=None, headers=None, redirect=True):
@@ -81,7 +83,6 @@ class AsyncRequest:
     def __init__(self, request=None, retry=1):
         self.request = request or Request()
         self.RETRY = retry
-
 
     def __create_queue(self, urls):
         print("*********************** Start Queue %d" % len(urls))
