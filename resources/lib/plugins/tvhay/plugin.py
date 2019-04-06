@@ -15,15 +15,18 @@ class Tvhay:
         self.request = Request(session=True)
         body = self.request.get(self.domain)
         cookie = SucuriCloudProxy.get_cookie(body)
-        print(cookie)
         body = self.request.get(self.domain, cookies=cookie, headers={
+            'Referer': 'http://tvhay.org/',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
         })
-        print(body)
+        self.cookie = SucuriCloudProxy.get_cookie(body)
 
 
     def getCategory(self):
-        response = self.request.get(self.domain)
+        response = self.request.get(self.domain, cookies=self.cookie, headers={
+            'Referer': 'http://tvhay.org/',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+        })
         return Category().get(response)
 
     def getChannel(self, channel, page=1):
@@ -32,19 +35,36 @@ class Tvhay:
             url = '%s%spage/%d' % (self.domain, channel, page)
         else:
             url = '%s%s' % (self.domain, channel)
-        response = self.request.get(url)
+        response = self.request.get(url, cookies=self.cookie, headers={
+            'Referer': 'http://tvhay.org/',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+        })
         return Channel().get(response, page)
 
     def getMovie(self, id):
-        url = Movie().get_movie_link(Request().get(id))
-        response = self.request.get(url)
+        url = Movie().get_movie_link(
+            self.request.get(id, cookies=self.cookie, headers={
+                'Referer': 'http://tvhay.org/',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+            })
+        )
+        response = self.request.get(url, cookies=self.cookie, headers={
+            'Referer': 'http://tvhay.org/',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+        })
         return Movie().get(response)
 
     def getLink(self, movie):
-        response = self.request.get(movie['link'])
+        response = self.request.get(movie['link'], cookies=self.cookie, headers={
+            'Referer': 'http://tvhay.org/',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+        })
         return Movie().get_link(response)
 
     def search(self, text):
         url = "%ssearch/%s" % (self.domain, urllib.quote_plus(text))
-        response = self.request.get(url)
+        response = self.request.get(url, cookies=self.cookie, headers={
+            'Referer': 'http://tvhay.org/',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+        })
         return Channel().get(response, 1)

@@ -20,6 +20,7 @@ def get_link(url):
     response = json.loads(response)
     r = "#EXTM3U\n#EXT-X-VERSION:3\n"
     if 'hd' in response:
+        return get_hydrax_phimmoi_stream(response['hd'], response['servers']), 'hls4'
         r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
         r += "%s\n" % get_hydrax_phimmoi_stream(response['hd'], response['servers'])
     elif 'fullhd' in response:
@@ -68,7 +69,6 @@ def get_hydrax_phimmoi_stream(stream, n):
                     c = n[0]
 
                 txt += "#EXTINF:%s,\n" % stream['extinf'][r]
-                txt += "#EXTVLCOPT:http-origin=http://www.phimmoi.net\n"
                 txt += "#EXT-X-BYTERANGE:%s\n" % l[t][d]
 
                 y = l[t][d]
@@ -91,20 +91,21 @@ def get_hydrax_phimmoi_stream(stream, n):
             if h == t + 1:
                 txt += "#EXT-X-ENDLIST"
 
-    arequest = AsyncRequest()
-    results = arequest.head(links, headers={
-        'origin': 'http://www.phimmoi.net'
-    })
-
-    media_urls = list()
-    for i in range(len(links)):
-        try:
-            media_url = results[i].headers['location']
-            txt = txt.replace(links[i], media_url)
-            media_urls.append(media_url)
-        except:
-            print(links[i])
+    # arequest = AsyncRequest()
+    # results = arequest.head(links, headers={
+    #     'origin': 'http://www.phimmoi.net'
+    # })
+    #
+    #
+    # media_urls = list()
+    # for i in range(len(links)):
+    #     try:
+    #         media_url = results[i].headers['location']
+    #         txt = txt.replace(links[i], media_url)
+    #         media_urls.append(media_url)
+    #     except:
+    #         print(links[i])
 
     url = PasteBin().dpaste(txt, name=stream['id'], expire=60)
-    # url = "%s|origin=%s" % (url, 'http://www.phimmoi.net')
+    url = "%s|origin=%s" % (url, 'http://www.phimmoi.net')
     return url

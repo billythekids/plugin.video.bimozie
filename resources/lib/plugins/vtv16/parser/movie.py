@@ -53,7 +53,7 @@ class Parser:
                         'link': link['file'].replace('\\', ''),
                         'title': 'Link %s' % link['label'].encode('utf-8'),
                         'type': link['label'].encode('utf-8'),
-                        'resolve': True
+                        'resolve': False
                     })
 
             return movie
@@ -79,8 +79,10 @@ class Parser:
                                 'link': source['file'].replace('\\', ''),
                                 'title': 'Link %s' % source['type'].encode('utf-8'),
                                 'type': source['type'].encode('utf-8'),
-                                'resolve': True
+                                'resolve': False
                             })
+
+                return movie
 
             # source = re.search('"(http.*hydrax.html.*)"', response)
             # if source:
@@ -92,7 +94,7 @@ class Parser:
             #         'resolve': False
             #     })
 
-            return movie
+
 
         sources = re.search("<iframe.*src=\"(.*)\"", response)
         if sources:

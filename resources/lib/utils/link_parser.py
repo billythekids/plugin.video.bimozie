@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import utils.xbmc_helper as helper
-from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok
+from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16
 
 
 class LinkParser:
@@ -24,7 +24,7 @@ class LinkParser:
 
             return self.get_link_dailymotion()
         elif re.search('fptplay.net', self.url):
-
+            helper.message('FPTPlay hls link parsing', 'Get Link')
             return fptplay.get_link(self.url)
         elif re.search('sstreamgg.xyz', self.url) \
                 or re.search('ggstream.me', self.url) \
@@ -37,7 +37,7 @@ class LinkParser:
             helper.message('Phimmoi hls link parsing', 'Get Link')
             return phimmoi.get_link(self.url, self.media['origin_url'])
         elif re.search('hydrax.html', self.url):
-            helper.message('hydrax link is not full supported yet', 'Get Link')
+            helper.message('hydrax link is not supported', 'Get Link')
             return hydrax.get_link(self.url)
         elif re.search('youtube.com', self.url):
 
@@ -45,6 +45,8 @@ class LinkParser:
         elif re.search('imacdn.com', self.url):
 
             return imacdn.get_link(self.url)
+        elif re.search('vtv16.com', self.url):
+            return vtv16.get_link(self.url)
         elif self.url.endswith('m3u8'):
             return self.get_m3u8()
 

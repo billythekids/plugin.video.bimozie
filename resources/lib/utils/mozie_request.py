@@ -77,7 +77,7 @@ class Request:
 
 
 class AsyncRequest:
-    MIN_THREAD = 40
+    MIN_THREAD = 50
     RETRY = 1
 
     def __init__(self, request=None, retry=1):
@@ -108,7 +108,7 @@ class AsyncRequest:
 
     def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None):
         while not self.q.empty():
-            work = self.q.get()
+            work = self.q.get_nowait()
             retry = self.RETRY
             while retry > 0:
                 try:
