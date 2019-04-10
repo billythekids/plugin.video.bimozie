@@ -32,8 +32,6 @@ class Animehay:
         return Movie().get_link(response)
 
     def search(self, text):
-        XbmcHelper.message('This site doesnt support searching', 'Not searchable')
-
-    #     url = "%s/tim-kiem?q=%s" % (self.domain, urllib.quote_plus(text))
-    #     response = Request().get(url)
-    #     return Channel().get(response, 1)
+        url = "%s/tim-kiem?q=%s" % (self.domain, urllib.quote_plus(text))
+        response = Request().get(url)
+        return Channel().get(response, 1)

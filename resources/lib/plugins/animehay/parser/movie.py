@@ -104,6 +104,7 @@ class Parser:
                 data['err[pr][num]'] = len(resp['formats'])
                 data['err[pr][dr_s]'] = resp['sig']
                 resp = json.loads(Request().get(url, params=data))
+
                 return self.create_effective_playlist(resp['formats'])
         else:
             return self.create_effective_playlist(resp['formats'])
@@ -112,14 +113,17 @@ class Parser:
         r = "#EXTM3U\n#EXT-X-VERSION:3\n"
         for key, value in sources.items():
             if '720' in key:
+                return key['720']
                 r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
                 r += "%s\n" % self.get_stream(value)
                 break
             if '480' in key:
+                return key['480']
                 r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
                 r += "%s\n" % value
                 break
             if '360' in key:
+                return key['360']
                 r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
                 r += "%s\n" % value
                 break

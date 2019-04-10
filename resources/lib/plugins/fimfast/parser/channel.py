@@ -54,5 +54,8 @@ class Parser:
         return channel
 
     def get_quality(self, type):
-        quality = ('SD', 'HD', 'FHD')
-        return quality[type-1]
+        try:
+            quality = ('SD', 'HD', 'FHD', 'Bluray', 'CAM')
+            return quality[type-1]
+        except:
+            return '??'
