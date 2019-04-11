@@ -36,9 +36,11 @@ class LinkParser:
         elif re.search('hls.phimmoi.net', self.url):
             helper.message('Phimmoi hls link parsing', 'Get Link')
             return phimmoi.get_link(self.url, self.media['origin_url'])
+
         elif re.search('hydrax.html', self.url):
-            helper.message('hydrax link is not supported', 'Get Link')
+            helper.message('hydrax link isnot fully supported', 'Get Link')
             return hydrax.get_link(self.url)
+
         elif re.search('youtube.com', self.url):
 
             return self.get_youtube()

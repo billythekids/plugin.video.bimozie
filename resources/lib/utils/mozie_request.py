@@ -108,7 +108,7 @@ class AsyncRequest:
 
     def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None):
         while not self.q.empty():
-            work = self.q.get_nowait()
+            work = self.q.get()
             retry = self.RETRY
             while retry > 0:
                 try:

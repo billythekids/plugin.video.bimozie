@@ -113,17 +113,17 @@ class Parser:
         r = "#EXTM3U\n#EXT-X-VERSION:3\n"
         for key, value in sources.items():
             if '720' in key:
-                return key['720']
+                return self.get_stream(value)
                 r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
                 r += "%s\n" % self.get_stream(value)
                 break
             if '480' in key:
-                return key['480']
+                return self.get_stream(value)
                 r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
                 r += "%s\n" % value
                 break
             if '360' in key:
-                return key['360']
+                return self.get_stream(value)
                 r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
                 r += "%s\n" % value
                 break

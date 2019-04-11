@@ -1,5 +1,6 @@
 import re
 import json
+import math
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
 
@@ -21,40 +22,47 @@ def get_link(url):
     r = "#EXTM3U\n#EXT-X-VERSION:3\n"
     if 'hd' in response:
         return get_hydrax_phimmoi_stream(response['hd'], response['servers']), 'hls4'
-        r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
-        r += "%s\n" % get_hydrax_phimmoi_stream(response['hd'], response['servers'])
+        # r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
+        # r += "%s\n" % get_hydrax_phimmoi_stream(response['hd'], response['servers'])
     elif 'fullhd' in response:
-        r += "#EXT-X-STREAM-INF:BANDWIDTH=2998000,RESOLUTION=1920x1080\n"
-        r += "%s\n" % get_hydrax_phimmoi_stream(response['fullhd'], response['servers'])
+        return get_hydrax_phimmoi_stream(response['fullhd'], response['servers']), 'hls4'
+        # r += "#EXT-X-STREAM-INF:BANDWIDTH=2998000,RESOLUTION=1920x1080\n"
+        # r += "%s\n" % get_hydrax_phimmoi_stream(response['fullhd'], response['servers'])
     elif 'mhd' in response:
-        r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
-        r += "%s\n" % get_hydrax_phimmoi_stream(response['mhd'], response['servers'])
+        return get_hydrax_phimmoi_stream(response['mhd'], response['servers']), 'hls4'
+        # r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
+        # r += "%s\n" % get_hydrax_phimmoi_stream(response['mhd'], response['servers'])
     elif 'sd' in response:
-        r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
-        r += "%s\n" % get_hydrax_phimmoi_stream(response['sd'], response['servers'])
+        return get_hydrax_phimmoi_stream(response['sd'], response['servers']), 'hls4'
+        # r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
+        # r += "%s\n" % get_hydrax_phimmoi_stream(response['sd'], response['servers'])
     elif 'origin' in response:
-        r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
-        r += "%s\n" % get_hydrax_phimmoi_stream(response['origin'], response['servers'])
+        return get_hydrax_phimmoi_stream(response['origin'], response['servers']), 'hls4'
+        # r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
+        # r += "%s\n" % get_hydrax_phimmoi_stream(response['origin'], response['servers'])
 
     url = PasteBin().dpaste(r, name=url, expire=60)
-    # url = "%s|origin=%s" % (url, 'http://www.phimmoi.net')
     return url, 'hls4'
 
 
 def get_hydrax_phimmoi_stream(stream, n):
     txt = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:" + stream[
         'duration'] + "\n#EXT-X-MEDIA-SEQUENCE:0\n"
+
+    if 'hash' in stream:
+        txt += "#EXT-X-HASH:%s\n" % stream['hash']
+
     links = []
 
     r = len(stream['range'])
     o = len(n)
     a = stream['expired']
     s = 0
+    l = stream['multiRange']
+    h = len(l)
+
     if stream['type'] == 2:
         r = 0
-        l = stream['multiRange']
-        h = len(l)
-
         for t in range(h):
             u = stream['multiData'][t]['file']
             f = 0
@@ -91,21 +99,72 @@ def get_hydrax_phimmoi_stream(stream, n):
             if h == t + 1:
                 txt += "#EXT-X-ENDLIST"
 
-    # arequest = AsyncRequest()
-    # results = arequest.head(links, headers={
-    #     'origin': 'http://www.phimmoi.net'
-    # })
-    #
-    #
-    # media_urls = list()
-    # for i in range(len(links)):
-    #     try:
-    #         media_url = results[i].headers['location']
-    #         txt = txt.replace(links[i], media_url)
-    #         media_urls.append(media_url)
-    #     except:
-    #         print(links[i])
+    elif stream['type'] == 3:
+        for t in range(h):
+            u = stream['multiData'][t]['file']
+            if s < o:
+                c = n[s]
+                s += 1
+            else:
+                s = 1
+                c = n[0]
 
-    url = PasteBin().dpaste(txt, name=stream['id'], expire=60)
-    url = "%s|origin=%s" % (url, 'http://www.phimmoi.net')
+            txt += "#EXTINF:" + stream['extinf'][t] + ",\n"
+            c = "http://" + c
+            # e.id && (c = c + "/" + e.id)
+            c += stream['id'] and "/" + stream['id'] or ""
+            url = a and c + "/basic/" + a + "/" + u + "." + (
+                        stream['id'] and "js" or "jpg") or c + "/basic/" + r + "/" + u + "." + (
+                              stream['id'] and "js" or "jpg")
+            links.append(url)
+            txt += url + "\n"
+            r += 1
+            if h == t + 1:
+                txt += "#EXT-X-ENDLIST"
+
+    arequest = AsyncRequest()
+    results = arequest.head(links, headers={
+        'origin': 'http://www.phimmoi.net'
+    })
+
+    media_urls = []
+    for i in range(len(links)):
+        try:
+            media_url = results[i].headers['location']
+            txt = txt.replace(links[i], media_url)
+            if media_url not in media_urls:
+                media_urls.append(media_url)
+        except:
+            print(links[i])
+
+    if stream['type'] == 2:
+        max_targetduration = 12
+        play_list = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:12\n#EXT-X-MEDIA-SEQUENCE:0\n"
+        for link in media_urls:
+            slashlink = link.replace('-', '\\-')
+            slashlink = slashlink.replace('*', '\\*')
+            slashlink = slashlink.replace('?', '\\?')
+            segments = re.findall(
+                r"(#EXTINF:([0-9]*\.?[0-9]+),\n#EXT-X-BYTERANGE:([0-9]+)@([0-9]+)(?:(?!#EXTINF).)*" + slashlink + ")",
+                txt, re.DOTALL)
+            duration = 0
+            lengthbyte = 0
+            startbyte = 999999999
+            for segment in segments:
+                duration += float(segment[1])
+                startbyte = int(segment[3]) < startbyte and int(segment[3]) or startbyte
+                lengthbyte += int(segment[2])
+
+            play_list += "#EXTINF:%s,\n" % duration
+            play_list += "#EXT-X-BYTERANGE:%s@%s\n" % (lengthbyte, startbyte)
+            play_list += "%s\n" % link
+            if duration > max_targetduration:
+                max_targetduration = duration
+
+        play_list = play_list.replace("TARGETDURATION:12", "TARGETDURATION:" + str(int(math.ceil(max_targetduration))))
+        play_list += "#EXT-X-ENDLIST"
+    elif stream['type'] == 3:
+        play_list = txt
+
+    url = PasteBin().dpaste(play_list, name=stream['id'], expire=60)
     return url
