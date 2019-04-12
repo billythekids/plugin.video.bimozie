@@ -38,7 +38,7 @@ class LinkParser:
             return phimmoi.get_link(self.url, self.media['origin_url'])
 
         elif re.search('hydrax.html', self.url):
-            helper.message('hydrax link isnot fully supported', 'Get Link')
+            helper.message('hydrax link parsing', 'Get Link')
             return hydrax.get_link(self.url)
 
         elif re.search('youtube.com', self.url):

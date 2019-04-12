@@ -113,11 +113,11 @@ class AsyncRequest:
             while retry > 0:
                 try:
                     if action is 'head':
-                        data = self.request.head(work[1], params, headers, redirect)
+                        data = self.request.head(work[1], params=params, headers=headers, redirect=redirect)
                     if action is 'get':
-                        data = self.request.get(work[1], params, headers)
+                        data = self.request.get(work[1], params=params, headers=headers)
                     if action is 'post':
-                        data = self.request.post(work[1], params, headers)
+                        data = self.request.post(work[1], params=params, headers=headers)
                     if parser:
                         data = parser(data, self.request, args, work[1])
                     # print('Requested %s' % work[1])

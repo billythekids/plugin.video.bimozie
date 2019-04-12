@@ -3,6 +3,7 @@ import json
 import math
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
+import utils.xbmc_helper as helper
 
 
 def get_link(url):
@@ -51,6 +52,7 @@ def get_hydrax_phimmoi_stream(stream, n):
 
     if 'hash' in stream:
         txt += "#EXT-X-HASH:%s\n" % stream['hash']
+        txt += "#EXT-X-KEY:METHOD=AES-128,URI=\"%s\",IV=%s\n" % (stream['hash'], stream['iv'])
 
     links = []
 
@@ -82,7 +84,7 @@ def get_hydrax_phimmoi_stream(stream, n):
                 y = l[t][d]
 
                 c = "http://" + c
-                c += stream['id'] and "/" + stream['id'] + "/" + stream['range'][t] or ""
+                # c += stream['id'] and "/" + stream['id'] + "/" + stream['range'][t] or ""
                 if '@' in l[t][d]:
                     if l[t][d].find('@') == -1: continue
                     g, y = l[t][d].split('@')
@@ -92,8 +94,10 @@ def get_hydrax_phimmoi_stream(stream, n):
                     y = '%s-%s' % (f, p)
 
                 url = a and c + "/" + a + "/" + u or c + "/" + r + "/" + u
-                url += stream['id'] and "/" + y + ".js" or "/" + y + ".jpg"
-                links.append(url)
+                # url += stream['id'] and "/" + y + ".js" or "/" + y + ".jpg"
+                if url not in links:
+                    links.append(url)
+
                 txt += url + "\n"
                 r += 1
             if h == t + 1:
@@ -116,21 +120,24 @@ def get_hydrax_phimmoi_stream(stream, n):
             url = a and c + "/basic/" + a + "/" + u + "." + (
                         stream['id'] and "js" or "jpg") or c + "/basic/" + r + "/" + u + "." + (
                               stream['id'] and "js" or "jpg")
-            links.append(url)
+
+            if url not in links:
+                links.append(url)
+
             txt += url + "\n"
             r += 1
             if h == t + 1:
                 txt += "#EXT-X-ENDLIST"
 
     arequest = AsyncRequest()
-    results = arequest.head(links, headers={
+    results = arequest.get(links, headers={
         'origin': 'http://www.phimmoi.net'
     })
 
     media_urls = []
     for i in range(len(links)):
         try:
-            media_url = results[i].headers['location']
+            media_url = json.loads(results[i])['url']
             txt = txt.replace(links[i], media_url)
             if media_url not in media_urls:
                 media_urls.append(media_url)
@@ -140,6 +147,12 @@ def get_hydrax_phimmoi_stream(stream, n):
     if stream['type'] == 2:
         max_targetduration = 12
         play_list = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:12\n#EXT-X-MEDIA-SEQUENCE:0\n"
+        if 'hash' in stream:
+            path = helper.write_file('hydrax.m3u8', stream['hash'])
+            path = path.replace('\\', '/')
+            # url = PasteBin().dpaste(stream['hash'], name='hydrax.key', expire=60)
+            play_list += "#EXT-X-KEY: METHOD=AES-128, URI=\"file://%s\", IV=%s\n" % (path, stream['iv'])
+
         for link in media_urls:
             slashlink = link.replace('-', '\\-')
             slashlink = slashlink.replace('*', '\\*')

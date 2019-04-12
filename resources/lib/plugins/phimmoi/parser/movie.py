@@ -64,6 +64,9 @@ class Parser:
         response = Request().get(url)
 
         self.key = self.get_decrypt_key(response)
+        if not self.key:
+            return movie
+
         jsonresponse = re.search("_responseJson='(.*)';", response).group(1)
         jsonresponse = json.loads(jsonresponse.decode('utf-8'))
 
@@ -127,8 +130,12 @@ class Parser:
         return items
 
     def get_decrypt_key(self, response):
-        a = WisePacker.decode(response)
-        return re.search("setDecryptKey\('(.*)'\);watching", a).group(1)
+        try:
+            a = WisePacker.decode(response)
+            return re.search("setDecryptKey\('(.*)'\);watching", a).group(1)
+        except:
+            helper.message(response, "Phimmoi", 15000)
+
 
     def get_token_url(self, response):
         a = WisePacker.decode(response)
