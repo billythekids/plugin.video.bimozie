@@ -1,12 +1,13 @@
 import re
 import json
 import math
+import base64
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
 import utils.xbmc_helper as helper
 
 
-def get_link(url):
+def get_link(url, media):
     response = Request().get(url)
     token = re.search('"key":"(.*?)",', response).group(1)
     params = {
@@ -21,14 +22,14 @@ def get_link(url):
 
     response = json.loads(response)
     r = "#EXTM3U\n#EXT-X-VERSION:3\n"
-    if 'hd' in response:
-        return get_hydrax_phimmoi_stream(response['hd'], response['servers']), 'hls4'
-        # r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
-        # r += "%s\n" % get_hydrax_phimmoi_stream(response['hd'], response['servers'])
-    elif 'fullhd' in response:
+    if 'fullhd' in response:
         return get_hydrax_phimmoi_stream(response['fullhd'], response['servers']), 'hls4'
         # r += "#EXT-X-STREAM-INF:BANDWIDTH=2998000,RESOLUTION=1920x1080\n"
         # r += "%s\n" % get_hydrax_phimmoi_stream(response['fullhd'], response['servers'])
+    elif 'hd' in response:
+        return get_hydrax_phimmoi_stream(response['hd'], response['servers']), 'hls4'
+        # r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
+        # r += "%s\n" % get_hydrax_phimmoi_stream(response['hd'], response['servers'])
     elif 'mhd' in response:
         return get_hydrax_phimmoi_stream(response['mhd'], response['servers']), 'hls4'
         # r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
@@ -148,10 +149,10 @@ def get_hydrax_phimmoi_stream(stream, n):
         max_targetduration = 12
         play_list = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:12\n#EXT-X-MEDIA-SEQUENCE:0\n"
         if 'hash' in stream:
-            path = helper.write_file('hydrax.m3u8', stream['hash'])
+            path = helper.write_file('hydrax.m3u8', bytes(base64.b64decode(stream['hash'])))
             path = path.replace('\\', '/')
             # url = PasteBin().dpaste(stream['hash'], name='hydrax.key', expire=60)
-            play_list += "#EXT-X-KEY: METHOD=AES-128, URI=\"file://%s\", IV=%s\n" % (path, stream['iv'])
+            play_list += "#EXT-X-KEY:METHOD=AES-128,URI=\"file:///%s\",IV=%s\n" % (path, stream['iv'])
 
         for link in media_urls:
             slashlink = link.replace('-', '\\-')

@@ -28,9 +28,12 @@ def message(message='', title='', timeShown=5000):
         xbmc.executebuiltin("Dialog.Close(all, true)")
 
 
-def write_file(name, content):
+def write_file(name, content, binary=False):
     path = os.path.join(addon_data_dir, name)
-    f = open(path, mode='w')
+    mode = 'w'
+    if binary:
+        mode = 'wb'
+    f = open(path, mode=mode)
     f.write(content)
     f.close()
     return path

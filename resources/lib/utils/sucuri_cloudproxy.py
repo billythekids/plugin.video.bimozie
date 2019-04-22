@@ -24,9 +24,9 @@ class SucuriCloudProxy:
 
     @staticmethod
     def parse(txt):
-        txt = re.sub(r'([\'|"][\w~`!@#$%^&*\(\)_-{}\|:;<>?\[\]]+[\'|"]).substr\((\d),(\d)\)', r'\1[\2:\2+\3]', txt)
-        txt = re.sub(r'([\'|"][\w~`!@#$%^&*\(\)_-{}\|:;<>?\[\]]+[\'|"]).slice\((\d),(\d)\)', r'\1[\2:\3]', txt)
-        txt = re.sub(r'([\'|"][\w~`!@#$%^&*\(\)_-{}\|:;<>?\[\]]+[\'|"]).charAt\((\d)\)', r'\1[\2]', txt)
+        txt = re.sub(r'([\'|"][\w~`!@#$%^&*\(\)_-{}\|:;<>?\[\]=]+[\'|"]).substr\((\d),(\d)\)', r'\1[\2:\2+\3]', txt)
+        txt = re.sub(r'([\'|"][\w~`!@#$%^&*\(\)_-{}\|:;<>?\[\]=]+[\'|"]).slice\((\d),(\d)\)', r'\1[\2:\3]', txt)
+        txt = re.sub(r'([\'|"][\w~`!@#$%^&*\(\)_-{}\|:;<>?\[\]=]+[\'|"]).charAt\((\d)\)', r'\1[\2]', txt)
         txt = re.sub(r'(String.fromCharCode\((\d+)\))', r"chr(\2)", txt)
         txt = re.sub(r'(String.fromCharCode\((0x\d+)\))', r"chr(int(\2))", txt)
 

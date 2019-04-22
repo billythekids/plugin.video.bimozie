@@ -39,7 +39,7 @@ class LinkParser:
 
         elif re.search('hydrax.html', self.url):
             helper.message('hydrax link parsing', 'Get Link')
-            return hydrax.get_link(self.url)
+            return hydrax.get_link(self.url, self.media)
 
         elif re.search('youtube.com', self.url):
 
