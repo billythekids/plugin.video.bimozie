@@ -49,6 +49,8 @@ class LinkParser:
             return imacdn.get_link(self.url)
         elif re.search('vtv16.com', self.url):
             return vtv16.get_link(self.url)
+        elif re.search('hls.hydrax.net', self.url):
+            return self.url + "|Origin=http://www.kenh88.com", 'hls1'
         elif self.url.endswith('m3u8'):
             return self.get_m3u8()
 

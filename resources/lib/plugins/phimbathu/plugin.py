@@ -43,7 +43,7 @@ class Phimbathu:
         return Movie().get_link(response)
 
     def search(self, text):
-        # http://phimbathu.com/tim-kiem.html?q=kiem
-        url = "%stim-kiem.html?q=%s" % (self.domain, urllib.quote_plus(text))
+        # http://phimbathu.org/tim-kiem/(keywords).html
+        url = "%stim-kiem/%s.html" % (self.domain, urllib.quote_plus(text))
         response = Request().get(url)
         return Channel().get(response, 1)

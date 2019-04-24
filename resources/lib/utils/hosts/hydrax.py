@@ -6,8 +6,12 @@ from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
 import utils.xbmc_helper as helper
 
+origin = "http://www.phimmoi.net"
+
 
 def get_link(url, media):
+    global origin
+
     response = Request().get(url)
     token = re.search('"key":"(.*?)",', response).group(1)
     params = {
@@ -15,9 +19,12 @@ def get_link(url, media):
         'type': 'slug',
         'value': re.search('#slug=(.*)', url).group(1)
     }
+
+    if re.search('vtv16', media['link']):
+        origin = "http://live.vtv16.com"
+
     response = Request().post('https://multi.hydrax.net/vip', params, {
-        'Origin': 'http://www.phimmoi.net',
-        'Referer': 'http://www.phimmoi.net/hydrax.html'
+        'Origin': origin
     })
 
     response = json.loads(response)
@@ -48,6 +55,8 @@ def get_link(url, media):
 
 
 def get_hydrax_phimmoi_stream(stream, n):
+    global origin
+
     txt = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:" + stream[
         'duration'] + "\n#EXT-X-MEDIA-SEQUENCE:0\n"
 
@@ -119,8 +128,8 @@ def get_hydrax_phimmoi_stream(stream, n):
             # e.id && (c = c + "/" + e.id)
             c += stream['id'] and "/" + stream['id'] or ""
             url = a and c + "/basic/" + a + "/" + u + "." + (
-                        stream['id'] and "js" or "jpg") or c + "/basic/" + r + "/" + u + "." + (
-                              stream['id'] and "js" or "jpg")
+                    stream['id'] and "js" or "jpg") or c + "/basic/" + r + "/" + u + "." + (
+                          stream['id'] and "js" or "jpg")
 
             if url not in links:
                 links.append(url)
@@ -131,8 +140,9 @@ def get_hydrax_phimmoi_stream(stream, n):
                 txt += "#EXT-X-ENDLIST"
 
     arequest = AsyncRequest()
+
     results = arequest.get(links, headers={
-        'origin': 'http://www.phimmoi.net'
+        'origin': origin
     })
 
     media_urls = []
@@ -149,10 +159,10 @@ def get_hydrax_phimmoi_stream(stream, n):
         max_targetduration = 12
         play_list = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:12\n#EXT-X-MEDIA-SEQUENCE:0\n"
         if 'hash' in stream:
-            path = helper.write_file('hydrax.m3u8', bytes(base64.b64decode(stream['hash'])))
+            path = helper.write_file('hydrax.m3u8', stream['hash'].encode(), binary=True)
             path = path.replace('\\', '/')
             # url = PasteBin().dpaste(stream['hash'], name='hydrax.key', expire=60)
-            play_list += "#EXT-X-KEY:METHOD=AES-128,URI=\"file:///%s\",IV=%s\n" % (path, stream['iv'])
+            play_list += "#EXT-X-KEY:METHOD=AES-128,URI=\"file://%s\",IV=%s\n" % (path, stream['iv'])
 
         for link in media_urls:
             slashlink = link.replace('-', '\\-')

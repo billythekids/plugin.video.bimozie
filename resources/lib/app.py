@@ -25,91 +25,91 @@ SITES = [
     {
         'name': 'fimfast.com',
         'logo': 'https://fimfast.com/assets/img/logo.png',
-        'class': 'Fimfast',
+        'className': 'Fimfast',
         'plugin': 'fimfast.plugin',
         'version': 1
     },
     {
         'name': 'bilutv.org',
         'logo': 'http://bilutv.org/Theme/images/bilutv-logo-noel.png',
-        'class': 'Bilutv',
+        'className': 'Bilutv',
         'plugin': 'bilutv.plugin',
         'version': 1
     },
     {
         'name': 'phimmedia.tv',
         'logo': 'http://www.phimmedia.tv/templates/themes/phim/images/phimmedia-s.png',
-        'class': 'Phimmedia',
+        'className': 'Phimmedia',
         'plugin': 'phimmedia.plugin',
         'version': 1
     },
     {
         'name': 'phimmoi.net',
         'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
-        'class': 'Phimmoi',
+        'className': 'Phimmoi',
         'plugin': 'phimmoi.plugin',
         'version': 18
     },
     {
         'name': 'tvhay.org',
         'logo': 'https://kodi-addons.club/data/d1/d14a048c56373761664ca89a773d694d.png',
-        'class': 'Tvhay',
+        'className': 'Tvhay',
         'plugin': 'tvhay.plugin',
         'version': 1
     },
     {
         'name': 'phim3s.pw',
         'logo': 'http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium',
-        'class': 'Phim3s',
+        'className': 'Phim3s',
         'plugin': 'phim3s.plugin',
         'version': 31
     },
     {
         'name': 'phimbathu.org',
         'logo': 'http://phimbathu.org/Theme/images/phimbathu-logo.png',
-        'class': 'Phimbathu',
+        'className': 'Phimbathu',
         'plugin': 'phimbathu.plugin',
         'version': 1
     },
     {
         'name': 'kenh88.com',
         'logo': 'http://www.kenh88.com/images/logo_kenh88.png',
-        'class': 'Kenh88',
+        'className': 'Kenh88',
         'plugin': 'kenh88.plugin',
         'version': 1
     },
     {
         'name': 'phim14.net',
         'logo': 'http://phim14.net/application/views/frontend/default/images/logo.png',
-        'class': 'Phim14',
+        'className': 'Phim14',
         'plugin': 'phim14.plugin',
         'version': 1
     },
     {
         'name': 'fcine.net',
         'logo': 'https://fcine.net/uploads/monthly_2019_01/FCINE-LOGO.png.0d4b6b0253c4fd8a4dbefa7067ac0ac4.png',
-        'class': 'Fcine',
+        'className': 'Fcine',
         'plugin': 'fcine.plugin',
         'version': 1
     },
     {
         'name': 'animehay.tv',
         'logo': 'https://i1.wp.com/www.albertgyorfi.com/wp-content/uploads/2017/05/anime-pack.png?fit=256%2C256&ssl=1',
-        'class': 'Animehay',
+        'className': 'Animehay',
         'plugin': 'animehay.plugin',
         'version': 1
     },
     {
         'name': 'vuviphim.com',
         'logo': 'https://vuviphim.com/wp-content/uploads/2017/08/logo-vuviphim.png',
-        'class': 'Vuviphim',
+        'className': 'Vuviphim',
         'plugin': 'vuviphim.plugin',
         'version': 1
     },
     {
         'name': 'vtv16.com',
         'logo': 'https://yt3.ggpht.com/a-/AN66SAx84wKI577rKgX2IeQUiG31GaOhmVIu2le2rQ=s900-mo-c-c0xffffffff-rj-k-no',
-        'class': 'Vtv16',
+        'className': 'Vtv16',
         'plugin': 'vtv16.plugin',
         'version': 1
     },
@@ -132,8 +132,14 @@ def globalContextMenu():
 
 
 def onInit():
-    xbmcplugin.setPluginCategory(HANDLE, 'My Video Collection')
+    xbmcplugin.setPluginCategory(HANDLE, 'Websites')
     xbmcplugin.setContent(HANDLE, 'movies')
+
+    # show global search link
+    url = build_url({'mode': 'globalsearch'})
+    xbmcplugin.addDirectoryItem(HANDLE, url,
+                                xbmcgui.ListItem(label="[COLOR yellow][B] %s [/B][/COLOR]" % "Search All..."), True)
+
     for site in SITES:
         if site['version'] > KODI_VERSION:
             print("***********************Skip version %d" % site['version'])
@@ -142,7 +148,7 @@ def onInit():
         list_item = xbmcgui.ListItem(label=site['name'])
         list_item.addContextMenuItems(globalContextMenu())
         list_item.setArt({'thumb': site['logo'], 'icon': site['logo']})
-        url = build_url({'mode': 'category', 'module': site['plugin'], 'class': site['class']})
+        url = build_url({'mode': 'category', 'module': site['plugin'], 'className': site['className']})
         is_folder = True
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
@@ -154,7 +160,7 @@ def list_category(cats, module, classname):
     xbmcplugin.setContent(HANDLE, 'files')
 
     # show search link
-    url = build_url({'mode': 'search', 'module': module, 'class': classname})
+    url = build_url({'mode': 'search', 'module': module, 'className': classname})
     xbmcplugin.addDirectoryItem(HANDLE, url,
                                 xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Search ..."), True)
 
@@ -163,9 +169,9 @@ def list_category(cats, module, classname):
         list_item.addContextMenuItems(globalContextMenu())
         if 'subcategory' in cat and len(cat['subcategory']) > 0:
             url = build_url({'mode': 'category', 'url': cat['link'], 'name': cat['title'],
-                             'subcategory': json.dumps(cat['subcategory']), 'module': module, 'class': classname})
+                             'subcategory': json.dumps(cat['subcategory']), 'module': module, 'className': classname})
         else:
-            url = build_url({'mode': 'movies', 'url': cat['link'], 'page': 1, 'module': module, 'class': classname})
+            url = build_url({'mode': 'movies', 'url': cat['link'], 'page': 1, 'module': module, 'className': classname})
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, isFolder=True)
 
     xbmcplugin.endOfDirectory(HANDLE)
@@ -189,7 +195,7 @@ def list_movie(movies, link, page, module, classname):
                     list_item.setInfo(type='video', infoLabels={'plot': item['intro']})
                 url = build_url(
                     {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
-                     'module': module, 'class': classname})
+                     'module': module, 'className': classname})
                 is_folder = True
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
             except:
@@ -203,7 +209,7 @@ def list_movie(movies, link, page, module, classname):
             if 'page_patten' in movies and movies['page_patten'] is not None:
                 link = movies['page_patten']
 
-            url = build_url({'mode': 'movies', 'url': link, 'page': page + 1, 'module': module, 'class': classname})
+            url = build_url({'mode': 'movies', 'url': link, 'page': page + 1, 'module': module, 'className': classname})
             xbmcplugin.addDirectoryItem(HANDLE, url, next_item, True)
     else:
         return
@@ -223,7 +229,7 @@ def show_episode(movie, thumb, title, module, class_name):
                              'url': json.dumps(item),
                              'direct': 0,
                              'module': module,
-                             'class': class_name})
+                             'className': class_name})
             li.setProperty("IsPlayable", "true")
             xbmcplugin.addDirectoryItem(HANDLE, url, li, isFolder=True)
 
@@ -246,7 +252,7 @@ def show_episode(movie, thumb, title, module, class_name):
                                  'thumb': thumb,
                                  'items': json.dumps(items),
                                  'module': module,
-                                 'class': class_name})
+                                 'className': class_name})
                 xbmcplugin.addDirectoryItem(HANDLE, url, sli, isFolder=True)
     else:
         return
@@ -269,7 +275,7 @@ def _build_ep_list(items, title, thumb, module, class_name):
                          'url': json.dumps(item),
                          'direct': 0,
                          'module': module,
-                         'class': class_name})
+                         'className': class_name})
         li.setProperty("IsPlayable", "true")
         xbmcplugin.addDirectoryItem(HANDLE, url, li, isFolder=False)
 
@@ -297,14 +303,17 @@ def show_links(movie, title, thumb, module, class_name):
         li.setInfo('video', {'title': item['title']})
         li.setProperty('fanart_image', thumb)
         li.setArt({'thumb': thumb})
-        title = "%s - %s" % (item['title'], title)
+        try:
+            title = "%s - %s" % (item['title'], title)
+        except:
+            pass
         url = build_url({'mode': 'play',
                          'title': title,
                          'thumb': thumb,
                          'url': json.dumps(item),
                          'direct': 1,
                          'module': module,
-                         'class': class_name})
+                         'className': class_name})
         li.setProperty("IsPlayable", "true")
         xbmcplugin.addDirectoryItem(HANDLE, url, li, False)
 
@@ -376,7 +385,7 @@ def dosearch(plugin, module, classname, text, page=1):
                 })
                 url = build_url(
                     {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
-                     'module': module, 'class': classname})
+                     'module': module, 'className': classname})
                 is_folder = True
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
             except:
@@ -386,10 +395,10 @@ def dosearch(plugin, module, classname, text, page=1):
     xbmcplugin.endOfDirectory(HANDLE)
 
 
-def search(module, classname):
+def search(module, classname=None):
     xbmcplugin.setPluginCategory(HANDLE, 'Search')
     xbmcplugin.setContent(HANDLE, 'movies')
-    url = build_url({'mode': 'dosearch', 'module': module, 'class': classname})
+    url = build_url({'mode': 'dosearch', 'module': module, 'className': classname})
     xbmcplugin.addDirectoryItem(HANDLE,
                                 url,
                                 xbmcgui.ListItem(label="[COLOR orange][B]%s[/B][/COLOR]" % "Enter search text ..."),
@@ -398,25 +407,100 @@ def search(module, classname):
     # Support to save search history
     contents = XbmcHelper.search_history_get()
     if contents:
-        url = build_url({'mode': 'clearsearch', 'module': module, 'class': classname})
+        url = build_url({'mode': 'clearsearch', 'module': module, 'className': classname})
         xbmcplugin.addDirectoryItem(HANDLE,
                                     url,
                                     xbmcgui.ListItem(label="[COLOR red][B]%s[/B][/COLOR]" % "Clear search text ..."),
                                     True)
         for txt in contents:
             try:
-                url = build_url({'mode': 'dosearch', 'module': module, 'class': classname, 'url': txt})
+                url = build_url({'mode': 'dosearch', 'module': module, 'className': classname, 'url': txt})
                 xbmcplugin.addDirectoryItem(HANDLE,
                                             url,
                                             xbmcgui.ListItem(label="[COLOR blue][B]%s[/B][/COLOR]" % txt),
                                             True)
-            except: pass
+            except:
+                pass
     xbmcplugin.endOfDirectory(HANDLE)
 
 
-def get_plugin(arg):
-    classname = ARGS.get('class', None)[0]
-    module = ARGS.get('module', None)[0]
+def global_search():
+    xbmcplugin.setPluginCategory(HANDLE, 'Search')
+    xbmcplugin.setContent(HANDLE, 'movies')
+    url = build_url({'mode': 'doglobalsearch'})
+    xbmcplugin.addDirectoryItem(HANDLE,
+                                url,
+                                xbmcgui.ListItem(label="[COLOR orange][B]%s[/B][/COLOR]" % "Enter search text ..."),
+                                True)
+
+    # Support to save search history
+    contents = XbmcHelper.search_history_get()
+    if contents:
+        url = build_url({'mode': 'clearsearch'})
+        xbmcplugin.addDirectoryItem(HANDLE,
+                                    url,
+                                    xbmcgui.ListItem(label="[COLOR red][B]%s[/B][/COLOR]" % "Clear search text ..."),
+                                    False)
+        for txt in contents:
+            try:
+                url = build_url({'mode': 'doglobalsearch', 'url': txt})
+                xbmcplugin.addDirectoryItem(HANDLE,
+                                            url,
+                                            xbmcgui.ListItem(label="[COLOR blue][B]%s[/B][/COLOR]" % txt),
+                                            True)
+            except:
+                pass
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def do_global_search(text):
+    xbmcplugin.setPluginCategory(HANDLE, 'Search Result')
+    xbmcplugin.setContent(HANDLE, 'movies')
+    if not text:
+        keyboard = xbmc.Keyboard('', 'Search iPlayer')
+        keyboard.doModal()
+        if keyboard.isConfirmed():
+            text = keyboard.getText()
+
+    if not text:
+        return
+
+    XbmcHelper.search_history_save(text)
+
+    print("*********************** searching %s" % text)
+    for site in SITES:
+        if site['version'] > KODI_VERSION:
+            continue
+
+        plugin, module, classname = get_plugin({'className': [site['className']], "module": [site['plugin']]})
+        movies = plugin().search(text)
+
+        if movies is not None:
+            label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (classname, len(movies['movies']))
+            sli = xbmcgui.ListItem(label=label)
+            url = build_url({'mode': 'dosearch', 'module': module, 'className': classname, 'url': text})
+            xbmcplugin.addDirectoryItem(HANDLE, url, sli, isFolder=True)
+            for item in movies['movies'][:5]:
+                try:
+                    list_item = xbmcgui.ListItem(label=item['label'])
+                    list_item.setLabel2(item['realtitle'])
+                    list_item.setIconImage('DefaultVideo.png')
+                    list_item.setArt({
+                        'thumb': item['thumb'],
+                    })
+                    url = build_url(
+                        {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
+                         'module': module, 'className': classname})
+                    is_folder = True
+                    xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+                except:
+                    print(item)
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def get_plugin(args):
+    classname = args.get('className', None)[0]
+    module = args.get('module', None)[0]
     print("*********************** Run module: %s - plugin: %s " % (module, classname))
     return getattr(import_module(module), classname), module, classname
 
@@ -424,7 +508,8 @@ def get_plugin(arg):
 def router():
     mode = ARGS.get('mode', None)
     instance = module = classname = None
-    if mode is not None:
+
+    if mode is not None and mode[0] != 'globalsearch' and mode[0] != 'doglobalsearch' and mode[0] != 'clearsearch':
         instance, module, classname = get_plugin(ARGS)
 
     if mode is None:
@@ -483,6 +568,12 @@ def router():
 
     elif mode[0] == 'search':
         search(module, classname)
+
+    elif mode[0] == 'globalsearch':
+        global_search()
+    elif mode[0] == 'doglobalsearch':
+        text = ARGS.get('url') and ARGS.get('url')[0] or None
+        do_global_search(text)
 
     elif mode[0] == 'dosearch':
         text = ARGS.get('url') and ARGS.get('url')[0] or None
