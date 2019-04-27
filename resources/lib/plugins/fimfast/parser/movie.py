@@ -99,7 +99,7 @@ class Parser:
         if len(resolutions) > 1:
             play_list += "#EXTM3U\n"
             if '1080' in resolutions:
-                idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
+                idx = next((resolutions.index(i) for i in resolutions if '1080' == i), -1)
                 url = matches[idx]
                 stream_url = base_url + url
                 play_list += "#EXT-X-STREAM-INF:BANDWIDTH=3000000,RESOLUTION=1920x1080\n"

@@ -37,7 +37,7 @@ class Parser:
 
         return movie
 
-    def get_link(self, response):
+    def get_link(self, response, originUrl):
         movie = {
             'group': {},
             'episode': [],
@@ -71,6 +71,7 @@ class Parser:
                             'link': sources['file'].replace('\\', ''),
                             'title': 'Link %s' % sources['type'].encode('utf-8'),
                             'type': sources['type'].encode('utf-8'),
+                            'originUrl': originUrl,
                             'resolve': False
                         })
                 else:
@@ -79,6 +80,7 @@ class Parser:
                                 'link': source['file'].replace('\\', ''),
                                 'title': 'Link %s' % source['type'].encode('utf-8'),
                                 'type': source['type'].encode('utf-8'),
+                                'originUrl': originUrl,
                                 'resolve': False
                             })
 
@@ -103,6 +105,7 @@ class Parser:
                 'link': source,
                 'title': source,
                 'type': 'file',
+                'originUrl': originUrl,
                 'resolve': False
             })
             return movie

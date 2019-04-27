@@ -24,9 +24,12 @@ class Parser:
         for movie in soup.select('div.module > div.content > div.items > article.item'):
             tag = movie.select_one('div.poster > a > img')
             title = tag.get('alt').strip()
-            thumb = self.parse_url(tag.get('src').encode("utf-8"))
+            thumb = self.parse_url(tag.select_one('noscript > img').get('src').encode("utf-8"))
 
-            type = movie.select_one('div.poster > span.quality').text.strip()
+            try:
+                type = movie.select_one('div.poster > span.quality').text.strip()
+            except:
+                type = ""
             label = "[%s] %s" % (type, title)
             try:
                 intro = movie.select_one('div.dtinfo > div.texto').find(text=True, recursive=False).strip()

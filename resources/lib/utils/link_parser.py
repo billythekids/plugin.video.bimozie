@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import utils.xbmc_helper as helper
-from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16
+from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax
 
 
 class LinkParser:
@@ -12,45 +12,51 @@ class LinkParser:
     def get_link(self):
         print("Find link source of %s" % self.url)
         if re.search('ok.ru', self.url):
-
             return ok.get_link(self.url)
+
         elif re.search('openload.co', self.url):
-
             return self.get_link_openload()
+
         elif re.search('fshare.vn', self.url):
-
             return self.get_link_fshare()
-        elif re.search('dailymotion.com', self.url):
 
+        elif re.search('dailymotion.com', self.url):
             return self.get_link_dailymotion()
+
         elif re.search('fptplay.net', self.url):
             helper.message('FPTPlay hls link parsing', 'Get Link')
             return fptplay.get_link(self.url)
+
         elif re.search('sstreamgg.xyz', self.url) \
                 or re.search('ggstream.me', self.url) \
                 or re.search('hhstream.xyz', self.url) \
                 or re.search('116.203.139.97', self.url) \
                 or re.search('tstream.xyz', self.url):
-
             return self.get_sstreamgg()
+
         elif re.search('hls.phimmoi.net', self.url):
             helper.message('Phimmoi hls link parsing', 'Get Link')
             return phimmoi.get_link(self.url, self.media['origin_url'])
 
         elif re.search('hydrax.html', self.url):
             helper.message('hydrax link parsing', 'Get Link')
-            return hydrax.get_link(self.url, self.media)
+            return hydrax.get_vip_hydrax(self.url, self.media)
+        elif re.search('hydrax.net/watch', self.url):
+            helper.message('hydrax link parsing', 'Get Link')
+            return hydrax.get_guest_hydrax(self.url, self.media)
 
         elif re.search('youtube.com', self.url):
-
             return self.get_youtube()
-        elif re.search('imacdn.com', self.url):
 
+        elif re.search('imacdn.com', self.url):
             return imacdn.get_link(self.url)
+
         elif re.search('vtv16.com', self.url):
             return vtv16.get_link(self.url)
+
         elif re.search('hls.hydrax.net', self.url):
-            return self.url + "|Origin=http://www.kenh88.com", 'hls1'
+            return hls_hydrax.get_link(self.url, self.media), 'hls5'
+
         elif self.url.endswith('m3u8'):
             return self.get_m3u8()
 

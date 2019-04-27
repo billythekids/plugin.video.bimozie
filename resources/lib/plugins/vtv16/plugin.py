@@ -28,7 +28,7 @@ class Vtv16:
 
     def getLink(self, movie):
         response = Request().get(movie['link'])
-        return Movie().get_link(response)
+        return Movie().get_link(response, movie['link'])
 
     def search(self, text):
         url = "%s/tim-kiem-phim/%s" % (self.domain, urllib.quote_plus(text))

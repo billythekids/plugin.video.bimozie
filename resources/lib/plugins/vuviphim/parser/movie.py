@@ -48,13 +48,13 @@ class Parser:
             sources = re.search('sources:(.*?]),', sources)
             sources = re.sub(r'(?<={|,)([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources.group(1))
             sources = json.loads(sources)
-            score = {'sd': 1, 'hd': 2}
+            score = {'sd': 1, 'hd': 2, '360p': 1, '480p': 2, '720p': 3, '1080p': 3}
             if len(sources) > 1:
                 try:
                     sources = sorted(sources, key=lambda elem: elem['label'].lower() in score and score[elem['label'].lower()] or 3, reverse=True)
                 except:
                     pass
-
+            print(sources)
             for source in sources:
                 movie['links'].append({
                     'link': source['file'].replace('\\', ''),

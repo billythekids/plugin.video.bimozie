@@ -9,7 +9,28 @@ import utils.xbmc_helper as helper
 origin = "http://www.phimmoi.net"
 
 
-def get_link(url, media):
+def get_guest_hydrax(url, media):
+    slug = re.search('\?v=(.*)', url).group(1)
+    response = Request().post('https://multi.hydrax.net/guest', {
+        'slug': slug
+    }, {
+        'Origin': 'http://hydrax.net'
+    })
+
+    response = json.loads(response)
+    if 'fullhd' in response:
+        return get_hydrax_phimmoi_stream(response['fullhd'], response['servers']), 'hls4'
+    elif 'hd' in response:
+        return get_hydrax_phimmoi_stream(response['hd'], response['servers']), 'hls4'
+    elif 'mhd' in response:
+        return get_hydrax_phimmoi_stream(response['mhd'], response['servers']), 'hls4'
+    elif 'sd' in response:
+        return get_hydrax_phimmoi_stream(response['sd'], response['servers']), 'hls4'
+    elif 'origin' in response:
+        return get_hydrax_phimmoi_stream(response['origin'], response['servers']), 'hls4'
+
+
+def get_vip_hydrax(url, media):
     global origin
 
     response = Request().get(url)
@@ -68,7 +89,7 @@ def get_hydrax_phimmoi_stream(stream, n):
 
     r = len(stream['range'])
     o = len(n)
-    a = stream['expired']
+    a = 'expired' in stream and stream['expired'] or None
     s = 0
     l = stream['multiRange']
     h = len(l)
@@ -103,7 +124,10 @@ def get_hydrax_phimmoi_stream(stream, n):
                     p = y and f + g - 1 or g - 1
                     y = '%s-%s' % (f, p)
 
-                url = a and c + "/" + a + "/" + u or c + "/" + r + "/" + u
+                if a:
+                    url = a and c + "/" + a + "/" + u
+                else:
+                    url = c + "/" + str(r) + "/" + str(u)
                 # url += stream['id'] and "/" + y + ".js" or "/" + y + ".jpg"
                 if url not in links:
                     links.append(url)
