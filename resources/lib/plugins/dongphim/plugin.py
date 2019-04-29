@@ -31,6 +31,6 @@ class Dongphim:
         return Movie().get_link(response)
 
     def search(self, text):
-        url = "%s/tim-kiem?q=%s" % (self.domain, urllib.quote_plus(text))
+        url = "%s/content/search?t=kw&q=%s" % (self.domain, urllib.quote_plus(text))
         response = Request().get(url)
         return Channel().get(response, 1)

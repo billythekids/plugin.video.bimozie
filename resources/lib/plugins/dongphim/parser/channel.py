@@ -21,7 +21,11 @@ class Parser:
         for movie in soup.select('div.flex-wrap-movielist > a.movie-item'):
 
             title = movie.select_one('div.title-in h6').text.strip()
-            type = movie.select_one('div.badget-eps').text.strip()
+            try:
+                type = movie.select_one('div.badget-eps').text.strip()
+            except:
+                type = "HD"
+
             label = "[%s] %s" % (type, title)
             thumb = movie.select_one('div.mv-img').get('data-original')
 
