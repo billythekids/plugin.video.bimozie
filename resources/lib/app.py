@@ -113,6 +113,13 @@ SITES = [
         'plugin': 'vtv16.plugin',
         'version': 1
     },
+    {
+        'name': 'phimgi.net',
+        'logo': 'https://cdn-img.phimgi.net/wp-content/uploads/2019/01/phimgi-02.png',
+        'className': 'Phimgi',
+        'plugin': 'phimgi.plugin',
+        'version': 1
+    },
 ]
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
@@ -239,7 +246,7 @@ def show_episode(movie, thumb, title, module, class_name):
             idx += 1
             label = "[COLOR red][B][---- %s : [COLOR yellow]%d eps[/COLOR] ----][/B][/COLOR]" % (key, len(items))
             sli = xbmcgui.ListItem(label=label)
-            if len(items) < 2 or len(movie['group']) == 1:
+            if len(items) < 2 or len(movie['group']) < 1:
                 xbmcplugin.addDirectoryItem(HANDLE, None, sli, isFolder=False)
                 _build_ep_list(items, title, thumb, module, class_name)
             elif idx is len(movie['group']):

@@ -3,6 +3,7 @@ import xbmc
 import xbmcaddon
 import os
 import json
+import re
 
 addon = xbmcaddon.Addon()
 ADDON_ID = addon.getAddonInfo('id')
@@ -92,3 +93,8 @@ def search_history_get():
 
 def wait(sec):
     xbmc.sleep(sec * 1000)
+
+
+def convert_js_2_json(str):
+    vstr = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', str)
+    return json.loads(vstr)
