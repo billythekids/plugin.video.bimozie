@@ -487,7 +487,10 @@ def do_global_search(text):
             continue
 
         plugin, module, classname = get_plugin({'className': [site['className']], "module": [site['plugin']]})
-        movies = plugin().search(text)
+        movies = None
+        try:
+            movies = plugin().search(text)
+        except: pass
 
         if movies is not None:
             label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (classname, len(movies['movies']))
