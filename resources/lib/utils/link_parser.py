@@ -57,6 +57,9 @@ class LinkParser:
         elif re.search('hls.hydrax.net', self.url):
             return hls_hydrax.get_link(self.url, self.media), 'hls5'
 
+        elif re.search('dgo.dongphim.net', self.url):
+            return self.url + "|Origin=http://dongphim.net", 'hls1'
+
         elif self.url.endswith('m3u8'):
             return self.get_m3u8()
 

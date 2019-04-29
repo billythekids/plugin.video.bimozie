@@ -120,6 +120,13 @@ SITES = [
         'plugin': 'phimgi.plugin',
         'version': 1
     },
+    {
+        'name': 'dongphim.net',
+        'logo': 'http://media.dongphim.net/media/image/id/5c921766acc399d72c8b456b_200x',
+        'className': 'Dongphim',
+        'plugin': 'dongphim.plugin',
+        'version': 1
+    },
 ]
 
 addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
