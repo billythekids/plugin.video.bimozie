@@ -19,6 +19,10 @@ def get_link(url, media):
     resolutions = re.findall('RESOLUTION=\d+x(\d+)', response)
     matches = re.findall(r'(.*\.m3u8)', response)
     if len(resolutions) > 1:
+        if '1080' in resolutions:
+            idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
+            stream_url = url.replace('playlist.m3u8', matches[idx])
+            return calculate_stream(request.get(stream_url), base_url, media['originUrl'])
         if '720' in resolutions:
             idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
             stream_url = url.replace('playlist.m3u8', matches[idx])
@@ -53,7 +57,7 @@ def calculate_stream(content, origin, referer):
     })
 
     max_targetduration = 12
-    play_list = "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:12\n#EXT-X-MEDIA-SEQUENCE:0\n"
+    play_list = "#EXTM3U\n#EXT-X-VERSION:5\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:12\n#EXT-X-MEDIA-SEQUENCE:0\n"
     hash = re.search("(#EXT-X-KEY.*?)\n", content)
     if hash:
         play_list += hash.group(0)

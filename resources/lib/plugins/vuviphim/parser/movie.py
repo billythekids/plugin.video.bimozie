@@ -54,7 +54,6 @@ class Parser:
                     sources = sorted(sources, key=lambda elem: elem['label'].lower() in score and score[elem['label'].lower()] or 3, reverse=True)
                 except:
                     pass
-            print(sources)
             for source in sources:
                 movie['links'].append({
                     'link': source['file'].replace('\\', ''),

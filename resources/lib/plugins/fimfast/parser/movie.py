@@ -41,6 +41,7 @@ class Parser:
         }
 
         videos = json.loads(response)
+
         subtitle = None
         # https://fimfast.com/subtitle
         if 'subtitle' in videos and len(videos['subtitle']) > 0 and 'vi' in videos['subtitle']:
@@ -60,10 +61,8 @@ class Parser:
             return movie
         elif u'hff' in videos and videos['hff'] and self.encodeString(videos['hff'], 69).find('No link') == -1:
             url = self.encodeString(videos['hff'], 69)
-            helper.message('Fimfast HFF', 'Movie Found')
             movie['links'].append({
                 'link': url,
-                # 'link': self.get_hls(url),
                 'title': 'Link hff',
                 'type': 'hls',
                 'resolve': False,

@@ -11,11 +11,15 @@ class Parser:
 
         for item in cats[1:]:
             menu = item.select_one('> a')
-            category.append({
+            cat = {
                 'title': menu.text.strip().encode("utf-8"),
                 'link': menu.get("href"),
-                'subcategory': self.getsubmenu(item)
-            })
+                'subcategory': []
+            }
+
+            if menu.get("href") is None:
+                cat['subcategory'] = self.getsubmenu(item)
+            category.append(cat)
         return category
 
     def getsubmenu(self, xpath):

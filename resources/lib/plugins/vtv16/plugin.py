@@ -24,13 +24,13 @@ class Vtv16:
     def getMovie(self, id):
         url = '%s/xem-phim.html' % id
         response = Request().get(url)
-        return Movie().get(response)
+        return Movie().get(response, url)
 
     def getLink(self, movie):
         response = Request().get(movie['link'])
         return Movie().get_link(response, movie['link'])
 
     def search(self, text):
-        url = "%s/tim-kiem-phim/%s" % (self.domain, urllib.quote_plus(text))
+        url = "%s/tim-kiem-phim/%s/" % (self.domain, text.replace(' ', '-'))
         response = Request().get(url)
         return Channel().get(response, 1)

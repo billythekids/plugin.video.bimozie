@@ -86,6 +86,7 @@ def get_hydrax_phimmoi_stream(stream, n):
         txt += "#EXT-X-KEY:METHOD=AES-128,URI=\"%s\",IV=%s\n" % (stream['hash'], stream['iv'])
 
     links = []
+    hashlist = []
 
     r = len(stream['range'])
     o = len(n)
@@ -130,7 +131,13 @@ def get_hydrax_phimmoi_stream(stream, n):
                     url = c + "/" + str(r) + "/" + str(u)
                 # url += stream['id'] and "/" + y + ".js" or "/" + y + ".jpg"
                 if url not in links:
-                    links.append(url)
+                    # find has
+                    match = re.search(r"immortal.hydrax.net/\d+/(.*?)$", url)
+                    if match and match.group(1) not in hashlist:
+                        links.append(url)
+                        hashlist.append(match.group(1))
+                    elif not match:
+                        links.append(url)
 
                 txt += url + "\n"
                 r += 1
@@ -164,7 +171,6 @@ def get_hydrax_phimmoi_stream(stream, n):
                 txt += "#EXT-X-ENDLIST"
 
     arequest = AsyncRequest()
-
     results = arequest.get(links, headers={
         'origin': origin
     })
@@ -188,10 +194,14 @@ def get_hydrax_phimmoi_stream(stream, n):
             # url = PasteBin().dpaste(stream['hash'], name='hydrax.key', expire=60)
             play_list += "#EXT-X-KEY:METHOD=AES-128,URI=\"file://%s\",IV=%s\n" % (path, stream['iv'])
 
-        for link in media_urls:
-            slashlink = link.replace('-', '\\-')
-            slashlink = slashlink.replace('*', '\\*')
-            slashlink = slashlink.replace('?', '\\?')
+        for index, link in enumerate(media_urls):
+            if len(hashlist) > 0:
+                slashlink = hashlist[index]
+            else:
+                slashlink = link.replace('-', '\\-')
+                slashlink = slashlink.replace('*', '\\*')
+                slashlink = slashlink.replace('?', '\\?')
+
             segments = re.findall(
                 r"(#EXTINF:([0-9]*\.?[0-9]+),\n#EXT-X-BYTERANGE:([0-9]+)@([0-9]+)(?:(?!#EXTINF).)*" + slashlink + ")",
                 txt, re.DOTALL)

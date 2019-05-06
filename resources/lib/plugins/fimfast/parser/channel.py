@@ -3,6 +3,7 @@
 import re
 import json
 from HTMLParser import HTMLParser
+from bs4 import BeautifulSoup
 
 
 class Parser:
@@ -48,7 +49,7 @@ class Parser:
                 'thumb': movie['thumbnail'],
                 'poster': movie['poster'],
                 'type': type,
-                'intro': h.unescape(movie['description'])
+                'intro': BeautifulSoup(h.unescape(movie['description']), "html.parser").text
             })
 
         return channel

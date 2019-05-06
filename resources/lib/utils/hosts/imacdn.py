@@ -15,23 +15,26 @@ def get_link(url):
     if len(resolutions) > 1:
         play_list += "#EXTM3U\n"
         if '1080' in resolutions:
-            idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
+            idx = next((resolutions.index(i) for i in resolutions if '1080' == i), -1)
             url = matches[idx]
             stream_url = base_url + url
-            play_list += "#EXT-X-STREAM-INF:BANDWIDTH=3000000,RESOLUTION=1920x1080\n"
-            play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)
+            return create_imacdn_stream(stream_url, base_url)
+            # play_list += "#EXT-X-STREAM-INF:BANDWIDTH=3000000,RESOLUTION=1920x1080\n"
+            # play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)
         elif '720' in resolutions:
             idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
             url = matches[idx]
             stream_url = base_url + url
-            play_list += "#EXT-X-STREAM-INF:BANDWIDTH=1500000,RESOLUTION=1280x720\n"
-            play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)
+            return create_imacdn_stream(stream_url, base_url)
+            # play_list += "#EXT-X-STREAM-INF:BANDWIDTH=1500000,RESOLUTION=1280x720\n"
+            # play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)
         elif '480' in resolutions:
             idx = next((resolutions.index(i) for i in resolutions if '480' == i), -1)
             url = matches[idx]
             stream_url = base_url + url
-            play_list += "#EXT-X-STREAM-INF:BANDWIDTH=750000,RESOLUTION=854x480\n"
-            play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)
+            return create_imacdn_stream(stream_url, base_url)
+            # play_list += "#EXT-X-STREAM-INF:BANDWIDTH=750000,RESOLUTION=854x480\n"
+            # play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)
     else:
         play_list = resp
         for m in matches:
@@ -39,7 +42,8 @@ def get_link(url):
             play_list = play_list.replace(m, create_imacdn_stream(stream_url, base_url))
 
     url = PasteBin().dpaste(play_list, name=url, expire=60)
-    return url, 'hls5'
+    return url
+
 
 def create_imacdn_stream(url, base_url):
     retry = 5
