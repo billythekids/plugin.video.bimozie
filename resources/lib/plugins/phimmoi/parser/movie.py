@@ -79,7 +79,8 @@ class Parser:
                         'link': url,
                         'title': 'Link %s' % item['resolution'],
                         'type': item['resolution'],
-                        'resolve': True
+                        'resolve': False,
+                        'originUrl': self.originURL
                     })
                 else:
                     # hls.phimmoi.net
@@ -88,7 +89,7 @@ class Parser:
                         'title': 'Link hls',
                         'type': 'hls',
                         'resolve': False,
-                        'origin_url': self.originURL
+                        'originUrl': self.originURL
                     })
         elif jsonresponse['embedUrls']:
             for item in jsonresponse['embedUrls']:
@@ -98,14 +99,16 @@ class Parser:
                         'link': url,
                         'title': 'Link Unknow',
                         'type': 'mp4',
-                        'resolve': False
+                        'resolve': False,
+                        'originUrl': self.originURL
                     })
                 else:
                     movie['links'].append({
                         'link': url,
                         'title': 'Link hydrax',
                         'type': 'hls',
-                        'resolve': False
+                        'resolve': False,
+                        'originUrl': self.originURL
                     })
 
         return movie

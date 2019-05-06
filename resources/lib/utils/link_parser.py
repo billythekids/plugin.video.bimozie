@@ -34,9 +34,9 @@ class LinkParser:
                 or re.search('tstream.xyz', self.url):
             return self.get_sstreamgg()
 
-        elif re.search('hls.phimmoi.net', self.url):
+        elif re.search('hls.phimmoi.[net|link]', self.url):
             helper.message('Phimmoi hls link parsing', 'Get Link')
-            return phimmoi.get_link(self.url, self.media['origin_url'])
+            return phimmoi.get_link(self.url, self.media['originUrl'])
 
         elif re.search('hydrax.html', self.url):
             helper.message('hydrax link parsing', 'Get Link')
