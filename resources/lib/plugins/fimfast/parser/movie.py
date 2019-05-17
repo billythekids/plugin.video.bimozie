@@ -9,7 +9,7 @@ from utils.pastebin import PasteBin
 
 class Parser:
     def get_movie_id(self, response):
-        r = re.search('data-id="(.*)" data-episode-id="(.*)"', response)
+        r = re.search('data-id="(.*?)" data-episode-id="(.*?)"', response)
         fid = int(r.group(1))
         epid = int(r.group(2))
 
@@ -146,7 +146,7 @@ class Parser:
 
         response - response.replace('EXT-X-VERSION:5', 'EXT-X-VERSION:3')
         url = PasteBin().dpaste(response, name=url, expire=60)
-        return url
+        return url + "|User-Agent: Chrome/59.0.3071.115 Safari/537.36"
 
     def encodeString(self, e, t):
         a = ""

@@ -18,6 +18,7 @@ def get_link(url):
             idx = next((resolutions.index(i) for i in resolutions if '1080' == i), -1)
             url = matches[idx]
             stream_url = base_url + url
+            return stream_url
             return create_imacdn_stream(stream_url, base_url)
             # play_list += "#EXT-X-STREAM-INF:BANDWIDTH=3000000,RESOLUTION=1920x1080\n"
             # play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)
@@ -25,6 +26,7 @@ def get_link(url):
             idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
             url = matches[idx]
             stream_url = base_url + url
+            return stream_url
             return create_imacdn_stream(stream_url, base_url)
             # play_list += "#EXT-X-STREAM-INF:BANDWIDTH=1500000,RESOLUTION=1280x720\n"
             # play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)
@@ -32,6 +34,7 @@ def get_link(url):
             idx = next((resolutions.index(i) for i in resolutions if '480' == i), -1)
             url = matches[idx]
             stream_url = base_url + url
+            return stream_url
             return create_imacdn_stream(stream_url, base_url)
             # play_list += "#EXT-X-STREAM-INF:BANDWIDTH=750000,RESOLUTION=854x480\n"
             # play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)
@@ -64,6 +67,6 @@ def create_imacdn_stream(url, base_url):
         for m in matches:
             stream_url = base_url + m
             response = response.replace(m, stream_url)
-
-    url = PasteBin().dpaste(response, name=url, expire=60)
+        url = PasteBin().dpaste(response, name=url, expire=60)
+    print("------------------------------------ %s") % url
     return url

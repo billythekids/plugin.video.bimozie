@@ -338,14 +338,16 @@ def play(movie, title=None, thumb=None, direct=False):
     print("*********************** playing ")
     if direct:
         mediatype = MediaHelper.resolve_link(movie)
-        play_item = xbmcgui.ListItem(path=movie['link'])
+        play_item = xbmcgui.ListItem()
+        play_item.setPath(movie['link'])
     else:
         if len(movie['links']) == 0:
             return
         else:
             movie = movie['links'][0]
             mediatype = MediaHelper.resolve_link(movie)
-            play_item = xbmcgui.ListItem(path=movie['link'])
+            play_item = xbmcgui.ListItem()
+            play_item.setPath(movie['link'])
             try:
                 title = "%s - %s" % (movie['title'].encode('utf-8'), title.encode('utf-8'))
             except:

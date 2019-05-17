@@ -30,7 +30,7 @@ class FShare:
         return self.extract_token(r)
 
     def extract_token(self, response):
-        return re.search('name="csrf-token" content="(.*)">', response).group(1)
+        return re.search(r'name="csrf-token" content="(.*)">', response).group(1)
 
     def get_link(self):
         if not self.username or not self.password:
@@ -39,7 +39,7 @@ class FShare:
             r = self.login()
             token = self.extract_token(r)
 
-        code = re.search('/file/([^\?]+)', self.url).group(1)
+        code = re.search(r'/file/([^\?]+)', self.url).group(1)
 
         r = self.request.post('https://www.fshare.vn/download/get', {
             '_csrf-app': token,

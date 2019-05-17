@@ -51,25 +51,25 @@ def get_vip_hydrax(url, media):
     response = json.loads(response)
     r = "#EXTM3U\n#EXT-X-VERSION:3\n"
     if 'fullhd' in response:
-        return get_hydrax_phimmoi_stream(response['fullhd'], response['servers']), 'hls4'
-        # r += "#EXT-X-STREAM-INF:BANDWIDTH=2998000,RESOLUTION=1920x1080\n"
-        # r += "%s\n" % get_hydrax_phimmoi_stream(response['fullhd'], response['servers'])
-    elif 'hd' in response:
-        return get_hydrax_phimmoi_stream(response['hd'], response['servers']), 'hls4'
-        # r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
-        # r += "%s\n" % get_hydrax_phimmoi_stream(response['hd'], response['servers'])
-    elif 'mhd' in response:
-        return get_hydrax_phimmoi_stream(response['mhd'], response['servers']), 'hls4'
-        # r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
-        # r += "%s\n" % get_hydrax_phimmoi_stream(response['mhd'], response['servers'])
-    elif 'sd' in response:
-        return get_hydrax_phimmoi_stream(response['sd'], response['servers']), 'hls4'
-        # r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
-        # r += "%s\n" % get_hydrax_phimmoi_stream(response['sd'], response['servers'])
-    elif 'origin' in response:
-        return get_hydrax_phimmoi_stream(response['origin'], response['servers']), 'hls4'
-        # r += "#EXT-X-STREAM-INF:BANDWIDTH=3998000,RESOLUTION=9999x9999\n"
-        # r += "%s\n" % get_hydrax_phimmoi_stream(response['origin'], response['servers'])
+        stream_url = get_hydrax_phimmoi_stream(response['fullhd'], response['servers'])
+        if stream_url:
+            return stream_url, 'hls4'
+    if 'hd' in response:
+        stream_url = get_hydrax_phimmoi_stream(response['hd'], response['servers'])
+        if stream_url:
+            return stream_url, 'hls4'
+    if 'mhd' in response:
+        stream_url = get_hydrax_phimmoi_stream(response['mhd'], response['servers'])
+        if stream_url:
+            return stream_url, 'hls4'
+    if 'sd' in response:
+        stream_url = get_hydrax_phimmoi_stream(response['sd'], response['servers'])
+        if stream_url:
+            return stream_url, 'hls4'
+    if 'origin' in response:
+        stream_url = get_hydrax_phimmoi_stream(response['origin'], response['servers'])
+        if stream_url:
+            return stream_url, 'hls4'
 
     url = PasteBin().dpaste(r, name=url, expire=60)
     return url, 'hls4'
@@ -84,6 +84,8 @@ def get_hydrax_phimmoi_stream(stream, n):
     if 'hash' in stream:
         txt += "#EXT-X-HASH:%s\n" % stream['hash']
         txt += "#EXT-X-KEY:METHOD=AES-128,URI=\"%s\",IV=%s\n" % (stream['hash'], stream['iv'])
+        helper.message('Encrypt not supported', 'Hydrax')
+        return ""
 
     links = []
     hashlist = []
@@ -187,12 +189,14 @@ def get_hydrax_phimmoi_stream(stream, n):
 
     if stream['type'] == 2:
         max_targetduration = 12
-        play_list = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:12\n#EXT-X-MEDIA-SEQUENCE:0\n"
+        play_list = "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:12\n#EXT-X-MEDIA-SEQUENCE:0\n"
         if 'hash' in stream:
-            path = helper.write_file('hydrax.m3u8', stream['hash'].encode(), binary=True)
-            path = path.replace('\\', '/')
+            # path = helper.write_file('hydrax.m3u8', stream['hash'], binary=True)
+            # path = path.replace('\\', '/')
+            # path = "http://localhost/portal/hydrax.m3u8"
+            path = "encrypted-file://" + stream['hash']
             # url = PasteBin().dpaste(stream['hash'], name='hydrax.key', expire=60)
-            play_list += "#EXT-X-KEY:METHOD=AES-128,URI=\"file://%s\",IV=%s\n" % (path, stream['iv'])
+            play_list += "#EXT-X-KEY:METHOD=AES-128,URI=\"%s\",IV=%s\n" % (path, stream['iv'])
 
         for index, link in enumerate(media_urls):
             if len(hashlist) > 0:

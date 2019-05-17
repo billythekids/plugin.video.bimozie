@@ -26,7 +26,7 @@ class Request:
             self.session = requests.session()
 
     def get(self, url, headers=None, params=None, redirect=True, cookies=None):
-        print("Request URL: %s" % url)
+        # print("Request URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
