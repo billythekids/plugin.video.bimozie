@@ -4,38 +4,54 @@ import math
 from urlparse import urlparse
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
+from urllib import urlencode
 
 
 def get_link(url, media):
     base_url = urlparse(url)
     base_url = base_url.scheme + '://' + base_url.netloc
-    request = Request(header={
-        'Origin': base_url,
-        'Referer': media['originUrl']
-    })
+    header = {
+        'Origin': base_url
+    }
+    request = Request(header)
 
     response = request.get(str(url))
 
     resolutions = re.findall('RESOLUTION=\d+x(\d+)', response)
     matches = re.findall(r'(.*\.m3u8)', response)
+    print("Found total %d stream" % len(resolutions), resolutions)
     if len(resolutions) > 1:
         if '1080' in resolutions:
             idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
             stream_url = url.replace('playlist.m3u8', matches[idx])
-            return calculate_stream(request.get(stream_url), base_url, media['originUrl'])
+            stream_url = calculate_stream(request.get(stream_url), base_url, media['originUrl'])
+            print("1080 url:%s" % stream_url)
+            if stream_url:
+                return stream_url
+
         if '720' in resolutions:
             idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
             stream_url = url.replace('playlist.m3u8', matches[idx])
-            return calculate_stream(request.get(stream_url), base_url, media['originUrl'])
+            stream_url = calculate_stream(request.get(stream_url), base_url, media['originUrl'])
+            print("720 url:%s" % stream_url)
+            if stream_url:
+                return stream_url
+
         if '360' in resolutions:
             idx = next((resolutions.index(i) for i in resolutions if '360' == i), -1)
             stream_url = url.replace('playlist.m3u8', matches[idx])
-            return calculate_stream(request.get(stream_url), base_url, media['originUrl'])
+            stream_url = calculate_stream(request.get(stream_url), base_url, media['originUrl'])
+            print("360 url:%s" % stream_url)
+            if stream_url:
+                return stream_url
 
-    return
+    return str(url) + "|%s" % urlencode(header)
 
 
 def calculate_stream(content, origin, referer):
+    if re.search(r'#EXT-X-KEY:METHOD=AES-128', content):
+        return None
+
     # get all links
     content = content.replace('//immortal.hydrax.net', 'http://immortal.hydrax.net')
     reg = re.findall('(http://immortal.hydrax.net/.*/.*/(.*)/(.*))/.*\n', content)
@@ -93,4 +109,3 @@ def calculate_stream(content, origin, referer):
 
     url = PasteBin().dpaste(play_list, name=referer, expire=60)
     return url
-

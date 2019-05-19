@@ -55,7 +55,7 @@ class LinkParser:
             return vtv16.get_link(self.url)
 
         elif re.search('hls.hydrax.net', self.url):
-            return hls_hydrax.get_link(self.url, self.media), 'hls5'
+            return hls_hydrax.get_link(self.url, self.media), 'hls'
 
         elif re.search('dgo.dongphim.net', self.url):
             return self.url + "|Origin=http://dongphim.net", 'hls1'

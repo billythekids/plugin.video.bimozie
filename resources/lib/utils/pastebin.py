@@ -30,34 +30,13 @@ class PasteBin:
 
     def dpaste(self, content, name="", expire=1440):
         print("Uploading playlist")
-        url = 'https://api.paste.ee/v1/pastes'
-        params = {
-            'encrypted': 'false',
-            'description': name,
-            'sections': [{
-                'syntax': 'text',
-                'contents': content,
-            }]
-        }
+        url = 'https://hastebin.com/documents'
+        params = content
         r = requests.post(url,
-                          json=params,
-                          timeout=30,
-                          headers={'X-Auth-Token': 'uhE2lTkFfBMe6jdHPrXUaeSTK4p7X01KScOwFeCWQ'})
+                          data=params,
+                          timeout=30)
 
         resp = json.loads(r.text)
-        url = "https://paste.ee/r/%s" % resp['id']
-        print('Dpaste url: %s' % url)
-        retry = 0
-        while retry < 5:
-            try:
-                print('Retry %d' % retry)
-                response = requests.get(url)
-                print(response.status_code)
-                if response.status_code == requests.codes.ok: break
-                url += "/%d" % retry
-            except:
-                pass
-            finally:
-                retry += 1
-
+        url = "https://hastebin.com/raw/%s" % resp['key']
+        print('hastebin url: %s' % url)
         return url

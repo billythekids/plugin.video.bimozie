@@ -8,6 +8,12 @@ class MediaHelper:
     def resolve_link(media):
         link = media['link']
         mediatype = '720'
+
+        r = re.search('^https?:', link)
+        if not r:
+            link = 'http:%s' % link
+            media['link'] = link
+
         if 'resolve' in media and not media['resolve']:
             print('Resolve %s' % link)
             if media and 'link' in media:
@@ -16,10 +22,6 @@ class MediaHelper:
         if not link:
             helper.message('Cannot find media url %s' % media['link'], 'Link not found')
             return
-
-        r = re.search('^https?:', link)
-        if not r:
-            link = 'http:%s' % link
 
         media['link'] = link
         return mediatype

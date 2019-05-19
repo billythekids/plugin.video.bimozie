@@ -89,7 +89,6 @@ class AsyncRequest:
         self.length = len(urls)
         self.q = Queue(maxsize=self.length)
         self.num_theads = min(self.MIN_THREAD, self.length)
-        print('Total thread %d' % self.num_theads)
         self.dialog = xbmcgui.DialogProgress()
         self.dialog.create('Get URL', "Loading 0/%d urls" % self.length)
         self.results = [{} for x in urls]
