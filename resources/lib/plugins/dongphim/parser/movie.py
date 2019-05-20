@@ -85,23 +85,24 @@ class Parser:
                 'ts': 1556547428839,
                 'item_id': item_id,
                 'username': username,
-                'err[pr][ended]': 'true',
-                'err[eh][num]': 1,
-                'err[eh][dr][]': 'https://ok.ru',
+                # 'err[pr][ended]': 'true',
+                # 'err[eh][num]': 1,
+                # 'err[eh][dr][]': 'https://ok.ru',
             }
 
             response = Request().get('http://dongphim.net/content/parseUrl', params=params)
             response = json.loads(response)
-            print(response)
-            url = response['formats']
-            if 'embed' in url:
-                url = response['formats']['embed']
-            elif '720' in url:
-                url = response['formats']['720']
-            elif '480' in url:
-                url = response['formats']['480']
-            elif '360' in url:
-                url = response['formats']['360']
+
+            if not response['hls']:
+                url = self.get_media_url(response)
+
+            if response['hls'] or (url and Request().head(url).status_code >= 400):
+                params['err[pr][ended]]'] = 'true'
+                params['err[eh][num]'] = len(response['formats'])
+                params['err[eh][dr][]'] = 'https://ok.ru'
+
+                response = json.loads(Request().get('http://dongphim.net/content/parseUrl', params=params))
+                url = self.get_media_url(response)
 
             movie['links'].append({
                 'link': url,
@@ -111,3 +112,16 @@ class Parser:
             })
 
         return movie
+
+    def get_media_url(self, response):
+        url = response['formats']
+        if 'embed' in url:
+            url = response['formats']['embed']
+        elif '720' in url:
+            url = response['formats']['720']
+        elif '480' in url:
+            url = response['formats']['480']
+        elif '360' in url:
+            url = response['formats']['360']
+
+        return url

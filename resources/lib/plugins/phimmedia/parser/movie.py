@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
+from urllib import urlencode
 import re
 import base64
 
@@ -15,7 +16,7 @@ class Parser:
 
         # get episode if possible
         episodes = soup.select('div.block-wrapper')
-        if skipEps is False and len(episodes) > 0:
+        if len(episodes) > 0:
             for episode in episodes:
                 for ep in episode.select('div.page-tap > ul > li > a'):
                     server = episode.select_one('h4').text.strip().encode('utf-8')
@@ -24,29 +25,59 @@ class Parser:
                         'link': ep.get('href').encode('utf-8'),
                         'title': ep.get('title').encode('utf-8'),
                     })
-        else:
-            print("***********************Get Movie Link*****************************")
-            sources = re.findall("file: (.*), label: \"(\d+)\"", response, re.MULTILINE)
+
+        return movie
+
+    def get_link(self, response, url):
+        movie = {
+            'group': {},
+            'episode': [],
+            'links': []
+        }
+        print("***********************Get Movie Link*****************************")
+        # sources = re.findall(r'file:\s?[\'|"](.*?)[\'|"],\s?label: "(\d+)"', response, re.MULTILINE)
+        sources = re.findall("file: (.*), label: \"(\d+)\"", response, re.MULTILINE)
+        if sources and len(sources) > 0:
             sources = sorted(sources, key=lambda elem: elem[1], reverse=True)
             for source in sources:
-                match = re.search(source[0]+"=.*\(\"(.*)\"\);", response)
+                match = re.search(source[0] + "=.*\(\"(.*)\"\);", response)
                 if match is not None:
                     link = self.decode(match.group(1))
-                    print(link)
                     movie['links'].append({
                         'link': link,
                         'title': 'Link %sp' % source[1],
                         'type': source[1],
-                        'resolve': True
+                        'resolve': False,
+                        'originUrl': url
                     })
-                    if source[1] >= 720: break
-        return movie
+
+            return movie
+
+        sources = re.findall(r'file:\s?[\'|"](.*?)[\'|"],\s?label: "(\d+)"', response, re.MULTILINE)
+        if sources and len(sources) > 0:
+            # header = {
+            #     'User-Agent': 'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'
+            # }
+            for source in sources:
+                # url = source[0] + "|%s" % urlencode(header)
+                url = source[0]
+
+                movie['links'].append({
+                    'link': url,
+                    'title': 'Link %sp' % source[1],
+                    'type': source[1],
+                    'resolve': False,
+                    'originUrl': url
+                })
+
+            return movie
 
     def decode(self, link):
-        r = base64.b64decode(link)
-        r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
-        r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
         try:
+            r = base64.b64decode(link)
+            r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
+            r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
+
             rep_text = re.search('(?:net/)+(.*/\d)+[1-7].mp4/', r) \
                        or re.search('(.*/\d)+1.mp4/', r) \
                        or re.search('(.*/\d)+[1-7].mp4/', r)
@@ -60,7 +91,6 @@ class Parser:
             r = r.replace('%s5.mp4/' % rep_text, '=m37')
             r = r.replace('%s6.mp4/' % rep_text, '=m22')
             r = r.replace('%s7.mp4/' % rep_text, '=m18')
+            return r
         except:
-            pass
-
-        return r
+            return link

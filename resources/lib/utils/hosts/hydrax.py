@@ -78,27 +78,25 @@ def get_vip_hydrax(url, media):
 def get_hydrax_phimmoi_stream(stream, n):
     global origin
 
-    txt = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:" + stream[
-        'duration'] + "\n#EXT-X-MEDIA-SEQUENCE:0\n"
+    txt = "#EXTM3U\n#EXT-X-VERSION:4\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:" + str(stream['duration']) + "\n#EXT-X-MEDIA-SEQUENCE:0\n"
 
     if 'hash' in stream:
         txt += "#EXT-X-HASH:%s\n" % stream['hash']
         txt += "#EXT-X-KEY:METHOD=AES-128,URI=\"%s\",IV=%s\n" % (stream['hash'], stream['iv'])
-        helper.message('Encrypt not supported', 'Hydrax')
-        return ""
+        # helper.message('Encrypt not supported', 'Hydrax')
+        # return ""
 
     links = []
     hashlist = []
 
-    r = len(stream['range'])
-    o = len(n)
+    r = s = 0
     a = 'expired' in stream and stream['expired'] or None
-    s = 0
-    l = stream['multiRange']
-    h = len(l)
 
     if stream['type'] == 2:
-        r = 0
+        o = len(n)
+        l = stream['multiRange']
+        h = len(l)
+
         for t in range(h):
             u = stream['multiData'][t]['file']
             f = 0
@@ -147,30 +145,59 @@ def get_hydrax_phimmoi_stream(stream, n):
                 txt += "#EXT-X-ENDLIST"
 
     elif stream['type'] == 3:
-        for t in range(h):
-            u = stream['multiData'][t]['file']
-            if s < o:
-                c = n[s]
-                s += 1
-            else:
-                s = 1
-                c = n[0]
+        d = stream['ranges']
+        l = len(d)
+        o = stream['expired']
+        a = s = 0
+        u = stream['datas']
+        for t in range(l):
+            f = u[t]['file']
+            for p in range(len(d[t])):
+                if a < r:
+                    c = n[a]
+                    a += 1
+                else:
+                    a = 1
+                    c = n[0]
+                    y = d[t][p]
+                    c = "http://" + c
 
-            txt += "#EXTINF:" + stream['extinf'][t] + ",\n"
-            c = "http://" + c
-            # e.id && (c = c + "/" + e.id)
-            c += stream['id'] and "/" + stream['id'] or ""
-            url = a and c + "/basic/" + a + "/" + u + "." + (
-                    stream['id'] and "js" or "jpg") or c + "/basic/" + r + "/" + u + "." + (
-                          stream['id'] and "js" or "jpg")
+                    txt += "#EXTINF:%s,\n" % stream['extinfs'][s]
+                    txt += "#EXT-X-BYTERANGE:%s\n" % y
+                    if o:
+                        url = c + "/" + o + "/" + f + "/" + y
+                    else:
+                        url = c + "/" + s + "/" + f + "/" + y
 
-            if url not in links:
-                links.append(url)
-
-            txt += url + "\n"
-            r += 1
-            if h == t + 1:
+                    txt += "%s\n" % url
+                    s += 1
+            if l == t + 1:
                 txt += "#EXT-X-ENDLIST"
+
+        # for t in range(l):
+        #     u = stream['datas'][t]['file']
+        #     if s < o:
+        #         c = n[s]
+        #         s += 1
+        #     else:
+        #         s = 1
+        #         c = n[0]
+        #
+        #     txt += "#EXTINF:" + stream['extinfs'][t] + ",\n"
+        #     c = "http://" + c
+        #     # e.id && (c = c + "/" + e.id)
+        #     c += stream['id'] and "/" + stream['id'] or ""
+        #     url = a and c + "/basic/" + a + "/" + u + "." + (
+        #             stream['id'] and "js" or "jpg") or c + "/basic/" + r + "/" + u + "." + (
+        #                   stream['id'] and "js" or "jpg")
+        #
+        #     if url not in links:
+        #         links.append(url)
+        #
+        #     txt += url + "\n"
+        #     r += 1
+        #     if h == t + 1:
+        #         txt += "#EXT-X-ENDLIST"
 
     arequest = AsyncRequest()
     results = arequest.get(links, headers={
@@ -228,5 +255,5 @@ def get_hydrax_phimmoi_stream(stream, n):
     elif stream['type'] == 3:
         play_list = txt
 
-    url = PasteBin().dpaste(play_list, name=stream['id'], expire=60)
+    url = PasteBin().dpaste(play_list, name='hydrax', expire=60)
     return url

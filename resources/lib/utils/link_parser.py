@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import utils.xbmc_helper as helper
-from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax
+from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax, dongphim
 
 class LinkParser:
     def __init__(self, media):
@@ -55,10 +55,11 @@ class LinkParser:
             return vtv16.get_link(self.url)
 
         elif re.search('hls.hydrax.net', self.url):
-            return hls_hydrax.get_link(self.url, self.media), 'hls'
+            return hls_hydrax.get_link(self.url, self.media), 'hls5'
 
         elif re.search('dgo.dongphim.net', self.url):
-            return self.url + "|Origin=http://dongphim.net", 'hls1'
+            # return self.url + "|Origin=http://dongphim.net", 'hls1'
+            return dongphim.get_link(self.url, self.media)
 
         elif self.url.endswith('m3u8'):
             return self.get_m3u8()

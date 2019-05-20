@@ -57,7 +57,8 @@ class Parser:
         else:
             sources = re.search('<script rel="nofollow" src="(.*)" async>', response)
             response = Request().get(sources.group(1))
-            sources = json.loads(re.search('links: (.*),', response).group(1))
+            print(response)
+            sources = json.loads(re.search('links: (.*?),', response).group(1))
 
             if len(sources) > 0:
                 for key, value in sources.items():

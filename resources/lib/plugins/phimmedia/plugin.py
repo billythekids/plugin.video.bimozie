@@ -27,7 +27,7 @@ class Phimmedia:
 
     def getLink(self, movie):
         response = Request().get(movie['link'])
-        return Movie().get(response, True)
+        return Movie().get_link(response, movie['link'])
 
     def search(self, text, page=1):
         url = "%s/index.php?keyword=%s&do=phim&act=search&page=%s" % (self.domain, urllib.quote_plus(text), page)

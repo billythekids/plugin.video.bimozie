@@ -341,7 +341,7 @@ def play(movie, title=None, thumb=None, direct=False):
         play_item = xbmcgui.ListItem()
         play_item.setPath(movie['link'])
     else:
-        if len(movie['links']) == 0:
+        if not movie or 'links' not in movie or len(movie['links']) == 0:
             return
         else:
             movie = movie['links'][0]

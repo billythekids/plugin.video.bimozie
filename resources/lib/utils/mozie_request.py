@@ -19,14 +19,14 @@ class Request:
     session = None
     r = None
 
-    def __init__(self, header=None, session=False):
+    def __init__(self, header=None, session=True):
         if header:
             self.DEFAULT_HEADERS = header
         if session:
             self.session = requests.session()
 
     def get(self, url, headers=None, params=None, redirect=True, cookies=None):
-        # print("Request URL: %s" % url)
+        print("Request URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
