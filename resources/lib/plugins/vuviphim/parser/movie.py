@@ -64,6 +64,21 @@ class Parser:
 
             return movie
 
+        sources = re.search(r'sources:\s?(\[.*?\]),', response)
+        if sources:
+            sources = sources.group(1)
+            sources = json.loads(sources)
+            sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
+            for source in sources:
+                movie['links'].append({
+                    'link': source['file'].replace('\\', ''),
+                    'title': 'Link %s' % source['label'].encode('utf-8'),
+                    'type': source['type'].encode('utf-8'),
+                    'resolve': False
+                })
+
+            return movie
+
         soup = BeautifulSoup(response, "html.parser")
         source = soup.select_one("div#media > iframe")
         if source:

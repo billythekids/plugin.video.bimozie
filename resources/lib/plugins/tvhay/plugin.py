@@ -10,16 +10,19 @@ from tvhay.parser.movie import Parser as Movie
 
 class Tvhay:
     domain = "http://tvhay.org/"
+    cookie = {}
 
     def __init__(self):
         self.request = Request(session=True)
-        body = self.request.get(self.domain)
-        cookie = SucuriCloudProxy.get_cookie(body)
-        body = self.request.get(self.domain, cookies=cookie, headers={
-            'Referer': 'http://tvhay.org/',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
-        })
-        self.cookie = SucuriCloudProxy.get_cookie(body)
+        try:
+            body = self.request.get(self.domain)
+            cookie = SucuriCloudProxy.get_cookie(body)
+            body = self.request.get(self.domain, cookies=cookie, headers={
+                'Referer': 'http://tvhay.org/',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+            })
+            self.cookie = SucuriCloudProxy.get_cookie(body)
+        except: pass
 
 
     def getCategory(self):
