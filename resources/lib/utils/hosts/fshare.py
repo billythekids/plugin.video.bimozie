@@ -15,12 +15,13 @@ class FShare:
     def login(self):
         token = self.get_token()
         code = self.url.replace('https://www.fshare.vn', '')
-        url = 'https://www.fshare.vn/site/login?backUrl=%s' % code
+        # url = 'https://www.fshare.vn/site/login?backUrl=%s' % code
+        url = 'https://www.fshare.vn/site/login'
         r = self.request.post(url, {
             '_csrf-app': token,
             'LoginForm[email]': self.username,
             'LoginForm[password]': self.password,
-            'LoginForm[rememberMe]': 1
+            'LoginForm[rememberMe]': 0
         })
 
         return r
@@ -49,7 +50,7 @@ class FShare:
         })
 
         item = json.loads(r)
-        self.logout()
+        # self.logout()
         if 'errors' in item:
             helper.message("Fshare error: %s" % item['errors']['linkcode'][0])
             raise Exception('Fshare', 'error')

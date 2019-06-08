@@ -52,8 +52,7 @@ class Parser:
             if len(sources) > 1:
                 try:
                     sources = sorted(sources, key=lambda elem: elem['label'].lower() in score and score[elem['label'].lower()] or 3, reverse=True)
-                except:
-                    pass
+                except: pass
             for source in sources:
                 movie['links'].append({
                     'link': source['file'].replace('\\', ''),
@@ -68,7 +67,9 @@ class Parser:
         if sources:
             sources = sources.group(1)
             sources = json.loads(sources)
-            sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
+            try:
+                sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
+            except: pass
             for source in sources:
                 movie['links'].append({
                     'link': source['file'].replace('\\', ''),

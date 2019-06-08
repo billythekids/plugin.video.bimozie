@@ -48,7 +48,7 @@ class Phimgi:
 
         url = "%s//wp-admin/admin-ajax.php" % self.domain
         response = Request().post(url, params)
-        return Movie().get_link(response)
+        return Movie().get_link(response, url)
 
     def search(self, text):
         text = urllib.quote_plus(text)

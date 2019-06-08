@@ -69,14 +69,14 @@ class Parser:
                 if len(sources) > 1:
                     sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
                 if len(sources) > 0:
-                    source = sources[0]
-                    label = 'label' in source and source['label'] or ''
-                    movie['links'].append({
-                        'link': source['file'].replace('\\', ''),
-                        'title': 'Link %s' % label.encode('utf-8'),
-                        'type': label.encode('utf-8'),
-                        'resolve': True
-                    })
+                    for source in sources:
+                        label = 'label' in source and source['label'] or ''
+                        movie['links'].append({
+                            'link': source['file'].replace('\\', ''),
+                            'title': 'Link %s' % label.encode('utf-8'),
+                            'type': label.encode('utf-8'),
+                            'resolve': True
+                        })
                     return movie
 
         return movie

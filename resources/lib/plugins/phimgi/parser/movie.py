@@ -36,7 +36,7 @@ class Parser:
 
         return movie
 
-    def get_link(self, response):
+    def get_link(self, response, originUrl):
         movie = {
             'group': {},
             'episode': [],
@@ -60,15 +60,16 @@ class Parser:
             except: pass
 
             if len(sources) > 0:
-                source = sources[0]
-                label = 'label' in source and source['label'] or ''
-                movie['links'].append({
-                    'link': self.parse_link(source['file']),
-                    'title': 'Link %s' % label.encode('utf-8'),
-                    'type': label.encode('utf-8'),
-                    'resolve': False,
-                    'subtitle': subtitle
-                })
+                for source in sources:
+                    label = 'label' in source and source['label'] or ''
+                    movie['links'].append({
+                        'link': self.parse_link(source['file']),
+                        'title': 'Link %s' % label.encode('utf-8'),
+                        'type': label.encode('utf-8'),
+                        'resolve': False,
+                        'subtitle': subtitle,
+                        'originUrl': originUrl
+                    })
 
             return movie
 
@@ -80,7 +81,8 @@ class Parser:
                     'link': source,
                     'title': 'Link %s' % source,
                     'type': 'Unknow',
-                    'resolve': False
+                    'resolve': False,
+                    'originUrl': originUrl
                 })
                 return movie
 

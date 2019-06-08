@@ -344,7 +344,17 @@ def play(movie, title=None, thumb=None, direct=False):
         if not movie or 'links' not in movie or len(movie['links']) == 0:
             return
         else:
-            movie = movie['links'][0]
+            if len(movie['links']) > 1:
+                print(movie['links'])
+                listitems = ["%s (%s)" % (i["title"], i["link"]) for i in movie['links']]
+                index = xbmcgui.Dialog().select("Select stream", listitems)
+                if index == -1:
+                    return
+                else:
+                    movie = movie['links'][index]
+            else:
+                movie = movie['links'][0]
+
             mediatype = MediaHelper.resolve_link(movie)
             play_item = xbmcgui.ListItem()
             play_item.setPath(movie['link'])
