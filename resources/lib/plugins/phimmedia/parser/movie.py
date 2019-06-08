@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-from urllib import urlencode
 import re
 import base64
 
@@ -35,7 +34,6 @@ class Parser:
             'links': []
         }
         print("***********************Get Movie Link*****************************")
-        # sources = re.findall(r'file:\s?[\'|"](.*?)[\'|"],\s?label: "(\d+)"', response, re.MULTILINE)
         sources = re.findall("file: (.*), label: \"(\d+)\"", response, re.MULTILINE)
         if sources and len(sources) > 0:
             sources = sorted(sources, key=lambda elem: elem[1], reverse=True)
@@ -55,11 +53,7 @@ class Parser:
 
         sources = re.findall(r'file:\s?[\'|"](.*?)[\'|"],\s?label: "(\d+)"', response, re.MULTILINE)
         if sources and len(sources) > 0:
-            # header = {
-            #     'User-Agent': 'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'
-            # }
             for source in sources:
-                # url = source[0] + "|%s" % urlencode(header)
                 url = source[0]
 
                 movie['links'].append({
@@ -73,24 +67,20 @@ class Parser:
             return movie
 
     def decode(self, link):
-        try:
-            r = base64.b64decode(link)
-            r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
-            r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
+        r = base64.b64decode(link)
+        r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
+        r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
+        r = r.replace("ms.com?test=", "")
 
-            rep_text = re.search('(?:net/)+(.*/\d)+[1-7].mp4/', r) \
-                       or re.search('(.*/\d)+1.mp4/', r) \
-                       or re.search('(.*/\d)+[1-7].mp4/', r)
+        rep_text = re.findall(r'(?:(?!\d+\.mp4)(.*?/)(\d)(\d).mp4/)', r)
+        rep_text = rep_text[0][0] + rep_text[0][1]
 
-            rep_text = rep_text.group(1)
-            r = r.replace('%s1.mp4/' % rep_text, 'https://3.bp.blogspot.com/')
-            r = r.replace('%s2.mp4/' % rep_text, 'https://video.xx.fbcdn.net/')
-            r = r.replace('%s3.mp4/' % rep_text, 'v/t42.9040-2/')
-            r = r.replace('%s4.mp4/' % rep_text, 'https://lh3.googleusercontent.com/')
+        r = r.replace('%s1.mp4/' % rep_text, 'https://3.bp.blogspot.com/')
+        r = r.replace('%s2.mp4/' % rep_text, 'https://video.xx.fbcdn.net/')
+        r = r.replace('%s3.mp4/' % rep_text, 'v/t42.9040-2/')
+        r = r.replace('%s4.mp4/' % rep_text, 'https://lh3.googleusercontent.com/')
 
-            r = r.replace('%s5.mp4/' % rep_text, '=m37')
-            r = r.replace('%s6.mp4/' % rep_text, '=m22')
-            r = r.replace('%s7.mp4/' % rep_text, '=m18')
-            return r
-        except:
-            return link
+        r = r.replace('%s5.mp4/' % rep_text, '=m37')
+        r = r.replace('%s6.mp4/' % rep_text, '=m22')
+        r = r.replace('%s7.mp4/' % rep_text, '=m18')
+        return r

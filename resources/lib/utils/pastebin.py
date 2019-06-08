@@ -28,7 +28,7 @@ class PasteBin:
             print('Dpaste url: %s' % url)
             return url
 
-    def dpaste(self, content, name="", expire=1440):
+    def dpaste_deprecated_2(self, content, name="", expire=1440):
         print("Uploading playlist")
         url = 'https://hastebin.com/documents'
         params = content
@@ -38,5 +38,18 @@ class PasteBin:
 
         resp = json.loads(r.text)
         url = "https://hastebin.com/raw/%s" % resp['key']
+        print('hastebin url: %s' % url)
+        return url
+
+    def dpaste(self, content, name="", expire=1440):
+        print("Uploading playlist")
+        url = 'https://paste.kodi.tv/documents'
+        params = content
+        r = requests.post(url,
+                          data=params,
+                          timeout=30)
+
+        resp = json.loads(r.text)
+        url = "https://paste.kodi.tv/raw/%s" % resp['key']
         print('hastebin url: %s' % url)
         return url
