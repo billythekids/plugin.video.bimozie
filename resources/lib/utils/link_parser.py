@@ -110,6 +110,11 @@ class LinkParser:
         if re.search('51.15.90.176', self.url):  # skip this for phimbathu & bilutv
             return self.url, 'hls5'
 
+        # hls-streaming.phimgi.net
+        if re.search('hls-streaming.phimgi.net', self.url):  # skip this for phimbathu & bilutv
+            helper.message('m3u8 playlist', 'Parsing')
+            return self.url, 'hls5'
+
         return self.url, 'hls'
 
     def get_sstreamgg(self):

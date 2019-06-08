@@ -1,6 +1,7 @@
 import re
 import json
 import math
+import utils.xbmc_helper as helper
 from urlparse import urlparse
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
@@ -100,7 +101,7 @@ def calculate_stream(content, origin, referer):
 
         play_list += "#EXTINF:%s,\n" % duration
         play_list += "#EXT-X-BYTERANGE:%s@%s\n" % (lengthbyte, startbyte)
-        play_list += "%s\n" % json.loads(results[i])['url']
+        play_list += "%s\n" % helper.fixurl(json.loads(results[i])['url'])
 
         if duration > max_targetduration:
             max_targetduration = duration

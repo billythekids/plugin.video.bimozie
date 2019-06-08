@@ -55,7 +55,9 @@ class Parser:
         sources = re.search(r'sources:\s?(.*?)\n', response)
         if sources:
             sources = json.loads(sources.group(1).replace('}],', '}]'))
-            sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
+            try:
+                sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
+            except: pass
 
             if len(sources) > 0:
                 source = sources[0]
