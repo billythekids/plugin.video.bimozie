@@ -12,8 +12,6 @@ def from_char_code(*args):
 
 
 class Parser:
-    key = "PhimMoi.Net@"
-
     def get_movie_link(self, response):
         soup = BeautifulSoup(response, "html.parser")
         return soup.select_one('div#ah-pif > div.ah-pif-head > div.ah-pif-ftool > div.ah-float-left > span > a').get(
@@ -54,24 +52,70 @@ class Parser:
                 'type': 'hls',
                 'resolve': True
             })
-        else:
-            sources = re.search('<script rel="nofollow" src="(.*)" async>', response)
-            response = Request().get(sources.group(1))
-            print(response)
-            sources = json.loads(re.search('links: (.*?),', response).group(1))
+            return movie
 
-            if len(sources) > 0:
-                for key, value in sources.items():
-                    if value:
-                        label = key[1:].encode('utf-8')
-                        movie['links'].append({
-                            'link': value,
-                            'title': 'Link %s' % label,
-                            'type': label,
-                            'resolve': True
-                        })
+        sources = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", response)
+        if sources:
+            res = Request()
+            vkey = re.search('key=(.*)', sources.group(1)).group(1)
+            # http://vl.animehay.tv/initPlayer/f555b31844becd2e378d4978457014521af38ab8e66834ade1062b44827ef642
+            resp = res.post('http://vl.animehay.tv/initPlayer/%s' % vkey)
+            resp = json.loads(resp)
 
-                movie['links'] = sorted(movie['links'], key=lambda elem: int(elem['type']), reverse=True)
+            if 'fembed' in resp['availablePlayers']:
+                data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('fembed', vkey)))
+                data = res.get(data['data'])
+                source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
+
+                movie['links'].append({
+                    'link': source,
+                    'title': 'Link fembed',
+                    'type': 'mp4',
+                    'resolve': False
+                })
+                
+            if 'okru' in resp['availablePlayers']:
+                data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('okru', vkey)))
+                data = res.get(data['data'])
+                source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
+
+                movie['links'].append({
+                    'link': source,
+                    'title': 'Link okru',
+                    'type': 'mp4',
+                    'resolve': False
+                })
+
+            if 'openload' in resp['availablePlayers']:
+                data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('openload', vkey)))
+                data = res.get(data['data'])
+                source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
+
+                movie['links'].append({
+                    'link': source,
+                    'title': 'Link openload',
+                    'type': 'mp4',
+                    'resolve': False
+                })
+
+            return movie
+
+        sources = re.search('<script rel="nofollow" src="(.*)" async>', response)
+        response = Request().get(sources.group(1))
+        sources = json.loads(re.search('links: (.*?),', response).group(1))
+
+        if len(sources) > 0:
+            for key, value in sources.items():
+                if value:
+                    label = key[1:].encode('utf-8')
+                    movie['links'].append({
+                        'link': value,
+                        'title': 'Link %s' % label,
+                        'type': label,
+                        'resolve': True
+                    })
+
+            movie['links'] = sorted(movie['links'], key=lambda elem: int(elem['type']), reverse=True)
 
         return movie
 
@@ -148,7 +192,8 @@ class Parser:
         for i in range(len(links)):
             try:
                 str = str.replace(links[i], results[i].headers['Location '])
-            except: pass
+            except:
+                pass
 
         url = PasteBin().dpaste(str, name='animiehay', expire=60)
         return url

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import utils.xbmc_helper as helper
-from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax, dongphim
+from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax, dongphim, fembed
 
 class LinkParser:
     def __init__(self, media):
@@ -21,6 +21,9 @@ class LinkParser:
 
         elif re.search('dailymotion.com', self.url):
             return self.get_link_dailymotion()
+
+        elif re.search('fembed.com', self.url):
+            return fembed.get_link(self.url)
 
         elif re.search('fptplay.net', self.url):
             helper.message('FPTPlay hls link parsing', 'Get Link')
