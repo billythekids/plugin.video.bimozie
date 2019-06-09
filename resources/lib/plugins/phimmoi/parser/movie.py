@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from utils.mozie_request import Request
 from utils.aes import CryptoAES
 from utils.wisepacker import WisePacker
+from urllib import unquote
 import utils.xbmc_helper as helper
 import re
 import json
@@ -91,9 +92,10 @@ class Parser:
                         'resolve': False,
                         'originUrl': self.originURL
                     })
-        elif jsonresponse['embedUrls']:
+
+        if jsonresponse['embedUrls']:
             for item in jsonresponse['embedUrls']:
-                url = CryptoAES().decrypt(item, bytes(self.key.encode('utf-8')))
+                url = self.get_url(CryptoAES().decrypt(item, bytes(self.key.encode('utf-8'))))
                 if not re.search('hydrax', url):
                     movie['links'].append({
                         'link': url,
@@ -143,3 +145,10 @@ class Parser:
     def get_token_url(self, response):
         a = WisePacker.decode(response)
         return re.search("'url':'(.*)','method'", a).group(1).replace("ip='+window.CLIENT_IP+'&", "")
+
+    def get_url(self, url):
+        r = re.search(r'http://www.phimmoi.net/player.html\?v=1.00#url=(.*)', url)
+        if r:
+            return unquote(r.group(1))
+
+        return url

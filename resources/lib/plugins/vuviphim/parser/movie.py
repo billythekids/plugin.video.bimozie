@@ -86,7 +86,7 @@ class Parser:
             source = source.get('data-lazy-src').strip()
             movie['links'].append({
                 'link': source,
-                'title': 'Link %s' % source,
+                'title': 'Link %s' % source.encode('utf-8'),
                 'type': 'Unknow',
                 'resolve': False
             })

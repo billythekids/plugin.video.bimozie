@@ -43,7 +43,7 @@ class Parser:
                 ep_id = episode.get('data-id')
                 movie['group'][server_name].append({
                     'link': '%s,%s,%s' % (movie_id, ep_id, server.get('data-index')),
-                    'title': "Tap %s" % episode.text.encode('utf-8')
+                    'title': "Tập %s" % episode.text.encode('utf-8')
                 })
 
     def get_link(self, response):
@@ -84,7 +84,7 @@ class Parser:
                 'link': self.parse_link(source),
                 'title': '',
                 'type': '',
-                'resolve': True
+                'resolve': False
             })
 
             return movie
@@ -95,7 +95,7 @@ class Parser:
             if source:
                 movie['links'].append({
                     'link': self.parse_link(source),
-                    'title': source,
+                    'title': source.encode('utf-8'),
                     'type': 'Unknow',
                     'resolve': False
                 })

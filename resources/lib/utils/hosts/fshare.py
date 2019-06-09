@@ -7,39 +7,37 @@ from utils.mozie_request import Request
 
 class FShare:
     def __init__(self, url, username="", password=""):
-        self.request = Request(session=True)
         self.url = url
         self.username = username
         self.password = password
+        self.request = Request(session=True)
 
-    def login(self):
-        token = self.get_token()
-        code = self.url.replace('https://www.fshare.vn', '')
-        # url = 'https://www.fshare.vn/site/login?backUrl=%s' % code
+    def login(self, token):
         url = 'https://www.fshare.vn/site/login'
         r = self.request.post(url, {
             '_csrf-app': token,
             'LoginForm[email]': self.username,
             'LoginForm[password]': self.password,
-            'LoginForm[rememberMe]': 0
+            'LoginForm[rememberMe]': 1
         })
 
         return r
 
     def get_token(self):
-        r = self.request.get(self.url)
-        return self.extract_token(r)
+        r = self.request.get('https://www.fshare.vn/')
+        if not re.search(r'id="form-signup"', r):
+            print('Fashare: already login')
+            return self.extract_token(r)
+        else:
+            print('Fashare: try to login')
+            r = self.login(self.extract_token(r))
+            return self.extract_token(r)
 
     def extract_token(self, response):
         return re.search(r'name="csrf-token" content="(.*)">', response).group(1)
 
     def get_link(self):
-        if not self.username or not self.password:
-            token = self.get_token()
-        else:
-            r = self.login()
-            token = self.extract_token(r)
-
+        token = self.get_token()
         code = re.search(r'/file/([^\?]+)', self.url).group(1)
 
         r = self.request.post('https://www.fshare.vn/download/get', {

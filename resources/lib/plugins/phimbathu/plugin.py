@@ -6,7 +6,7 @@ from bilutv.parser.movie import Parser as Movie
 
 
 class Phimbathu:
-    domain = "http://phimbathu.org/"
+    domain = "https://phimbathu.org/"
 
     def getCategory(self):
         response = Request().get(self.domain)

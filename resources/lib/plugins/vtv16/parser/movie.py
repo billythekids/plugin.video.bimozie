@@ -103,7 +103,7 @@ class Parser:
             source = sources.group(1)
             movie['links'].append({
                 'link': source,
-                'title': source,
+                'title': source.encode('utf-8'),
                 'type': 'file',
                 'originUrl': originUrl,
                 'resolve': False

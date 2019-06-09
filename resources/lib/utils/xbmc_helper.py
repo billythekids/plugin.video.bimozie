@@ -19,6 +19,14 @@ def getSetting(key):
     return addon.getSetting(key)
 
 
+def has_file_path(filename):
+    return os.path.exists(get_file_path(filename))
+
+
+def get_file_path(filename):
+    return os.path.join(addon_data_dir, filename)
+
+
 def message(message='', title='', timeShown=5000):
     if message:
         title = ': [COLOR blue]%s[/COLOR]' % title if title else ''
@@ -32,7 +40,7 @@ def message(message='', title='', timeShown=5000):
 
 
 def write_file(name, content, binary=False):
-    path = os.path.join(addon_data_dir, name)
+    path = get_file_path(name)
     mode = 'w'
     if binary:
         mode = 'wb'
@@ -45,7 +53,7 @@ def write_file(name, content, binary=False):
 def read_file(name):
     content = None
     try:
-        path = os.path.join(addon_data_dir, name)
+        path = get_file_path(name)
         f = open(path, mode='r')
         content = f.read()
         f.close()

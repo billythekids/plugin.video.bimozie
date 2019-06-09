@@ -72,7 +72,7 @@ class Parser:
             if source:
                 movie['links'].append({
                     'link': source,
-                    'title': 'Link %s' % source,
+                    'title': 'Link %s' % source.encode('utf-8'),
                     'type': 'Unknow',
                     'originUrl': originUrl,
                     'resolve': False

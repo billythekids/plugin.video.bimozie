@@ -253,7 +253,7 @@ def show_episode(movie, thumb, title, module, class_name):
             idx += 1
             label = "[COLOR red][B][---- %s : [COLOR yellow]%d eps[/COLOR] ----][/B][/COLOR]" % (key, len(items))
             sli = xbmcgui.ListItem(label=label)
-            if len(items) < 2 or len(movie['group']) < 1:
+            if len(items) < 5 or len(movie['group']) < 1:
                 xbmcplugin.addDirectoryItem(HANDLE, None, sli, isFolder=False)
                 _build_ep_list(items, title, thumb, module, class_name)
             elif idx is len(movie['group']):
@@ -282,9 +282,15 @@ def _build_ep_list(items, title, thumb, module, class_name):
         li.setInfo('video', {'title': item['title']})
         li.setProperty('fanart_image', thumb)
         li.setArt({'thumb': thumb})
+        movie_title = title
+
+        try:
+            movie_title = "[%s] %s" % (item['title'], title)
+        except:
+            pass
 
         url = build_url({'mode': 'play',
-                         'title': title,
+                         'title': movie_title,
                          'thumb': thumb,
                          'url': json.dumps(item),
                          'direct': 0,
@@ -317,10 +323,7 @@ def show_links(movie, title, thumb, module, class_name):
         li.setInfo('video', {'title': item['title']})
         li.setProperty('fanart_image', thumb)
         li.setArt({'thumb': thumb})
-        try:
-            title = "%s - %s" % (item['title'], title)
-        except:
-            pass
+
         url = build_url({'mode': 'play',
                          'title': title,
                          'thumb': thumb,
@@ -335,7 +338,10 @@ def show_links(movie, title, thumb, module, class_name):
 
 
 def play(movie, title=None, thumb=None, direct=False):
-    print("*********************** playing ")
+    print("*********************** playing %s" % title)
+    if not movie or 'links' not in movie or len(movie['links']) == 0:
+        return
+
     if direct:
         mediatype = MediaHelper.resolve_link(movie)
         play_item = xbmcgui.ListItem()
@@ -378,7 +384,13 @@ def play(movie, title=None, thumb=None, direct=False):
         play_item.setContentLookup(False)
 
     play_item.setProperty('IsPlayable', 'true')
-    play_item.setLabel(title)
+    # update title
+    try:
+        play_item.setLabel(title)
+        play_item.setInfo('video', {'Title': title})
+    except:
+        print(movie['title'], title)
+
     play_item.setArt({'thumb': thumb})
 
     xbmcplugin.setResolvedUrl(HANDLE, True, listitem=play_item)
@@ -502,10 +514,12 @@ def do_global_search(text):
         movies = None
         try:
             movies = plugin().search(text)
-        except: pass
+        except:
+            pass
 
         if movies is not None:
-            label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (classname, len(movies['movies']))
+            label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (
+            classname, len(movies['movies']))
             sli = xbmcgui.ListItem(label=label)
             url = build_url({'mode': 'dosearch', 'module': module, 'className': classname, 'url': text})
             xbmcplugin.addDirectoryItem(HANDLE, url, sli, isFolder=True)
