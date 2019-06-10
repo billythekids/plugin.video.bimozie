@@ -85,43 +85,41 @@ class Parser:
                 'ts': 1556547428839,
                 'item_id': item_id,
                 'username': username,
-                # 'err[pr][ended]': 'true',
-                # 'err[eh][num]': 1,
-                # 'err[eh][dr][]': 'https://ok.ru',
             }
 
             response = Request().get('http://dongphim.net/content/parseUrl', params=params)
             response = json.loads(response)
 
             if not response['hls']:
-                url = self.get_media_url(response)
+                self.get_media_url(response, movie['links'])
 
-            if response['hls'] or (url and Request().head(url).status_code >= 400):
-                params['err[pr][ended]]'] = 'true'
-                params['err[eh][num]'] = len(response['formats'])
-                params['err[eh][dr][]'] = 'https://ok.ru'
+            params_alt = {
+                'v': 2,
+                'url': source['url'],
+                'bk_url': source['burl'],
+                'pr_url': source['purl'],
+                'ex_hls[]': source['exhls'],
+                'prefer': prefers[0],
+                'ts': 1556547428839,
+                'item_id': item_id,
+                'username': username,
+                'err[pr][ended]': 'true',
+                'err[eh][num]': 1,
+                'err[eh][dr][]': 'https://ok.ru',
+            }
 
-                response = json.loads(Request().get('http://dongphim.net/content/parseUrl', params=params))
-                url = self.get_media_url(response)
-
-            movie['links'].append({
-                'link': url,
-                'title': 'Link hls',
-                'type': 'hls',
-                'resolve': False,
-            })
+            response = json.loads(Request().get('http://dongphim.net/content/parseUrl', params=params_alt))
+            self.get_media_url(response, movie['links'])
 
         return movie
 
-    def get_media_url(self, response):
-        url = response['formats']
-        if 'embed' in url:
-            url = response['formats']['embed']
-        elif '720' in url:
-            url = response['formats']['720']
-        elif '480' in url:
-            url = response['formats']['480']
-        elif '360' in url:
-            url = response['formats']['360']
+    def get_media_url(self, response, movie):
+        urls = response['formats']
 
-        return url
+        for i in urls:
+            movie.append({
+                'link': urls[i],
+                'title': 'Link %s' % i,
+                'type': 'mp4',
+                'resolve': False,
+            })

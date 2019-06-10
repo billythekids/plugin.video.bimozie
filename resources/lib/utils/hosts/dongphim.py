@@ -17,6 +17,9 @@ def get_link(url, media):
 def get_stream(url):
     req = Request()
     r = req.get(url)
+    if re.search('EXT-X-STREAM-INF', r):
+        return url
+
     str = ""
     links = []
     for line in r.splitlines():

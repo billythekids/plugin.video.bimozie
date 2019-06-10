@@ -23,20 +23,22 @@ class Parser:
 
         for movie in soup.select('ul.list-film > li'):
             tag = movie.select_one('div.poster > a')
-            title = tag.get('title').strip()
-            thumb = tag.select_one('img').get('src')
 
-            type = movie.select_one('div.poster > div.status').text.strip()
-            label = "[%s] %s" % (type, title)
-            realtitle = movie.select_one('div.name > dfn').text.strip()
+            if tag:
+                title = tag.get('title').strip()
+                thumb = tag.select_one('img').get('src')
 
-            channel['movies'].append({
-                'id': tag.get('href'),
-                'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
-                'thumb': thumb,
-                'type': type.encode("utf-8")
-            })
+                type = movie.select_one('div.poster > div.status').text.strip()
+                label = "[%s] %s" % (type, title)
+                realtitle = movie.select_one('div.name > dfn').text.strip()
+
+                channel['movies'].append({
+                    'id': tag.get('href'),
+                    'label': label.encode("utf-8"),
+                    'title': title.encode("utf-8"),
+                    'realtitle': realtitle.encode("utf-8"),
+                    'thumb': thumb,
+                    'type': type.encode("utf-8")
+                })
 
         return channel
