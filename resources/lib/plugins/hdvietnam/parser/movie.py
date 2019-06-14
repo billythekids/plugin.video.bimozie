@@ -39,7 +39,12 @@ class Parser:
             arequest = AsyncRequest()
             results = arequest.get(self.found_links)
             for idx, result in enumerate(results):
-                name, size = FShareVN.get_info(content=result)
+                try:
+                    name, size = FShareVN.get_info(content=result)
+                except:
+                    print('Link die %s' % self.found_links[idx])
+                    continue
+
                 if name:
                     movie['links'].append({
                         'link': self.found_links[idx],

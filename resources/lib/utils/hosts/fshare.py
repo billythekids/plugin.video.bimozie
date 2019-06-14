@@ -21,6 +21,10 @@ class FShareVN:
         name = False
         size = '0'
         soup = BeautifulSoup(content, "html.parser")
+        title = soup.select_one('title').text.encode('utf-8')
+        if 'Not Found' in title:
+            raise Exception('Fshare', 'link die')
+
         info = soup.select_one('div.info')
         if info:
             name = info.select_one('div.name').get('title').encode('utf-8')
@@ -84,6 +88,9 @@ class FShareVN:
 
     def logout(self):
         self.request.get('https://www.fshare.vn/site/logout')
+
+    def is_folder(self, url):
+        return not re.search(r'/folder/([^\?]+)', url) and False or True
 
     def handleFolder(self, url=None, code=None):
         if not code:
