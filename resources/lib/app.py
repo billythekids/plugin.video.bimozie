@@ -129,7 +129,7 @@ SITES = [
         'version': 1
     },
     {
-        'name': 'hdvietnam.com',
+        'name': 'hdvietnam.com (beta)',
         'logo': 'http://www.hdvietnam.com/images/hd-vietnam-logo.png',
         'className': 'Hdvietnam',
         'plugin': 'hdvietnam.plugin',
