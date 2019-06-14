@@ -104,13 +104,13 @@ class LinkParser:
             helper.message('Required username/password to get fshare.vn link, open addon settings', 'Login Required')
 
         if helper.getSetting('fshare.enable'):
-            return fshare.FShare(
+            return fshare.FShareVN(
                 self.url,
                 helper.getSetting('fshare.username'),
                 helper.getSetting('fshare.password')
             ).get_link(), '1080'
         else:
-            return fshare.FShare(self.url).get_link(), '1080'
+            return fshare.FShareVN(self.url).get_link(), '1080'
 
     def get_m3u8(self):
         # support to run with inputstream.adaptive

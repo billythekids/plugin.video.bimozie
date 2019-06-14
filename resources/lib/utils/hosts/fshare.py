@@ -1,16 +1,37 @@
 # -*- coding: utf-8 -*-
 import re
 import json
+import xbmcgui
 import utils.xbmc_helper as helper
 from utils.mozie_request import Request
+from bs4 import BeautifulSoup
 
 
-class FShare:
+class FShareVN:
     def __init__(self, url, username="", password=""):
         self.url = url
         self.username = username
         self.password = password
         self.request = Request(session=True)
+
+    @staticmethod
+    def get_info(url=None, content=None):
+        if url:
+            content = Request().get(url)
+
+        name = False
+        size = '0'
+        soup = BeautifulSoup(content, "html.parser")
+        info = soup.select_one('div.info')
+        if info:
+            name = info.select_one('div.name').get('title').encode('utf-8')
+
+            size = info.select_one('div.size').get_text().strip()\
+                .replace(" ", "")\
+                .replace("\n", "")\
+                .replace("save", "").encode('utf-8')
+
+        return name, size
 
     def login(self, token):
         url = 'https://www.fshare.vn/site/login'
@@ -37,8 +58,14 @@ class FShare:
         return re.search(r'name="csrf-token" content="(.*)">', response).group(1)
 
     def get_link(self):
+        if re.search(r'/folder/([^\?]+)', self.url):
+            code = self.handleFolder(self.url)
+            if not code:
+                return code
+        else:
+            code = re.search(r'/file/([^\?]+)', self.url).group(1)
+
         token = self.get_token()
-        code = re.search(r'/file/([^\?]+)', self.url).group(1)
 
         r = self.request.post('https://www.fshare.vn/download/get', {
             '_csrf-app': token,
@@ -58,3 +85,23 @@ class FShare:
 
     def logout(self):
         self.request.get('https://www.fshare.vn/site/logout')
+
+    def handleFolder(self, url=None, code=None):
+        if not code:
+            code = re.search(r'/folder/([^\?]+)', url).group(1)
+
+        r = self.request.get('https://www.fshare.vn/api/v3/files/folder?linkcode=%s&sort=type,name' % code)
+        r = json.loads(r)
+
+        listitems = []
+        if r['items'] and len(r['items']) > 0:
+            listitems = ["[%s] %s" % (i['type'] == 1 and helper.humanbytes(i["size"]) or 'Folder', i["name"]) for i in r['items']]
+
+        index = helper.create_select_dialog(listitems)
+        if index == -1: return None
+        if r['items'][index]['type'] == 1:
+            return r['items'][index]['linkcode']
+        else:
+            return self.handleFolder(code=r['items'][index]['linkcode'])
+
+

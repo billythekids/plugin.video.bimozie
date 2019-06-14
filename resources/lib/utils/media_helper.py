@@ -20,7 +20,7 @@ class MediaHelper:
                 link, mediatype = LinkParser(media).get_link()
 
         if not link:
-            helper.message('Cannot find media url %s' % media['link'], 'Link not found')
+            # helper.message('Cannot find media url %s' % media['link'], 'Link not found')
             return
 
         media['link'] = link

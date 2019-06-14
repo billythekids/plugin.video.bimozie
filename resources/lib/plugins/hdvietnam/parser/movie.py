@@ -2,9 +2,12 @@
 from bs4 import BeautifulSoup
 import re
 import utils.xbmc_helper as helper
+from utils.mozie_request import AsyncRequest
+from utils.hosts.fshare import FShareVN
 
 
 class Parser:
+    found_links = []
 
     def is_block(self, response):
         block = False
@@ -21,6 +24,7 @@ class Parser:
         return block, postLinks
 
     def get(self, response):
+        self.found_links = []
         movie = {
             'group': {},
             'episode': [],
@@ -29,18 +33,34 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         posts = soup.select("ol.messageList > li.message > div.messageInfo > div.messageContent > article > blockquote")
         for post in posts:
-            self.extract_links(post, movie['links'])
+            self.extract_links(post)
+
+        if len(self.found_links) > 0:
+            arequest = AsyncRequest()
+            results = arequest.get(self.found_links)
+            for idx, result in enumerate(results):
+                name, size = FShareVN.get_info(content=result)
+                if name:
+                    movie['links'].append({
+                        'link': self.found_links[idx],
+                        'title': '[%s] %s' % (size, name),
+                        'type': 'Unknown',
+                        'resolve': False
+                    })
+                else:
+                    movie['links'].append({
+                        'link': self.found_links[idx],
+                        'title': self.found_links[idx],
+                        'type': 'Unknown',
+                        'resolve': False
+                    })
 
         return movie
 
-    def extract_links(self, content, lists):
+    def extract_links(self, content):
         allow_url = ['fshare.vn']
+
         for link in content.select('a.externalLink'):
             url = link.get('href')
-            if True in map(lambda x: x in url, allow_url):
-                lists.append({
-                    'link': url,
-                    'title': link.text.encode('utf-8'),
-                    'type': 'Unknown',
-                    'resolve': False
-                })
+            if True in map(lambda x: x in url, allow_url) and url not in self.found_links:
+                self.found_links.append(url)

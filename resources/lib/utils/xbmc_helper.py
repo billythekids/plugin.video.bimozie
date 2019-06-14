@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import xbmc
 import xbmcaddon
+import xbmcgui
 import os
 import json
 import re
@@ -142,3 +143,26 @@ def fixurl(url):
     # put it back together
     netloc = ''.join((user, colon1, pass_, at, host, colon2, port))
     return urlparse.urlunsplit((scheme, netloc, path, query, fragment))
+
+
+def create_select_dialog(listitems):
+    return xbmcgui.Dialog().select("Select item", listitems)
+
+
+def humanbytes(B):
+    B = float(B)
+    KB = float(1024)
+    MB = float(KB ** 2)  # 1,048,576
+    GB = float(KB ** 3)  # 1,073,741,824
+    TB = float(KB ** 4)  # 1,099,511,627,776
+
+    if B < KB:
+        return '{0} {1}'.format(B, 'Bytes' if 0 == B > 1 else 'Byte')
+    elif KB <= B < MB:
+        return '{0:.2f} KB'.format(B / KB)
+    elif MB <= B < GB:
+        return '{0:.2f} MB'.format(B / MB)
+    elif GB <= B < TB:
+        return '{0:.2f} GB'.format(B / GB)
+    elif TB <= B:
+        return '{0:.2f} TB'.format(B / TB)
