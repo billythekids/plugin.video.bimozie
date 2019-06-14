@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 import json
-import xbmcgui
 import utils.xbmc_helper as helper
 from utils.mozie_request import Request
 from bs4 import BeautifulSoup
