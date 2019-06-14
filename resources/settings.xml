@@ -4,6 +4,10 @@
 		<setting label="Fcine.net" type="lsep"/>
         <setting label="Fcine username" type="text" id="fcine.username" default=""/>
         <setting label="Fcine password" type="text" id="fcine.password" option="hidden"  enable="!eq(-1,)" default=""/>
+
+        <setting label="HDvietnam.com" type="lsep"/>
+        <setting label="HDvietnam username" type="text" id="hdvietnam.username" default=""/>
+        <setting label="HDvietnam password" type="text" id="hdvietnam.password" option="hidden"  enable="!eq(-1,)" default=""/>
     </category>
 	<category label="Sharing host">
 		<setting label="Fshare Account" type="lsep"/>

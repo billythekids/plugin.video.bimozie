@@ -13,7 +13,6 @@ from utils.media_helper import MediaHelper
 from threading import Thread
 import utils.xbmc_helper as XbmcHelper
 
-
 ADDON = xbmcaddon.Addon()
 HANDLE = int(sys.argv[1])
 BASEURL = sys.argv[0]
@@ -129,11 +128,14 @@ SITES = [
         'plugin': 'dongphim.plugin',
         'version': 1
     },
+    {
+        'name': 'hdvietnam.com',
+        'logo': 'http://www.hdvietnam.com/images/hd-vietnam-logo.png',
+        'className': 'Hdvietnam',
+        'plugin': 'hdvietnam.plugin',
+        'version': 1
+    },
 ]
-
-addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
-if not os.path.exists(addon_data_dir):
-    os.makedirs(addon_data_dir)
 
 
 def build_url(query):
@@ -516,11 +518,12 @@ def do_global_search(text):
     def _search(plugin, module, classname, text):
         movies = None
         try:
-            movies =  plugin().search(text)
+            movies = plugin().search(text)
         except:
             pass
         if movies is not None:
-            label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (classname, len(movies['movies']))
+            label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (
+            classname, len(movies['movies']))
             sli = xbmcgui.ListItem(label=label)
             url = build_url({'mode': 'dosearch', 'module': module, 'className': classname, 'url': text})
             xbmcplugin.addDirectoryItem(HANDLE, url, sli, isFolder=True)
