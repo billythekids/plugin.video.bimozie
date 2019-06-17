@@ -67,12 +67,16 @@ class Hdvietnam:
 
     def search(self, text):
         text = urllib.quote_plus(text)
-        url = "%s/wp-admin/admin-ajax.php" % self.domain
-        response = Request().post(url, params={
-            'action': 'ajaxsearchpro_search',
-            'asid': 1,
-            'asp_inst_id': '1_1',
-            'aspp': text,
-            'options': 'current_page_id=64113&qtranslate_lang=0&asp_gen%5B%5D=title&asp_gen%5B%5D=content&customset%5B%5D=page&customset%5B%5D=post'
-        })
-        return Channel().search_result(response)
+        params = {
+            'keywords': text,
+            'nodes[]': 33,
+            'type': 'post',
+            'order': 'date',
+            'child_nodes': 1
+        }
+
+        url = "%s/search/search" % self.domain
+        response = Request().post(url, params=params)
+        # print('77777777777777777777777777777777777777')
+        # print(helper.write_file('test.html', response.encode('utf-8')))
+        return Channel().get_search(response)

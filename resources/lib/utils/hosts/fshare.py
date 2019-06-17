@@ -22,12 +22,14 @@ class FShareVN:
         size = '0'
         soup = BeautifulSoup(content, "html.parser")
         title = soup.select_one('title').text.encode('utf-8')
-        if 'Not Found' in title:
+
+        if 'Not Found' in title or '503' in title:
             raise Exception('Fshare', 'link die')
 
         info = soup.select_one('div.info')
         if info:
             name = info.select_one('div.name').get('title').encode('utf-8')
+            print(name)
 
             size = info.select_one('div.size').get_text().strip()\
                 .replace(" ", "")\
