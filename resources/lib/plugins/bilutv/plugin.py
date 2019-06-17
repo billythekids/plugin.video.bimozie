@@ -32,15 +32,8 @@ class Bilutv:
         return Movie().get(response)
 
     def getLink(self, movie):
-        url = "%s/ajax/player/" % self.domain
-        data = movie['link'].split(",")
-        params = {
-            'id': data[0],
-            'ep': data[1],
-            'sv': data[2]
-        }
-        response = Request().post(url, params)
-        return Movie().get_link(response)
+        response = Request().get(movie['link'])
+        return Movie().get_link(response, self.domain)
 
     def search(self, text, page=1):
         url = "%s/tim-kiem/%s.html" % (self.domain, urllib.quote_plus(text))

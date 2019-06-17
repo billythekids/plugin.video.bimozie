@@ -24,35 +24,57 @@ class Parser:
             if re.search('http', movie_type.get('href')):
                 response = Request().get(movie_type.get('href'))
                 soup = BeautifulSoup(response, "html.parser")
-                self.get_server_link(soup, response, movie_type, movie)
+                self.get_server_link(soup, movie_type, movie)
             else:
-                self.get_server_link(soup, response, movie_type, movie)
+                self.get_server_link(soup, movie_type, movie)
 
         return movie
 
-    def get_server_link(self, soup, response, movie_type, movie):
-        movie_id = re.search("MovieID = '(.*)';", response).group(1)
-
-        servers = soup.select('div.list-server > div.server-item > div.option > span')
+    def get_server_link(self, soup, movie_type, movie):
         episodes = soup.select('ul.list-episode > li > a')
-        for server in servers:
-            server_name = "%s - %s" % (server.text.strip().encode('utf-8'), movie_type.text.strip().encode('utf-8'))
+        for episode in episodes:
+            server_name = "%s" % (movie_type.text.strip().encode('utf-8'))
             if server_name not in movie['group']: movie['group'][server_name] = []
-            # if skipEps is False and len(episodes) > 0:
-            for episode in episodes:
-                ep_id = episode.get('data-id')
-                movie['group'][server_name].append({
-                    'link': '%s,%s,%s' % (movie_id, ep_id, server.get('data-index')),
-                    'title': "Tập %s" % episode.text.encode('utf-8')
-                })
+            movie['group'][server_name].append({
+                'link': episode.get('href'),
+                'title': "Tập %s" % episode.text.encode('utf-8')
+            })
 
-    def get_link(self, response):
+    def get_link(self, response, domain):
         movie = {
             'group': {},
             'episode': [],
             'links': [],
         }
+        # get all movie links
+        soup = BeautifulSoup(response, "html.parser")
+        servers = soup.select('div.list-server > div.server-item > div.option > span')
+        movie_id = re.search("MovieID\s?=\s?'(.*?)';", response).group(1)
+        ep_id = soup.select_one('ul.list-episode > li > a.current').get('data-id')
 
+        links = []
+        for server in servers:
+            sv_id = server.get('data-index')
+            url = "%s/ajax/player/" % domain
+            params = {
+                'id': movie_id,
+                'ep': ep_id,
+                'sv': sv_id
+            }
+
+            self.extract_link(Request().post(url, params), links)
+
+        for link in links:
+            movie['links'].append({
+                'link': link[0],
+                'title': 'Link %s' % link[1],
+                'type': link[1],
+                'resolve': False
+            })
+
+        return movie
+
+    def extract_link(self, response, movie_links):
         m = re.search("sources:\s?(\[.*?\])", response)
         if m is not None:
             sources = m.group(1)
@@ -66,42 +88,25 @@ class Parser:
                     pass
 
             if len(sources) > 0:
-                source = sources[0]
-                label = 'label' in source and source['label'] or ''
-                movie['links'].append({
-                    'link': self.parse_link(source['file']),
-                    'title': 'Link %s' % label.encode('utf-8'),
-                    'type': label.encode('utf-8'),
-                    'resolve': False
-                })
-
-            return movie
+                for s in sources:
+                    print(s)
+                    source = self.parse_link(s['file'])
+                    if source not in movie_links:
+                        movie_links.append((source, s['label'].encode('utf-8')))
 
         m = re.search('<iframe.*src=".*?url=(.*)" frameborder', response)
         if m is not None:
             source = urllib.unquote(m.group(1))
-            movie['links'].append({
-                'link': self.parse_link(source),
-                'title': '',
-                'type': '',
-                'resolve': False
-            })
-
-            return movie
+            source = self.parse_link(source)
+            if source not in movie_links:
+                movie_links.append((source, ''))
 
         m = re.search('<iframe.*src="(.*)" frameborder', response)
         if m is not None:
             source = urllib.unquote(m.group(1)).replace('\\', '')
-            if source:
-                movie['links'].append({
-                    'link': self.parse_link(source),
-                    'title': source.encode('utf-8'),
-                    'type': 'Unknow',
-                    'resolve': False
-                })
-                return movie
-
-        return movie
+            source = self.parse_link(source)
+            if source not in movie_links:
+                movie_links.append((source, ''))
 
     def parse_link(self, url):
         r = re.search('getLinkSimple', url)
