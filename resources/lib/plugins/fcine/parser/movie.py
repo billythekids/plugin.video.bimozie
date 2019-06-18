@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
+from utils.mozie_request import AsyncRequest
+from utils.hosts.fshare import FShareVN
 
 
 def from_char_code(*args):
@@ -27,10 +29,25 @@ class Parser:
 
         server = servers[-1:][0]
         items = server.select('> span.ipsDataItem_main > p')
+        links = []
         for item in items:
-            link = self.get_link(item, subtitle)
-            if link:
-                movie['links'].append(link)
+            link = item.select_one('a')
+            if link: links.append(link.get('href'))
+
+        if len(links) > 0:
+            results = AsyncRequest().get(links)
+            for idx, result in enumerate(results):
+                try:
+                    name, size = FShareVN.get_info(content=result)
+                    movie['links'].append({
+                        'link': links[idx],
+                        'title': '[%s] %s' % (size, name),
+                        'type': 'Unknown',
+                        'resolve': False
+                    })
+                except:
+                    print('Link die %s' % self.found_links[idx])
+                    continue
 
         return movie
 

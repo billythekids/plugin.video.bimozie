@@ -66,7 +66,7 @@ class FShareVN:
         if re.search(r'/folder/([^\?]+)', self.url):
             code = self.handleFolder(self.url)
             if not code:
-                return code
+                return None
         else:
             code = re.search(r'/file/([^\?]+)', self.url).group(1)
 
@@ -102,8 +102,10 @@ class FShareVN:
         r = json.loads(r)
 
         listitems = []
-        if r['items'] and len(r['items']) > 0:
+        if 'items' in r and len(r['items']) > 0:
             listitems = ["[%s] %s" % (i['type'] == 1 and helper.humanbytes(i["size"]) or 'Folder', i["name"]) for i in r['items']]
+        else:
+            raise Exception('Fshare', 'link die')
 
         index = helper.create_select_dialog(listitems)
         if index == -1: return None

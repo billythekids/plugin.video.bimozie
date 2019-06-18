@@ -63,7 +63,7 @@ class Parser:
         return movie
 
     def extract_links(self, content):
-        allow_url = ['fshare.vn']
+        allow_url = ['fshare.vn/']
 
         for link in content.select('a.externalLink'):
             url = link.get('href')

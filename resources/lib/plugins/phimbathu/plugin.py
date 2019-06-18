@@ -6,7 +6,7 @@ from bilutv.parser.movie import Parser as Movie
 
 
 class Phimbathu:
-    domain = "https://phimbathu.org/"
+    domain = "https://phimbathu.org"
 
     def getCategory(self):
         response = Request().get(self.domain)
@@ -25,7 +25,7 @@ class Phimbathu:
         return Channel().get(response)
 
     def getMovie(self, id):
-        url = "%sphim-0-%s.html" % (self.domain, id)
+        url = "%s/phim-0-%s.html" % (self.domain, id)
         response = Request().get(url)
         url = Movie().get_movie_link(response)
         response = Request().get(url)
@@ -37,6 +37,6 @@ class Phimbathu:
 
     def search(self, text):
         # http://phimbathu.org/tim-kiem/(keywords).html
-        url = "%stim-kiem/%s.html" % (self.domain, urllib.quote_plus(text))
+        url = "%s/tim-kiem/%s.html" % (self.domain, urllib.quote_plus(text))
         response = Request().get(url)
         return Channel().get(response, 1)

@@ -69,7 +69,10 @@ class Hdvietnam:
         text = urllib.quote_plus(text)
         params = {
             'keywords': text,
-            'nodes[]': 33,
+            # 'nodes[]': 33,
+            # 'nodes[]': 149,
+            # 'nodes[]': 337,
+            'nodes': [33, 149, 337],
             'type': 'post',
             'order': 'date',
             'child_nodes': 1
