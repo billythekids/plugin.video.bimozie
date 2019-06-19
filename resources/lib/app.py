@@ -356,7 +356,7 @@ def play(movie, title=None, thumb=None, direct=False):
                 listitems = ["%s (%s)" % (i["title"], i["link"]) for i in movie['links']]
                 index = xbmcgui.Dialog().select("Select stream", listitems)
                 if index == -1:
-                    return
+                    return None
                 else:
                     movie = movie['links'][index]
             else:

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
+    <category label="Sharing host">
+		<setting label="Fshare Account" type="lsep"/>
+        <setting label="Use my Fshare" type="bool" id="fshare.enable" default="false"/>
+        <setting label="Fshare username" type="text" id="fshare.username" default=""/>
+        <setting label="Fshare password" type="text" id="fshare.password" option="hidden"  enable="!eq(-1,)" default=""/>
+    </category>
     <category label="Websites Credential">
 		<setting label="Fcine.net" type="lsep"/>
         <setting label="Fcine username" type="text" id="fcine.username" default=""/>
@@ -8,11 +14,5 @@
         <setting label="HDvietnam.com" type="lsep"/>
         <setting label="HDvietnam username" type="text" id="hdvietnam.username" default=""/>
         <setting label="HDvietnam password" type="text" id="hdvietnam.password" option="hidden"  enable="!eq(-1,)" default=""/>
-    </category>
-	<category label="Sharing host">
-		<setting label="Fshare Account" type="lsep"/>
-        <setting label="Use my Fshare" type="bool" id="fshare.enable" default="false"/>
-        <setting label="Fshare username" type="text" id="fshare.username" default=""/>
-        <setting label="Fshare password" type="text" id="fshare.password" option="hidden"  enable="!eq(-1,)" default=""/>
     </category>
 </settings>

@@ -13,14 +13,18 @@ class Hdvietnam:
 
     def __init__(self):
         if not helper.getSetting('hdvietnam.username'):
-            helper.message('Please login to hdvietnam.net', 'Login Required')
+            self.username = 'romvemot@gmail.com'
+            self.password = 'bimozie'
+        else:
+            self.username = helper.getSetting('hdvietnam.username')
+            self.password = helper.getSetting('hdvietnam.password')
 
         self.request = Request(session=True)
 
     def login(self, redirect=None):
         params = {
-            'login': helper.getSetting('hdvietnam.username'),
-            'password': helper.getSetting('hdvietnam.password'),
+            'login': self.username,
+            'password': self.password,
             'register': 0,
             'cookie_check': 1,
             '_xfToken': '',

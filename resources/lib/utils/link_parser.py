@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+import xbmcaddon
 import utils.xbmc_helper as helper
 from urllib import urlencode
 from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax, dongphim, fembed, hdclub
@@ -100,8 +101,11 @@ class LinkParser:
             return None
 
     def get_link_fshare(self):
+
         if not helper.getSetting('fshare.username'):
             helper.message('Required username/password to get fshare.vn link, open addon settings', 'Login Required')
+            xbmcaddon.Addon().openSettings()
+            return None, None
 
         if helper.getSetting('fshare.enable'):
             return fshare.FShareVN(

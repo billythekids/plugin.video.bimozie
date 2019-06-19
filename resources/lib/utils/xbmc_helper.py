@@ -33,7 +33,8 @@ def message(message='', title='', timeShown=5000):
         title = ': [COLOR blue]%s[/COLOR]' % title if title else ''
         s0 = '[COLOR green][B]Bimozie[/B][/COLOR]' + title
         message = s2u(message)
-        s1 = u'[COLOR %s]%s[/COLOR]' % ('red' if '!' in message else 'gold', message)
+        # s1 = u'[COLOR %s]%s[/COLOR]' % ('red' if '!' in message else 'gold', message)
+        s1 = message
         message = u'XBMC.Notification(%s,%s,%s)' % (s0, s1, timeShown)
         xbmc.executebuiltin(message.encode("utf-8"))
     else:
