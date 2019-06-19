@@ -15,6 +15,7 @@ class Fimfast:
         return Category().get(response)
 
     def getChannel(self, channel, page=1):
+        channel = channel.replace(self.domain, '')
         baseurl = '%s%s' % (self.domain, channel)
         if page == 1:
             response = Request().get(baseurl)
@@ -29,11 +30,11 @@ class Fimfast:
             else:
                 url = '%s/films?offset=%d&limit=24&%s=%s' % (self.api, (page - 1) * 24, api_type, api_value)
 
-        response = Request().get(url, headers={
-            'referer': baseurl,
-            'authority': 'fimfast.com',
-            'x-requested-with': 'XMLHttpRequest',
-        })
+            response = Request().get(url, headers={
+                'referer': baseurl,
+                'authority': 'fimfast.com',
+                'x-requested-with': 'XMLHttpRequest',
+            })
 
         return Channel().get(response, page, api_type, api_value)
 

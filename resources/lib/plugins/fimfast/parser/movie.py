@@ -58,7 +58,6 @@ class Parser:
                 'resolve': False,
                 'subtitle': subtitle
             })
-            return movie
         elif u'hff' in videos and videos['hff'] and self.encodeString(videos['hff'], 69).find('No link') == -1:
             url = self.encodeString(videos['hff'], 69)
             movie['links'].append({
@@ -68,7 +67,6 @@ class Parser:
                 'resolve': False,
                 'subtitle': subtitle
             })
-            return movie
         else:
             for videotype in videos:
                 if videos[videotype] and videotype != u'hff':

@@ -48,7 +48,6 @@ class Parser:
                 'type': '',
                 'resolve': True
             })
-            return movie
 
         sources = re.search('<iframe.*src=(".*?")', response)
         if sources is not None:
@@ -60,7 +59,6 @@ class Parser:
                     'type': 'Unknow',
                     'resolve': False
                 })
-                return movie
 
         sources = re.search('"sources": (.*),', response)
         if sources is not None:
@@ -77,7 +75,6 @@ class Parser:
                             'type': label.encode('utf-8'),
                             'resolve': True
                         })
-                    return movie
 
         return movie
 

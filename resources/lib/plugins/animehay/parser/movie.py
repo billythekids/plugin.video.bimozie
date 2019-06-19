@@ -44,16 +44,6 @@ class Parser:
             'links': [],
         }
 
-        sources = re.search("document.getElementById\('ah-player'\).innerHTML.*src=\"(.*)\"", response)
-        if sources:
-            movie['links'].append({
-                'link': self.get_playlist(sources.group(1)),
-                'title': 'Link hls',
-                'type': 'hls',
-                'resolve': True
-            })
-            return movie
-
         sources = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", response)
         if sources:
             res = Request()
@@ -62,41 +52,53 @@ class Parser:
             resp = res.post('http://vl.animehay.tv/initPlayer/%s' % vkey)
             resp = json.loads(resp)
 
+            # if 'p2pdrive' in resp['availablePlayers']:
+            #     data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('p2pdrive', vkey)))
+            #     source = data['data']
+            #
+            #     if source:
+            #         movie['links'].append({
+            #             'link': source,
+            #             'title': 'Link p2pdrive',
+            #             'type': 'hls',
+            #             'resolve': False
+            #         })
+
             if 'fembed' in resp['availablePlayers']:
                 data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('fembed', vkey)))
                 data = res.get(data['data'])
                 source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
-
-                movie['links'].append({
-                    'link': source,
-                    'title': 'Link fembed',
-                    'type': 'mp4',
-                    'resolve': False
-                })
+                if source:
+                    movie['links'].append({
+                        'link': source,
+                        'title': 'Link fembed',
+                        'type': 'mp4',
+                        'resolve': False
+                    })
                 
             if 'okru' in resp['availablePlayers']:
                 data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('okru', vkey)))
                 data = res.get(data['data'])
                 source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
-
-                movie['links'].append({
-                    'link': source,
-                    'title': 'Link okru',
-                    'type': 'mp4',
-                    'resolve': False
-                })
+                if source:
+                    movie['links'].append({
+                        'link': source,
+                        'title': 'Link okru',
+                        'type': 'mp4',
+                        'resolve': False
+                    })
 
             if 'openload' in resp['availablePlayers']:
                 data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('openload', vkey)))
                 data = res.get(data['data'])
                 source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
-
-                movie['links'].append({
-                    'link': source,
-                    'title': 'Link openload',
-                    'type': 'mp4',
-                    'resolve': False
-                })
+                if source:
+                    movie['links'].append({
+                        'link': source,
+                        'title': 'Link openload',
+                        'type': 'mp4',
+                        'resolve': False
+                    })
 
             return movie
 
@@ -118,82 +120,3 @@ class Parser:
             movie['links'] = sorted(movie['links'], key=lambda elem: int(elem['type']), reverse=True)
 
         return movie
-
-    def get_playlist(self, url):
-        resp = Request().get(url)
-        params = re.search('this.urls=(\[.*?\]);', resp)
-        params = json.loads(params.group(1))[0]
-
-        data = {
-            'url': params['url'],
-            'bk_url': params['burl'],
-            'pr_url': params['purl'],
-            'ex_hls[]': params['exhls'],
-            'v': 2,
-            'len': 0,
-            'prefer': 'https://dd.ntl.clhcdn.net',
-            'ts': '1551437409204',
-            'item_id': 'gu3d5A0S',
-            'username': 'animehay'
-        }
-
-        url = 'http://ch.animehay.tv/content/parseUrl'
-        resp = json.loads(Request().get(url, params=data))
-        if not resp['hls']:
-            sorted(resp['formats'].iterkeys(), reverse=True)
-            movie_link = resp['formats'].itervalues().next()
-            if Request().head(movie_link).status_code < 400:
-                return movie_link
-            else:
-                data['err[pr][dr][]'] = 'https://redirector.googlevideo.com'
-                data['err[pr][num]'] = len(resp['formats'])
-                data['err[pr][dr_s]'] = resp['sig']
-                resp = json.loads(Request().get(url, params=data))
-
-                return self.create_effective_playlist(resp['formats'])
-        else:
-            return self.create_effective_playlist(resp['formats'])
-
-    def create_effective_playlist(self, sources):
-        r = "#EXTM3U\n#EXT-X-VERSION:3\n"
-        for key, value in sources.items():
-            if '720' in key:
-                return self.get_stream(value)
-                r += "#EXT-X-STREAM-INF:BANDWIDTH=1998000,RESOLUTION=1280x720\n"
-                r += "%s\n" % self.get_stream(value)
-                break
-            if '480' in key:
-                return self.get_stream(value)
-                r += "#EXT-X-STREAM-INF:BANDWIDTH=996000,RESOLUTION=640x480\n"
-                r += "%s\n" % value
-                break
-            if '360' in key:
-                return self.get_stream(value)
-                r += "#EXT-X-STREAM-INF:BANDWIDTH=394000,RESOLUTION=480x360\n"
-                r += "%s\n" % value
-                break
-
-        url = PasteBin().dpaste(r, name='animiehay', expire=60)
-        return url
-
-    def get_stream(self, url):
-        req = Request()
-        r = req.get(url)
-        str = ""
-        links = []
-        for line in r.splitlines():
-            if len(line) > 0:
-                if re.match('http', line):
-                    links.append(line)
-                str += '%s\n' % line
-
-        arequest = AsyncRequest(request=req)
-        results = arequest.head(links)
-        for i in range(len(links)):
-            try:
-                str = str.replace(links[i], results[i].headers['Location '])
-            except:
-                pass
-
-        url = PasteBin().dpaste(str, name='animiehay', expire=60)
-        return url

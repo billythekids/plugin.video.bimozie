@@ -3,7 +3,7 @@ import re
 import xbmcaddon
 import utils.xbmc_helper as helper
 from urllib import urlencode
-from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax, dongphim, fembed, hdclub
+from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax, dongphim, fembed, hdclub, animehay
 
 class LinkParser:
     def __init__(self, media):
@@ -14,6 +14,9 @@ class LinkParser:
         print("Find link source of %s" % self.url)
         if re.search('ok.ru', self.url):
             return ok.get_link(self.url)
+
+        elif 'lb.animehay.tv' in self.url:
+            return animehay.get_link(self.url), '720'
 
         elif re.search('openload.co', self.url):
             return self.get_link_openload()
@@ -90,7 +93,7 @@ class LinkParser:
             stream_url = resolveurl.resolve(self.url)
             return stream_url, '720'
         except:
-            return None
+            return None, None
 
     def get_link_dailymotion(self):
         try:
