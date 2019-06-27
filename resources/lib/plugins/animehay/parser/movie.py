@@ -75,6 +75,20 @@ class Parser:
                         'type': 'mp4',
                         'resolve': False
                     })
+
+            if 'gphoto' in resp['availablePlayers']:
+                data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('gphoto', vkey)))
+                data = res.get(data['data'])
+                sources = re.search("var sources[\s]?=[\s]?(\[{.*}\])", data)
+                if sources:
+                    sources = json.loads(sources.group(1))
+                    for source in sources:
+                        movie['links'].append({
+                            'link': source['file'],
+                            'title': 'Link %s' % source['label'],
+                            'type': 'mp4',
+                            'resolve': False
+                        })
                 
             if 'okru' in resp['availablePlayers']:
                 data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('okru', vkey)))
