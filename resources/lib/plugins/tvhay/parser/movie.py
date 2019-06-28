@@ -61,7 +61,7 @@ class Parser:
 
             return movie
 
-        m = re.search('<iframe.*src=".*\?link=(.*)">', response)
+        m = re.search('<iframe.*src=".*\?link=(.*?)"', response)
         if m is not None:
             source = urllib.unquote(m.group(1)).replace('\\', '')
             if source:
@@ -72,8 +72,6 @@ class Parser:
                     'resolve': False
                 })
                 return movie
-
-        print(WisePacker.decode(response))
 
         return movie
 
