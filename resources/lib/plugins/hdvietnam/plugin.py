@@ -53,7 +53,7 @@ class Hdvietnam:
         else:
             url = '%s%s' % (self.domain, channel)
         response = Request().get(url)
-        return Channel().get(response, page)
+        return Channel().get(response, page=page, domain=self.domain)
 
     def getMovie(self, id):
         url = '%s/%s' % (self.domain, id)

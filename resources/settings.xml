@@ -14,5 +14,6 @@
         <setting label="HDvietnam.com" type="lsep"/>
         <setting label="HDvietnam username" type="text" id="hdvietnam.username" default=""/>
         <setting label="HDvietnam password" type="text" id="hdvietnam.password" option="hidden"  enable="!eq(-1,)" default=""/>
+        <setting label="HDvietnam allows get extra info (slow)" type="bool" id="hdvietnam.extra" default="true"/>
     </category>
 </settings>

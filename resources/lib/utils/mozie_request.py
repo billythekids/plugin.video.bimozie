@@ -84,9 +84,10 @@ class AsyncRequest:
     MIN_THREAD = 50
     RETRY = 1
 
-    def __init__(self, request=None, retry=1):
+    def __init__(self, request=None, retry=1, thread=50):
         self.request = request or Request()
         self.RETRY = retry
+        self.MIN_THREAD = thread
 
     def __create_queue(self, urls):
         print("*********************** Start Queue %d" % len(urls))

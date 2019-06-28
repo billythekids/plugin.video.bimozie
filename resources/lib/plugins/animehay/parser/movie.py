@@ -51,6 +51,8 @@ class Parser:
             # http://vl.animehay.tv/initPlayer/f555b31844becd2e378d4978457014521af38ab8e66834ade1062b44827ef642
             resp = res.post('http://vl.animehay.tv/initPlayer/%s' % vkey)
             resp = json.loads(resp)
+            if 'availablePlayers' not in resp:
+                return movie
 
             # if 'p2pdrive' in resp['availablePlayers']:
             #     data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('p2pdrive', vkey)))
