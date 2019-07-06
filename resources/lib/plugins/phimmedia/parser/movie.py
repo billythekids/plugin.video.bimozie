@@ -68,19 +68,21 @@ class Parser:
 
     def decode(self, link):
         r = base64.b64decode(link)
+        print(r)
         r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
         r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
         r = r.replace("ms.com?test=", "")
 
         rep_text = re.findall(r'(?:(?!\d+\.mp4)(.*?/)(\d)(\d).mp4/)', r)
-        rep_text = rep_text[0][0] + rep_text[0][1]
+        if len(rep_text) > 0:
+            rep_text = rep_text[0][0] + rep_text[0][1]
 
-        r = r.replace('%s1.mp4/' % rep_text, 'https://3.bp.blogspot.com/')
-        r = r.replace('%s2.mp4/' % rep_text, 'https://video.xx.fbcdn.net/')
-        r = r.replace('%s3.mp4/' % rep_text, 'v/t42.9040-2/')
-        r = r.replace('%s4.mp4/' % rep_text, 'https://lh3.googleusercontent.com/')
+            r = r.replace('%s1.mp4/' % rep_text, 'https://3.bp.blogspot.com/')
+            r = r.replace('%s2.mp4/' % rep_text, 'https://video.xx.fbcdn.net/')
+            r = r.replace('%s3.mp4/' % rep_text, 'v/t42.9040-2/')
+            r = r.replace('%s4.mp4/' % rep_text, 'https://lh3.googleusercontent.com/')
 
-        r = r.replace('%s5.mp4/' % rep_text, '=m37')
-        r = r.replace('%s6.mp4/' % rep_text, '=m22')
-        r = r.replace('%s7.mp4/' % rep_text, '=m18')
+            r = r.replace('%s5.mp4/' % rep_text, '=m37')
+            r = r.replace('%s6.mp4/' % rep_text, '=m22')
+            r = r.replace('%s7.mp4/' % rep_text, '=m18')
         return r

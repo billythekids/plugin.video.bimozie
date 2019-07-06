@@ -13,7 +13,12 @@ class Fcine:
 
     def __init__(self):
         if not helper.getSetting('fcine.username'):
-            helper.message('Please login to fcine.net', 'Login Required')
+            # helper.message('Please login to fcine.net', 'Login Required')
+            self.username = 'romvemot@gmail.com'
+            self.password = 'bimozie'
+        else:
+            self.username = helper.getSetting('fcine.username'),
+            self.password = helper.getSetting('fcine.password'),
 
         self.request = Request(header={
             'User-Agent': 'Mozilla/5.0',
@@ -54,8 +59,8 @@ class Fcine:
     def getMovie(self, id):
         self.get_token()
         response = self.login(
-            helper.getSetting('fcine.username'),
-            helper.getSetting('fcine.password'),
+            self.username,
+            self.password,
             {'referer': id})
         return Movie().get(response)
 
