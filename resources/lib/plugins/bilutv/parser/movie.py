@@ -58,8 +58,6 @@ class Parser:
         else:
             ep_id = re.search("EpisodeID\s?=\s?'(.*?)',", response).group(1)
 
-
-
         jobs = []
         links = []
         for server in servers:
@@ -73,6 +71,7 @@ class Parser:
             jobs.append({'url': url, 'params': params, 'parser': Parser.extract_link})
 
         AsyncRequest().post(jobs, args=links)
+
         for link in links:
             movie['links'].append({
                 'link': link[0],

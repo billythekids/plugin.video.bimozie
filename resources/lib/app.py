@@ -51,6 +51,13 @@ SITES = [
         'plugin': 'phimmoi.plugin',
         'version': 18
     },
+{
+        'name': 'hphim.net',
+        'logo': 'https://i.ibb.co/fH1RNxH/image.png',
+        'className': 'Hphim',
+        'plugin': 'hphim.plugin',
+        'version': 1
+    },
     {
         'name': 'tvhay.org',
         'logo': 'https://kodi-addons.club/data/d1/d14a048c56373761664ca89a773d694d.png',
