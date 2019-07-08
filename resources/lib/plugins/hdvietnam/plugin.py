@@ -53,7 +53,7 @@ class Hdvietnam:
         else:
             url = '%s%s' % (self.domain, channel)
         response = Request().get(url)
-        return Channel().get(response, page)
+        return Channel().get(response, page=page, domain=self.domain)
 
     def getMovie(self, id):
         url = '%s/%s' % (self.domain, id)
@@ -73,10 +73,7 @@ class Hdvietnam:
         text = urllib.quote_plus(text)
         params = {
             'keywords': text,
-            # 'nodes[]': 33,
-            # 'nodes[]': 149,
-            # 'nodes[]': 337,
-            'nodes': [33, 149, 337],
+            'nodes[]': [337, 116, 150, 33, 57, 123],
             'type': 'post',
             'order': 'date',
             'child_nodes': 1

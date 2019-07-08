@@ -3,7 +3,7 @@ import re
 import xbmcaddon
 import utils.xbmc_helper as helper
 from urllib import urlencode
-from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax, dongphim, fembed, hdclub, animehay
+from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax, dongphim, fembed, hdclub, animehay, vuviphim
 
 class LinkParser:
     def __init__(self, media):
@@ -32,6 +32,9 @@ class LinkParser:
 
         elif re.search('24hd.club', self.url):
             return hdclub.get_link(self.url)
+
+        elif re.search('vuviphim.xyz', self.url):
+            return vuviphim.get_link(self.url)
 
         elif re.search('fptplay.net', self.url):
             helper.message('FPTPlay hls link parsing', 'Get Link')

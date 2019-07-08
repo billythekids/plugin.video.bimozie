@@ -38,8 +38,9 @@ class Request:
         return self.r.text
 
     def post(self, url, params=None, headers=None, redirect=True, cookies=None):
-        try: print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
-        except: pass
+        # try: print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
+        # except: pass
+        print("Post URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
@@ -84,9 +85,10 @@ class AsyncRequest:
     MIN_THREAD = 50
     RETRY = 1
 
-    def __init__(self, request=None, retry=1):
+    def __init__(self, request=None, retry=1, thread=50):
         self.request = request or Request()
         self.RETRY = retry
+        self.MIN_THREAD = thread
 
     def __create_queue(self, urls):
         print("*********************** Start Queue %d" % len(urls))

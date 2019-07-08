@@ -51,7 +51,12 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         servers = soup.select('div.list-server > div.server-item > div.option > span')
         movie_id = re.search("MovieID\s?=\s?'(.*?)';", response).group(1)
-        ep_id = soup.select_one('ul.list-episode > li > a.current').get('data-id')
+
+        ep_id = soup.select_one('ul.list-episode > li > a.current')
+        if ep_id:
+            ep_id = ep_id.get('data-id')
+        else:
+            ep_id = re.search("EpisodeID\s?=\s?'(.*?)',", response).group(1)
 
         jobs = []
         links = []
@@ -66,6 +71,7 @@ class Parser:
             jobs.append({'url': url, 'params': params, 'parser': Parser.extract_link})
 
         AsyncRequest().post(jobs, args=links)
+
         for link in links:
             movie['links'].append({
                 'link': link[0],
