@@ -23,6 +23,13 @@ KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 print("***********************Current version %d" % KODI_VERSION)
 
 SITES = [
+    # {
+    #     'name': 'fptplay.vn',
+    #     'logo': 'https://fptplay.vn/images/logo.png',
+    #     'className': 'Fptplay',
+    #     'plugin': 'fptplay.plugin',
+    #     'version': 41
+    # },
     {
         'name': 'fimfast.com',
         'logo': 'https://fimfast.com/assets/img/logo.png',

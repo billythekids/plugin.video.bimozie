@@ -54,17 +54,30 @@ class Parser:
             if 'availablePlayers' not in resp:
                 return movie
 
-            # if 'p2pdrive' in resp['availablePlayers']:
-            #     data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('p2pdrive', vkey)))
-            #     source = data['data']
-            #
-            #     if source:
-            #         movie['links'].append({
-            #             'link': source,
-            #             'title': 'Link p2pdrive',
-            #             'type': 'hls',
-            #             'resolve': False
-            #         })
+            if 'p2pdrive' in resp['availablePlayers']:
+                data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('p2pdrive', vkey)))
+                source = data['data']
+
+                if source:
+                    movie['links'].append({
+                        'link': source,
+                        'title': 'Link p2pdrive',
+                        'type': 'hls',
+                        'resolve': False
+                    })
+
+            if 'gphoto' in resp['availablePlayers']:
+                data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('gphoto', vkey)))
+                data = res.get(data['data'])
+                sources = json.loads(re.search(r"var\s?sources\s?=\s?(\[.*?\])", data).group(1))
+                if sources and len(sources) > 0:
+                    for source in sources:
+                        movie['links'].append({
+                            'link': source['file'],
+                            'title': 'Link %s' % source['label'],
+                            'type': 'mp4',
+                            'resolve': False
+                        })
 
             if 'fembed' in resp['availablePlayers']:
                 data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('fembed', vkey)))
@@ -77,7 +90,7 @@ class Parser:
                         'type': 'mp4',
                         'resolve': False
                     })
-                
+
             if 'okru' in resp['availablePlayers']:
                 data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('okru', vkey)))
                 data = res.get(data['data'])
@@ -101,6 +114,8 @@ class Parser:
                         'type': 'mp4',
                         'resolve': False
                     })
+
+
 
             return movie
 
