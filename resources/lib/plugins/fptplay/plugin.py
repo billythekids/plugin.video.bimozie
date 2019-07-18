@@ -95,8 +95,6 @@ class Fptplay:
             'child_nodes': 1
         }
 
-        url = "%s/search/search" % self.domain
-        response = Request().post(url, params=params)
-        # print('77777777777777777777777777777777777777')
-        # print(helper.write_file('test.html', response.encode('utf-8')))
+        url = "%s/tim-kiem/%s" % (self.domain, text)
+        response = Request().get(url)
         return Channel().get_search(response)

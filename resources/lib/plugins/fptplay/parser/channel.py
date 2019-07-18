@@ -61,33 +61,30 @@ class Parser:
     def get_thumb(self, style):
         return re.search('background-image:url\((.*?)\)', style).group(1)
 
-    def get_search(self, response, page=1):
+    def get_search(self, response):
 
         channel = {
-            'page': page,
+            'page': 1,
             'page_patten': None,
             'movies': []
         }
 
-        soup = BeautifulSoup(response, "html.parser")
-        # get total page
-        last_page = soup.select_one('div.PageNav')
-        print("*********************** Get pages ")
-        if last_page is not None:
-            channel['page'] = int(last_page.get('data-last'))
+        data = re.search(r'__NUXT__=(.*);', response)
+        if not data:
+            return channel
 
-        for movie in soup.select('li.searchResult'):
-            tag = movie.select_one('div.listBlock.main div.titleText > h3.title > a')
-            title = tag.text.strip().encode("utf-8")
-            thumb = None
-
+        data = json.loads(data.group(1))['data'][0]
+        for movie in data['searchData']:
             channel['movies'].append({
-                'id': tag.get('href'),
-                'label': title,
-                'title': title,
-                'realtitle': title,
-                'thumb': thumb,
-                'type': None
+                # 'id': id,
+                'id': movie['_id'],
+                'label': movie['title'].encode("utf-8"),
+                'title': movie['title_vie'].encode("utf-8"),
+                'realtitle': movie['title_origin'],
+                'thumb': movie['thumb'],
+                'type': '',
+                'intro': '',
             })
+
 
         return channel
