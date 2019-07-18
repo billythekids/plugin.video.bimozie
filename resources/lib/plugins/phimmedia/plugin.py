@@ -30,7 +30,7 @@ class Phimmedia:
 
     def getCategory(self):
         response = self.request.get(self.domain)
-        return Category().get(response)
+        return Category().get(response), None
 
     def getChannel(self, channel, page=1):
         if page > 1:

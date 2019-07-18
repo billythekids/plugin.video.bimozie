@@ -23,13 +23,13 @@ KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 print("***********************Current version %d" % KODI_VERSION)
 
 SITES = [
-    # {
-    #     'name': 'fptplay.vn',
-    #     'logo': 'https://fptplay.vn/images/logo.png',
-    #     'className': 'Fptplay',
-    #     'plugin': 'fptplay.plugin',
-    #     'version': 41
-    # },
+    {
+        'name': 'fptplay.vn',
+        'logo': 'https://fptplay.vn/images/logo.png',
+        'className': 'Fptplay',
+        'plugin': 'fptplay.plugin',
+        'version': 1
+    },
     {
         'name': 'fimfast.com',
         'logo': 'https://fimfast.com/assets/img/logo.png',
@@ -58,7 +58,7 @@ SITES = [
         'plugin': 'phimmoi.plugin',
         'version': 18
     },
-{
+    {
         'name': 'hphim.net',
         'logo': 'https://i.ibb.co/fH1RNxH/image.png',
         'className': 'Hphim',
@@ -149,6 +149,13 @@ SITES = [
         'plugin': 'hdvietnam.plugin',
         'version': 1
     },
+    {
+        'name': 'xemphim.plus',
+        'logo': 'https://xemphim.plus/static/skin/logo-full.png',
+        'className': 'Xemphim',
+        'plugin': 'xemphim.plugin',
+        'version': 1
+    },
 ]
 
 
@@ -187,7 +194,7 @@ def onInit():
     xbmcplugin.endOfDirectory(HANDLE, cacheToDisc=True)
 
 
-def list_category(cats, module, classname):
+def list_category(cats, module, classname, movies=None):
     xbmcplugin.setPluginCategory(HANDLE, classname)
     xbmcplugin.setContent(HANDLE, 'files')
 
@@ -206,7 +213,13 @@ def list_category(cats, module, classname):
             url = build_url({'mode': 'movies', 'url': cat['link'], 'page': 1, 'module': module, 'className': classname})
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, isFolder=True)
 
-    xbmcplugin.endOfDirectory(HANDLE)
+    if movies and len(movies) > 0:
+        label = "[COLOR yellow][B][---- New Movies ----][/B][/COLOR]"
+        sli = xbmcgui.ListItem(label=label)
+        xbmcplugin.addDirectoryItem(HANDLE, None, sli, isFolder=False)
+        list_movie(movies, '/', 1, module, classname)
+    else:
+        xbmcplugin.endOfDirectory(HANDLE)
 
 
 def list_movie(movies, link, page, module, classname):
@@ -387,7 +400,10 @@ def play(movie, title=None, thumb=None, direct=False):
     if not movie['link']: return
 
     if 'subtitle' in movie and movie['subtitle']:
-        play_item.setSubtitles([movie['subtitle']])
+        if isinstance(movie['subtitle'], list):
+            play_item.setSubtitles(movie['subtitle'])
+        else:
+            play_item.setSubtitles([movie['subtitle']])
 
     if mediatype == 'hls':
         play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
@@ -537,7 +553,7 @@ def do_global_search(text):
             pass
         if movies is not None:
             label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (
-            classname, len(movies['movies']))
+                classname, len(movies['movies']))
             sli = xbmcgui.ListItem(label=label)
             url = build_url({'mode': 'dosearch', 'module': module, 'className': classname, 'url': text})
             xbmcplugin.addDirectoryItem(HANDLE, url, sli, isFolder=True)
@@ -592,9 +608,10 @@ def router():
 
     elif mode[0] == 'category':
         if 'subcategory' in ARGS:
-            list_category(json.loads(ARGS.get('subcategory')[0]), module, classname)
+            list_category(cats=json.loads(ARGS.get('subcategory')[0]), module=module, classname=classname)
         else:
-            list_category(instance().getCategory(), module, classname)
+            cats, movies = instance().getCategory()
+            list_category(cats=cats, movies=movies, module=module, classname=classname)
 
     elif mode[0] == 'movies':
         link = ARGS.get('url')[0]
