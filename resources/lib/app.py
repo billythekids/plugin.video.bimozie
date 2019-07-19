@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-import os
+import re
 import urllib
 import urlparse
 import xbmcgui
@@ -206,7 +206,7 @@ def list_category(cats, module, classname, movies=None):
     for cat in cats:
         list_item = xbmcgui.ListItem(label=cat['title'])
         list_item.addContextMenuItems(globalContextMenu())
-        if 'subcategory' in cat and len(cat['subcategory']) > 0:
+        if 'subcategory' in cat and cat['subcategory'] and len(cat['subcategory']) > 0:
             url = build_url({'mode': 'category', 'url': cat['link'], 'name': cat['title'],
                              'subcategory': json.dumps(cat['subcategory']), 'module': module, 'className': classname})
         else:
@@ -380,6 +380,24 @@ def play(movie, title=None, thumb=None, direct=False):
             return
         else:
             if len(movie['links']) > 1:
+                # sort all links
+                try:
+                    movie['links'] = sorted(movie['links'],
+                                            key=lambda elem: re.search(r'(\d+)', elem['title'])
+                                                             and int(re.search(r'(\d+)', elem['title']).group(1))
+                                                             or 0, reverse=True)
+                except Exception as e:
+                    print(e)
+
+                # blacklist link
+                blacklist = ['hydra']
+
+                def filter_blacklist(m):
+                    for i in blacklist:
+                        if i in m['link']: return False
+                    return True
+
+                movie['links'] = list(filter(filter_blacklist, movie['links']))
                 listitems = ["%s (%s)" % (i["title"], i["link"]) for i in movie['links']]
                 index = xbmcgui.Dialog().select("Select stream", listitems)
                 if index == -1:

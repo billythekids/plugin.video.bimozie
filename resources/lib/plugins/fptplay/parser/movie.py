@@ -26,7 +26,7 @@ class Parser:
                 url = '%s/%s' % (mid, i)
                 movie['group'][server_name].append({
                     'link': url,
-                    'title': ep['title'],
+                    'title': ep['title'].encode('utf-8'),
                     'thumb': ep['thumb'],
                     'type': '',
                     'resolve': False
@@ -45,7 +45,7 @@ class Parser:
         data = json.loads(response)['data']
         movie['links'].append({
             'link': data['url'],
-            'title': 'Link %s' % data['name'],
+            'title': 'Link %s' % data['name'].encode('utf-8'),
             'type': 'hls',
             'resolve': False
         })
