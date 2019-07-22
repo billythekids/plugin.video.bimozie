@@ -41,7 +41,7 @@ class Parser:
             'links': [],
         }
 
-        sources = re.search('(eval\(function\(p,a,c,k,e,d\).*)</script>', response)
+        sources = re.search(r'(eval\(function\(p,a,c,k,e,d\).*?)\s+?</script>', response)
         if sources:
             sources = sources.group(1)
             sources = Packer().unpack(sources)
@@ -51,8 +51,10 @@ class Parser:
             score = {'sd': 1, 'hd': 2, '360p': 1, '480p': 2, '720p': 3, '1080p': 3}
             if len(sources) > 1:
                 try:
-                    sources = sorted(sources, key=lambda elem: elem['label'].lower() in score and score[elem['label'].lower()] or 3, reverse=True)
-                except: pass
+                    sources = sorted(sources, key=lambda elem: elem['label'].lower() in score and score[
+                        elem['label'].lower()] or 3, reverse=True)
+                except:
+                    pass
             for source in sources:
                 movie['links'].append({
                     'link': source['file'].replace('\\', ''),
@@ -61,15 +63,14 @@ class Parser:
                     'resolve': False
                 })
 
-            return movie
-
         sources = re.search(r'sources:\s?(\[.*?\]),', response)
         if sources:
             sources = sources.group(1)
             sources = json.loads(sources)
             try:
                 sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
-            except: pass
+            except:
+                pass
             for source in sources:
                 movie['links'].append({
                     'link': source['file'].replace('\\', ''),
@@ -78,19 +79,14 @@ class Parser:
                     'resolve': False
                 })
 
-            return movie
-
-        soup = BeautifulSoup(response, "html.parser")
-        source = soup.select_one("div#media > iframe")
-        if source:
-            source = source.get('data-lazy-src').strip()
+        sources = re.search(r'data-lazy-src="(.*?)"', response)
+        if sources:
+            source = sources.group(1)
             movie['links'].append({
                 'link': source,
-                'title': 'Link %s' % source.encode('utf-8'),
+                'title': 'Link Unknow',
                 'type': 'Unknow',
                 'resolve': False
             })
-
-            return movie
 
         return movie
