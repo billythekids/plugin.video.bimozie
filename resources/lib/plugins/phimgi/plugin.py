@@ -10,7 +10,7 @@ class Phimgi:
 
     def getCategory(self):
         response = Request().get(self.domain)
-        return Category().get(response)
+        return Category().get(response), None
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")

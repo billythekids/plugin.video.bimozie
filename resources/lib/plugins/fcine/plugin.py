@@ -49,7 +49,7 @@ class Fcine:
 
     def getCategory(self):
         response = self.request.get(self.domain)
-        return Category().get(response)
+        return Category().get(response), None
 
     def getChannel(self, channel, page=1):
         url = '%s?alphabet=all&page=%d' % (channel, page)

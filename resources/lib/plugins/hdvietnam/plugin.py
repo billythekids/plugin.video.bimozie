@@ -44,7 +44,7 @@ class Hdvietnam:
         map(lambda v: self.request.post('%s/%s' % (self.domain, v), params), postLink)
 
     def getCategory(self):
-        return Category().get()
+        return Category().get(), None
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")

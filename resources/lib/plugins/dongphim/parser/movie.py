@@ -79,7 +79,7 @@ class Parser:
         sources = re.search(r"this.urls\s?=\s?(\[.*?\]);", response)
         username = re.search(r'username\s?:\s?[\'|"](\w+)[\'|"]', response).group(1)
         item_id = re.search(r'item_id\s?:\s?[\'|"](\w+)[\'|"]', response).group(1)
-        prefers = json.loads(re.search(r'checkBestProxy\(\s+?(\[.*?\])', response).group(1))
+        prefers = json.loads(re.search(r'this.checkBestProxy\(\s?(\[.*?\])', response).group(1))
 
         if sources:
             source = json.loads(sources.group(1))[0]
@@ -94,8 +94,6 @@ class Parser:
                 'item_id': item_id,
                 'username': username,
             }
-
-            print(params)
 
             response = Request().get('http://dongphim.net/content/parseUrl', params=params)
             response = json.loads(response)
@@ -120,6 +118,11 @@ class Parser:
 
             response = json.loads(Request().get('http://dongphim.net/content/parseUrl', params=params_alt))
             self.get_media_url(response, movie['links'])
+
+        if len(movie['links']) > 1:
+            try:
+                movie['links'] = sorted(movie['links'], key=lambda elem: int(re.search(r'(\d+)', elem['title']).group(1)), reverse=True)
+            except Exception as e: print(e)
 
         return movie
 

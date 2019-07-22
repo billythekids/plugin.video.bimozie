@@ -11,7 +11,7 @@ def get_link(url):
     base_url = url.rpartition('/')[0]
     response = Request().get(url)
 
-    matches = re.findall('(chunklist_.*)', response)
+    matches = re.findall('(chunklist.*)', response)
 
     for m in matches:
         stream_url = base_url + '/' + m

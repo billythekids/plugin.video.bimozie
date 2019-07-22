@@ -28,10 +28,10 @@ class Parser:
             pass
 
         server = servers[-1:][0]
-        items = server.select('> span.ipsDataItem_main > p')
+        items = server.select('> span.ipsDataItem_main a')
+        print(subtitle)
         links = []
-        for item in items:
-            link = item.select_one('a')
+        for link in items:
             if link: links.append(link.get('href'))
 
         if len(links) > 0:
@@ -46,7 +46,7 @@ class Parser:
                         'resolve': False
                     })
                 except:
-                    print('Link die %s' % self.found_links[idx])
+                    print('Link die %s' % links[idx])
                     continue
 
         return movie
