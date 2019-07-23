@@ -43,12 +43,15 @@ def message(message='', title='', timeShown=5000):
 
 def write_file(name, content, binary=False):
     path = get_file_path(name)
-    mode = 'w'
-    if binary:
-        mode = 'wb'
-    f = open(path, mode=mode)
-    f.write(content)
-    f.close()
+    try:
+        mode = 'w+'
+        if binary:
+            mode = 'wb'
+        f = open(path, mode=mode)
+        f.write(content)
+        f.close()
+    except:
+        pass
     return path
 
 
