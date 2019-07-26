@@ -46,7 +46,7 @@ def get_link_deprecated(url, originURL):
             except:
                 print(links[i], results[i].headers)
     else:
-        media_type = 'hls'
+        media_type = 'hls3'
 
     stream_url = PasteBin().dpaste(response, name=url, expire=60)
     playlist = "#EXTM3U\n#EXT-X-VERSION:3\n"

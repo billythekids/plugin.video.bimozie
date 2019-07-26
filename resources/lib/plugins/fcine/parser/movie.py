@@ -23,13 +23,13 @@ class Parser:
         # get subtitle link
         subtitle = None
         try:
-            subtitle = servers[-2:-1][0].select_one('span.ipsDataItem_main > a').get('href')
+            subtitle = soup.select_one("ul.ipsDataList > div#extraFields > li a.ipsType_success").get('href')
         except:
             pass
 
         server = servers[-1:][0]
         items = server.select('> span.ipsDataItem_main a')
-        print(subtitle)
+
         links = []
         for link in items:
             if link: links.append(link.get('href'))

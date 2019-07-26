@@ -239,7 +239,7 @@ def list_movie(movies, link, page, module, classname):
                 if 'intro' in item:
                     list_item.setInfo(type='video', infoLabels={'plot': item['intro']})
                 url = build_url(
-                    {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
+                    {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['realtitle'] and item['realtitle'] or item['title'],
                      'module': module, 'className': classname})
                 is_folder = True
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
@@ -314,11 +314,10 @@ def _build_ep_list(items, title, thumb, module, class_name):
         li.setProperty('fanart_image', thumb)
         li.setArt({'thumb': thumb})
         movie_title = title
-
-        try:
-            movie_title = "[%s] %s" % (item['title'], title)
-        except:
-            pass
+        # try:
+        #     movie_title = "[%s] %s" % (item['title'], title)
+        # except:
+        #     pass
 
         url = build_url({'mode': 'play',
                          'title': movie_title,
@@ -410,10 +409,6 @@ def play(movie, title=None, thumb=None, direct=False):
             mediatype = MediaHelper.resolve_link(movie)
             play_item = xbmcgui.ListItem()
             play_item.setPath(movie['link'])
-            try:
-                title = "%s - %s" % (movie['title'].encode('utf-8'), title.encode('utf-8'))
-            except:
-                pass
 
     if not movie['link']: return
 
@@ -435,8 +430,9 @@ def play(movie, title=None, thumb=None, direct=False):
     play_item.setProperty('IsPlayable', 'true')
     # update title
     try:
-        play_item.setLabel(title)
-        play_item.setInfo('video', {'Title': title})
+        play_item.setInfo('video', {'title': "[%s] %s" % (movie['title'], title)})
+        play_item.setInfo('video', {'originaltitle': title})
+        play_item.setInfo('video', {'sorttitle': title})
     except:
         print(movie['title'], title)
 

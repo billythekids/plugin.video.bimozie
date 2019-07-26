@@ -42,7 +42,7 @@ class Parser:
                 'id': movie.select_one('h2 > a').get('href'),
                 'label': label.encode("utf-8"),
                 'title': title.encode("utf-8"),
-                'realtitle': "",
+                'realtitle': title.encode("utf-8"),
                 'thumb': thumb,
                 'type': type.encode("utf-8"),
             })
