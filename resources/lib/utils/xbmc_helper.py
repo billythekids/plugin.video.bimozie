@@ -46,7 +46,7 @@ def write_file(name, content, binary=False):
     try:
         mode = 'w+'
         if binary:
-            mode = 'wb'
+            mode = 'wb+'
         f = open(path, mode=mode)
         f.write(content)
         f.close()
@@ -86,13 +86,13 @@ def search_history_save(search_key):
     content.insert(0, search_key)
 
     path = os.path.join(addon_data_dir, 'history.json')
-    with open(path, 'w') as outfile:
+    with open(path, 'w+') as outfile:
         json.dump(content, outfile)
 
 
 def search_history_clear():
     path = os.path.join(addon_data_dir, 'history.json')
-    with open(path, 'w') as outfile:
+    with open(path, 'w+') as outfile:
         json.dump([], outfile)
 
 
