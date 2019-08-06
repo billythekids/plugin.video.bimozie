@@ -25,7 +25,13 @@ class LinkParser:
             return self.get_link_fshare()
 
         elif re.search('dailymotion.com', self.url):
-            return self.get_link_dailymotion()
+            return self.get_link_resolveurl()
+
+        elif re.search('streamango.com', self.url):
+            return self.get_link_resolveurl()
+
+        elif re.search('rapidvideo.com', self.url):
+            return self.get_link_resolveurl()
 
         elif re.search('fembed.com', self.url):
             return fembed.get_link(self.url)
@@ -72,7 +78,6 @@ class LinkParser:
             return hls_hydrax.get_link(self.url, self.media), 'hls5'
 
         elif re.search('dgo.dongphim.net', self.url):
-            # return self.url + "|Origin=http://dongphim.net", 'hls1'
             return dongphim.get_link(self.url, self.media)
 
         elif self.url.endswith('m3u8'):
@@ -98,13 +103,13 @@ class LinkParser:
         except:
             return None, None
 
-    def get_link_dailymotion(self):
+    def get_link_resolveurl(self):
         try:
             import resolveurl
             stream_url = resolveurl.resolve(self.url)
             return stream_url, '720'
         except:
-            return None
+            return None, None
 
     def get_link_fshare(self):
 

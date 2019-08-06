@@ -38,8 +38,8 @@ class Request:
         return self.r.text
 
     def post(self, url, params=None, headers=None, redirect=True, cookies=None):
-        # try: print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
-        # except: pass
+        try: print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
+        except: pass
         print("Post URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS

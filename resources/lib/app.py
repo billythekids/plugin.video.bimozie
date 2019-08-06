@@ -31,12 +31,20 @@ SITES = [
         'version': 1
     },
     {
+        'name': 'vkool.tv',
+        'logo': 'https://i.ibb.co/TcWtgB5/rsz-image.png',
+        'className': 'Vkool',
+        'plugin': 'vkool.plugin',
+        'version': 1
+    },
+    {
         'name': 'fimfast.com',
         'logo': 'https://fimfast.com/assets/img/logo.png',
         'className': 'Fimfast',
         'plugin': 'fimfast.plugin',
         'version': 1
     },
+
     {
         'name': 'bilutv.org',
         'logo': 'http://bilutv.org/Theme/images/bilutv-logo-noel.png',
@@ -389,7 +397,7 @@ def play(movie, title=None, thumb=None, direct=False):
                     print(e)
 
                 # blacklist link
-                blacklist = ['hydra']
+                blacklist = ['hydra', 'rapidvideo']
 
                 def filter_blacklist(m):
                     for i in blacklist:
