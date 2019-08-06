@@ -3,7 +3,7 @@ import re
 import xbmcaddon
 import utils.xbmc_helper as helper
 from urllib import urlencode
-from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax, dongphim, fembed, hdclub, animehay, vuviphim
+from .hosts import fshare, imacdn, phimmoi, hydrax, fptplay, ok, vtv16, hls_hydrax, dongphim, fembed, hdclub, animehay, vuviphim, rapidvid, verystream
 
 class LinkParser:
     def __init__(self, media):
@@ -28,6 +28,15 @@ class LinkParser:
             return self.get_link_resolveurl()
 
         elif re.search('streamango.com', self.url):
+            return self.get_link_resolveurl()
+
+        elif re.search('rapidvid.to', self.url):
+            return rapidvid.get_link(self.url)
+
+        elif re.search('verystream.com', self.url):
+            return verystream.get_link(self.url)
+
+        elif re.search('onlystream.tv', self.url):
             return self.get_link_resolveurl()
 
         elif re.search('rapidvideo.com', self.url):

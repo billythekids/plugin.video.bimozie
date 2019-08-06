@@ -91,7 +91,7 @@ class Parser:
         if 'link' in sources:
             if isinstance(sources['link'], list):
                 for source in sources['link']:
-                    print source['link']
+                    print(source['link'])
                     if 'http' in source['link']:
                         movie_links.append((source['link'], source['label']))
             elif 'http' in sources['link']:
