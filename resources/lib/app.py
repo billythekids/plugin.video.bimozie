@@ -85,7 +85,7 @@ SITES = [
         'logo': 'http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium',
         'className': 'Phim3s',
         'plugin': 'phim3s.plugin',
-        'version': 31
+        'version': 1
     },
     {
         'name': 'phimbathu.org',
