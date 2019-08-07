@@ -34,6 +34,6 @@ class Vkool:
         return Movie().get_link(response, self.domain)
 
     def search(self, text, page=1):
-        url = "%s/tim-kiem/%s.html" % (self.domain, urllib.quote_plus(text))
+        url = "%s/search/%s.html" % (self.domain, urllib.quote_plus(text))
         response = Request().get(url)
         return Channel().get(response)

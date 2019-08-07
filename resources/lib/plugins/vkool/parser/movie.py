@@ -43,6 +43,12 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         servers = soup.select('ul.list-episode > li.episode > a.episode-link')
 
+        # find subtitle
+        subtitle = None
+        match_sub = re.search(r'window.subback\s?=\s?"(.*?)";', response)
+        if match_sub:
+            subtitle = match_sub.group(1)
+
         jobs = []
         links = []
         for server in servers:
@@ -71,7 +77,8 @@ class Parser:
                 'link': link[0],
                 'title': 'Link %s' % link[1],
                 'type': link[1],
-                'resolve': False
+                'resolve': False,
+                'subtitle': subtitle
             })
 
         return movie
@@ -88,14 +95,17 @@ class Parser:
     @staticmethod
     def parse_link(response, movie_links):
         sources = json.loads(response)
+
         if 'link' in sources:
             if isinstance(sources['link'], list):
                 for source in sources['link']:
-                    print(source['link'])
                     if 'http' in source['link']:
                         movie_links.append((source['link'], source['label']))
             elif 'http' in sources['link']:
-                movie_links.append((sources['link'], 'label' in sources and sources['label'] or ''))
+                movie_links.append((sources['link'], 'label' in sources and sources['label'] or '720p'))
+
+
+
 
         return movie_links
 

@@ -33,7 +33,6 @@ def message(message='', title='', timeShown=5000):
         title = ': [COLOR blue]%s[/COLOR]' % title if title else ''
         s0 = '[COLOR green][B]Bimozie[/B][/COLOR]' + title
         message = s2u(message)
-        # s1 = u'[COLOR %s]%s[/COLOR]' % ('red' if '!' in message else 'gold', message)
         s1 = message
         message = u'XBMC.Notification(%s,%s,%s)' % (s0, s1, timeShown)
         xbmc.executebuiltin(message.encode("utf-8"))
@@ -42,7 +41,10 @@ def message(message='', title='', timeShown=5000):
 
 
 def write_file(name, content, binary=False):
+    if not os.path.exists(addon_data_dir):
+        os.makedirs(addon_data_dir)
     path = get_file_path(name)
+
     try:
         mode = 'w+'
         if binary:
@@ -84,16 +86,11 @@ def search_history_save(search_key):
         content.pop()
 
     content.insert(0, search_key)
-
-    path = os.path.join(addon_data_dir, 'history.json')
-    with open(path, 'w+') as outfile:
-        json.dump(content, outfile)
+    write_file('history.json', json.dumps(content))
 
 
 def search_history_clear():
-    path = os.path.join(addon_data_dir, 'history.json')
-    with open(path, 'w+') as outfile:
-        json.dump([], outfile)
+    write_file('history.json', json.dumps([]))
 
 
 def search_history_get():
