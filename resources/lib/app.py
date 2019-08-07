@@ -134,7 +134,7 @@ SITES = [
         'logo': 'https://yt3.ggpht.com/a-/AN66SAx84wKI577rKgX2IeQUiG31GaOhmVIu2le2rQ=s900-mo-c-c0xffffffff-rj-k-no',
         'className': 'Vtv16',
         'plugin': 'vtv16.plugin',
-        'version': 21
+        'version': 1
     },
     {
         'name': 'phimgi.net',

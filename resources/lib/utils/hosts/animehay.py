@@ -17,16 +17,6 @@ def get_link(url):
 
     return '%s/hls/%s/%s.playlist.m3u8' % (base_url, id, id)
 
-    # POST http://sl2.animehay.tv/vl/{id}
-    # response = json.loads(req.post('%s/vl/%s' % (base_url, id), headers={
-    #     'Referer': location
-    # }))
-
-    # if '720p' in response:
-    #     create_playlist(response['720p'])
-    #
-    # return None
-
 
 def create_playlist(data):
     print(data)

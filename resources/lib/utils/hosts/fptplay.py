@@ -1,9 +1,17 @@
 import re, urllib
 from utils.mozie_request import Request
 from utils.pastebin import PasteBin
+from urllib import urlencode
 
 
 def get_link(url):
+    header = {
+        'Origin': 'https://fptplay.vn',
+        'User-Agent':  "Chrome/59.0.3071.115 Safari/537.36"
+    }
+    return str(url) + "|%s" % urlencode(header), 'hls3'
+
+    return url, 'hls3'
     r = re.search('streamFPT\?url=(.*)', url)
     if r:
         url = urllib.unquote(r.group(1))

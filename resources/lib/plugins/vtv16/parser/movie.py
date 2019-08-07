@@ -86,24 +86,13 @@ class Parser:
 
                 return movie
 
-            # source = re.search('"(http.*hydrax.html.*)"', response)
-            # if source:
-            #     source = source.group(1)
-            #     movie['links'].append({
-            #         'link': source,
-            #         'title': source,
-            #         'type': 'file',
-            #         'resolve': False
-            #     })
-
-
-
         sources = re.search("<iframe.*src=\"(.*)\"", response)
         if sources:
             source = sources.group(1)
+            title = 'movie3s.net' in source and 'Movie3s' or 'Unknow'
             movie['links'].append({
                 'link': source,
-                'title': source.encode('utf-8'),
+                'title': 'Link %s' % title,
                 'type': 'file',
                 'originUrl': originUrl,
                 'resolve': False

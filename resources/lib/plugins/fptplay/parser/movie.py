@@ -42,12 +42,14 @@ class Parser:
             'links': [],
         }
 
-        data = json.loads(response)['data']
-        movie['links'].append({
-            'link': data['url'],
-            'title': 'Link %s' % data['name'].encode('utf-8'),
-            'type': 'hls',
-            'resolve': False
-        })
+        data = json.loads(response)
+        if 'data' in data:
+            data = data['data']
+            movie['links'].append({
+                'link': data['url'],
+                'title': 'Link %s' % data['name'].encode('utf-8'),
+                'type': 'hls',
+                'resolve': False
+            })
 
         return movie

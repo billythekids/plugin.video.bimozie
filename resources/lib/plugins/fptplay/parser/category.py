@@ -7,16 +7,30 @@ class Parser:
         category = []
         response = json.loads(response)
 
-        i = [3, 5, 54, 6, 7, 13, 14, 15]
+        # i = [1, 2, 3, 4, 8, 9, 10]
         # i = [3]
+        ids = [
+            "55701c1517dc1321ee85857a", #Phim bộ
+            "52847232169a585a2449c48c", #TV show
+            "5587c83b17dc1353a3624a22", #Anime
+            "5841452d17dc130a9ab827d4", #Phim lẻ
+            # "59e445675583204c11c185c7", #Phim chiếu rạp
+            # "59d44bf9558320263bc1a42f", #Gói đặc sắc
+            "57b16bdc17dc1302d24da6c5", #Ngoại hạng Anh
+            "5b6d415155832008ff700be6", #Serie A
+            "54fd271917dc136162a0cf2d", #Thiếu nhi
+            "52842df7169a580a79169efd", #Thể thao
+            "591408a2558320658eb88e48", #Hài
+
+        ]
 
         for menu in response['result']:
-            if menu['priority'] in i:
-                # link = '/danh-muc/%s/%s' % (menu['slug'], menu['_id'])
+            print menu['_id'], menu['name'].encode("utf-8")
+            if menu['_id'] in ids:
                 category.append({
                     'title': menu['name'].encode("utf-8"),
                     # 'link': link,
-                    'link':  menu['_id'],
+                    'link': menu['_id'],
                     'subcategory': self.getsubmenu(menu['active_children'])
                 })
 
@@ -32,5 +46,3 @@ class Parser:
             })
 
         return category
-
-
