@@ -83,12 +83,13 @@ class Parser:
 
         if sources:
             source = json.loads(sources.group(1))[0]
+            print source
             params = {
                 'v': 2,
                 'url': source['url'],
                 'bk_url': source['burl'],
                 'pr_url': source['purl'],
-                'ex_hls[]': source['exhls'],
+                'ex_hls[]': source.get('exhls'),
                 'prefer': prefers[0],
                 'ts': 1556547428839,
                 'item_id': item_id,
@@ -106,7 +107,7 @@ class Parser:
                 'url': source['url'],
                 'bk_url': source['burl'],
                 'pr_url': source['purl'],
-                'ex_hls[]': source['exhls'],
+                'ex_hls[]': source.get('exhls'),
                 'prefer': prefers[0],
                 'ts': 1556547428839,
                 'item_id': item_id,
@@ -130,6 +131,7 @@ class Parser:
         urls = response['formats']
 
         for i in urls:
+            print urls[i]
             movie.append({
                 'link': urls[i],
                 'title': 'Link %s' % i,
