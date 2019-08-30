@@ -35,7 +35,9 @@ class Hphim:
         return Movie().get_link(response, self.domain)
 
     def search(self, text):
-        text = urllib.quote_plus(text)
-        url = "%s/search-phim-%s.html" % (self.domain, text)
-        response = Request().get(url)
-        return Channel().get(response, 1)
+        # text = urllib.quote_plus(text)
+        url = "%s/searchajax" % self.domain
+        response = Request().post(url, params={
+            'search': text
+        })
+        return Channel().search_result(response)

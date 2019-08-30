@@ -1,12 +1,30 @@
-import re, json
+import re, json, base64
 from urlparse import urlparse
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
 
 
 def get_link(url, movie):
+    base_url = urlparse(url)
+    base_url = base_url.scheme + '://' + base_url.netloc
+
+    # method 1
+    try:
+        mid = re.search(r'\?id=(.*)', url).group(1)
+        hosturl = '%s/getHost/%s' % (base_url, mid)
+        response = Request().post(hosturl, headers={
+            'origin': base_url,
+            'referer': url
+        })
+
+        return base64.b64decode(response), 'hls'
+    except:
+        pass
+
+    # method 2
     request = Request()
     request.get(url)
+
     location = request.get_request().history[0].headers['Location']
     base_url = urlparse(location)
     base_url = base_url.scheme + '://' + base_url.netloc
@@ -16,6 +34,7 @@ def get_link(url, movie):
 
     return '%s/hls/%s/%s.playlist.m3u8' % (base_url, mid, mid), 'hls5'
 
+    # method 3
     medias = json.loads(request.post('%s/vl/%s' % (base_url, mid)))
 
     if '720p' in medias:
