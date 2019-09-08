@@ -169,7 +169,7 @@ class LinkParser:
             })
             return url, 'hls5'
 
-        return self.url, 'hls'
+        return self.url, 'hls3'
 
     def get_sstreamgg(self):
         url = self.url + "|Referer=https://vuviphim.com/"

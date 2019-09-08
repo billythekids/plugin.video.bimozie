@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 import json
+import pickle
+import requests.utils
 import utils.xbmc_helper as helper
 from utils.mozie_request import Request
 from bs4 import BeautifulSoup
@@ -11,7 +13,12 @@ class FShareVN:
         self.url = url
         self.username = username
         self.password = password
-        self.request = Request(session=True)
+        if helper.has_file_path('fshare.cok'):
+            with open(helper.get_file_path('fshare.cok')) as f:
+                cookies = requests.utils.cookiejar_from_dict(pickle.load(f))
+                self.request = Request(cookies=cookies)
+        else:
+            self.request = Request(session=True)
 
     @staticmethod
     def get_info(url=None, content=None):
@@ -29,7 +36,6 @@ class FShareVN:
         info = soup.select_one('div.info')
         if info:
             name = info.select_one('div.name').get('title').encode('utf-8')
-            print(name)
 
             size = info.select_one('div.size').get_text().strip()\
                 .replace(" ", "")\
@@ -47,20 +53,27 @@ class FShareVN:
             'LoginForm[rememberMe]': 1
         })
 
+        with open(helper.get_file_path('fshare.cok'), 'w') as f:
+            pickle.dump(requests.utils.dict_from_cookiejar(self.request.get_request_session().cookies), f)
+
         return r
 
-    def get_token(self):
-        r = self.request.get('https://www.fshare.vn/')
+    def get_token(self, url=None):
+        if not url:
+            url = 'https://www.fshare.vn/'
+
+        r = self.request.get(url)
         if not re.search(r'id="form-signup"', r):
-            print('Fashare: already login')
+            name = re.search(r'class="toggle">(.*)<i', r)
+            print('Fashare: already login: ' + name.group(1))
             return self.extract_token(r)
         else:
-            print('Fashare: try to login')
+            print('Fashare: no session found, try to login')
             r = self.login(self.extract_token(r))
             return self.extract_token(r)
 
     def extract_token(self, response):
-        return re.search(r'name="csrf-token" content="(.*)">', response).group(1)
+        return re.search(r'meta name="csrf-token" content="(.*)">', response).group(1)
 
     def get_link(self):
         if re.search(r'/folder/([^\?]+)', self.url):
@@ -70,7 +83,7 @@ class FShareVN:
         else:
             code = re.search(r'/file/([^\?]+)', self.url).group(1)
 
-        token = self.get_token()
+        token = self.get_token(self.url)
 
         r = self.request.post('https://www.fshare.vn/download/get', {
             '_csrf-app': token,
@@ -80,7 +93,8 @@ class FShareVN:
         })
 
         item = json.loads(r)
-        # self.logout()
+
+        self.logout()
         if 'errors' in item:
             helper.message("Fshare error: %s" % item['errors']['linkcode'][0])
             raise Exception('Fshare', 'error')

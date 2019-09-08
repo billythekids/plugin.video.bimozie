@@ -22,7 +22,8 @@ class Parser:
         # get all server list
         servers = soup.select("ul#server_list > li.server_item")
         for server in servers:
-            server_name = server.select_one('strong').find(text=True, recursive=False).strip().encode('utf-8')
+            server_name = server.select_one('> strong')
+            server_name = server_name.find(text=True, recursive=False)
             if server_name not in movie['group']: movie['group'][server_name] = []
             for ep in server.select('ul.episode_list li a'):
                 movie['group'][server_name].append({

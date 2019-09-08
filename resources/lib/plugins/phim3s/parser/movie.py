@@ -64,7 +64,7 @@ class Parser:
                     'link': source['file'],
                     'title': 'Link %s' % source['label'].encode('utf-8'),
                     'type': source['label'].encode('utf-8'),
-                    'resolve': True
+                    'resolve': False
                 })
                 if len(sources) == 1 or int(source['label'][0:-1]) >= 720: break
 

@@ -2,11 +2,20 @@ import re, json, base64
 from urlparse import urlparse
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
+from urllib import urlencode
 
 
 def get_link(url, movie):
     base_url = urlparse(url)
     base_url = base_url.scheme + '://' + base_url.netloc
+
+    if url.endswith('m3u8'):
+        header = {
+            'Origin': 'http://www.vtv16.com',
+            'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+            'Referrer': movie.get('originUrl')
+        }
+        return url + "|%s" % urlencode(header), 'hls3'
 
     # method 1
     try:
@@ -17,7 +26,14 @@ def get_link(url, movie):
             'referer': url
         })
 
-        return base64.b64decode(response), 'hls'
+        movie_url = base64.b64decode(response)
+
+        header = {
+            'Origin': 'http://www.vtv16.com',
+            'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+            'Referrer': movie.get('originUrl')
+        }
+        return movie_url + "|%s" % urlencode(header), 'hls3'
     except:
         pass
 

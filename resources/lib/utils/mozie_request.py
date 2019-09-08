@@ -19,11 +19,14 @@ class Request:
     session = None
     r = None
 
-    def __init__(self, header=None, session=True):
+    def __init__(self, header=None, session=True, cookies=None):
         if header:
             self.DEFAULT_HEADERS = header
         if session:
             self.session = requests.session()
+        if cookies:
+            self.session = requests.session()
+            self.session.cookies.update(cookies)
 
     def get(self, url, headers=None, params=None, redirect=True, cookies=None):
         print("Request URL: %s" % url)
