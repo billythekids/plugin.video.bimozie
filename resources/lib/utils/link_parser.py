@@ -19,6 +19,7 @@ from .hosts import fshare, \
     rapidvid, \
     onlystream, \
     movie3s, \
+    smamuhh1metro, \
     verystream
 
 
@@ -40,6 +41,9 @@ class LinkParser:
 
         elif re.search('movie3s.net', self.url):
             return movie3s.get_link(self.url, self.media)
+
+        elif re.search('smamuhh1metro.com', self.url):
+            return smamuhh1metro.get_link(self.url, self.media)
 
         elif re.search('fshare.vn', self.url):
             return self.get_link_fshare()

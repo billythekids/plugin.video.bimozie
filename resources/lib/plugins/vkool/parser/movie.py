@@ -92,9 +92,17 @@ class Parser:
             if ('==|' in source):
                 movie_links.append(source)
 
+        m = re.search(r'curplay:\\"(.*?)\\",', response)
+        if m is not None:
+            source = m.group(1)
+            print source
+            movie_links.append(source)
+
     @staticmethod
     def parse_link(response, movie_links):
         sources = json.loads(response)
+
+        print sources
 
         if 'link' in sources:
             if isinstance(sources['link'], list):
@@ -104,10 +112,4 @@ class Parser:
             elif 'http' in sources['link']:
                 movie_links.append((sources['link'], 'label' in sources and sources['label'] or '720p'))
 
-
-
-
         return movie_links
-
-
-

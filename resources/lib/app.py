@@ -397,7 +397,7 @@ def play(movie, title=None, thumb=None, direct=False):
                     print(e)
 
                 # blacklist link
-                blacklist = ['hydra', 'maya.bbigbunny.ml']
+                blacklist = ['hydra', 'maya.bbigbunny.ml', 'smamuhh1metro']
 
                 def filter_blacklist(m):
                     for i in blacklist:

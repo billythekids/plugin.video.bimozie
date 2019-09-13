@@ -7,7 +7,7 @@ from hphim.parser.movie import Parser as Movie
 
 
 class Hphim:
-    domain = "http://hphim.tv"
+    domain = "http://biphim.tv"
 
     def getCategory(self):
         response = Request().get(self.domain)
@@ -32,7 +32,7 @@ class Hphim:
     def getLink(self, movie):
         url = '%s%s' % (self.domain, movie['link'])
         response = Request().get(url)
-        return Movie().get_link(response, self.domain)
+        return Movie().get_link(response, self.domain, url)
 
     def search(self, text):
         # text = urllib.quote_plus(text)
