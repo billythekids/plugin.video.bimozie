@@ -131,4 +131,8 @@ class Parser:
         if 'error' in url.encode('utf-8'):
             return None
 
+        r = re.search(r'^/iframe', url)
+        if r:
+            return None
+
         return url

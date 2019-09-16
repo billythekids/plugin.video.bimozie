@@ -20,6 +20,7 @@ from .hosts import fshare, \
     onlystream, \
     movie3s, \
     smamuhh1metro, \
+    toolpg, \
     verystream
 
 
@@ -38,6 +39,9 @@ class LinkParser:
 
         elif re.search('openload.co', self.url):
             return self.get_link_openload()
+
+        elif re.search('toolsp2p.to', self.url):
+            return toolpg.get_link(self.url, self.media)
 
         elif re.search('movie3s.net', self.url):
             return movie3s.get_link(self.url, self.media)

@@ -85,7 +85,7 @@ SITES = [
         'logo': 'http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium',
         'className': 'Phim3s',
         'plugin': 'phim3s.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'phimbathu.org',
@@ -113,7 +113,7 @@ SITES = [
         'logo': 'https://fcine.net/uploads/monthly_2019_01/FCINE-LOGO.png.0d4b6b0253c4fd8a4dbefa7067ac0ac4.png',
         'className': 'Fcine',
         'plugin': 'fcine.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'animehay.tv',
@@ -127,14 +127,14 @@ SITES = [
         'logo': 'https://vuviphim.com/wp-content/uploads/2017/08/logo-vuviphim.png',
         'className': 'Vuviphim',
         'plugin': 'vuviphim.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'vtv16.com',
         'logo': 'https://yt3.ggpht.com/a-/AN66SAx84wKI577rKgX2IeQUiG31GaOhmVIu2le2rQ=s900-mo-c-c0xffffffff-rj-k-no',
         'className': 'Vtv16',
         'plugin': 'vtv16.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'phimgi.net',
@@ -148,14 +148,14 @@ SITES = [
         'logo': 'http://media.dongphim.net/media/image/id/5c921766acc399d72c8b456b_200x',
         'className': 'Dongphim',
         'plugin': 'dongphim.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'hdvietnam.com (beta)',
         'logo': 'http://www.hdvietnam.com/images/hd-vietnam-logo.png',
         'className': 'Hdvietnam',
         'plugin': 'hdvietnam.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'xemphim.plus',
