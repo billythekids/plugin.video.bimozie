@@ -22,9 +22,12 @@ class Parser:
 
             title = movie.select_one('div.pl-carousel-content h6').text.strip()
             realtitle = movie.select_one('div.pl-carousel-content p').text.strip()
-            try:
-                type = movie.select_one('div.badget-eps').text.strip()
-            except:
+            type = movie.select_one('div.badget-eps')
+            if type:
+                type = type.text.strip()
+            elif movie.select_one('div.pl-carousel-badget'):
+                type = movie.select_one('div.pl-carousel-badget').text.strip()
+            else:
                 type = "HD"
 
             label = "[%s] %s - %s" % (type, title, realtitle)
@@ -37,6 +40,7 @@ class Parser:
                 'realtitle': realtitle.encode("utf-8"),
                 'thumb': thumb,
                 'type': type.encode("utf-8"),
+                'intro': movie.select_one('div.des > small').text.strip().encode("utf-8"),
             })
 
         return channel

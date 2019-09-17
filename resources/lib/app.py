@@ -127,14 +127,14 @@ SITES = [
         'logo': 'https://vuviphim.com/wp-content/uploads/2017/08/logo-vuviphim.png',
         'className': 'Vuviphim',
         'plugin': 'vuviphim.plugin',
-        'version': 31
+        'version': 1
     },
     {
         'name': 'vtv16.com',
         'logo': 'https://yt3.ggpht.com/a-/AN66SAx84wKI577rKgX2IeQUiG31GaOhmVIu2le2rQ=s900-mo-c-c0xffffffff-rj-k-no',
         'className': 'Vtv16',
         'plugin': 'vtv16.plugin',
-        'version': 31
+        'version': 1
     },
     {
         'name': 'phimgi.net',
@@ -148,14 +148,14 @@ SITES = [
         'logo': 'http://media.dongphim.net/media/image/id/5c921766acc399d72c8b456b_200x',
         'className': 'Dongphim',
         'plugin': 'dongphim.plugin',
-        'version': 31
+        'version': 1
     },
     {
         'name': 'hdvietnam.com (beta)',
         'logo': 'http://www.hdvietnam.com/images/hd-vietnam-logo.png',
         'className': 'Hdvietnam',
         'plugin': 'hdvietnam.plugin',
-        'version': 31
+        'version': 1
     },
     {
         'name': 'xemphim.plus',
