@@ -32,7 +32,7 @@ class Parser:
 
         links = []
         for link in items:
-            if link: links.append(link.get('href'))
+            if link and 'fshare' in link.get('href'): links.append(link.get('href'))
 
         if len(links) > 0:
             results = AsyncRequest().get(links)
@@ -43,6 +43,7 @@ class Parser:
                         'link': links[idx],
                         'title': '[%s] %s' % (size, name),
                         'type': 'Unknown',
+                        'subtitle': subtitle,
                         'resolve': False
                     })
                 except:

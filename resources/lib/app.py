@@ -113,7 +113,7 @@ SITES = [
         'logo': 'https://fcine.net/uploads/monthly_2019_01/FCINE-LOGO.png.0d4b6b0253c4fd8a4dbefa7067ac0ac4.png',
         'className': 'Fcine',
         'plugin': 'fcine.plugin',
-        'version': 31
+        'version': 1
     },
     {
         'name': 'animehay.tv',
@@ -420,7 +420,9 @@ def play(movie, title=None, thumb=None, direct=False):
 
     if not movie['link']: return
 
-    if 'subtitle' in movie and movie['subtitle']:
+    if movie.get('subtitle'):
+        print("*********************** found subtitle ")
+        print(movie['subtitle'])
         if isinstance(movie['subtitle'], list):
             play_item.setSubtitles(movie['subtitle'])
         else:
@@ -436,11 +438,15 @@ def play(movie, title=None, thumb=None, direct=False):
         play_item.setContentLookup(False)
 
     play_item.setProperty('IsPlayable', 'true')
+
+    print movie['title']
+
     # update title
     try:
-        play_item.setInfo('video', {'title': "[%s] %s" % (movie['title'], title)})
-        play_item.setInfo('video', {'originaltitle': title})
-        play_item.setInfo('video', {'sorttitle': title})
+        play_item.setInfo('video', {
+            'title': ("[" + movie['title'] + "]" + title).encode('utf-8'),
+            'originaltitle': title
+        })
     except:
         print(movie['title'], title)
 

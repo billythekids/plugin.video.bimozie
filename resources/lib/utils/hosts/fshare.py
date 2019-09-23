@@ -13,12 +13,7 @@ class FShareVN:
         self.url = url
         self.username = username
         self.password = password
-        if helper.has_file_path('fshare.cok'):
-            with open(helper.get_file_path('fshare.cok')) as f:
-                cookies = requests.utils.cookiejar_from_dict(pickle.load(f))
-                self.request = Request(cookies=cookies)
-        else:
-            self.request = Request(session=True)
+        self.request = Request(session=True)
 
     @staticmethod
     def get_info(url=None, content=None):
@@ -44,63 +39,43 @@ class FShareVN:
 
         return name, size
 
-    def login(self, token):
-        url = 'https://www.fshare.vn/site/login'
-        r = self.request.post(url, {
-            '_csrf-app': token,
-            'LoginForm[email]': self.username,
-            'LoginForm[password]': self.password,
-            'LoginForm[rememberMe]': 1
+    def login(self, token=""):
+        url = 'https://api2.fshare.vn/api/user/login'
+        r = self.request.post(url, json={
+            'user_email': self.username,
+            'password': self.password,
+            'app_key': 'L2S7R6ZMagggC5wWkQhX2+aDi467PPuftWUMRFSn'
         })
-
-        with open(helper.get_file_path('fshare.cok'), 'w') as f:
-            pickle.dump(requests.utils.dict_from_cookiejar(self.request.get_request_session().cookies), f)
 
         return r
 
     def get_token(self, url=None):
-        if not url:
-            url = 'https://www.fshare.vn/'
-
-        r = self.request.get(url)
-        if not re.search(r'id="form-signup"', r):
-            name = re.search(r'class="toggle">(.*)<i', r)
-            print('Fashare: already login: ' + name.group(1))
-            return self.extract_token(r)
-        else:
-            print('Fashare: no session found, try to login')
-            r = self.login(self.extract_token(r))
-            return self.extract_token(r)
-
-    def extract_token(self, response):
-        return re.search(r'meta name="csrf-token" content="(.*)">', response).group(1)
+        data = json.loads(self.login())
+        cookie = data.get('session_id')
+        self.request.get_request_session().cookies.set('session_id', cookie)
+        return data.get('token')
 
     def get_link(self):
         if re.search(r'/folder/([^\?]+)', self.url):
             code = self.handleFolder(self.url)
             if not code:
                 return None
-        else:
-            code = re.search(r'/file/([^\?]+)', self.url).group(1)
 
         token = self.get_token(self.url)
 
-        r = self.request.post('https://www.fshare.vn/download/get', {
-            '_csrf-app': token,
-            'linkcode': code,
-            'withFcode5': 0,
-            'fcode': ''
+        r = self.request.post('https://api2.fshare.vn/api/session/download', json={
+            'token': token,
+            'url': self.url
         })
 
         item = json.loads(r)
 
-        self.logout()
         if 'errors' in item:
             helper.message("Fshare error: %s" % item['errors']['linkcode'][0])
             raise Exception('Fshare', 'error')
             return
         # should block ui to wait until able retrieve a link
-        return item[u'url']
+        return item.get('location')
 
     def logout(self):
         self.request.get('https://www.fshare.vn/site/logout')

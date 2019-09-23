@@ -26,7 +26,6 @@ class Fcine:
             'referer': 'https://fcine.net/login/',
         }, session=True)
 
-
     def get_token(self, response=None):
         if not response:
             response = self.request.get('%s/page/help/' % self.domain)
@@ -49,7 +48,9 @@ class Fcine:
 
     def getCategory(self):
         response = self.request.get(self.domain)
-        return Category().get(response), None
+        movies = Channel().get(response, 1)
+        movies['page'] = 1
+        return Category().get(response), movies
 
     def getChannel(self, channel, page=1):
         url = '%s?alphabet=all&page=%d' % (channel, page)
