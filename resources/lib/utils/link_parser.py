@@ -21,6 +21,7 @@ from .hosts import fshare, \
     movie3s, \
     smamuhh1metro, \
     toolpg, \
+    vtvhub, \
     verystream
 
 
@@ -45,6 +46,9 @@ class LinkParser:
 
         elif re.search('movie3s.net', self.url):
             return movie3s.get_link(self.url, self.media)
+
+        elif re.search('vtvhub.com', self.url):
+            return vtvhub.get_link(self.url, self.media)
 
         elif re.search('smamuhh1metro.com', self.url):
             return smamuhh1metro.get_link(self.url, self.media)
