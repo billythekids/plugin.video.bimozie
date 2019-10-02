@@ -7,7 +7,7 @@ import utils.xbmc_helper as XbmcHelper
 
 
 class Dongphim:
-    domain = "http://dongphim.net"
+    domain = "https://dongphim.net"
 
     def getCategory(self):
         response = Request().get(self.domain)

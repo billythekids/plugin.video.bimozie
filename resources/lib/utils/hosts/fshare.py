@@ -61,7 +61,6 @@ class FShareVN:
             if not code: return None
             else: self.url = "https://www.fshare.vn/file/%s" % code
 
-        print self.url
         token = self.get_token(self.url)
 
         r = self.request.post('https://api2.fshare.vn/api/session/download', json={

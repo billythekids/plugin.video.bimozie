@@ -20,7 +20,7 @@ class Parser:
                 except:
                     pass
 
-        for movie in soup.select('div.left-content > div.block-film > ul.list-film > li.film-item'):
+        for movie in soup.select('div.left-content > div.block-film > ul.list-film div.film-item'):
             title = movie.select_one('p.name').text
             type = movie.select_one('label').text
             realtitle = movie.select_one('p.real-name').text

@@ -6,14 +6,14 @@ from vuviphim.parser.movie import Parser as Movie
 
 
 class Vuviphim:
-    domain = "http://vuviphim.com"
+    domain = "https://vuviphim.com"
 
     def getCategory(self):
         response = Request().get(self.domain)
         return Category().get(response), None
 
     def getChannel(self, channel, page=1):
-        channel = channel.replace("https", "http")
+        # channel = channel.replace("https", "http")
         channel = channel.replace(self.domain, "")
         if page > 1:
             url = '%s%s/page/%d' % (self.domain, channel, page)
@@ -23,12 +23,14 @@ class Vuviphim:
         return Channel().get(response, page)
 
     def getMovie(self, id):
-        url = Movie().get_movie_link(Request().get(id)).replace("https", "http")
+        # url = Movie().get_movie_link(Request().get(id)).replace("https", "http")
+        url = Movie().get_movie_link(Request().get(id))
         response = Request().get(url)
         return Movie().get(response)
 
     def getLink(self, movie):
-        response = Request().get(movie['link'].replace("https", "http"))
+        # response = Request().get(movie['link'].replace("https", "http"))
+        response = Request().get(movie['link'])
         return Movie().get_link(response)
 
     def search(self, text):

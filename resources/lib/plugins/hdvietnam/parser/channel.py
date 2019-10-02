@@ -23,7 +23,7 @@ class Parser:
         jobs = []
 
         for movie in soup.select('li.discussionListItem'):
-            if 'sticky' in movie.get('class'): continue
+            # if 'sticky' in movie.get('class'): continue
             tag = movie.select_one('div.listBlock.main a.PreviewTooltip')
             title = tag.text.strip().encode("utf-8")
             thumb = None
@@ -47,7 +47,7 @@ class Parser:
                 channel['movies'].append(movie)
 
         if 'true' in helper.getSetting('hdvietnam.extra'):
-            channel['movies'] = AsyncRequest(thread=6).get(jobs)
+            channel['movies'] = AsyncRequest(thread=10).get(jobs)
         return channel
 
     @staticmethod
