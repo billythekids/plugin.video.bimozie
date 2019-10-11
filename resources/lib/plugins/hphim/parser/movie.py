@@ -43,29 +43,31 @@ class Parser:
 
         soup = BeautifulSoup(response, "html.parser")
         servers = soup.select("div#ploption > a.btn-sv")
-        jobs = [{'url': '%s%s' % (domain, i.get('data-href')), 'parser': Parser.extract_link} for i in servers]
 
-        links = []
-        AsyncRequest().get(jobs, args=links)
+        jobs = [{'url': '%s%s' % (domain, i.get('data-href'))} for i in servers]
+        links = [Parser.extract_link(i) for i in AsyncRequest().get(jobs)]
 
-        if len(links) > 1:
-            try:
-                links = sorted(links, key=lambda elem: int(re.search(r'(\d+)', elem[1]).group(1)), reverse=True)
-            except Exception as e: print(e)
+        print links
 
-        for link in links:
-            movie['links'].append({
-                'link': link[0],
-                'title': 'Link %s' % link[1],
-                'type': link[1],
-                'originUrl': movie_url,
-                'resolve': False
-            })
+        # for link in links:
+        #     try:
+        #         link = next(link)
+        #         print link
+        #         movie['links'].append({
+        #             'link': link[0],
+        #             'title': 'Link %s' % link[1],
+        #             'type': link[1],
+        #             'originUrl': movie_url,
+        #             'resolve': False
+        #         })
+        #     except:
+        #         pass
 
         return movie
 
     @staticmethod
-    def extract_link(response, movie_links):
+    def extract_link(response):
+        movie_links = []
         m = re.search(r"sources:\s?(\[.*?\])", response)
 
         if m is not None:
@@ -77,5 +79,9 @@ class Parser:
             if len(sources) > 0:
                 for s in sources:
                     source = (s['file'], s['label'].encode('utf-8'))
-                    if 'hailhydra' not in s['file'] and s['file'] not in movie_links:
-                        movie_links.append(source)
+                    # print s['file']
+                    # yield source
+                    # print source
+                    movie_links.append(source)
+
+        return movie_links

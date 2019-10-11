@@ -1,8 +1,8 @@
 import urllib
 from utils.mozie_request import Request
-from bilutv.parser.category import Parser as Category
-from bilutv.parser.channel import Parser as Channel
-from bilutv.parser.movie import Parser as Movie
+from phimbathu.parser.category import Parser as Category
+from phimbathu.parser.channel import Parser as Channel
+from phimbathu.parser.movie import Parser as Movie
 
 
 class Phimbathu:
@@ -35,8 +35,7 @@ class Phimbathu:
         response = Request().get(movie['link'])
         return Movie().get_link(response, self.domain)
 
-    def search(self, text):
-        # http://phimbathu.org/tim-kiem/(keywords).html
+    def search(self, text, page=1):
         url = "%s/tim-kiem/%s.html" % (self.domain, urllib.quote_plus(text))
         response = Request().get(url)
-        return Channel().get(response, 1)
+        return Channel().get(response)

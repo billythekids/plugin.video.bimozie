@@ -29,7 +29,7 @@ class Kenh88:
     def getLink(self, movie):
         url = '%s%s' % (self.domain, movie['link'])
         response = Request().get(url)
-        return Movie().get_link(response, movie['link'])
+        return Movie().get_link(response, url)
 
     def search(self, text):
         url = "%s/film/search?keyword=%s" % (self.domain, urllib.quote_plus(text))

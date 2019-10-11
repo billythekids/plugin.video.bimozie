@@ -1,52 +1,41 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import re
 
 
 class Parser:
-    def get(self, response, page):
+    def get(self, response):
 
         channel = {
-            'page': page,
+            'page': 1,
             'page_patten': None,
             'movies': []
         }
 
         soup = BeautifulSoup(response, "html.parser")
         # get total page
-        last_page = soup.select('div.pagination > ul > li > a')
-        print("*********************** Get pages ")
-        if last_page is not None and len(last_page) > 2:
-            try:
-                channel['page'] = int(last_page[-1].text.strip())
-            except:
-                pass
+        for page in soup.select('div.pagination a'):
+            if page.get('class') is None or 'navigation' not in page.get('class'):
+                try:
+                    channel['page'] = int(page.text)
+                except:
+                    pass
 
-        for movie in soup.select('div.block-film > ul.list-film > li'):
-            title = movie.select_one('div.title > p.name').find(text=True, recursive=False).strip()
-            type = ""
-            realtitle = ""
-
-            if movie.select_one('label.current-status') is not None:
-                type = movie.select_one('label.current-status').text.strip()
-            if movie.select_one('div.title > p.real-name') is not None:
-                realtitle = movie.select_one('div.title > p.real-name').text.strip()
+        for movie in soup.select('div.left-content > div.block-film > ul.list-film > li.film-item'):
+            title = movie.select_one('p.name').text
+            type = movie.select_one('label').text
+            realtitle = movie.select_one('p.real-name').text
             if realtitle is not None:
                 label = "[%s] %s - %s" % (type, title, realtitle)
             else:
                 label = "[%s] %s" % (type, title)
 
-            thumb = movie.select_one('img').get('src')
-
             movie_id = re.search("(\d+)\.html$", movie.select_one('a').get('href')).group(1)
-
             channel['movies'].append({
                 'id': movie_id,
                 'label': label.encode("utf-8"),
                 'title': title.encode("utf-8"),
                 'realtitle': realtitle.encode("utf-8"),
-                'thumb': thumb,
+                'thumb': movie.select_one('img').get('src'),
                 'type': type.encode("utf-8"),
             })
 

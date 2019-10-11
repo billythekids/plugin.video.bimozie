@@ -10,8 +10,8 @@ from utils.pastebin import PasteBin
 class Parser:
     def get_movie_id(self, response):
         r = re.search('data-id="(.*?)" data-episode-id="(.*?)"', response)
-        fid = int(r.group(1))
-        epid = int(r.group(2))
+        fid = r.group(1)
+        epid = r.group(2)
 
         return fid, epid
 
