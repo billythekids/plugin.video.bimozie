@@ -162,7 +162,7 @@ SITES = [
         'logo': 'https://xemphim.plus/static/skin/logo-full.png',
         'className': 'Xemphim',
         'plugin': 'xemphim.plugin',
-        'version': 1
+        'version': 31
     },
 ]
 
@@ -397,7 +397,7 @@ def play(movie, title=None, thumb=None, direct=False):
                     print(e)
 
                 # blacklist link
-                blacklist = ['hydra', 'maya.bbigbunny.ml', 'smamuhh1metro']
+                blacklist = ['hydra', 'maya.bbigbunny.ml']
 
                 def filter_blacklist(m):
                     for i in blacklist:
@@ -405,7 +405,11 @@ def play(movie, title=None, thumb=None, direct=False):
                     return True
 
                 movie['links'] = list(filter(filter_blacklist, movie['links']))
-                listitems = ["%s (%s)" % (i["title"], i["link"]) for i in movie['links']]
+                listitems = []; appened_list = []
+                for i in movie['links']:
+                    if i.get('link') not in appened_list:
+                        listitems.append("%s (%s)" % (i["title"], i["link"]))
+                        appened_list.append(i.get('link'))
                 index = xbmcgui.Dialog().select("Select stream", listitems)
                 if index == -1:
                     return None
@@ -438,8 +442,6 @@ def play(movie, title=None, thumb=None, direct=False):
         play_item.setContentLookup(False)
 
     play_item.setProperty('IsPlayable', 'true')
-
-    print movie['title']
 
     # update title
     try:

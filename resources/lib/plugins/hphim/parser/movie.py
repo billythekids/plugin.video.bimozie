@@ -44,30 +44,24 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         servers = soup.select("div#ploption > a.btn-sv")
 
-        jobs = [{'url': '%s%s' % (domain, i.get('data-href'))} for i in servers]
-        links = [Parser.extract_link(i) for i in AsyncRequest().get(jobs)]
+        jobs = [{'url': '%s%s' % (domain, i.get('data-href')), 'parser': Parser.extract_link} for i in servers]
+        group_links = AsyncRequest().get(jobs)
 
-        print links
-
-        # for link in links:
-        #     try:
-        #         link = next(link)
-        #         print link
-        #         movie['links'].append({
-        #             'link': link[0],
-        #             'title': 'Link %s' % link[1],
-        #             'type': link[1],
-        #             'originUrl': movie_url,
-        #             'resolve': False
-        #         })
-        #     except:
-        #         pass
+        for links in group_links:
+            for link in links:
+                movie['links'].append({
+                    'link': link[0],
+                    'title': 'Link %s' % link[1],
+                    'type': link[1],
+                    'originUrl': movie_url,
+                    'resolve': False
+                })
 
         return movie
 
     @staticmethod
-    def extract_link(response):
-        movie_links = []
+    def extract_link(response, args=None):
+        links = []
         m = re.search(r"sources:\s?(\[.*?\])", response)
 
         if m is not None:
@@ -79,9 +73,6 @@ class Parser:
             if len(sources) > 0:
                 for s in sources:
                     source = (s['file'], s['label'].encode('utf-8'))
-                    # print s['file']
-                    # yield source
-                    # print source
-                    movie_links.append(source)
+                    links.append(source)
 
-        return movie_links
+        return links
