@@ -396,8 +396,10 @@ def play(movie, title=None, thumb=None, direct=False):
                 except Exception as e:
                     print(e)
 
+                print(movie['links'])
                 # blacklist link
                 blacklist = ['hydra', 'maya.bbigbunny.ml']
+                # blacklist = []
 
                 def filter_blacklist(m):
                     for i in blacklist:

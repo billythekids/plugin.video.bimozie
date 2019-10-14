@@ -6,7 +6,7 @@ from vuviphim.parser.movie import Parser as Movie
 
 
 class Vuviphim:
-    domain = "https://vuviphim.com"
+    domain = "https://vuviphimmoi.com"
 
     def getCategory(self):
         response = Request().get(self.domain)
@@ -31,7 +31,7 @@ class Vuviphim:
     def getLink(self, movie):
         # response = Request().get(movie['link'].replace("https", "http"))
         response = Request().get(movie['link'])
-        return Movie().get_link(response)
+        return Movie().get_link(response, movie['link'])
 
     def search(self, text):
         text = urllib.quote_plus(text)

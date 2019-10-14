@@ -5,6 +5,7 @@ import base64
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
 import utils.xbmc_helper as helper
+import smamuhh1metro
 
 origin = "http://www.phimmoi.net"
 
@@ -19,15 +20,15 @@ def get_guest_hydrax(url, media):
 
     response = json.loads(response)
     if 'fullhd' in response:
-        return get_hydrax_phimmoi_stream(response['fullhd'], response['servers']), 'hls4'
+        return get_smamuhh1metro(response['fullhd'], response['ping'], media)
     elif 'hd' in response:
-        return get_hydrax_phimmoi_stream(response['hd'], response['servers']), 'hls4'
+        return get_smamuhh1metro(response['hd'], response['ping'], media)
     elif 'mhd' in response:
-        return get_hydrax_phimmoi_stream(response['mhd'], response['servers']), 'hls4'
+        return get_smamuhh1metro(response['mhd'], response['ping'], media)
     elif 'sd' in response:
-        return get_hydrax_phimmoi_stream(response['sd'], response['servers']), 'hls4'
+        return get_smamuhh1metro(response['sd'], response['ping'], media)
     elif 'origin' in response:
-        return get_hydrax_phimmoi_stream(response['origin'], response['servers']), 'hls4'
+        return get_smamuhh1metro(response['origin'], response['ping'], media)
 
 
 def get_vip_hydrax(url, media):
@@ -49,30 +50,18 @@ def get_vip_hydrax(url, media):
     })
 
     response = json.loads(response)
-    r = "#EXTM3U\n#EXT-X-VERSION:3\n"
     if 'fullhd' in response:
-        stream_url = get_hydrax_phimmoi_stream(response['fullhd'], response['servers'])
-        if stream_url:
-            return stream_url, 'hls4'
-    if 'hd' in response:
-        stream_url = get_hydrax_phimmoi_stream(response['hd'], response['servers'])
-        if stream_url:
-            return stream_url, 'hls4'
-    if 'mhd' in response:
-        stream_url = get_hydrax_phimmoi_stream(response['mhd'], response['servers'])
-        if stream_url:
-            return stream_url, 'hls4'
-    if 'sd' in response:
-        stream_url = get_hydrax_phimmoi_stream(response['sd'], response['servers'])
-        if stream_url:
-            return stream_url, 'hls4'
-    if 'origin' in response:
-        stream_url = get_hydrax_phimmoi_stream(response['origin'], response['servers'])
-        if stream_url:
-            return stream_url, 'hls4'
+        return get_smamuhh1metro(response['fullhd'], response['ping'], media)
+    elif 'hd' in response:
+        return get_smamuhh1metro(response['hd'], response['ping'], media)
+    elif 'mhd' in response:
+        return get_smamuhh1metro(response['mhd'], response['ping'], media)
+    elif 'sd' in response:
+        return get_smamuhh1metro(response['sd'], response['ping'], media)
+    elif 'origin' in response:
+        return get_smamuhh1metro(response['origin'], response['ping'], media)
 
-    url = PasteBin().dpaste(r, name=url, expire=60)
-    return url, 'hls4'
+    return url
 
 
 def get_hydrax_phimmoi_stream(stream, n):
@@ -257,3 +246,9 @@ def get_hydrax_phimmoi_stream(stream, n):
 
     url = PasteBin().dpaste(play_list, name='hydrax', expire=60)
     return url
+
+
+def get_smamuhh1metro(stream, server, media):
+    if 'smamuhh1metro' in server:
+        url = "%s/%s/0/playlist.m3u8" % (server, stream.get('sig'))
+        return smamuhh1metro.get_link(url, media)

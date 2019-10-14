@@ -34,17 +34,18 @@ class Parser:
 
         return movie
 
-    def get_link(self, response):
+    def get_link(self, response, movie_url):
         movie = {
             'group': {},
             'episode': [],
             'links': [],
         }
 
-        sources = re.search(r'(eval\(function\(p,a,c,k,e,d\).*?)\s+?</script>', response)
+        sources = re.search(r'(eval\(function\(p,a,c,k,e,d\).*?)</script>', response)
         if sources:
             sources = sources.group(1)
             sources = Packer().unpack(sources)
+
             sources = re.search('sources:(.*?]),', sources)
             sources = re.sub(r'(?<={|,)([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources.group(1))
             sources = json.loads(sources)
@@ -60,6 +61,7 @@ class Parser:
                     'link': source['file'].replace('\\', ''),
                     'title': 'Link %s' % source['type'].encode('utf-8'),
                     'type': source['type'].encode('utf-8'),
+                    'originUrl': movie_url,
                     'resolve': False
                 })
 
@@ -76,6 +78,7 @@ class Parser:
                     'link': source['file'].replace('\\', ''),
                     'title': 'Link %s' % source['label'].encode('utf-8'),
                     'type': source['type'].encode('utf-8'),
+                    'originUrl': movie_url,
                     'resolve': False
                 })
 
@@ -86,6 +89,7 @@ class Parser:
                 'link': source,
                 'title': 'Link Unknow',
                 'type': 'Unknow',
+                'originUrl': movie_url,
                 'resolve': False
             })
 
