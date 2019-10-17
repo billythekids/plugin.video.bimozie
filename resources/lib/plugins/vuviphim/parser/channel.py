@@ -72,7 +72,7 @@ class Parser:
                 'label': title,
                 'title': title,
                 'realtitle': title,
-                'thumb': thumb,
+                'thumb': thumb.encode("utf-8"),
                 'type': ''
             })
 

@@ -53,6 +53,13 @@ SITES = [
         'version': 1
     },
     {
+        'name': 'bilutvb.com',
+        'logo': 'https://bilutvb.com/wp-content/uploads/2019/05/logov.png',
+        'className': 'Bilutvb',
+        'plugin': 'bilutvb.plugin',
+        'version': 1
+    },
+    {
         'name': 'phimmedia.tv',
         'logo': 'http://www.phimmedia.tv/templates/themes/phim/images/phimmedia-s.png',
         'className': 'Phimmedia',
@@ -247,7 +254,8 @@ def list_movie(movies, link, page, module, classname):
                 if 'intro' in item:
                     list_item.setInfo(type='video', infoLabels={'plot': item['intro']})
                 url = build_url(
-                    {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['realtitle'] and item['realtitle'] or item['title'],
+                    {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'],
+                     'title': item['realtitle'] and item['realtitle'] or item['title'],
                      'module': module, 'className': classname})
                 is_folder = True
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
@@ -399,6 +407,7 @@ def play(movie, title=None, thumb=None, direct=False):
                 print(movie['links'])
                 # blacklist link
                 blacklist = ['hydra', 'maya.bbigbunny.ml']
+
                 # blacklist = []
 
                 def filter_blacklist(m):
@@ -407,7 +416,8 @@ def play(movie, title=None, thumb=None, direct=False):
                     return True
 
                 movie['links'] = list(filter(filter_blacklist, movie['links']))
-                listitems = []; appened_list = []
+                listitems = [];
+                appened_list = []
                 for i in movie['links']:
                     if i.get('link') not in appened_list:
                         listitems.append("%s (%s)" % (i["title"], i["link"]))
@@ -583,7 +593,8 @@ def do_global_search(text):
             movies = plugin().search(text)
         except:
             pass
-        if movies is not None:
+
+        if movies is not None and len(movies.get('movies')) > 0:
             label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (
                 classname, len(movies['movies']))
             sli = xbmcgui.ListItem(label=label)
@@ -618,6 +629,7 @@ def do_global_search(text):
 
     for process in threads:
         process.join()
+
     xbmcplugin.endOfDirectory(HANDLE)
 
 
