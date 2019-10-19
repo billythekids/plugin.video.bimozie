@@ -10,6 +10,18 @@ class Parser:
                 'link': 'http://www.hdvietnam.com/forums/4k.337/'
             },
             {
+                'title': 'Bluray Remux 4K',
+                'link': 'http://www.hdvietnam.com/forums/bluray-remux-4k.345/'
+            },
+            {
+                'title': 'WEB-DL, HDTV 4K',
+                'link': 'http://www.hdvietnam.com/forums/web-dl-hdtv-4k.344/'
+            },
+            {
+                'title': 'Bluray Nguyên Gốc 4K',
+                'link': 'http://www.hdvietnam.com/forums/bluray-nguyen-goc-4k.346/'
+            },
+            {
                 'title': 'Fshare.vn',
                 'link': 'http://www.hdvietnam.com/forums/fshare-vn.33/'
             },
