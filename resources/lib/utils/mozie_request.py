@@ -41,8 +41,10 @@ class Request:
         return self.r.text
 
     def post(self, url, params=None, headers=None, redirect=True, cookies=None, json=None):
-        try: print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
-        except: pass
+        try:
+            print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
+        except:
+            pass
         print("Post URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
@@ -125,6 +127,7 @@ class AsyncRequest:
                 parser = 'parser' in url and url['parser'] or parser
                 args = 'args' in url and url['args'] or args
                 json = 'json' in url and url['json'] or json
+                required_response_header = 'responseHeader' in url and True or False
                 url = work[1]['url']
 
             retry = self.RETRY
@@ -137,7 +140,11 @@ class AsyncRequest:
                     if action is 'post':
                         data = self.request.post(url, params=params, headers=headers, json=json)
                     if parser:
-                        data = parser(data, args)
+                        if required_response_header:
+                            response_headers = self.request.get_request().headers
+                            data = parser(data, args, response_headers)
+                        else:
+                            data = parser(data, args)
                     # print('Requested %s' % work[1])
                     self.results[work[0]] = data
                     retry = 0

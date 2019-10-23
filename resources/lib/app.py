@@ -71,7 +71,7 @@ SITES = [
         'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
         'className': 'Phimmoi',
         'plugin': 'phimmoi.plugin',
-        'version': 18
+        'version': 1
     },
     {
         'name': 'hphim.net',

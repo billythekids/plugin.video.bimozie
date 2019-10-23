@@ -5,6 +5,8 @@ import re
 import json
 from utils.mozie_request import Request
 from utils.mozie_request import AsyncRequest
+from utils.aes import CryptoAES
+from hashlib import md5
 
 
 class Parser:
@@ -68,8 +70,8 @@ class Parser:
             params = {
                 'link': link
             }
-            jobs.append({'url': url, 'params': params, 'parser': Parser.parse_link})
-            # Parser.parse_link(Request().post(url,  params=params), movie_links)
+            jobs.append({'url': url, 'params': params, 'parser': Parser.parse_link, 'responseHeader': True})
+
         AsyncRequest().post(jobs, args=movie_links)
 
         for link in movie_links:
@@ -95,19 +97,19 @@ class Parser:
         m = re.search(r'curplay:\\"(.*?)\\",', response)
         if m is not None:
             source = m.group(1)
-            print source
             movie_links.append(source)
 
     @staticmethod
-    def parse_link(response, movie_links):
+    def parse_link(response, movie_links, response_headers):
         sources = json.loads(response)
-
-        print sources
-
         if 'link' in sources:
             if isinstance(sources['link'], list):
                 for source in sources['link']:
                     if 'http' in source['link']:
+                        movie_links.append((source['link'], source['label']))
+                    else:
+                        key = md5(response_headers.get('Expires')).hexdigest()
+                        source['link'] = CryptoAES().decrypt(source['link'], key)
                         movie_links.append((source['link'], source['label']))
             elif 'http' in sources['link']:
                 movie_links.append((sources['link'], 'label' in sources and sources['label'] or '720p'))
