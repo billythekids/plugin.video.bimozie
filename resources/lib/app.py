@@ -24,6 +24,13 @@ print("***********************Current version %d" % KODI_VERSION)
 
 SITES = [
     {
+        'name': 'live.90m.tv',
+        'logo': 'https://i.imgur.com/jyM3inb.png',
+        'className': 'Phut90',
+        'plugin': 'phut90.plugin',
+        'version': 1
+    },
+    {
         'name': 'fptplay.vn',
         'logo': 'https://fptplay.vn/images/logo.png',
         'className': 'Fptplay',
@@ -257,8 +264,8 @@ def list_movie(movies, link, page, module, classname):
                     {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'],
                      'title': item['realtitle'] and item['realtitle'] or item['title'],
                      'module': module, 'className': classname})
-                is_folder = True
-                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, isFolder=True)
             except:
                 print(item)
 

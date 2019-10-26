@@ -22,6 +22,7 @@ from .hosts import fshare, \
     smamuhh1metro, \
     toolpg, \
     vtvhub, \
+    phut90, \
     verystream
 
 
@@ -34,6 +35,9 @@ class LinkParser:
         print("Find link source of %s" % self.url)
         if re.search('ok.ru', self.url):
             return ok.get_link(self.url)
+
+        elif '90m.tv' in self.url:
+            return phut90.get_link(self.url), '720'
 
         elif 'lb.animehay.tv' in self.url:
             return animehay.get_link(self.url), '720'
