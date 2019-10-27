@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from utils.mozie_request import Request
 from bilutvb.parser.category import Parser as Category
 from bilutvb.parser.channel import Parser as Channel
@@ -10,7 +11,7 @@ class Bilutvb:
 
     def getCategory(self):
         response = Request().get(self.domain)
-        return Category().get(response), None
+        return Category().get(response), Channel().get(response)
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
@@ -21,7 +22,9 @@ class Bilutvb:
         else:
             url = '%s%s' % (self.domain, channel)
 
-        response = Request().get(url)
+        response = Request().get(url, headers={
+            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
+        })
         return Channel().get(response)
 
     def getMovie(self, url):
@@ -36,6 +39,6 @@ class Bilutvb:
         return Movie().get_link(response, self.domain)
 
     def search(self, text, page=1):
-        url = "%s/tim-kiem/%s.html" % (self.domain, urllib.quote_plus(text))
+        url = "%s/search/%s" % (self.domain, urllib.quote_plus(text))
         response = Request().get(url)
         return Channel().get(response)

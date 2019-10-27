@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import sys
+import sys; reload(sys); sys.setdefaultencoding('utf8')
 import re
 import urllib
 import urlparse
@@ -19,8 +19,6 @@ BASEURL = sys.argv[0]
 ARGS = urlparse.parse_qs(sys.argv[2][1:])
 ADDON_ID = ADDON.getAddonInfo('id')
 KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
-
-print("***********************Current version %d" % KODI_VERSION)
 
 SITES = [
     {
@@ -368,7 +366,7 @@ def show_links(movie, title, thumb, module, class_name):
     if len(movie['links']) == 0:
         return
 
-    print("***********************Found Total Link %d" % len(movie['links']))
+    print("***********************Found Total Link {}".format(len(movie['links'])))
     xbmcplugin.setPluginCategory(HANDLE, title)
     xbmcplugin.setContent(HANDLE, 'movies')
     for item in movie['links']:
@@ -391,7 +389,7 @@ def show_links(movie, title, thumb, module, class_name):
 
 
 def play(movie, title=None, thumb=None, direct=False):
-    print("*********************** playing %s" % title)
+    print("*********************** playing {}".format(title))
 
     if direct:
         mediatype = MediaHelper.resolve_link(movie)
@@ -445,7 +443,6 @@ def play(movie, title=None, thumb=None, direct=False):
 
     if movie.get('subtitle'):
         print("*********************** found subtitle ")
-        print(movie['subtitle'])
         if isinstance(movie['subtitle'], list):
             play_item.setSubtitles(movie['subtitle'])
         else:
@@ -489,7 +486,8 @@ def dosearch(plugin, module, classname, text, page=1, recall=False):
         return
 
     XbmcHelper.search_history_save(text)
-    print("*********************** searching %s" % text)
+    print(text)
+    print("*********************** searching {}".format(text))
     movies = plugin().search(text)
 
     if movies is not None:
@@ -592,7 +590,7 @@ def do_global_search(text):
 
     XbmcHelper.search_history_save(text)
 
-    print("*********************** searching %s" % text)
+    print("*********************** searching {}".format(text))
 
     def _search(plugin, module, classname, text):
         movies = None
@@ -643,7 +641,7 @@ def do_global_search(text):
 def get_plugin(args):
     classname = args.get('className', None)[0]
     module = args.get('module', None)[0]
-    print("*********************** Run module: %s - plugin: %s " % (module, classname))
+    print("*********************** Run module: {} - plugin: {}".format(module, classname))
     return getattr(import_module(module), classname), module, classname
 
 
@@ -667,7 +665,7 @@ def router():
     elif mode[0] == 'movies':
         link = ARGS.get('url')[0]
         page = int(ARGS.get('page')[0])
-        print("*********************** Display %s page %s" % (link, page))
+        print("*********************** Display {} page {}".format(link, page))
         movies = instance().getChannel(link, page)
         list_movie(movies, link, page, module, classname)
 
@@ -676,7 +674,7 @@ def router():
         thumb = ARGS.get('thumb')[0]
         title = ARGS.get('title')[0]
         movie = instance().getMovie(id)
-        print("*********************** Display movie %s %s" % (title, id))
+        print("*********************** Display movie {} {}".format(title, id))
         if len(movie['episode']) > 0 or len(movie['group']) > 0:
             show_episode(movie, thumb, title, module, classname)
         else:
@@ -693,7 +691,7 @@ def router():
         url = ARGS.get('url')[0]
         title = ARGS.get('title')[0]
         thumb = ARGS.get('thumb')[0]
-        print("*********************** Get Movie Link %s" % url)
+        print("*********************** Get Movie Link {}".format(url))
         movie = instance().getLink(url)
         show_links(movie, title, thumb, module, classname)
 

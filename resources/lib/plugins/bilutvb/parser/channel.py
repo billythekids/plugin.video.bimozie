@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding=utf-8
+# -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import re
 
@@ -15,26 +18,35 @@ class Parser:
         # get total page
         pages = soup.select('ul.page-numbers li > a.page-numbers')
         if pages and len(pages) > 3:
-            channel['page'] = int(pages[-2].text.encode('latin1'))
+            channel['page'] = int(pages[-2].text.encode('utf8'))
 
-        for movie in soup.select('div.halim_box > article.grid-item > div.halim-item'):
-            title = movie.select_one('h2.entry-title').text
-            type = "%s/%s" % (movie.select_one('span.episode').text, movie.select_one('span.duration').find(text=True, recursive=False).strip())
-            realtitle = movie.select_one('p.original_title').text
+        for movie in soup.select('div.halim_box > article.grid-item > div.halim-item > a.halim-thumb'):
+            title = movie.get('title').encode('latin1', errors="ignore")
+            mtype = ""
+
+            episode = movie.select_one('span.episode')
+            duration = movie.select_one('span.duration')
+            if episode and duration:
+                mtype = "{}/{}".format(
+                    episode.text.encode('latin1', errors="ignore"),
+                    duration.find(text=True, recursive=False).encode('latin1', errors="ignore")
+                )
+
+            realtitle = movie.select_one('p.original_title').text.encode('latin1', errors="ignore")
             if realtitle is not None:
-                label = "[%s] %s - %s" % (type, title, realtitle)
+                label = "[{}] {} - {}".format(mtype, title, realtitle)
             else:
-                label = "[%s] %s" % (type, title)
+                label = "[{}] {}".format(mtype, title)
 
-            movie_id = movie.select_one('a.halim-thumb').get('href')
+            movie_id = movie.get('href')
 
             channel['movies'].append({
                 'id': movie_id,
-                'label': label.encode('latin1'),
-                'title': title.encode('latin1'),
-                'realtitle': realtitle.encode("latin1"),
+                'label': label,
+                'title': title,
+                'realtitle': realtitle,
                 'thumb': movie.select_one('img.lazy').get('src'),
-                'type': type.encode("latin1"),
+                'type': mtype,
             })
 
         return channel

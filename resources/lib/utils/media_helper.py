@@ -15,11 +15,9 @@ class MediaHelper:
             media['link'] = link
 
         if 'resolve' in media and not media['resolve']:
-            print('Resolve %s' % link)
             if media and 'link' in media:
                 link, mediatype = LinkParser(media).get_link()
 
-        print(link)
         if not link:
             # helper.message('Cannot find media url %s' % media['link'], 'Link not found')
             media['link'] = None

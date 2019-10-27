@@ -70,4 +70,4 @@ class Fimfast:
             'x-requested-with': 'XMLHttpRequest',
         })
 
-        return Channel().get(response, 1, None, None)
+        return Channel().get(response, 1)
