@@ -1,62 +1,44 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import re
-import json
-from HTMLParser import HTMLParser
 from bs4 import BeautifulSoup
 
 
 class Parser:
-    def get_api_type(self, response):
-        enable = re.search('<div class="tray-more ">', response)
-        if enable:
-            r = re.search('id="api-type" value="(.*)"', response)
-            if r:
-                return 'type', r.group(1)
-            r = re.search('id="genre-slug" value="(.*)"', response)
-            if r:
-                return 'genre', r.group(1)
-
-            return 'cinema', 'cinema'
-        return None, None
-
-    def get(self, response, page, api_type, api_value):
+    def get(self, response, page):
 
         channel = {
             'page': page,
             'page_patten': None,
             'movies': []
         }
+        soup = BeautifulSoup(response, "html.parser")
 
-        response = json.loads(response)
-        movies = response['data']
-        if 'total' in response and response['total'] > 24:
-            channel['page'] = int(round(response['total']/24))
-        channel['page_patten'] = '%s|%s' % (api_type, api_value)
+        pages = soup.select('ul.pagination > li.page-item')
+        if len(pages) > 2:
+            channel['page'] = int(pages[-2].find(text=True, recursive=True))
 
-        h = HTMLParser()
-        for movie in movies:
-            type = self.get_quality(int(movie['quality']))
-            label = "[%s] %s" % (type, movie['name'])
-            if not movie['is_movie']:
-                label = "[%s/%s] %s" % (movie['meta']['max_episode_name'], movie['time'], movie['name'])
+        for movie in soup.select('div.tray-item > a'):
+            title = movie.select_one('div.tray-item-title').text.encode("utf-8")
+            quality = movie.select_one('span.tray-item-quality')
+            if quality:
+                quality = quality.text.encode("utf-8")
+
+            label = "[{}] {}".format(quality, title)
+            thumb = movie.select_one('img.tray-item-thumbnail').get('data-src')
+
+            total_eps = movie.select_one('div.tray-film-likes')
+            if total_eps:
+                total_eps = total_eps.text.strip().encode("utf-8")
+                label = "[{} {}] {}".format(total_eps, quality, title)
 
             channel['movies'].append({
-                'id': movie['slug'],
-                'label': label.encode("utf-8"),
-                'title': movie['name'].encode("utf-8"),
-                'realtitle': movie['name'].encode("utf-8"),
-                'thumb': movie['thumbnail'],
-                'poster': movie['poster'],
-                'type': type,
-                'intro': BeautifulSoup(h.unescape(movie['description']), "html.parser").text
+                'id': movie.get('href'),
+                'label': label,
+                'title': title,
+                'realtitle': title,
+                'thumb': thumb,
+                'poster': thumb,
+                'type': quality
             })
 
         return channel
-
-    def get_quality(self, type):
-        try:
-            quality = ('SD', 'HD', 'FHD', 'Bluray', 'CAM')
-            return quality[type-1]
-        except:
-            return '??'

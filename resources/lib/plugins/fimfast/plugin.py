@@ -19,27 +19,14 @@ class Fimfast:
         baseurl = '%s%s' % (self.domain, channel)
         if page == 1:
             response = Request().get(baseurl)
-            api_type, api_value = Channel().get_api_type(response)
         else:
-            api_type, api_value = channel.split('|')
+            baseurl = "{}?page={}".format(baseurl, page)
+            response = Request().get(baseurl)
 
-        # https://fimfast.com/api/v2/films/cinema?offset=24&limit=24
-        if api_type:
-            if api_type == 'cinema':
-                url = '%s/films/cinema?offset=%d&limit=24' % (self.api, (page - 1) * 24)
-            else:
-                url = '%s/films?offset=%d&limit=24&%s=%s' % (self.api, (page - 1) * 24, api_type, api_value)
-
-            response = Request().get(url, headers={
-                'referer': baseurl,
-                'authority': 'fimfast.com',
-                'x-requested-with': 'XMLHttpRequest',
-            })
-
-        return Channel().get(response, page, api_type, api_value)
+        return Channel().get(response, page)
 
     def getMovie(self, id):
-        movieurl = '%s/%s' % (self.domain, id)
+        movieurl = '%s%s' % (self.domain, id)
         response = Request().get(movieurl)
         fid, epid = Movie().get_movie_id(response)
         url = '%s/films/%s/episodes/%s' % (self.api, fid, epid)
