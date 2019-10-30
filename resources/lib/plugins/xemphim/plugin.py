@@ -12,35 +12,177 @@ class Xemphim:
     def getCategory(self):
         response = Request().get(self.domain)
         cat = Category().get(response)
+
+        payload = """
+        query Titles($first: Int!, $after: String, $page: String, $genre: String, $country: String, $year: String, $duration: String, $watchable: Boolean, $sort: String) {
+          titles(first: $first, after: $after, page: $page, genre: $genre, country: $country, year: $year, duration: $duration, watchable: $watchable, sort: $sort, types: ["movie", "show"]) {
+            nodes {
+              ...TitleBasics
+              __typename
+            }
+            hasNextPage
+            endCursor
+            total
+            __typename
+          }
+        }
+        
+        fragment TitleBasics on Title {
+          id
+          nameEn
+          nameVi
+          type
+          postedAt
+          tmdbPoster
+          publishDate
+          intro
+          imdbRating
+          countries
+          genres {
+            nameVi
+            slug
+            __typename
+          }
+          __typename
+        }
+        """
+
+        response = Request().post("https://b.xemphim.plus/g", json={
+            "operationName": "Titles",
+            "variables": {"watchable": True, "sort": "postedAt", "first": 15},
+            "query": payload
+        })
+
         movies = Channel().get(response, 1)
         movies['page'] = 1
         return cat, movies
 
     def getChannel(self, channel, page=1):
-        channel = channel.replace(self.domain, "")
-        if page > 1:
-            url = '%s%s?page=%d' % (self.domain, channel, page)
-        else:
-            url = '%s%s' % (self.domain, channel)
-        response = Request().get(url)
+        payload = """
+                query Titles($first: Int!, $after: String, $page: String, $genre: String, $country: String, $year: String, $duration: String, $watchable: Boolean, $sort: String) {
+                  titles(first: $first, after: $after, page: $page, genre: $genre, country: $country, year: $year, duration: $duration, watchable: $watchable, sort: $sort, types: ["movie", "show"]) {
+                    nodes {
+                      ...TitleBasics
+                      __typename
+                    }
+                    hasNextPage
+                    endCursor
+                    total
+                    __typename
+                  }
+                }
+                
+                fragment TitleBasics on Title {
+                  id
+                  nameEn
+                  nameVi
+                  type
+                  postedAt
+                  tmdbPoster
+                  publishDate
+                  intro
+                  imdbRating
+                  countries
+                  genres {
+                    nameVi
+                    slug
+                    __typename
+                  }
+                  __typename
+                }
+        """
+
+        channel = channel.replace('/country/', '')
+        response = Request().post("https://b.xemphim.plus/g", json={
+            "operationName": "Titles",
+            "variables": {"country": channel, "watchable": True, "sort": "postedAt", "first": 15,  "page": "{}".format(page)},
+            "query": payload
+        })
+
+        print response
+
         return Channel().get(response, page)
 
     def getMovie(self, id):
-        url = '%s%s' % (self.domain, id)
-        url = Movie().get_movie_link(Request().get(url))
-        url = '%s%s' % (self.domain, url)
-        response = Request().get(url)
-        return Movie().get(response)
+        payload = """
+                query TitleWatch($id: String!) {
+                  title(id: $id) {
+                    id
+                    nameEn
+                    nameVi
+                    intro
+                    publishDate
+                    tmdbPoster
+                    tmdbBackdrop
+                    fileServer
+                    srcUrl
+                    useVipLink
+                    reachedWatchLimit
+                    needImproveSubtitle
+                    needImproveVideo
+                    type
+                    number
+                    movieInfo {
+                      width
+                      height
+                      __typename
+                    }
+                    hasDualSubtitles
+                    dualSubtitleNeedResync
+                    subtitles {
+                      hash
+                      srtHash
+                      language
+                      note
+                      default
+                      resync
+                      createdAt
+                      updatedAt
+                      dual
+                      user {
+                        name
+                        __typename
+                      }
+                      __typename
+                    }
+                    parent {
+                      id
+                      number
+                      intro
+                      publishDate
+                      tmdbPoster
+                      parent {
+                        id
+                        nameEn
+                        nameVi
+                        tmdbBackdrop
+                        __typename
+                      }
+                      __typename
+                    }
+                    children {
+                      id
+                      number
+                      __typename
+                    }
+                    __typename
+                  }
+                }
+                """
 
-    def getLink(self, movie):
-        return Movie().get_link(movie)
+        response = Request().post("https://b.xemphim.plus/g", json={
+            "operationName": "TitleWatch",
+            "variables": {"id": id},
+            "query": payload
+        })
+
+        return Movie().get(response)
 
     def search(self, text):
         today = datetime.now()
         d = today.strftime("%Y-%m-%d-%H")
 
-        url = "https://b.xemphim.plus/suggestions/titles-%s.json" % d
+        url = "https://b.xemphim.plus/suggestions/titles-%s.js" % d
         response = Request().get(url)
         result = Channel().search_result(response, text)
-        print(result)
         return result

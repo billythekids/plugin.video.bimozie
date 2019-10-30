@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import sys; reload(sys); sys.setdefaultencoding('utf8')
+import sys
 import re
 import urllib
 import urlparse
@@ -174,7 +174,7 @@ SITES = [
         'logo': 'https://xemphim.plus/static/skin/logo-full.png',
         'className': 'Xemphim',
         'plugin': 'xemphim.plugin',
-        'version': 31
+        'version': 1
     },
 ]
 

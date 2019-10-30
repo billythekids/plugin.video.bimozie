@@ -16,6 +16,7 @@ class Parser:
                 'link': None,
                 'subcategory': self.getsubmenu(item)
             })
+            break
         return category
 
     def getsubmenu(self, xpath):

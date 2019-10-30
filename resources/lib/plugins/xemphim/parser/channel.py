@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-import re
 import json
+import math
 import unicodedata
 
 
 class Parser:
-    def get(self, response, page):
+    def get(self, response, page=1):
 
         channel = {
             'page': page,
@@ -14,27 +14,21 @@ class Parser:
             'movies': []
         }
 
-        soup = BeautifulSoup(response, "html.parser")
-        # get total page
-        last_page = soup.select('ul.pagination-list > li > a.pagination-link')
+        response = json.loads(response)['data']['titles']
+
         print("*********************** Get pages ")
-        if last_page is not None and len(last_page) > 0:
-            last_page = last_page[-1]
-            page = last_page.text.strip()
-            channel['page'] = int(page)
+        if response['hasNextPage']:
+            channel['page'] = math.ceil(response['total'] / 15)
 
-        for movie in soup.select('div.grid.columns > div.column'):
-            title = movie.select_one('h3.name.vi > a').text.strip()
-            realtitle = movie.select_one('h3.name.en > a').text.strip()
-            thumb = movie.select_one('> a > img').get('src')
-
-            label = "%s - %s" % (title, realtitle)
+        for movie in response['nodes']:
+            thumb = "https://image.xemphim.plus/w342/%s" % movie["tmdbPoster"]
+            label = "%s - %s" % (movie['nameVi'], movie['nameEn'])
 
             channel['movies'].append({
-                'id': movie.select_one('h3.name.vi > a').get('href'),
-                'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
+                'id': movie['id'],
+                'label': label,
+                'title': movie['nameVi'],
+                'realtitle': movie['nameEn'],
                 'thumb': thumb,
             })
 
@@ -54,8 +48,8 @@ class Parser:
             title2 = unicodedata.normalize('NFKD', movie[2]).encode('ascii', 'ignore').lower()
 
             if title1.find(text) > 0 or title2.find(text) > 0:
-                id = "/movie/%s~%s" % (movie[1].replace(' ', '-').encode('utf-8').lower(), movie[0])
-                label = "%s %s" % (movie[2].encode('utf-8'), movie[1].encode('utf-8'))
+                id = movie[0]
+                label = "{} {}".format(movie[2], movie[1])
                 thumb = "https://image.xemphim.plus/w342/%s" % movie[3]
 
                 channel['movies'].append({
