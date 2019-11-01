@@ -23,6 +23,7 @@ class Parser:
                         'link': "%s%s" % (url, episode.get('href')),
                         'title': episode.text.strip().encode("utf-8"),
                         'type': 'Unknown',
+                        'originUrl': url,
                         'resolve': False
                     })
         else:

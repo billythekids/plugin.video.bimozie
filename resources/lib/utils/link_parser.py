@@ -37,7 +37,7 @@ class LinkParser:
             return ok.get_link(self.url)
 
         elif '90m.tv' in self.url:
-            return phut90.get_link(self.url), '720'
+            return phut90.get_link(self.url, self.media), '720'
 
         elif 'lb.animehay.tv' in self.url:
             return animehay.get_link(self.url), '720'
