@@ -33,10 +33,12 @@ class Phimmedia:
         return Category().get(response), None
 
     def getChannel(self, channel, page=1):
+        channel = channel.replace(self.domain, "")
+
         if page > 1:
             url = '%s%s&page=%d' % (self.domain, channel, page)
         else:
-            url = '%s/%s.html' % (self.domain, channel)
+            url = '%s%s' % (self.domain, channel)
         response = self.request.get(url)
         return Channel().get(response)
 

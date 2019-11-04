@@ -22,12 +22,11 @@ class Parser:
 
     def getsubmenu(self, xpath):
         category = []
-        for item in xpath.select('ul > li'):
-            link = urllib.quote(item.select_one('a').get('href').encode('utf-8'))
-            parts = re.search("phimmedia\.tv\/(.*)\.html", link)
+        for item in xpath.select('ul > li > a'):
+            link = item.get('href')
             category.append({
-                'title': item.select_one('a').text.encode("utf-8"),
-                'link': parts.group(1)
+                'title': item.text.encode("utf-8"),
+                'link': link
             })
 
         return category

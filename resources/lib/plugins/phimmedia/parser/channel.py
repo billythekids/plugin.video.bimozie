@@ -23,7 +23,7 @@ class Parser:
                 if link_pattern is not None:
                     channel['page_patten'] = self.create_link(link_pattern.group(1).encode('utf-8'))
 
-        for movie in soup.select('#toan-bo > div > ul.list-film > li > div'):
+        for movie in soup.select('ul.list-film > li > div'):
             title = movie.select_one('a').get('title').strip()
             type = ""
             if movie.select_one('div.status') is not None:
