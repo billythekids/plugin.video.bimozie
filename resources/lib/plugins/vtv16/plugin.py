@@ -7,7 +7,7 @@ from vtv16.parser.movie import Parser as Movie
 
 class Vtv16:
     # domain = "http://94.242.62.166"
-    domain = "http://vtv16.tv"
+    domain = "http://vtv16.info"
 
     def getCategory(self):
         response = Request().get(self.domain)

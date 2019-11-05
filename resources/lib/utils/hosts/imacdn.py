@@ -1,24 +1,37 @@
 import re
 from urlparse import urlparse
+from urllib import urlencode
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
 
 
-def get_link(url):
+def get_link(url, media):
+    header = {
+        'Referrer': media.get('originUrl'),
+        'Origin': 'https://fimfast.com',
+        'User-Agent': "Chrome/59.0.3071.115 Safari/537.36"
+    }
+    return url + "|%s" % urlencode(header)
+
     play_list = ""
     base_url = urlparse(url)
     base_url = base_url.scheme + '://' + base_url.netloc
     resp = Request().get(url)
     resolutions = re.findall('RESOLUTION=\d+x(\d+)', resp)
-    matches = re.findall('(/drive/.*)', resp)
+    matches = re.findall('(/[a-zA-z]+/.*)', resp)
 
     if len(resolutions) > 1:
         play_list += "#EXTM3U\n"
-        if '1080' in resolutions:
+        if '2048' in resolutions:
             idx = next((resolutions.index(i) for i in resolutions if '1080' == i), -1)
             url = matches[idx]
             stream_url = base_url + url
-            return stream_url
+            return stream_url + "|%s" % urlencode(header)
+        elif '1080' in resolutions:
+            idx = next((resolutions.index(i) for i in resolutions if '1080' == i), -1)
+            url = matches[idx]
+            stream_url = base_url + url
+            return stream_url + "|%s" % urlencode(header)
             return create_imacdn_stream(stream_url, base_url)
             # play_list += "#EXT-X-STREAM-INF:BANDWIDTH=3000000,RESOLUTION=1920x1080\n"
             # play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)
@@ -26,7 +39,7 @@ def get_link(url):
             idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
             url = matches[idx]
             stream_url = base_url + url
-            return stream_url
+            return stream_url + "|%s" % urlencode(header)
             return create_imacdn_stream(stream_url, base_url)
             # play_list += "#EXT-X-STREAM-INF:BANDWIDTH=1500000,RESOLUTION=1280x720\n"
             # play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)
@@ -34,7 +47,7 @@ def get_link(url):
             idx = next((resolutions.index(i) for i in resolutions if '480' == i), -1)
             url = matches[idx]
             stream_url = base_url + url
-            return stream_url
+            return stream_url + "|%s" % urlencode(header)
             return create_imacdn_stream(stream_url, base_url)
             # play_list += "#EXT-X-STREAM-INF:BANDWIDTH=750000,RESOLUTION=854x480\n"
             # play_list += "%s\n" % create_imacdn_stream(stream_url, base_url)

@@ -62,14 +62,15 @@ class Parser:
             sources = json.loads(valid_json)
             if len(sources) > 0:
                 for s in sources:
-                    movie_links.append((s['file'], s['label'].encode('utf-8')))
+                    movie_links.append((s['file'], s.get('label')))
 
         for link in movie_links:
             movie['links'].append({
                 'link': link[0],
                 'title': 'Link %s' % link[1],
                 'type': link[1],
-                'resolve': False
+                'resolve': False,
+                'originUrl': domain
             })
 
         return movie

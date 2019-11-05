@@ -23,6 +23,7 @@ from .hosts import fshare, \
     toolpg, \
     vtvhub, \
     phut90, \
+    hphim, \
     verystream
 
 
@@ -41,6 +42,9 @@ class LinkParser:
 
         elif 'lb.animehay.tv' in self.url:
             return animehay.get_link(self.url), '720'
+
+        elif re.search('hphim.org', self.url):
+            return hphim.get_link(self.url, self.media), '720'
 
         elif re.search('openload.co', self.url):
             return self.get_link_openload()
@@ -114,7 +118,7 @@ class LinkParser:
 
         elif re.search('imacdn.com', self.url):
             helper.message('imacdn HFF', 'Movie Found')
-            return imacdn.get_link(self.url), 'hls5'
+            return imacdn.get_link(self.url, self.media), 'hls5'
 
         elif re.search('vtv16.com', self.url):
             return vtv16.get_link(self.url)

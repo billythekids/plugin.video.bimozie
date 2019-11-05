@@ -60,7 +60,7 @@ class Fimfast:
             'x-requested-with': 'XMLHttpRequest',
         })
 
-        return Movie().get_link(response)
+        return Movie().get_link(response, movieurl)
 
     def search(self, text):
         # https://fimfast.com/api/v2/search?q=nu%20hon&limit=12
