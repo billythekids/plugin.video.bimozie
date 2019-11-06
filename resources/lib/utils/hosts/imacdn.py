@@ -7,7 +7,7 @@ from utils.pastebin import PasteBin
 
 def get_link(url, media):
     header = {
-        'Referrer': media.get('originUrl'),
+        'Referer': media.get('originUrl'),
         'Origin': 'https://fimfast.com',
         'User-Agent': "Chrome/59.0.3071.115 Safari/537.36"
     }

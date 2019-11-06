@@ -13,7 +13,7 @@ def get_link(url, movie):
         header = {
             'Origin': 'http://www.vtv16.com',
             'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
-            'Referrer': movie.get('originUrl')
+            'Referer': movie.get('originUrl')
         }
         return url + "|%s" % urlencode(header), 'hls3'
 
@@ -31,7 +31,7 @@ def get_link(url, movie):
         header = {
             'Origin': 'http://www.vtv16.com',
             'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
-            'Referrer': movie.get('originUrl')
+            'Referer': movie.get('originUrl')
         }
         return movie_url + "|%s" % urlencode(header), 'hls3'
     except:

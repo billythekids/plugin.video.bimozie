@@ -16,7 +16,7 @@ def get_link(url, movie):
         header = {
             'Origin': base_url,
             'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
-            'Referrer': url
+            'Referer': url
         }
         return hosturl + "|%s" % urlencode(header), 'hls5'
     except:

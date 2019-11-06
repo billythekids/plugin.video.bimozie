@@ -22,9 +22,9 @@ def get_link(url, media):
 
         if re.search('pegasus-pop.com', url):
             header = {
-                'Origin': 'https://live.90m.tv',
-                'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
-                'Referrer': 'https://live.90m.tv'
+                # 'Origin': 'https://live.90m.tv',
+                # 'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+                'referer': media.get('originUrl')
             }
             return url + "|%s" % urlencode(header)
 
