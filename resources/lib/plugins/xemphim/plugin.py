@@ -99,8 +99,6 @@ class Xemphim:
             "query": payload
         })
 
-        print response
-
         return Channel().get(response, page)
 
     def getMovie(self, id):
