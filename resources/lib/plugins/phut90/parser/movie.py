@@ -31,7 +31,8 @@ class Parser:
                 'link': url,
                 'title': 'Direct link',
                 'type': 'Unknown',
-                'resolve': False
+                'resolve': False,
+                'originUrl': url
             })
 
         return movie
@@ -42,6 +43,8 @@ class Parser:
             'episode': [],
             'links': [],
         }
+
+        print originUrl
 
         sources = re.search(r'sources:\s?(.*?)\n', response)
         if sources:
