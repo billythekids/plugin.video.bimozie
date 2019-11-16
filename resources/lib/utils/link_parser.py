@@ -43,14 +43,14 @@ class LinkParser:
         elif 'lb.animehay.tv' in self.url:
             return animehay.get_link(self.url), '720'
 
+        elif re.search('toolsp2p.to', self.url) or re.search('hls.hphim.org', self.url):
+            return toolpg.get_link(self.url, self.media)
+
         elif re.search('hphim.org', self.url):
             return hphim.get_link(self.url, self.media), '720'
 
         elif re.search('openload.co', self.url):
             return self.get_link_openload()
-
-        elif re.search('toolsp2p.to', self.url):
-            return toolpg.get_link(self.url, self.media)
 
         elif re.search('movie3s.net', self.url):
             return movie3s.get_link(self.url, self.media)

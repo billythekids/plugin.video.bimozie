@@ -64,10 +64,11 @@ class Fimfast:
 
     def search(self, text):
         # https://fimfast.com/api/v2/search?q=nu%20hon&limit=12
-        url = "%s/search?q=%s&limit=12" % (self.api, urllib.quote_plus(text))
+        # https://fimfast.com/tim-kiem/sieu%20diep%20vien
+        url = "%s/tim-kiem/%s" % (self.domain, text)
         response = Request().get(url, headers={
             'referer': self.domain,
-            'x-requested-with': 'XMLHttpRequest',
+            # 'x-requested-with': 'XMLHttpRequest',
         })
 
         return Channel().get(response, 1)

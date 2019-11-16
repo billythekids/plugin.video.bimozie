@@ -74,5 +74,10 @@ class Parser:
                 for s in sources:
                     source = (s['file'], s['label'].encode('utf-8'))
                     links.append(source)
+        else:
+            source = re.search(r"<iframe.*src=\"(.*?)\"", response)
+            if source:
+                source = (source.group(1), 'hls')
+                links.append(source)
 
         return links

@@ -10,7 +10,8 @@ def get_link(url, movie):
     base_url = base_url.scheme + '://' + base_url.netloc
 
     try:
-        mid = re.search(r'\?id=(.*)&keyaction', url).group(1)
+        mid = re.search(r'\?id=(.*)&keyaction', url) or re.search(r'\?id=(.*)', url)
+        mid = mid.group(1)
         hosturl = '%s/hls/%s/%s.playlist.m3u8' % (base_url, mid, mid)
 
         header = {

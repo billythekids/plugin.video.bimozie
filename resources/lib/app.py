@@ -409,11 +409,8 @@ def play(movie, title=None, thumb=None, direct=False):
                 except Exception as e:
                     print(e)
 
-                print(movie['links'])
                 # blacklist link
                 blacklist = ['hydra', 'maya.bbigbunny.ml']
-
-                # blacklist = []
 
                 def filter_blacklist(m):
                     for i in blacklist:
@@ -421,17 +418,18 @@ def play(movie, title=None, thumb=None, direct=False):
                     return True
 
                 movie['links'] = list(filter(filter_blacklist, movie['links']))
-                listitems = [];
+                listitems = []
                 appened_list = []
                 for i in movie['links']:
-                    if i.get('link') not in appened_list:
+                    if not next((d for d in appened_list if i.get('link') == d.get('link')), False):
                         listitems.append("%s (%s)" % (i["title"], i["link"]))
-                        appened_list.append(i.get('link'))
+                        appened_list.append(i)
+
                 index = xbmcgui.Dialog().select("Select stream", listitems)
                 if index == -1:
                     return None
                 else:
-                    movie = movie['links'][index]
+                    movie = appened_list[index]
             else:
                 movie = movie['links'][0]
 
@@ -486,7 +484,6 @@ def dosearch(plugin, module, classname, text, page=1, recall=False):
         return
 
     XbmcHelper.search_history_save(text)
-    print(text)
     print("*********************** searching {}".format(text))
     movies = plugin().search(text)
 
