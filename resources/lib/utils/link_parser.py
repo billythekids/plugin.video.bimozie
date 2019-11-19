@@ -24,6 +24,7 @@ from .hosts import fshare, \
     vtvhub, \
     phut90, \
     hphim, \
+    cors, \
     verystream
 
 
@@ -36,6 +37,9 @@ class LinkParser:
         print("Find link source of %s" % self.url)
         if re.search('ok.ru', self.url):
             return ok.get_link(self.url)
+
+        elif 'vhstream.xyz' in self.url or 'vkooltv.com' in self.url:
+            return cors.get_link(self.url, self.media), '720'
 
         elif '90m.tv' in self.url:
             return phut90.get_link(self.url, self.media), '720'
