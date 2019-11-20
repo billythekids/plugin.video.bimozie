@@ -131,6 +131,6 @@ class Parser:
             base_url = r.group(1)
             base_url = urlparse(base_url)
             base_url = base_url.scheme + '://' + base_url.netloc
-            url = base_url + url + '.hydrax.html'
+            url = base_url + url
 
         return url

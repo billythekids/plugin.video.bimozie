@@ -29,13 +29,17 @@ class Parser:
             else:
                 label = "[%s] %s" % (type, title)
 
+            img = movie.select_one('img').get('src')
+            if 'https://' not in 'img':
+                img = 'https://{}'.format(img)
+
             movie_id = re.search("(\d+)\.html$", movie.select_one('a').get('href')).group(1)
             channel['movies'].append({
                 'id': movie_id,
                 'label': label.encode("utf-8"),
                 'title': title.encode("utf-8"),
                 'realtitle': realtitle.encode("utf-8"),
-                'thumb': movie.select_one('img').get('src'),
+                'thumb': img,
                 'type': type.encode("utf-8"),
             })
 

@@ -40,8 +40,8 @@ class LinkParser:
 
         elif 'vhstream.xyz' in self.url \
                 or 'vkooltv.com' in self.url\
-                or 'imacdn.com' in self.url\
-                or 'hls.phimmoi' in self.url:
+                or 'hls.phimmoi' in self.url\
+                :
             return cors.get_link(self.url, self.media), '720'
 
         elif '90m.tv' in self.url:
@@ -125,7 +125,7 @@ class LinkParser:
 
         elif re.search('imacdn.com', self.url):
             helper.message('imacdn HFF', 'Movie Found')
-            return imacdn.get_link(self.url, self.media), 'hls5'
+            return imacdn.get_link(self.url, self.media), 'hls'
 
         elif re.search('vtv16.com', self.url):
             return vtv16.get_link(self.url)
