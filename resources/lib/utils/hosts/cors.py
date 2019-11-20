@@ -9,7 +9,7 @@ def get_link(url, media):
     header = {
         'Referer': media.get('originUrl'),
         'Origin': base_url,
-        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
+        'User-Agent': "Chrome/59.0.3071.115 Safari/537.36"
     }
     return url + "|%s" % urlencode(header)
 

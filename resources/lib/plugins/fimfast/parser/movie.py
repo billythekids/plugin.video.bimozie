@@ -42,45 +42,36 @@ class Parser:
 
         videos = json.loads(response)
 
+
         subtitle = None
-        # https://fimfast.com/subtitle
         if 'subtitle' in videos and len(videos['subtitle']) > 0 and 'vi' in videos['subtitle']:
             subtitle = 'https://fimfast.com/subtitle/%s.vtt' % videos['subtitle']['vi']
 
         videos = videos['sources']
-        if u'hls' in videos and videos['hls']:
-            helper.message('Fimfast HLS', 'Movie Found')
-            movie['links'].append({
-                'link': videos['hls'],
-                'title': 'Link hls',
-                'type': 'hls',
-                'resolve': False,
-                'subtitle': subtitle,
-                'originUrl': movieurl
-            })
-        elif u'hff' in videos and videos['hff'] and self.encodeString(videos['hff'], 69).find('No link') == -1:
-            url = self.encodeString(videos['hff'], 69)
-            movie['links'].append({
-                'link': url,
-                'title': 'Link hff',
-                'type': 'hls',
-                'resolve': False,
-                'subtitle': subtitle,
-                'originUrl': movieurl
-            })
-        else:
-            for videotype in videos:
-                if videos[videotype] and videotype != u'hff':
-                    if type(videos[videotype]) is not unicode:
-                        for key, link in enumerate(videos[videotype]):
-                            movie['links'].append({
-                                'link': link['src'],
-                                'title': 'Link %s' % link['quality'].encode('utf-8'),
-                                'type': link['type'].encode('utf-8'),
-                                'resolve': True,
-                                'subtitle': subtitle,
-                                'originUrl': movieurl
-                            })
+        for videotype in videos:
+            if videos[videotype] and len(videos[videotype]) > 0:
+                print videotype, videos[videotype]
+            if videos[videotype] and ('hff' in videotype or 'htt' in videotype):
+                url = self.encodeString(videos['hff'], 69)
+                movie['links'].append({
+                    'link': url,
+                    'title': 'Link {}'.format(videotype),
+                    'type': '1080p',
+                    'resolve': False,
+                    'subtitle': subtitle,
+                    'originUrl': movieurl
+                })
+
+            if videos[videotype] and type(videos[videotype]) is not unicode:
+                for key, link in enumerate(videos[videotype]):
+                    movie['links'].append({
+                        'link': link['src'],
+                        'title': 'Link %s' % link['quality'].encode('utf-8'),
+                        'type': link['type'].encode('utf-8'),
+                        'resolve': True,
+                        'subtitle': subtitle,
+                        'originUrl': movieurl
+                    })
         return movie
 
     def encodeString(self, e, t):

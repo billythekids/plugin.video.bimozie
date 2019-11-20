@@ -45,7 +45,6 @@ class Request:
             print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
         except:
             pass
-        print("Post URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:

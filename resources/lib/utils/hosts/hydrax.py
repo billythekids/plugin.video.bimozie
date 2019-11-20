@@ -35,11 +35,11 @@ def get_vip_hydrax(url, media):
     global origin
 
     response = Request().get(url)
-    token = re.search('"key":"(.*?)",', response).group(1)
+    token = re.search(r'"key":"(.*?)",', response).group(1)
     params = {
         'key': token,
         'type': 'slug',
-        'value': re.search('#slug=(.*)', url).group(1)
+        'value': re.search(r'"value":"(.*?)",', response).group(1)
     }
 
     if re.search('vtv16', media['link']):

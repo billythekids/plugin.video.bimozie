@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import urllib
 import re
 import json
+from urlparse import urlparse
 from utils.mozie_request import Request
 from utils.mozie_request import AsyncRequest
 
@@ -77,7 +78,8 @@ class Parser:
                 'link': link[0],
                 'title': 'Link %s' % link[1],
                 'type': link[1],
-                'resolve': False
+                'resolve': False,
+                'originUrl': domain
             })
 
         return movie
@@ -85,32 +87,25 @@ class Parser:
     @staticmethod
     def extract_link(response, movie_links):
         m = re.search(r"sources:\s?(\[.*?\])", response)
-
         if m is not None:
             sources = m.group(1)
             valid_json = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources)
             valid_json = valid_json.replace(',]', ']')
             sources = json.loads(valid_json)
-            if len(sources) > 1:
-                try:
-                    sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
-                except:
-                    pass
-
             if len(sources) > 0:
                 for s in sources:
                     source = Parser.parse_link(s['file'])
                     if source and source not in movie_links:
                         movie_links.append((source, s['label'].encode('utf-8')))
 
-        m = re.search('<iframe.*src=".*?url=(.*)" frameborder', response)
+        m = re.search('<iframe.*?src=".*?url=(.*)" frameborder', response)
         if m is not None:
             source = urllib.unquote(m.group(1))
             source = Parser.parse_link(source)
             if source and source not in movie_links:
                 movie_links.append((source, ''))
 
-        m = re.search('<iframe.*src="(.*)" frameborder', response)
+        m = re.search('<iframe.*src="(.*?)" frameborder', response)
         if m is not None:
             source = urllib.unquote(m.group(1)).replace('\\', '')
             source = Parser.parse_link(source)
@@ -131,8 +126,11 @@ class Parser:
         if 'error' in url.encode('utf-8'):
             return None
 
-        r = re.search(r'^/iframe', url)
+        r = re.search(r'^/iframe.*?ref=(.*)', url)
         if r:
-            return None
+            base_url = r.group(1)
+            base_url = urlparse(base_url)
+            base_url = base_url.scheme + '://' + base_url.netloc
+            url = base_url + url + '.hydrax.html'
 
         return url

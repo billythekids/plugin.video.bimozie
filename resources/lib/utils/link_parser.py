@@ -38,7 +38,10 @@ class LinkParser:
         if re.search('ok.ru', self.url):
             return ok.get_link(self.url)
 
-        elif 'vhstream.xyz' in self.url or 'vkooltv.com' in self.url:
+        elif 'vhstream.xyz' in self.url \
+                or 'vkooltv.com' in self.url\
+                or 'imacdn.com' in self.url\
+                or 'hls.phimmoi' in self.url:
             return cors.get_link(self.url, self.media), '720'
 
         elif '90m.tv' in self.url:
