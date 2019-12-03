@@ -40,7 +40,7 @@ class Parser:
                 'realtitle': realtitle.encode("utf-8"),
                 'thumb': thumb,
                 'type': type.encode("utf-8"),
-                'intro': movie.select_one('div.des > small').text.strip().encode("utf-8"),
+                # 'intro': movie.select_one('div.des > small').text.strip().encode("utf-8"),
             })
 
         return channel

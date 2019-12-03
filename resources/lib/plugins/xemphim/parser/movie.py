@@ -18,14 +18,14 @@ class Parser:
             subtitle = 'https://b.xemphim.plus/subtitles/{}-{}.vtt'.format(sub['hash'], sub['updatedAt'])
             if 'vi' in sub['language']:
                 break
-        print subtitle
 
         movie['links'].append({
             'link': m['srcUrl'],
             'title': 'Link direct',
             'type': 'mp4',
             'subtitle': subtitle,
-            'resolve': True
+            'resolve': False,
+            'originUrl': 'https://xemphim.plus'
         })
 
         return movie

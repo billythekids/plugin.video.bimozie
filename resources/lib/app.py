@@ -390,11 +390,9 @@ def show_links(movie, title, thumb, module, class_name):
 
 def play(movie, title=None, thumb=None, direct=False):
     print("*********************** playing {}".format(title))
-
+    play_item = xbmcgui.ListItem()
     if direct:
         mediatype = MediaHelper.resolve_link(movie)
-        play_item = xbmcgui.ListItem()
-        play_item.setPath(movie['link'])
     else:
         if not movie or 'links' not in movie or len(movie['links']) == 0:
             return
@@ -434,10 +432,9 @@ def play(movie, title=None, thumb=None, direct=False):
                 movie = movie['links'][0]
 
             mediatype = MediaHelper.resolve_link(movie)
-            play_item = xbmcgui.ListItem()
-            play_item.setPath(movie['link'])
 
     if not movie['link']: return
+    play_item.setPath(movie['link'])
 
     if movie.get('subtitle'):
         print("*********************** found subtitle ")

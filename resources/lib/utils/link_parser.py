@@ -25,6 +25,7 @@ from .hosts import fshare, \
     phut90, \
     hphim, \
     cors, \
+    streamlink, \
     verystream
 
 
@@ -34,15 +35,23 @@ class LinkParser:
         self.url = media['link']
 
     def get_link(self):
-        print("Find link source of %s" % self.url)
+        print("LinkParser:: Find link source of %s" % self.url)
         if re.search('ok.ru', self.url):
             return ok.get_link(self.url)
 
         elif 'vhstream.xyz' in self.url \
                 or 'vkooltv.com' in self.url\
                 or 'hls.phimmoi' in self.url\
+                or 'fimfast.com' in self.url\
                 :
             return cors.get_link(self.url, self.media), '720'
+
+        elif 'fimfast.com' in self.url\
+                :
+            return cors.get_link(self.url, self.media, including_agent=False), '720'
+
+        elif 'wowza' in self.url:
+            return streamlink.get_link(self.url, self.media)
 
         elif '90m.tv' in self.url:
             return phut90.get_link(self.url, self.media), '720'
@@ -50,7 +59,7 @@ class LinkParser:
         elif 'lb.animehay.tv' in self.url:
             return animehay.get_link(self.url), '720'
 
-        elif re.search('toolsp2p.to', self.url) or re.search('hls.hphim.org', self.url):
+        elif re.search('toolsp2p', self.url) or re.search('hls.hphim.org', self.url):
             return toolpg.get_link(self.url, self.media)
 
         elif re.search('hphim.org', self.url):
