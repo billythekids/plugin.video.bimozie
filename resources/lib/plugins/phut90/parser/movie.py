@@ -16,9 +16,13 @@ class Parser:
 
         # get episode if possible
         episodes = soup.select('ul.live-nav-links > li.item > a')
+        found = False
         if len(episodes) > 1:
             for episode in episodes:
-                if 'javascript' not in episode.get('href'):
+                if 'javascript' in episode.get('href') or 'dangky' in episode.get('href'):
+                    continue
+                else:
+                    found = True
                     movie['links'].append({
                         'link': "%s%s" % (url, episode.get('href')),
                         'title': episode.text.strip().encode("utf-8"),
@@ -26,7 +30,8 @@ class Parser:
                         'originUrl': url,
                         'resolve': False
                     })
-        else:
+
+        if not found:
             movie['links'].append({
                 'link': url,
                 'title': 'Direct link',

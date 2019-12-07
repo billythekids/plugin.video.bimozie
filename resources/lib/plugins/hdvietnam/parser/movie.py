@@ -50,14 +50,16 @@ class Parser:
                         'link': self.found_links[idx],
                         'title': '[%s] %s' % (size, name),
                         'type': 'Unknown',
-                        'resolve': False
+                        'resolve': False,
+                        'isFolder': FShareVN.is_folder(self.found_links[idx])
                     })
                 else:
                     movie['links'].append({
                         'link': self.found_links[idx],
                         'title': self.found_links[idx],
                         'type': 'Unknown',
-                        'resolve': False
+                        'resolve': False,
+                        'isFolder': FShareVN.is_folder(self.found_links[idx])
                     })
 
         return movie

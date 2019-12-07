@@ -79,8 +79,8 @@ SITES = [
         'version': 1
     },
     {
-        'name': 'hphim.net',
-        'logo': 'https://i.ibb.co/fH1RNxH/image.png',
+        'name': 'biphim.tv',
+        'logo': 'https://i.ibb.co/tBKrQtK/image.png',
         'className': 'Hphim',
         'plugin': 'hphim.plugin',
         'version': 1
@@ -174,7 +174,7 @@ SITES = [
         'logo': 'https://xemphim.plus/static/skin/logo-full.png',
         'className': 'Xemphim',
         'plugin': 'xemphim.plugin',
-        'version': 1
+        'version': 31
     },
 ]
 

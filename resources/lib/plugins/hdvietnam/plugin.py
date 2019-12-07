@@ -55,15 +55,14 @@ class Hdvietnam:
         response = Request().get(url)
         return Channel().get(response, page=page, domain=self.domain)
 
-    def getMovie(self, id):
-        url = '%s/%s' % (self.domain, id)
-        print(url)
+    def getMovie(self, movie):
+        url = '%s/%s' % (self.domain, movie)
         response = self.login(redirect=url)
         parser = Movie()
         result, postLinks = parser.is_block(response)
         if result is True:
             token = re.findall(r'name="_xfToken"\svalue="(.*?)"\s', response)
-            self.thank(id, token[0], postLinks)
+            self.thank(movie, token[0], postLinks)
             response = self.request.get(url)
 
         result = parser.get(response)
