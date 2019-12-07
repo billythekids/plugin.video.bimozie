@@ -37,7 +37,8 @@ class LinkParser:
     def get_link(self):
         print("LinkParser:: Find link source of %s" % self.url)
         if re.search('ok.ru', self.url):
-            return ok.get_link(self.url)
+            return self.get_link_resolveurl()
+            # return ok.get_link(self.url)
 
         elif 'vhstream.xyz' in self.url \
                 or 'vkooltv.com' in self.url\
@@ -152,25 +153,25 @@ class LinkParser:
     def get_youtube(self):
         self.url = self.url.replace(re.search('^http.*(\?.*)', self.url).group(1), '')
         try:
-            import resolveurl
+            import urlresolver
             re.sub('(^http.*)\?', '\1', self.url)
-            stream_url = resolveurl.resolve(self.url)
+            stream_url = urlresolver.resolve(self.url)
             return stream_url, '720'
         except:
             return None
 
     def get_link_openload(self):
         try:
-            import resolveurl
-            stream_url = resolveurl.resolve(self.url)
+            import urlresolver
+            stream_url = urlresolver.resolve(self.url)
             return stream_url, '720'
         except:
             return None, None
 
     def get_link_resolveurl(self):
         try:
-            import resolveurl
-            stream_url = resolveurl.resolve(self.url)
+            import urlresolver
+            stream_url = urlresolver.resolve(self.url)
             return stream_url, '720'
         except:
             return None, None
