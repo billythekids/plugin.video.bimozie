@@ -41,12 +41,13 @@ class LinkParser:
             # return ok.get_link(self.url)
 
         elif 'vhstream.xyz' in self.url \
-                or 'vkooltv.com' in self.url\
-                or 'hls.phimmoi' in self.url\
+                or 'vkooltv.com' in self.url \
+                or 'hls.phimmoi' in self.url \
                 :
             return cors.get_link(self.url, self.media), '720'
 
-        elif 'fimfast.com' in self.url\
+        elif 'fimfast.com' in self.url \
+                or 'phimngay.com' in self.url \
                 :
             return cors.get_link(self.url, self.media, including_agent=False), '720'
 
