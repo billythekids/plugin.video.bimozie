@@ -84,7 +84,7 @@ class Parser:
 
     @staticmethod
     def extract_link(response, movie_links):
-        m = re.search(r"sources:\s?(\[.*?\])", response)
+        m = re.search(r"sources:\s?(\[.*?\])", response, re.DOTALL)
 
         if m is not None:
             sources = m.group(1)

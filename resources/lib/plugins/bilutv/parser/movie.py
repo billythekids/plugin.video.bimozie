@@ -61,17 +61,16 @@ class Parser:
 
         jobs = []
         links = []
+        r = Request()
         for server in servers:
-            sv_id = server.get('data-index')
+            sv_id = int(server.get('data-index'))
             url = "%s/ajax/player/" % domain
             params = {
                 'id': movie_id,
-                'ep': ep_id,
-                'sv': sv_id
+                'ep': ep_id
             }
-            jobs.append({'url': url, 'params': params, 'parser': Parser.extract_link})
-
-        AsyncRequest().post(jobs, args=links)
+            if sv_id > 0: params['sv'] = sv_id
+            Parser.extract_link(r.post(url, params=params).encode('utf-8'), links)
 
         for link in links:
             movie['links'].append({
@@ -86,7 +85,7 @@ class Parser:
 
     @staticmethod
     def extract_link(response, movie_links):
-        m = re.search(r"sources:\s?(\[.*?\])", response)
+        m = re.search(r"sources:\s?(\[.*?\])", response, re.DOTALL)
         if m is not None:
             sources = m.group(1)
             valid_json = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources)
@@ -98,14 +97,14 @@ class Parser:
                     if source and source not in movie_links:
                         movie_links.append((source, s['label'].encode('utf-8')))
 
-        m = re.search('<iframe.*?src=".*?url=(.*)" frameborder', response)
+        m = re.search('<iframe.*?src=".*?url=(http.*)" frameborder', response)
         if m is not None:
             source = urllib.unquote(m.group(1))
             source = Parser.parse_link(source)
             if source and source not in movie_links:
                 movie_links.append((source, ''))
 
-        m = re.search('<iframe.*src="(.*?)" frameborder', response)
+        m = re.search('<iframe.*src="(http.*?)" frameborder', response)
         if m is not None:
             source = urllib.unquote(m.group(1)).replace('\\', '')
             source = Parser.parse_link(source)

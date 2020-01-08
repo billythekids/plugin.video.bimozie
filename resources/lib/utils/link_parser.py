@@ -26,6 +26,7 @@ from .hosts import fshare, \
     hphim, \
     cors, \
     streamlink, \
+    mixdrop, \
     verystream
 
 
@@ -48,8 +49,12 @@ class LinkParser:
 
         elif 'fimfast.com' in self.url \
                 or 'phimngay.com' in self.url \
+                or 'beverly-downing' in self.url \
                 :
             return cors.get_link(self.url, self.media, including_agent=False), '720'
+
+        elif re.search('mixdrop.co', self.url):
+            return mixdrop.get_link(self.url, self.media), 'mp4'
 
         elif 'wowza' in self.url:
             return streamlink.get_link(self.url, self.media)

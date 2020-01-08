@@ -105,7 +105,7 @@ class AsyncRequest:
         for i in range(len(urls)):
             self.q.put((i, urls[i]))
 
-    def __start_thread(self, args):
+    def __start_thread(self, *args):
         for i in range(self.num_theads):
             worker = Thread(target=self.__request, args=args)
             worker.setDaemon(True)
@@ -115,7 +115,7 @@ class AsyncRequest:
         print("*********************** All %s thread done" % self.length)
         self.dialog.close()
 
-    def __request(self, action, params=None, headers=None, json=None, redirect=False, parser=None, args=None):
+    def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None, json=None):
         while not self.q.empty():
             work = self.q.get()
             url = work[1]
@@ -161,15 +161,15 @@ class AsyncRequest:
 
     def head(self, urls, params=None, headers=None, redirect=False, parser=None, args=None):
         self.__create_queue(urls)
-        self.__start_thread(('head', params, headers, redirect, parser, args))
+        self.__start_thread('head', params, headers, redirect, parser, args)
         return self.results
 
     def get(self, urls, headers=None, params=None, redirect=False, parser=None, args=None):
         self.__create_queue(urls)
-        self.__start_thread(('get', params, headers, redirect, parser, args))
+        self.__start_thread('get', params, headers, redirect, parser, args)
         return self.results
 
     def post(self, urls, params=None, headers=None, json=None, redirect=False, parser=None, args=None):
         self.__create_queue(urls)
-        self.__start_thread(('post', params, headers, json, redirect, parser, args))
+        self.__start_thread('post', params, headers, redirect, parser, args, json)
         return self.results

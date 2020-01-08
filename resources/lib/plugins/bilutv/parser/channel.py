@@ -20,7 +20,7 @@ class Parser:
                 except:
                     pass
 
-        for movie in soup.select('div.left-content > div.block-film > ul.list-film div.film-item'):
+        for movie in soup.select('div.left-content > div.block-film > ul.list-film > li > div'):
             title = movie.select_one('p.name').text
             type = movie.select_one('label').text
             realtitle = movie.select_one('p.real-name').text
@@ -30,7 +30,7 @@ class Parser:
                 label = "[%s] %s" % (type, title)
 
             img = movie.select_one('img').get('src')
-            if 'https://' not in 'img':
+            if 'https://' not in img:
                 img = 'https://{}'.format(img)
 
             movie_id = re.search("(\d+)\.html$", movie.select_one('a').get('href')).group(1)

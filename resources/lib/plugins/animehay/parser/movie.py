@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from utils.mozie_request import Request
 from utils.mozie_request import AsyncRequest
 from utils.pastebin import PasteBin
+from urlparse import urlparse
 import re
 import json
 
@@ -47,93 +48,106 @@ class Parser:
         sources = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", response)
         if sources:
             res = Request()
-            vkey = re.search('key=(.*)', sources.group(1)).group(1)
-            # http://vl.animehay.tv/initPlayer/f555b31844becd2e378d4978457014521af38ab8e66834ade1062b44827ef642
-            resp = res.post('http://vl.animehay.tv/initPlayer/%s' % vkey)
-            resp = json.loads(resp)
-            if 'availablePlayers' not in resp:
-                return movie
+            if 'key=' in sources.group(1):
+                vkey = re.search('key=(.*)', sources.group(1)).group(1)
+                # http://vl.animehay.tv/initPlayer/f555b31844becd2e378d4978457014521af38ab8e66834ade1062b44827ef642
+                resp = res.post('http://vl.animehay.tv/initPlayer/%s' % vkey)
+                resp = json.loads(resp)
+                if 'availablePlayers' not in resp:
+                    return movie
 
-            if 'p2pdrive' in resp['availablePlayers']:
-                data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('p2pdrive', vkey)))
-                source = data['data']
+                if 'p2pdrive' in resp['availablePlayers']:
+                    data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('p2pdrive', vkey)))
+                    source = data['data']
 
-                if source:
-                    movie['links'].append({
-                        'link': source,
-                        'title': 'Link p2pdrive',
-                        'type': 'hls',
-                        'resolve': False
-                    })
-
-            if 'gphoto' in resp['availablePlayers']:
-                data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('gphoto', vkey)))
-                data = res.get(data['data'])
-                sources = json.loads(re.search(r"var\s?sources\s?=\s?(\[.*?\])", data).group(1))
-                if sources and len(sources) > 0:
-                    for source in sources:
+                    if source:
                         movie['links'].append({
-                            'link': source['file'],
-                            'title': 'Link %s' % source['label'],
+                            'link': source,
+                            'title': 'Link p2pdrive',
+                            'type': 'hls',
+                            'resolve': False
+                        })
+
+                if 'gphoto' in resp['availablePlayers']:
+                    data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('gphoto', vkey)))
+                    data = res.get(data['data'])
+                    sources = json.loads(re.search(r"var\s?sources\s?=\s?(\[.*?\])", data).group(1))
+                    if sources and len(sources) > 0:
+                        for source in sources:
+                            movie['links'].append({
+                                'link': source['file'],
+                                'title': 'Link %s' % source['label'],
+                                'type': 'mp4',
+                                'resolve': False
+                            })
+
+                if 'fembed' in resp['availablePlayers']:
+                    data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('fembed', vkey)))
+                    data = res.get(data['data'])
+                    source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
+                    if source:
+                        movie['links'].append({
+                            'link': source,
+                            'title': 'Link fembed',
                             'type': 'mp4',
                             'resolve': False
                         })
 
-            if 'fembed' in resp['availablePlayers']:
-                data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('fembed', vkey)))
-                data = res.get(data['data'])
-                source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
-                if source:
-                    movie['links'].append({
-                        'link': source,
-                        'title': 'Link fembed',
-                        'type': 'mp4',
-                        'resolve': False
-                    })
+                if 'okru' in resp['availablePlayers']:
+                    data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('okru', vkey)))
+                    data = res.get(data['data'])
+                    source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
+                    if source:
+                        movie['links'].append({
+                            'link': source,
+                            'title': 'Link okru',
+                            'type': 'mp4',
+                            'resolve': False
+                        })
 
-            if 'okru' in resp['availablePlayers']:
-                data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('okru', vkey)))
-                data = res.get(data['data'])
-                source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
-                if source:
-                    movie['links'].append({
-                        'link': source,
-                        'title': 'Link okru',
-                        'type': 'mp4',
-                        'resolve': False
-                    })
+                if 'openload' in resp['availablePlayers']:
+                    data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('openload', vkey)))
+                    data = res.get(data['data'])
+                    source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
+                    if source:
+                        movie['links'].append({
+                            'link': source,
+                            'title': 'Link openload',
+                            'type': 'mp4',
+                            'resolve': False
+                        })
+                return movie
+            else:
+                res.get(sources.group(1))
+                link = res.get_request().url
+                vkey = re.search('id=(.*)', link).group(1)
+                base_url = urlparse(link)
+                base_url = base_url.scheme + '://' + base_url.netloc
+                urlVideo = "{}/hls/{}/{}.playlist.m3u8".format(base_url, vkey, vkey)
 
-            if 'openload' in resp['availablePlayers']:
-                data = json.loads(res.post('http://vl.animehay.tv/getDataPlayer/%s/%s' % ('openload', vkey)))
-                data = res.get(data['data'])
-                source = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", data).group(1)
-                if source:
-                    movie['links'].append({
-                        'link': source,
-                        'title': 'Link openload',
-                        'type': 'mp4',
-                        'resolve': False
-                    })
+                movie['links'].append({
+                    'link': urlVideo,
+                    'title': 'Link p2pdrive',
+                    'type': 'hls',
+                    'resolve': False
+                })
 
 
-
-            return movie
-
-        sources = re.search('<script rel="nofollow" src="(.*)" async>', response)
-        response = Request().get(sources.group(1))
-        sources = json.loads(re.search('links: (.*?),', response).group(1))
-
-        if len(sources) > 0:
-            for key, value in sources.items():
-                if value:
-                    label = key[1:].encode('utf-8')
-                    movie['links'].append({
-                        'link': value,
-                        'title': 'Link %s' % label,
-                        'type': label,
-                        'resolve': True
-                    })
-
-            movie['links'] = sorted(movie['links'], key=lambda elem: int(elem['type']), reverse=True)
+        # sources = re.search('<script rel="nofollow" src="(.*)" async>', response)
+        # if sources:
+        #     response = Request().get(sources.group(1))
+        #     if 'links:' in response:
+        #         sources = json.loads(re.search('links: (.*?),', response).group(1))
+        #         for key, value in sources.items():
+        #             if value:
+        #                 label = key[1:].encode('utf-8')
+        #                 movie['links'].append({
+        #                     'link': value,
+        #                     'title': 'Link %s' % label,
+        #                     'type': label,
+        #                     'resolve': True
+        #                 })
+        #
+        #         movie['links'] = sorted(movie['links'], key=lambda elem: int(elem['type']), reverse=True)
 
         return movie
