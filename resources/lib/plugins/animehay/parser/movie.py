@@ -38,7 +38,7 @@ class Parser:
 
         return movie
 
-    def get_link(self, response):
+    def get_link(self, response, originUrl):
         movie = {
             'group': {},
             'episode': [],
@@ -129,7 +129,8 @@ class Parser:
                     'link': urlVideo,
                     'title': 'Link p2pdrive',
                     'type': 'hls',
-                    'resolve': False
+                    'resolve': False,
+                    'originUrl': originUrl
                 })
 
 

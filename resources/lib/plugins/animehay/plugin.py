@@ -29,7 +29,7 @@ class Animehay:
 
     def getLink(self, movie):
         response = Request().get(movie['link'])
-        return Movie().get_link(response)
+        return Movie().get_link(response, movie['link'])
 
     def search(self, text):
         url = "%s/tim-kiem?q=%s" % (self.domain, urllib.quote_plus(text))
