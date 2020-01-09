@@ -80,7 +80,8 @@ class FShareVN:
     def logout(self):
         self.request.get('https://www.fshare.vn/site/logout')
 
-    def is_folder(self, url):
+    @staticmethod
+    def is_folder(url):
         return not re.search(r'/folder/([^\?]+)', url) and False or True
 
     def handleFolder(self, url=None, code=None):
