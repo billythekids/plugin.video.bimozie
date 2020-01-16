@@ -21,18 +21,18 @@ class Parser:
             channel['page'] = int(pages[-2].text.encode('utf8'))
 
         for movie in soup.select('div.halim_box > article.grid-item > div.halim-item > a.halim-thumb'):
-            title = movie.get('title').encode('latin1', errors="ignore")
+            title = movie.get('title').encode('utf8', errors="ignore")
             mtype = ""
 
             episode = movie.select_one('span.episode')
             duration = movie.select_one('span.duration')
             if episode and duration:
                 mtype = "{}/{}".format(
-                    episode.text.encode('latin1', errors="ignore"),
+                    episode.text.encode('utf8', errors="ignore"),
                     duration.find(text=True, recursive=False).encode('latin1', errors="ignore")
                 )
 
-            realtitle = movie.select_one('p.original_title').text.encode('latin1', errors="ignore")
+            realtitle = movie.select_one('p.original_title').text.encode('utf8', errors="ignore")
             if realtitle is not None:
                 label = "[{}] {} - {}".format(mtype, title, realtitle)
             else:
@@ -45,7 +45,7 @@ class Parser:
                 'label': label,
                 'title': title,
                 'realtitle': realtitle,
-                'thumb': movie.select_one('img.lazy').get('src'),
+                'thumb': movie.select_one('figure > img.lazy').get('data-src'),
                 'type': mtype,
             })
 

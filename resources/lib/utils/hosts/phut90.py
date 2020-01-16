@@ -20,7 +20,6 @@ def get_link(url, media):
                 url = source.get('file')
                 break
 
-        print media
         if re.search('pegasus-pop.com', url):
             header = {
                 # 'Origin': 'https://live.90m.tv',

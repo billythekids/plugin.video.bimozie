@@ -22,12 +22,12 @@ class Parser:
         servers = soup.select('div#halim-list-server > div.halim-server')
         for server in servers:
             episodes = server.select('ul.halim-list-eps > li > a')
-            server_name = server.select_one('span.halim-server-name').find(text=True, recursive=False).encode('latin1')
+            server_name = server.select_one('span.halim-server-name').find(text=True, recursive=False).encode('utf8')
             if server_name not in movie['group']: movie['group'][server_name] = []
             for episode in episodes:
                 movie['group'][server_name].append({
                     'link': episode.get('href'),
-                    'title': "Tập %s" % episode.text.encode('latin1')
+                    'title': "Tập %s" % episode.text.encode('utf8')
                 })
 
         return movie

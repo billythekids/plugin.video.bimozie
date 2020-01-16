@@ -45,7 +45,7 @@ class Parser:
             'links': [],
         }
 
-        sources = re.search(r"<iframe.*?src=['|\"](.*?)['|\"]\s?", response)
+        sources = re.search(r"<iframe.*?src=['|\"](.*animehay.tv/play.*?)['|\"]\s?", response)
         if sources:
             res = Request()
             if 'key=' in sources.group(1):

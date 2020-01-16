@@ -27,6 +27,7 @@ from .hosts import fshare, \
     cors, \
     streamlink, \
     mixdrop, \
+    manga123, \
     verystream
 
 
@@ -52,6 +53,9 @@ class LinkParser:
                 or 'animehay.tv' in self.url \
                 or 'beverly-downing' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False), '720'
+
+        elif re.search('manga123.net', self.url):
+            return manga123.get_link(self.url, self.media)
 
         elif re.search('mixdrop.co', self.url):
             return mixdrop.get_link(self.url, self.media), 'mp4'
@@ -150,6 +154,9 @@ class LinkParser:
 
         elif re.search('dgo.dongphim.net', self.url):
             return dongphim.get_link(self.url, self.media)
+
+        elif '.xyz' in self.url:
+            return cors.get_link(self.url, self.media, including_agent=False), '720'
 
         elif self.url.endswith('m3u8'):
             return self.get_m3u8()
