@@ -628,7 +628,6 @@ def do_global_search(text):
     for process in threads:
         process.join()
 
-    print progress['results']
     for module, classname, movies in progress['results']:
         # if movies is not None and len(movies.get('movies')) > 0:
         label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (
