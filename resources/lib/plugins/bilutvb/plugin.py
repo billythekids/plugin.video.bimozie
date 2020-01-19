@@ -10,7 +10,9 @@ class Bilutvb:
     domain = "https://bilutvb.com"
 
     def getCategory(self):
-        response = Request().get(self.domain)
+        response = Request().get(self.domain, headers={
+            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
+        })
         return Category().get(response), Channel().get(response)
 
     def getChannel(self, channel, page=1):
@@ -29,16 +31,29 @@ class Bilutvb:
 
     def getMovie(self, url):
         # url = "%s/phim-0-%s.html" % (self.domain, id)
-        response = Request().get(url)
+        response = Request().get(url, headers={
+            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
+        })
         url = Movie().get_movie_link(response)
-        response = Request().get(url)
+        response = Request().get(url, headers={
+            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
+        })
         return Movie().get(response)
 
     def getLink(self, movie):
-        response = Request().get(movie['link'])
+        response = Request().get(movie['link'], headers={
+            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
+        })
         return Movie().get_link(response, self.domain)
 
     def search(self, text, page=1):
-        url = "%s/search/%s" % (self.domain, urllib.quote_plus(text))
-        response = Request().get(url)
-        return Channel().get(response)
+        # url = "%s/search/%s" % (self.domain, urllib.quote_plus(text))
+        url = "%s/wp-admin/admin-ajax.php" % self.domain
+        response = Request().post(url, headers={
+            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
+        }, params={
+            'action': 'halimthemes_ajax_search',
+            'search': text
+        })
+
+        return Channel().getSearchResult(response)

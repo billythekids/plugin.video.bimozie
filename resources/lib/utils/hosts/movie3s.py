@@ -15,7 +15,7 @@ def get_link(url, movie):
             'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
             'Referer': movie.get('originUrl')
         }
-        return url + "|%s" % urlencode(header), 'hls3'
+        return url + "|%s" % urlencode(header), base_url
 
     # method 1
     try:
@@ -33,7 +33,7 @@ def get_link(url, movie):
             'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
             'Referer': movie.get('originUrl')
         }
-        return movie_url + "|%s" % urlencode(header), 'hls3'
+        return movie_url + "|%s" % urlencode(header), base_url
     except:
         pass
 
@@ -48,7 +48,7 @@ def get_link(url, movie):
     # https://vip4.movie3s.net/public/dist/index.html?id=0676953662683db3977a8d30e4084414
     mid = re.search(r'\?id=(.*)', location).group(1)
 
-    return '%s/hls/%s/%s.playlist.m3u8' % (base_url, mid, mid), 'hls5'
+    return '%s/hls/%s/%s.playlist.m3u8' % (base_url, mid, mid), base_url
 
     # method 3
     medias = json.loads(request.post('%s/vl/%s' % (base_url, mid)))
@@ -56,7 +56,7 @@ def get_link(url, movie):
     if '720p' in medias:
         return create_stream(medias['720p'], base_url)
 
-    return url, 'hls5'
+    return url, base_url
 
 
 def create_stream(stream, base_url):

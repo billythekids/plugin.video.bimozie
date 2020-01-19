@@ -15,4 +15,4 @@ def get_link(url, movie):
 
     url = "%s/hls/%s/%s.playlist.m3u8" % (base_url, mid, mid)
 
-    return url + "|%s" % urlencode(header), 'hls3'
+    return url + "|%s" % urlencode(header), base_url

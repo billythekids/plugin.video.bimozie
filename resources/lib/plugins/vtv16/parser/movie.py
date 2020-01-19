@@ -2,7 +2,8 @@
 from bs4 import BeautifulSoup
 import re
 import json
-from utils.mozie_request import Request
+from utils.mozie_request import Request, AsyncRequest
+
 
 
 def from_char_code(*args):
@@ -37,7 +38,7 @@ class Parser:
 
         return movie
 
-    def get_link(self, response, originUrl):
+    def get_link(self, response, originUrl, domain, request):
         movie = {
             'group': {},
             'episode': [],
@@ -99,4 +100,44 @@ class Parser:
             })
             return movie
 
+        soup = BeautifulSoup(response, "html.parser")
+        # get all server list
+        servers = soup.select("span.btn-link-backup.episode-link")
+        if len(servers) > 0:
+            jobs = []
+            links = []
+            m_id = re.search(r'var\s?MovieID\s?=\s?(\d+);', response).group(1)
+            ep_id = re.search(r'var\s?EpisodeID\s?=\s?(\d+);', response).group(1)
+            csrf = re.search(r'name="csrf-token"\s?content="(.*)">', response).group(1)
+            for server in servers:
+                sv_id = server.get('data-index')
+                url = "%s/api/player.html" % domain
+                params = {
+                    'id': m_id,
+                    'ep': ep_id,
+                    'sv': sv_id
+                }
+                jobs.append({'url': url, 'params': params, 'headers': {
+                    'X-CSRF-TOKEN': csrf
+                }, 'parser': Parser.extract_link})
+
+            AsyncRequest(request=request).post(jobs, args=links)
+            for link in links:
+                title = 'movie3s.net' in link and 'Movie3s' or 'Unknow'
+                movie['links'].append({
+                    'link': link,
+                    'title': 'Link %s' % title,
+                    'type': 'file',
+                    'originUrl': originUrl,
+                    'resolve': False
+                })
+
         return movie
+
+    @staticmethod
+    def extract_link(response, movie_links):
+        sources = re.search("<iframe.*src=\"(.*)\"", response)
+        if sources:
+            source = sources.group(1)
+            movie_links.append(source)
+

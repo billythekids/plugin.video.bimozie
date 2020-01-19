@@ -43,37 +43,41 @@ class LinkParser:
             # return ok.get_link(self.url)
 
         elif 'vhstream.xyz' in self.url \
+                or 'vtvhub.com' in self.url \
                 or 'vkooltv.com' in self.url \
                 or 'hls.phimmoi' in self.url \
                 :
-            return cors.get_link(self.url, self.media), '720'
+            return cors.get_link(self.url, self.media)
 
         elif 'fimfast.com' in self.url \
                 or 'phimngay.com' in self.url \
                 or 'animehay.tv' in self.url \
                 or 'beverly-downing' in self.url:
-            return cors.get_link(self.url, self.media, including_agent=False), '720'
+            return cors.get_link(self.url, self.media, including_agent=False)
 
         elif re.search('manga123.net', self.url):
             return manga123.get_link(self.url, self.media)
 
         elif re.search('mixdrop.co', self.url):
-            return mixdrop.get_link(self.url, self.media), 'mp4'
+            return mixdrop.get_link(self.url, self.media), 'mixdrop.co'
 
         elif 'wowza' in self.url:
             return streamlink.get_link(self.url, self.media)
 
+        elif 'plb.animehay.tv' in self.url:
+            return self.input_stream()
+
         elif '90m.tv' in self.url:
-            return phut90.get_link(self.url, self.media), '720'
+            return phut90.get_link(self.url, self.media), '90m.tv'
 
         elif 'lb.animehay.tv' in self.url:
-            return animehay.get_link(self.url), '720'
+            return animehay.get_link(self.url), 'animehay.tv'
 
         elif re.search('toolsp2p', self.url) or re.search('hls.hphim.org', self.url):
             return toolpg.get_link(self.url, self.media)
 
         elif re.search('hphim.org', self.url):
-            return hphim.get_link(self.url, self.media), '720'
+            return hphim.get_link(self.url, self.media), 'hphim.org'
 
         elif re.search('openload.co', self.url):
             return self.get_link_openload()
@@ -126,7 +130,7 @@ class LinkParser:
                 or re.search('hhstream.xyz', self.url) \
                 or re.search('116.203.139.97', self.url) \
                 or re.search('tstream.xyz', self.url):
-            return self.get_sstreamgg()
+            return self.get_referer_link()
 
         elif re.search('hls.phimmoi.[net|link]', self.url):
             helper.message('Phimmoi hls link parsing', 'Get Link')
@@ -144,7 +148,7 @@ class LinkParser:
 
         elif re.search('imacdn.com', self.url):
             helper.message('imacdn HFF', 'Movie Found')
-            return imacdn.get_link(self.url, self.media), 'hls'
+            return imacdn.get_link(self.url, self.media), 'imacdn'
 
         elif re.search('vtv16.com', self.url):
             return vtv16.get_link(self.url)
@@ -156,7 +160,7 @@ class LinkParser:
             return dongphim.get_link(self.url, self.media)
 
         elif '.xyz' in self.url:
-            return cors.get_link(self.url, self.media, including_agent=False), '720'
+            return cors.get_link(self.url, self.media, including_agent=False)
 
         elif self.url.endswith('m3u8'):
             return self.get_m3u8()
@@ -177,7 +181,7 @@ class LinkParser:
         try:
             import urlresolver
             stream_url = urlresolver.resolve(self.url)
-            return stream_url, '720'
+            return stream_url, 'openload.co'
         except:
             return None, None
 
@@ -185,7 +189,7 @@ class LinkParser:
         try:
             import urlresolver
             stream_url = urlresolver.resolve(self.url)
-            return stream_url, '720'
+            return stream_url, 'URLResolver'
         except:
             return None, None
 
@@ -201,9 +205,9 @@ class LinkParser:
                 self.url,
                 helper.getSetting('fshare.username'),
                 helper.getSetting('fshare.password')
-            ).get_link(), '1080'
+            ).get_link(), 'Fshare'
         else:
-            return fshare.FShareVN(self.url).get_link(), '1080'
+            return fshare.FShareVN(self.url).get_link(), 'Fshare'
 
     def get_m3u8(self):
         # support to run with inputstream.adaptive
@@ -220,6 +224,9 @@ class LinkParser:
 
         return self.url, 'hls3'
 
-    def get_sstreamgg(self):
+    def get_referer_link(self):
         url = self.url + "|Referer=https://vuviphim.com/"
-        return url, '720'
+        return url, 'Referer'
+
+    def input_stream(self):
+        return self.url, 'hls'

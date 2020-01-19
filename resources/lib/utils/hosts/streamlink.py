@@ -21,4 +21,4 @@ def get_link(url, movie):
         'Referer': movie.get('originUrl')
     }
 
-    return url + "|%s" % urlencode(header), 'hls5'
+    return url + "|%s" % urlencode(header), 'wowza'

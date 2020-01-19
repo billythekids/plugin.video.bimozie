@@ -26,7 +26,8 @@ SITES = [
         'logo': 'https://i.imgur.com/jyM3inb.png',
         'className': 'Phut90',
         'plugin': 'phut90.plugin',
-        'version': 1
+        'version': 1,
+        'searchable': False
     },
     {
         'name': 'fptplay.vn',
@@ -245,6 +246,8 @@ def list_category(cats, module, classname, movies=None):
 def list_movie(movies, link, page, module, classname):
     xbmcplugin.setPluginCategory(HANDLE, classname)
     xbmcplugin.setContent(HANDLE, 'movies')
+    view_mode_id = 31107
+    xbmc.executebuiltin('Container.SetViewMode(%d)' % view_mode_id)
 
     if movies is not None:
         for item in movies['movies']:
@@ -457,7 +460,7 @@ def play(movie, title=None, thumb=None, direct=False):
     # update title
     try:
         play_item.setInfo('video', {
-            'title': ("[" + movie['title'] + "]" + title).encode('utf-8'),
+            'title': ("[" + mediatype + "]" + title).encode('utf-8'),
             'originaltitle': title
         })
     except:
@@ -469,7 +472,7 @@ def play(movie, title=None, thumb=None, direct=False):
 
 
 def dosearch(plugin, module, classname, text, page=1, recall=False):
-    xbmcplugin.setPluginCategory(HANDLE, 'Search Result')
+    xbmcplugin.setPluginCategory(HANDLE, 'Search / %s' % text)
     xbmcplugin.setContent(HANDLE, 'movies')
     if not text:
         keyboard = xbmc.Keyboard('', 'Search iPlayer')
@@ -586,42 +589,38 @@ def do_global_search(text):
 
     print("*********************** searching {}".format(text))
 
-    def _search(plugin, module, classname, text):
-        movies = None
+    progress = {
+        'percent': 0,
+        'step': 5,
+        'counter': 0,
+        'length': 0,
+        'dialog': xbmcgui.DialogProgress(),
+        'results': []
+    }
+
+    def _search(site, text, progress):
         try:
-            movies = plugin().search(text)
+            plugin, module, classname = get_plugin({'className': [site['className']], "module": [site['plugin']]})
+            progress['percent'] += progress['step']
+            progress['counter'] += 1
+            progress['results'].append((module, classname, plugin().search(text)))
+            progress['dialog'].update(progress['percent'], 'Searching %d/%d sites' % (progress['counter'], progress['length']), "", "Looking on: %s" % classname)
         except:
             pass
 
-        if movies is not None and len(movies.get('movies')) > 0:
-            label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (
-                classname, len(movies['movies']))
-            sli = xbmcgui.ListItem(label=label)
-            url = build_url({'mode': 'dosearch', 'module': module, 'className': classname, 'url': text})
-            xbmcplugin.addDirectoryItem(HANDLE, url, sli, isFolder=True)
-            for item in movies['movies'][:5]:
-                try:
-                    list_item = xbmcgui.ListItem(label=item['label'])
-                    list_item.setLabel2(item['realtitle'])
-                    list_item.setIconImage('DefaultVideo.png')
-                    list_item.setArt({
-                        'thumb': item['thumb'],
-                    })
-                    url = build_url(
-                        {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
-                         'module': module, 'className': classname})
-                    is_folder = True
-                    xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
-                except:
-                    print(item)
-
     threads = []
     for site in SITES:
-        if site['version'] > KODI_VERSION:
+        if site['version'] > KODI_VERSION or ('searchable' in site and not site['searchable']):
+            continue
+        progress['length'] += 1
+    progress['dialog'].create('Processing', "Searching %d/%d sites" % (progress['counter'], progress['length']))
+    progress['step'] = 100 / progress['length']
+
+    for site in SITES:
+        if site['version'] > KODI_VERSION or ('searchable' in site and not site['searchable']):
             continue
 
-        plugin, module, classname = get_plugin({'className': [site['className']], "module": [site['plugin']]})
-        process = Thread(target=_search, args=[plugin, module, classname, text])
+        process = Thread(target=_search, args=[site, text, progress])
         process.setDaemon(True)
         process.start()
         threads.append(process)
@@ -629,6 +628,29 @@ def do_global_search(text):
     for process in threads:
         process.join()
 
+    print progress['results']
+    for module, classname, movies in progress['results']:
+        # if movies is not None and len(movies.get('movies')) > 0:
+        label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (
+            classname, len(movies['movies']))
+        sli = xbmcgui.ListItem(label=label)
+        url = build_url({'mode': 'dosearch', 'module': module, 'className': classname, 'url': text})
+        xbmcplugin.addDirectoryItem(HANDLE, url, sli, isFolder=True)
+        for item in movies['movies'][:5]:
+            try:
+                list_item = xbmcgui.ListItem(label=item['label'])
+                list_item.setLabel2(item['realtitle'])
+                list_item.setIconImage('DefaultVideo.png')
+                list_item.setArt({
+                    'thumb': item['thumb'],
+                })
+                url = build_url(
+                    {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
+                     'module': module, 'className': classname})
+                is_folder = True
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+            except:
+                print(item)
     xbmcplugin.endOfDirectory(HANDLE)
 
 

@@ -14,6 +14,7 @@ class Parser:
             'movies': []
         }
 
+        response = response.encode('latin-1')
         soup = BeautifulSoup(response, "html.parser")
         # get total page
         pages = soup.select('ul.page-numbers li > a.page-numbers')
@@ -28,11 +29,11 @@ class Parser:
             duration = movie.select_one('span.duration')
             if episode and duration:
                 mtype = "{}/{}".format(
-                    episode.text.encode('utf8', errors="ignore"),
-                    duration.find(text=True, recursive=False).encode('latin1', errors="ignore")
+                    episode.text.encode('utf8'),
+                    duration.find(text=True, recursive=False).encode('utf8')
                 )
 
-            realtitle = movie.select_one('p.original_title').text.encode('utf8', errors="ignore")
+            realtitle = movie.select_one('p.original_title').text.encode('utf8')
             if realtitle is not None:
                 label = "[{}] {} - {}".format(mtype, title, realtitle)
             else:
@@ -49,4 +50,32 @@ class Parser:
                 'type': mtype,
             })
 
+        return channel
+
+    def getSearchResult(self, response):
+        channel = {
+            'page': 1,
+            'page_patten': None,
+            'movies': []
+        }
+
+        # response = response.encode('latin-1')
+        soup = BeautifulSoup(response, "html.parser")
+
+        for movie in soup.select('li > a'):
+            movie_id = movie.get('href')
+            title = movie.select_one('span.label').text.encode('utf8', errors="ignore")
+            realtitle = movie.select_one('span.enName').text.encode('utf8', errors="ignore")
+            label = "{} - {}".format(title, realtitle)
+            image = movie.select_one('img').get('src')
+            mtype = ""
+            
+            channel['movies'].append({
+                'id': movie_id,
+                'label': label,
+                'title': title,
+                'realtitle': realtitle,
+                'thumb': image,
+                'type': mtype,
+            })
         return channel

@@ -14,4 +14,4 @@ def get_link(url):
     except:
         pass
 
-    return url, 'hls4'
+    return url, 'vtv16'

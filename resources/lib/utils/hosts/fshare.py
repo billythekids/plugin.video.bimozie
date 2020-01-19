@@ -75,7 +75,9 @@ class FShareVN:
             raise Exception('Fshare', 'error')
             return
         # should block ui to wait until able retrieve a link
-        return item.get('location')
+        if int(self.request.head(item.get('location')).headers['Content-Length']):
+            return item.get('location').encode('utf-8')
+        return
 
     def logout(self):
         self.request.get('https://www.fshare.vn/site/logout')
@@ -95,7 +97,8 @@ class FShareVN:
         if 'items' in r and len(r['items']) > 0:
             listitems = ["[%s] %s" % (i['type'] == 1 and helper.humanbytes(i["size"]) or 'Folder', i["name"]) for i in r['items']]
         else:
-            raise Exception('Fshare', 'link die')
+            helper.message("Fshare link folder die")
+            return
 
         index = helper.create_select_dialog(listitems)
         if index == -1: return None

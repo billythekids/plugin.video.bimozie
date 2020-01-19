@@ -24,5 +24,5 @@ def get_link(url, movie):
     except:
         pass
 
-    return url, 'hls5'
+    return url, 'manga123.net'
 

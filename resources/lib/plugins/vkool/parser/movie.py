@@ -35,7 +35,7 @@ class Parser:
             i += 1
         return movie
 
-    def get_link(self, response, domain, originUrl):
+    def get_link(self, response, domain, originUrl, request):
         movie = {
             'group': {},
             'episode': [],
@@ -61,7 +61,7 @@ class Parser:
             }
             jobs.append({'url': url, 'params': params, 'parser': Parser.extract_link})
 
-        AsyncRequest().post(jobs, args=links)
+        AsyncRequest(request=request).post(jobs, args=links)
         jobs = []
         movie_links = []
 
@@ -72,7 +72,7 @@ class Parser:
             }
             jobs.append({'url': url, 'params': params, 'parser': Parser.parse_link, 'responseHeader': True})
 
-        AsyncRequest().post(jobs, args=movie_links)
+        AsyncRequest(request=request).post(jobs, args=movie_links)
 
         for link in movie_links:
             movie['links'].append({

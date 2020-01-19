@@ -19,8 +19,8 @@ def get_link(url, movie):
             'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
             'Referer': url
         }
-        return hosturl + "|%s" % urlencode(header), 'hls5'
+        return hosturl + "|%s" % urlencode(header), base_url
     except:
         pass
 
-    return url, 'hls5'
+    return url, base_url

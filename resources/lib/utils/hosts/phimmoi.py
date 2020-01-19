@@ -6,7 +6,7 @@ from utils.pastebin import PasteBin
 
 def get_link(url, originURL):
     url += '|referer=' + urllib.quote_plus(originURL)
-    return url, 'hls3'
+    return url, 'Phimmoi HLS'
 
 
 def get_link_deprecated(url, originURL):

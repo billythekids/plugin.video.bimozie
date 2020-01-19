@@ -47,6 +47,8 @@ class Request:
             pass
         if not headers:
             headers = self.DEFAULT_HEADERS
+
+        print("Post URL: %s header: %s" % (url, urllib.urlencode(headers)))
         if self.session:
             self.r = self.session.post(url, data=params, headers=headers, timeout=self.TIMEOUT,
                                        allow_redirects=redirect, cookies=cookies, json=json)
@@ -147,7 +149,8 @@ class AsyncRequest:
                     # print('Requested %s' % work[1])
                     self.results[work[0]] = data
                     retry = 0
-                except:
+                except Exception as inst:
+                    print inst
                     print('Request %s fail retry %d' % (work[1], retry))
                     self.results[work[0]] = {}
                 finally:

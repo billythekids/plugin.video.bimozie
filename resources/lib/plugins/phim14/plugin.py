@@ -34,6 +34,6 @@ class Phim14:
         return Movie().get_link(response)
 
     def search(self, text):
-        url = "%s/search/%s.html" % (self.domain, urllib.quote_plus(text))
+        url = "%s/search/%s.html" % (self.domain, text.replace(' ', '-'))
         response = Request().get(url)
         return Channel().get(response, 1, self.domain)

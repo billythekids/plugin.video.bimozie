@@ -11,7 +11,7 @@ def get_link(url, media):
     }
 
     url = get_stream(url)
-    return str(url) + "|%s" % urlencode(header), 'hls3'
+    return str(url) + "|%s" % urlencode(header), 'dongphim'
 
 
 def get_stream(url):

@@ -23,13 +23,15 @@ class Vtv16:
         return Channel().get(response, page)
 
     def getMovie(self, id):
+        r = Request()
         url = '%s/xem-phim.html' % id
-        response = Request().get(url)
+        response = r.get(url)
         return Movie().get(response, url)
 
     def getLink(self, movie):
-        response = Request().get(movie['link'])
-        return Movie().get_link(response, movie['link'])
+        r = Request()
+        response = r.get(movie['link'])
+        return Movie().get_link(response, movie['link'], self.domain, r)
 
     def search(self, text):
         url = "%s/tim-kiem-phim/%s/" % (self.domain, text.replace(' ', '-'))
