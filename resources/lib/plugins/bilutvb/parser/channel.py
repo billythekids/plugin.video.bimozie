@@ -14,7 +14,10 @@ class Parser:
             'movies': []
         }
 
-        response = response.encode('latin-1')
+        try:
+            response = response.encode('latin-1')
+        except: pass
+
         soup = BeautifulSoup(response, "html.parser")
         # get total page
         pages = soup.select('ul.page-numbers li > a.page-numbers')

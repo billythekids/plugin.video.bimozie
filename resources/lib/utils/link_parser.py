@@ -28,6 +28,7 @@ from .hosts import fshare, \
     streamlink, \
     mixdrop, \
     manga123, \
+    googlevideo, \
     verystream
 
 
@@ -54,6 +55,9 @@ class LinkParser:
                 or 'animehay.tv' in self.url \
                 or 'beverly-downing' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
+
+        elif 'googlevideo.com' in self.url:
+            return googlevideo.get_link(self.url, self.media)
 
         elif re.search('manga123.net', self.url):
             return manga123.get_link(self.url, self.media)

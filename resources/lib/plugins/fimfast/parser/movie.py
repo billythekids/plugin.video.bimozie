@@ -49,8 +49,6 @@ class Parser:
 
         videos = videos['sources']
         for videotype in videos:
-            if videos[videotype] and len(videos[videotype]) > 0:
-                print videotype, videos[videotype]
             if videos[videotype] and ('hff' in videotype or 'htt' in videotype):
                 url = self.encodeString(videos['hff'], 69)
                 movie['links'].append({
@@ -64,11 +62,14 @@ class Parser:
 
             if videos[videotype] and type(videos[videotype]) is not unicode:
                 for key, link in enumerate(videos[videotype]):
+                    match = re.search(r'(&title=.*)&?', link['src'])
+                    if match:
+                        link['src'] = link['src'].replace(match.group(1), '')
                     movie['links'].append({
                         'link': link['src'],
                         'title': 'Link %s' % link['quality'].encode('utf-8'),
                         'type': link['type'].encode('utf-8'),
-                        'resolve': True,
+                        'resolve': False,
                         'subtitle': subtitle,
                         'originUrl': movieurl
                     })
