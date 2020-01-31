@@ -245,9 +245,10 @@ def list_category(cats, module, classname, movies=None):
 
 def list_movie(movies, link, page, module, classname):
     xbmcplugin.setPluginCategory(HANDLE, classname)
+    # xbmcplugin.setContent(HANDLE, 'tvshows')
     xbmcplugin.setContent(HANDLE, 'movies')
-    view_mode_id = 31107
-    xbmc.executebuiltin('Container.SetViewMode(%d)' % view_mode_id)
+    # view_mode_id = 55
+    # xbmc.executebuiltin('Container.SetViewMode(%s)' % view_mode_id)
 
     if movies is not None:
         for item in movies['movies']:
@@ -601,9 +602,9 @@ def do_global_search(text):
     def _search(site, text, progress):
         try:
             plugin, module, classname = get_plugin({'className': [site['className']], "module": [site['plugin']]})
+            progress['results'].append((module, classname, plugin().search(text)))
             progress['percent'] += progress['step']
             progress['counter'] += 1
-            progress['results'].append((module, classname, plugin().search(text)))
             progress['dialog'].update(progress['percent'], 'Searching %d/%d sites' % (progress['counter'], progress['length']), "", "Looking on: %s" % classname)
         except:
             pass

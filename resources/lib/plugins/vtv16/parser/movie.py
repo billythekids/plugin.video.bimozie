@@ -15,7 +15,7 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         return soup.select_one('div.content > a.nutplay').get('href')
 
-    def get(self, response, originUrl):
+    def get(self, response, originUrl, domain, request):
         movie = {
             'group': {},
             'episode': [],
@@ -34,7 +34,7 @@ class Parser:
                         'title': 'Episode %s' % ep.text.strip().encode('utf-8'),
                     })
         else:
-            return self.get_link(response, originUrl)
+            return self.get_link(response, originUrl, domain, request)
 
         return movie
 

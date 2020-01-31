@@ -26,7 +26,7 @@ class Vtv16:
         r = Request()
         url = '%s/xem-phim.html' % id
         response = r.get(url)
-        return Movie().get(response, url)
+        return Movie().get(response, url, self.domain, r)
 
     def getLink(self, movie):
         r = Request()
