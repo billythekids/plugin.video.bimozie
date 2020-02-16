@@ -602,6 +602,7 @@ def do_global_search(text):
     def _search(site, text, progress):
         try:
             plugin, module, classname = get_plugin({'className': [site['className']], "module": [site['plugin']]})
+            progress['dialog'].update(progress['percent'], 'Searching %d/%d sites' % (progress['counter'], progress['length']), "", "Looking on: %s" % classname)
             progress['results'].append((module, classname, plugin().search(text)))
             progress['percent'] += progress['step']
             progress['counter'] += 1

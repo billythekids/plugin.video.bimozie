@@ -21,6 +21,7 @@ class Parser:
             'links': [],
         }
         soup = BeautifulSoup(response, "html.parser")
+
         # get all server list
         servers = soup.select("div.halim-server")
         for server in servers:

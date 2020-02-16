@@ -6,7 +6,7 @@ from phimgi.parser.movie import Parser as Movie
 
 
 class Phimgi:
-    domain = "https://phimgi.net"
+    domain = "https://phimgi.tv"
 
     def getCategory(self):
         response = Request().get(self.domain)
@@ -14,6 +14,7 @@ class Phimgi:
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
+        channel = channel.replace('https://phimgi.net', "")
         if page > 1:
             url = '%s%spage/%d' % (self.domain, channel, page)
         else:
@@ -30,7 +31,7 @@ class Phimgi:
             'postid': movie_id
         }
 
-        url = "%s//wp-admin/admin-ajax.php" % self.domain
+        url = "%s/wp-admin/admin-ajax.php" % self.domain
         response = Request().post(url, params)
         return Movie().get(response, nonce)
 
@@ -46,7 +47,7 @@ class Phimgi:
             'ipv': 4
         }
 
-        url = "%s//wp-admin/admin-ajax.php" % self.domain
+        url = "%s/wp-admin/admin-ajax.php" % self.domain
         response = Request().post(url, params)
         return Movie().get_link(response, url)
 

@@ -103,70 +103,56 @@ class Xemphim:
 
     def getMovie(self, id):
         payload = """
-                query TitleWatch($id: String!) {
-                  title(id: $id) {
+            query TitleWatch($id: String!) {
+              title(id: $id) {
+                id
+                nameEn
+                nameVi
+                intro
+                publishDate
+                tmdbPoster
+                tmdbBackdrop
+                fileServer
+                srcUrl
+                spriteUrl
+                useVipLink
+                reachedWatchLimit
+                needImproveSubtitle
+                needImproveVideo
+                downloadable
+                type
+                number
+                movieInfo {
+                  width
+                  height
+                  __typename
+                }
+                hasDualSubtitles
+                dualSubtitleNeedResync
+                parent {
+                  id
+                  number
+                  intro
+                  publishDate
+                  tmdbPoster
+                  parent {
                     id
                     nameEn
                     nameVi
-                    intro
-                    publishDate
-                    tmdbPoster
                     tmdbBackdrop
-                    fileServer
-                    srcUrl
-                    useVipLink
-                    reachedWatchLimit
-                    needImproveSubtitle
-                    needImproveVideo
-                    type
-                    number
-                    movieInfo {
-                      width
-                      height
-                      __typename
-                    }
-                    hasDualSubtitles
-                    dualSubtitleNeedResync
-                    subtitles {
-                      hash
-                      srtHash
-                      language
-                      note
-                      default
-                      resync
-                      createdAt
-                      updatedAt
-                      dual
-                      user {
-                        name
-                        __typename
-                      }
-                      __typename
-                    }
-                    parent {
-                      id
-                      number
-                      intro
-                      publishDate
-                      tmdbPoster
-                      parent {
-                        id
-                        nameEn
-                        nameVi
-                        tmdbBackdrop
-                        __typename
-                      }
-                      __typename
-                    }
-                    children {
-                      id
-                      number
-                      __typename
-                    }
                     __typename
                   }
+                  __typename
                 }
-                """
+                children {
+                  id
+                  number
+                  __typename
+                }
+                __typename
+              }
+            }
+            """
 
         response = Request().post("https://b.xemphim.plus/g", json={
             "operationName": "TitleWatch",
