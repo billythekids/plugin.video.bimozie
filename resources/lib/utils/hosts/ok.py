@@ -1,5 +1,6 @@
 import re
 import json
+import xbmcgui
 import HTMLParser
 from utils.mozie_request import Request
 
@@ -35,4 +36,15 @@ def get_link(url):
     s = json.loads(s['flashvars']['metadata'])
     items = [(i['url'], rsl(i['name'])) for i in s['videos']]
     items = sorted(items, key=lambda elem: int(elem[1]), reverse=True)
-    return items[0]
+
+    if len(items) == 1:
+        return items[0]
+
+    listitems = []
+    for i in items:
+        listitems.append("%s (%s)" % (i[1], i[0]))
+    index = xbmcgui.Dialog().select("Select stream", listitems)
+    if index == -1:
+        return None, None
+    else:
+        return items[index]

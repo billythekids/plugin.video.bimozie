@@ -40,8 +40,8 @@ class LinkParser:
     def get_link(self):
         print("LinkParser:: Find link source of %s" % self.url)
         if re.search('ok.ru', self.url):
-            return self.get_link_resolveurl()
-            # return ok.get_link(self.url)
+            # return self.get_link_resolveurl()
+            return ok.get_link(self.url)
 
         elif 'vhstream.xyz' in self.url \
                 or 'vtvhub.com' in self.url \

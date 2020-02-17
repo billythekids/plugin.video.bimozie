@@ -47,4 +47,4 @@ def get_link(url):
             else:
                 return sources[0]['file'] + '|referer=' + urllib.quote_plus(url), sources[0]['type']
 
-    return url, 'mp4'
+    return url, 'vuviphim'

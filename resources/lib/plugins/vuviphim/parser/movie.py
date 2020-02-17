@@ -1,6 +1,7 @@
 # coding=utf-8
 from bs4 import BeautifulSoup
 from utils.cpacker import cPacker as Packer
+from utils.mozie_request import Request
 import re
 import json
 
@@ -41,14 +42,17 @@ class Parser:
             'links': [],
         }
 
-        sources = re.search(r'(eval\(function\(p,a,c,k,e,d\).*?)</script>', response)
+        sources = re.search(r'(eval\(function\(p,a,c,k,e,d\).*)', response)
         if sources:
             sources = sources.group(1)
             sources = Packer().unpack(sources)
-
             sources = re.search('sources:(.*?]),', sources)
+
             sources = re.sub(r'(?<={|,)([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', sources.group(1))
-            sources = json.loads(sources)
+            try:
+                sources = json.loads(sources)
+            except:
+                return movie
             score = {'sd': 1, 'hd': 2, '360p': 1, '480p': 2, '720p': 3, '1080p': 3}
             if len(sources) > 1:
                 try:
@@ -92,5 +96,18 @@ class Parser:
                 'originUrl': movie_url,
                 'resolve': False
             })
+
+        sources = re.search('<iframe.*src="(http.*?)" frameborder', response)
+        if sources:
+            source = sources.group(1)
+            movie['links'].append({
+                'link': source,
+                'title': 'Link Unknow',
+                'type': 'Unknow',
+                'originUrl': movie_url,
+                'resolve': False
+            })
+            # response = Request().get(sources.group(1))
+            # return self.get_link(response, movie_url)
 
         return movie
