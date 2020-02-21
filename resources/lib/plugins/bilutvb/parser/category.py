@@ -7,7 +7,9 @@ class Parser:
     def get(self, response):
 
         category = []
-        response = response.encode('latin-1')
+        try:
+            response = response.encode('latin-1')
+        except: pass
         soup = BeautifulSoup(response, "html.parser")
 
         for item in soup.select('div.navbar-collapse ul.navbar-nav > li')[1:-2]:
