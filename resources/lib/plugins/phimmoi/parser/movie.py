@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-from utils.mozie_request import Request
 from utils.aes import CryptoAES
 from utils.wisepacker import WisePacker
 from urllib import unquote
+from utils.mozie_request import Request, AsyncRequest
 import utils.xbmc_helper as helper
 import re
 import json
@@ -53,7 +53,7 @@ class Parser:
 
         return movie
 
-    def get_link(self, response, url):
+    def get_link(self, response, url, request):
         print("***********************Get Movie Link*****************************")
         movie = {
             'group': {},
@@ -71,30 +71,30 @@ class Parser:
         jsonresponse = re.search("_responseJson='(.*)';", response).group(1)
         jsonresponse = json.loads(jsonresponse.decode('utf-8'))
 
-        if jsonresponse['medias']:
-            media = sorted(jsonresponse['medias'], key=lambda elem: elem['resolution'], reverse=True)
-            for item in media:
-                url = CryptoAES().decrypt(item['url'], bytes(self.key.encode('utf-8')))
-                if not re.search('hls.phimmoi.net', url):
-                    movie['links'].append({
-                        'link': url,
-                        'title': 'Link %s' % item['resolution'],
-                        'type': item['resolution'],
-                        'resolve': False,
-                        'originUrl': self.originURL
-                    })
-                else:
-                    # hls.phimmoi.net
-                    movie['links'].append({
-                        'link': url,
-                        'title': 'Link hls',
-                        'type': 'hls',
-                        'resolve': False,
-                        'originUrl': self.originURL
-                    })
+        # if jsonresponse['medias']:
+        #     media = sorted(jsonresponse['medias'], key=lambda elem: elem['resolution'], reverse=True)
+        #     for item in media:
+        #         url = CryptoAES().decrypt(item['url'], bytes(self.key.encode('utf-8')))
+        #         if not re.search('hls.phimmoi.net', url):
+        #             movie['links'].append({
+        #                 'link': url,
+        #                 'title': 'Link %s' % item['resolution'],
+        #                 'type': item['resolution'],
+        #                 'resolve': False,
+        #                 'originUrl': self.originURL
+        #             })
+        #         else:
+        #             # hls.phimmoi.net
+        #             movie['links'].append({
+        #                 'link': url,
+        #                 'title': 'Link hls',
+        #                 'type': 'hls',
+        #                 'resolve': False,
+        #                 'originUrl': self.originURL
+        #             })
 
-        if jsonresponse['embedUrls']:
-            for item in jsonresponse['embedUrls']:
+        if jsonresponse.get('embedUrls'):
+            for item in jsonresponse.get('embedUrls'):
                 url = self.get_url(CryptoAES().decrypt(item, bytes(self.key.encode('utf-8'))))
                 if not re.search('hydrax', url):
                     movie['links'].append({
@@ -112,6 +112,16 @@ class Parser:
                         'resolve': False,
                         'originUrl': self.originURL
                     })
+
+        if jsonresponse['thirdParty']:
+            jobs = []
+            for item in jsonresponse['thirdParty']:
+                if 'hydrax.html' not in item.get('embed'):
+                    jobs.append({'url': item.get('embed'), 'headers': {
+                        "Referer": self.originURL
+                    }, 'parser': self.parse_thirdparty_link})
+
+            AsyncRequest(request=request).get(jobs, args=movie['links'])
 
         return movie
 
@@ -152,3 +162,29 @@ class Parser:
             return unquote(r.group(1))
 
         return url
+
+    def parse_thirdparty_link(self, response, movie_links):
+        source = re.search(r'var\sVIDEO_URL="(.*?)";', response)
+        if source:
+            movie_links.append({
+                    'link': source.group(1),
+                    'title': 'Link {}'.format('Third Party'),
+                    'type': 'hls',
+                    'resolve': False,
+                    'originUrl': self.originURL
+                })
+
+        sources = re.search(r'var\slistFile=(\[.*?\]);', response)
+        if sources:
+            sources = json.loads(sources.group(1))
+            for item in sources:
+                movie_links.append({
+                    'link': item.get('file'),
+                    'title': 'Link {}'.format(item.get('label')),
+                    'type': item.get('type'),
+                    'resolve': False,
+                    'originUrl': self.originURL
+                })
+
+
+

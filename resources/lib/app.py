@@ -112,7 +112,7 @@ SITES = [
         'logo': 'http://www.kenh88.com/images/logo_kenh88.png',
         'className': 'Kenh88',
         'plugin': 'kenh88.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'phim14.net',

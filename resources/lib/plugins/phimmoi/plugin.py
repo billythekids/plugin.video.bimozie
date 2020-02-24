@@ -46,7 +46,7 @@ class Phimmoi:
         url = movie['link'].replace(self.domain, '')
         url = "%s%s" % (self.domain, url)
         response = self.request.get(url, headers=h)
-        return Movie().get_link(response, url)
+        return Movie().get_link(response, url, self.request)
 
     def search(self, text):
         url = "%stim-kiem/%s/" % (self.domain, urllib.quote_plus(text))

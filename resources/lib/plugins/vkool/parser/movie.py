@@ -67,10 +67,9 @@ class Parser:
 
         for link in links:
             url = "%s/js/vkphp/plugins/gkpluginsphp.php" % domain
-            params = {
+            jobs.append({'url': url, 'params': {
                 'link': link
-            }
-            jobs.append({'url': url, 'params': params, 'parser': Parser.parse_link, 'responseHeader': True})
+            }, 'parser': Parser.parse_link, 'responseHeader': True})
 
         AsyncRequest(request=request).post(jobs, args=movie_links)
 
