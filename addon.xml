@@ -4,7 +4,7 @@
         <import addon="xbmc.python" version="2.25.0"/>
         <import addon="script.module.beautifulsoup4" version="4.3.1"/>
         <import addon="script.module.urlresolver" version="5.0.40"/>
-        <import addon="script.module.requests" version="2.7.0" />
+        <import addon="script.module.requests" version="2.7.0"/>
         <import addon="script.module.youtube.dl" version="18.1107.0"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
@@ -12,9 +12,19 @@
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary>Bimozie addon</summary>
-        <description>This plugin allows you to watch movies from several vietnamese websites vkool phimmoi phimmedia hdvietnam...
+        <description>This plugin allows you to watch movies from several vietnamese websites vkool phimmoi phimmedia
+            hdvietnam...
         </description>
         <disclaimer>The provider is not responsible for any issues caused by using this addon.
+            Due to the nature of our content, we are not responsible for the content streamed to your device and neither
+            do we condone piracy so you must satisfy yourself that either you or the sites accessed for streaming have
+            the copyright agreements in place and are entitled to access this content.
+            We do not host or upload any video, films, media file, live streams (avi, mov, flv, mpg, mpeg, divx, dvd
+            rip, mp3, mp4, torrent, ipod, psp). KodiTips is not responsible for the accuracy, compliance, copyright,
+            legality, decency, or any other aspect of the content of streamed from your device. If you have any legal
+            issues please contact the appropriate media file owners or host sites.
+            We have no control over the links on any site that we provide a link to. If you see any form of
+            infringements, please contact appropriate media file owners or host sites immediately.
         </disclaimer>
         <platform>all</platform>
         <email>billythekidsde@gmail.com</email>
