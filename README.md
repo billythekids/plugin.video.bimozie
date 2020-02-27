@@ -27,7 +27,9 @@ You can use both following methods
 
 - Go to SYSTEM –> File Manager
 - Add Source
+
     ![](https://i.ibb.co/3kMzfLJ/image.png)
+    
 - Here is where the URL for the repositories location is entered and it name. Be sure the URL is entered correctly
 
 ![Add repo source](https://www.wirelesshack.org/wp-content/uploads/2015/12/KODI-Repository-Enter-the-URL-and-Name.jpg)
