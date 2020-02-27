@@ -33,7 +33,7 @@ class Parser:
             if 'https://' not in img:
                 img = 'https://{}'.format(img)
 
-            movie_id = re.search("(\d+)\.html$", movie.select_one('a').get('href')).group(1)
+            movie_id = re.search("(\d+)\.html", movie.select_one('a').get('href')).group(1)
             channel['movies'].append({
                 'id': movie_id,
                 'label': label.encode("utf-8"),

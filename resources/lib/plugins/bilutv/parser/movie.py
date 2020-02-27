@@ -94,8 +94,10 @@ class Parser:
             if len(sources) > 0:
                 for s in sources:
                     source = Parser.parse_link(s['file'])
+                    print s
                     if source and source not in movie_links:
-                        movie_links.append((source, s['label'].encode('utf-8')))
+                        label = s.get('label') and s.get('label') or s.get('type')
+                        movie_links.append((source, label.encode('utf-8')))
 
         m = re.search('<iframe.*?src=".*?url=(http.*)" frameborder', response)
         if m is not None:

@@ -6,10 +6,11 @@ import urllib
 
 
 class Bilutv:
-    domain = "https://bilumoi.com"
+    domain = "https://bilutv.org"
 
     def getCategory(self):
-        response = Request().get(self.domain)
+        url = "%s/%s" % (self.domain, 'danh-sach/')
+        response = Request().get(url)
         return Category().get(response), None
 
     def getChannel(self, channel, page=1):
