@@ -461,7 +461,7 @@ def play(movie, title=None, thumb=None, direct=False):
     # update title
     try:
         play_item.setInfo('video', {
-            'title': ("[" + mediatype + "]" + title).encode('utf-8'),
+            'title': ("[" + mediatype + "] " + title).encode('utf-8'),
             'originaltitle': title
         })
     except:

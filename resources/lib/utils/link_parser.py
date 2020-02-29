@@ -72,8 +72,8 @@ class LinkParser:
         elif 'plb.animehay.tv' in self.url:
             return self.input_stream()
 
-        elif '90m.tv' in self.url:
-            return phut90.get_link(self.url, self.media), '90m.tv'
+        elif '90p.tv' in self.url:
+            return phut90.get_link(self.url, self.media), '90p.tv'
 
         elif 'lb.animehay.tv' in self.url:
             return animehay.get_link(self.url), 'animehay.tv'

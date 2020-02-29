@@ -31,7 +31,7 @@ class Parser:
                 datetime_object = time.mktime(datetime_object)
 
                 if now > datetime_object:
-                    type = "[COLOR blue]Đang diễn ra[/COLOR]"
+                    type = "[COLOR blue]Đang diễn ra[/COLOR] {}".format(type)
 
             label = "[{}] {}".format(type, title)
             channel['movies'].append({

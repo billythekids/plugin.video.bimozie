@@ -49,8 +49,6 @@ class Parser:
             'links': [],
         }
 
-        print originUrl
-
         sources = re.search(r'sources:\s?(.*?)\n', response)
         if sources:
             sources = json.loads(sources.group(1).replace('}],', '}]'))
@@ -69,7 +67,6 @@ class Parser:
                         'resolve': False,
                         'originUrl': originUrl
                     })
-
             return movie
 
         return movie
