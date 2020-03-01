@@ -12,7 +12,7 @@ class Parser:
             'links': [],
         }
 
-        data = re.search(r'__NUXT__=(.*);', response)
+        data = re.search(r'__NUXT__=(.*?);</script>', response)
         if not data:
             return movie
 

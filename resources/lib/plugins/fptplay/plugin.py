@@ -48,22 +48,22 @@ class Fptplay:
     def getChannel(self, channel, page=1):
         # https://api.fptplay.net/api/v6.1_w/vod?structure_id=55701c1517dc1321ee85857a&per_page=24&page=2
 
-        if page > 1:
-            token, timestamp = fpt.generate_stoken('vod')
-            url = '%s%svod' % (fpt.domain, fpt.suffix)
-            response = self.request.get(url, params={
-                'st': token,
-                'e': timestamp,
-                'structure_id': channel,
-                'per_page': 24,
-                'page': page
-            })
+        # if page > 1:
+        token, timestamp = fpt.generate_stoken('vod')
+        url = '%s%svod' % (fpt.domain, fpt.suffix)
+        response = self.request.get(url, params={
+            'st': token,
+            'e': timestamp,
+            'structure_id': channel,
+            'per_page': 24,
+            'page': page
+        })
 
-            return Channel().get_page_ajax(response, page=page, domain=self.domain)
-        else:
-            url = '%s/danh-muc/aaa/%s' % (self.domain, channel)
-            response = self.request.get(url)
-            return Channel().get(response, page=1, domain=self.domain)
+        return Channel().get_page_ajax(response, page=page, domain=self.domain)
+        # else:
+        #     url = '%s/danh-muc/aaa/%s' % (self.domain, channel)
+        #     response = self.request.get(url)
+        #     return Channel().get(response, page=1, domain=self.domain)
 
     def getMovie(self, id):
         url = '%s/xem-video/aaa-%s' % (self.domain, id)

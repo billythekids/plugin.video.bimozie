@@ -29,6 +29,7 @@ from .hosts import fshare, \
     mixdrop, \
     manga123, \
     googlevideo, \
+    iframeembed, \
     verystream
 
 
@@ -56,6 +57,9 @@ class LinkParser:
                 or 'animehay.tv' in self.url \
                 or 'beverly-downing' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
+
+        elif 'phimnhe.net/player/yotube.php' in self.url:
+            return iframeembed.get_link(self.url, self.media)
 
         elif 'googlevideo.com' in self.url:
             return googlevideo.get_link(self.url, self.media)

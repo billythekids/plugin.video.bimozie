@@ -1,13 +1,18 @@
-import re, json, base64
+import re, json, base64, xbmcgui
 from urlparse import urlparse
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
 from urllib import urlencode
+import iframeembed
 
 
 def get_link(url, movie):
     base_url = urlparse(url)
     base_url = base_url.scheme + '://' + base_url.netloc
+    request = Request()
+
+    if 'embedplay' in url:
+        return iframeembed.get_link(url, movie)
 
     if url.endswith('m3u8'):
         header = {
@@ -38,7 +43,6 @@ def get_link(url, movie):
         pass
 
     # method 2
-    request = Request()
     request.get(url)
 
     location = request.get_request().history[0].headers['Location']

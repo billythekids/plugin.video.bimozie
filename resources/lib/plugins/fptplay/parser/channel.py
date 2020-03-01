@@ -29,7 +29,7 @@ class Parser:
         #
         #     channel['movies'].append(movie)
 
-        data = re.search(r'__NUXT__=(.*);', response)
+        data = re.search(r'__NUXT__=(.*?);</script>', response)
         if not data:
             return channel
 

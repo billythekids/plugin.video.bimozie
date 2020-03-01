@@ -262,13 +262,13 @@ def list_movie(movies, link, page, module, classname):
                     list_item.setArt({'poster': item['poster']})
                 if 'intro' in item:
                     list_item.setInfo(type='video', infoLabels={'plot': item['intro']})
-                url = build_url(
-                    {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'],
-                     'title': item['realtitle'] and item['realtitle'] or item['title'],
-                     'module': module, 'className': classname})
-
+                url = build_url({
+                    'mode': 'movie', 'module': module, 'className': classname,
+                    'movie_item': json.dumps(item)
+                })
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, isFolder=True)
-            except:
+            except Exception as inst:
+                print("*********************** List Movie Exception: {}".format(inst))
                 print(item)
 
         print("***********************Current page %d" % page)
@@ -286,7 +286,10 @@ def list_movie(movies, link, page, module, classname):
     xbmcplugin.endOfDirectory(HANDLE)
 
 
-def show_episode(movie, thumb, title, module, class_name):
+def show_episode(movie, movie_item, module, class_name):
+    thumb = movie_item.get('thumb').encode('utf8')
+    title = movie_item.get('realtitle').encode('utf8') or movie_item.get('title').encode('utf8')
+
     if len(movie['episode']) > 0:  # should not in use anymore
         for item in movie['episode']:
             li = xbmcgui.ListItem(label=item['title'])
@@ -294,9 +297,8 @@ def show_episode(movie, thumb, title, module, class_name):
             li.setProperty('fanart_image', thumb)
             li.setArt({'thumb': thumb})
             url = build_url({'mode': 'play',
-                             'title': title,
-                             'thumb': thumb,
                              'url': json.dumps(item),
+                             'movie_item': json.dumps(movie_item),
                              'direct': 0,
                              'module': module,
                              'className': class_name})
@@ -311,16 +313,15 @@ def show_episode(movie, thumb, title, module, class_name):
             sli = xbmcgui.ListItem(label=label)
             if len(items) < 5 or len(movie['group']) < 1:
                 xbmcplugin.addDirectoryItem(HANDLE, None, sli, isFolder=False)
-                _build_ep_list(items, title, thumb, module, class_name)
+                _build_ep_list(items, movie_item, module, class_name)
             elif idx is len(movie['group']):
                 xbmcplugin.addDirectoryItem(HANDLE, None, sli, isFolder=False)
-                _build_ep_list(items, title, thumb, module, class_name)
+                _build_ep_list(items, movie_item, module, class_name)
             else:
                 url = build_url({'mode': 'server',
-                                 'title': title,
                                  'server': key,
-                                 'thumb': thumb,
                                  'items': json.dumps(items),
+                                 'movie_item': json.dumps(movie_item),
                                  'module': module,
                                  'className': class_name})
                 xbmcplugin.addDirectoryItem(HANDLE, url, sli, isFolder=True)
@@ -332,22 +333,20 @@ def show_episode(movie, thumb, title, module, class_name):
     xbmcplugin.endOfDirectory(HANDLE)
 
 
-def _build_ep_list(items, title, thumb, module, class_name):
+def _build_ep_list(items, movie_item, module, class_name):
+    thumb = movie_item.get('thumb').encode('utf8')
+    title = movie_item.get('realtitle').encode('utf8')
+
     for item in items:
         li = xbmcgui.ListItem(label=item['title'])
         li.setInfo('video', {'title': item['title']})
         li.setProperty('fanart_image', thumb)
         li.setArt({'thumb': thumb})
-        movie_title = title
-        # try:
-        #     movie_title = "[%s] %s" % (item['title'], title)
-        # except:
-        #     pass
-
+        li.setInfo(type='video', infoLabels={'plot': movie_item.get('intro')})
+        li.setLabel2(title)
         url = build_url({'mode': 'play',
-                         'title': movie_title,
-                         'thumb': thumb,
                          'url': json.dumps(item),
+                         'movie_item': json.dumps(movie_item),
                          'direct': 0,
                          'module': module,
                          'className': class_name})
@@ -355,22 +354,25 @@ def _build_ep_list(items, title, thumb, module, class_name):
         xbmcplugin.addDirectoryItem(HANDLE, url, li, isFolder=False)
 
 
-def show_server_links(items, title, thumb, server, module, class_name):
-    xbmcplugin.setPluginCategory(HANDLE, "%s - %s " % (title, server))
+def show_server_links(items, movie_item, server, module, class_name):
+    xbmcplugin.setPluginCategory(HANDLE, "%s - %s " % (movie_item.get('title'), server))
     xbmcplugin.setContent(HANDLE, 'videos')
 
     label = "[COLOR red][B][---- %s : [COLOR yellow]%d eps[/COLOR] ----][/B][/COLOR]" % (server, len(items))
     sli = xbmcgui.ListItem(label=label)
     xbmcplugin.addDirectoryItem(HANDLE, None, sli, isFolder=False)
-    _build_ep_list(items, title, thumb, module, class_name)
+    _build_ep_list(items, movie_item, module, class_name)
     xbmcplugin.endOfDirectory(HANDLE)
 
 
-def show_links(movie, title, thumb, module, class_name):
+def show_links(movie, movie_item, module, class_name):
     if len(movie['links']) == 0:
         return
 
     print("***********************Found Total Link {}".format(len(movie['links'])))
+    thumb = movie_item.get('thumb').encode('utf8')
+    title = movie_item.get('realtitle').encode('utf8')
+
     xbmcplugin.setPluginCategory(HANDLE, title)
     xbmcplugin.setContent(HANDLE, 'movies')
     for item in movie['links']:
@@ -380,19 +382,20 @@ def show_links(movie, title, thumb, module, class_name):
         li.setArt({'thumb': thumb})
 
         url = build_url({'mode': 'play',
-                         'title': title,
-                         'thumb': thumb,
                          'url': json.dumps(item),
+                         'movie_item': json.dumps(movie_item),
                          'direct': 1,
                          'module': module,
                          'className': class_name})
         li.setProperty("IsPlayable", "true")
         xbmcplugin.addDirectoryItem(HANDLE, url, li, False)
-
     xbmcplugin.endOfDirectory(HANDLE)
 
 
-def play(movie, title=None, thumb=None, direct=False):
+def play(movie, movie_item, direct=False):
+    thumb = movie_item.get('thumb').encode('utf8')
+    title = movie_item.get('realtitle').encode('utf8')
+
     print("*********************** playing {}".format(title))
     play_item = xbmcgui.ListItem()
     if direct:
@@ -447,7 +450,7 @@ def play(movie, title=None, thumb=None, direct=False):
         else:
             play_item.setSubtitles([movie['subtitle']])
 
-    if mediatype == 'hls':
+    if mediatype == 'inputstream':
         play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
         play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
         link = movie['link'].split('|')
@@ -461,8 +464,9 @@ def play(movie, title=None, thumb=None, direct=False):
     # update title
     try:
         play_item.setInfo('video', {
-            'title': ("[" + mediatype + "] " + title).encode('utf-8'),
-            'originaltitle': title
+            'title': ("[" + mediatype + "] " + movie_item.get('title')).encode('utf-8'),
+            'originaltitle': movie_item.get('realtitle'),
+            'plot': movie_item.get('intro')
         })
     except:
         print(movie['title'], title)
@@ -602,11 +606,15 @@ def do_global_search(text):
     def _search(site, text, progress):
         try:
             plugin, module, classname = get_plugin({'className': [site['className']], "module": [site['plugin']]})
-            progress['dialog'].update(progress['percent'], 'Searching %d/%d sites' % (progress['counter'], progress['length']), "", "Looking on: %s" % classname)
+            progress['dialog'].update(progress['percent'],
+                                      'Searching %d/%d sites' % (progress['counter'], progress['length']), "",
+                                      "Looking on: %s" % classname)
             progress['results'].append((module, classname, plugin().search(text)))
             progress['percent'] += progress['step']
             progress['counter'] += 1
-            progress['dialog'].update(progress['percent'], 'Searching %d/%d sites' % (progress['counter'], progress['length']), "", "Looking on: %s" % classname)
+            progress['dialog'].update(progress['percent'],
+                                      'Searching %d/%d sites' % (progress['counter'], progress['length']), "",
+                                      "Looking on: %s" % classname)
         except:
             pass
 
@@ -687,22 +695,20 @@ def router():
         list_movie(movies, link, page, module, classname)
 
     elif mode[0] == 'movie':
-        id = ARGS.get('url')[0]
-        thumb = ARGS.get('thumb')[0]
-        title = ARGS.get('title')[0]
-        movie = instance().getMovie(id)
-        print("*********************** Display movie {} {}".format(title, id))
+        # id = ARGS.get('url')[0]
+        movie_item = json.loads(ARGS.get('movie_item')[0])
+        movie = instance().getMovie(movie_item.get('id'))
+        # print("*********************** Display movie {} {}".format(movie_item.get('title'), movie_item.get('id')))
         if len(movie['episode']) > 0 or len(movie['group']) > 0:
-            show_episode(movie, thumb, title, module, classname)
+            show_episode(movie, movie_item, module, classname)
         else:
-            show_links(movie, title, thumb, module, classname)
+            show_links(movie, movie_item, module, classname)
 
     elif mode[0] == 'server':
-        thumb = ARGS.get('thumb')[0]
-        title = ARGS.get('title')[0]
         server = ARGS.get('server')[0]
         items = json.loads(ARGS.get('items')[0])
-        show_server_links(items, title, thumb, server, module, classname)
+        movie_item = json.loads(ARGS.get('movie_item')[0])
+        show_server_links(items, movie_item, server, module, classname)
 
     elif mode[0] == 'links':
         url = ARGS.get('url')[0]
@@ -715,14 +721,13 @@ def router():
     elif mode[0] == 'play':
         print("*********************** Play movie")
         url = ARGS.get('url')[0]
-        title = ARGS.get('title')[0]
-        thumb = ARGS.get('thumb')[0]
         direct = int(ARGS.get('direct')[0])
+        movie_item = json.loads(ARGS.get('movie_item')[0])
         if direct is 0:
             movie = instance().getLink(json.loads(url))
         else:
             movie = json.loads(url)
-        play(movie, title, thumb, direct)
+        play(movie, movie_item, direct)
 
     elif mode[0] == 'search':
         search(module, classname)
