@@ -31,6 +31,7 @@ from .hosts import fshare, \
     googlevideo, \
     iframeembed, \
     fantvh, \
+    vanlongstreaming, \
     verystream
 
 
@@ -44,6 +45,9 @@ class LinkParser:
         if re.search('ok.ru', self.url):
             # return self.get_link_resolveurl()
             return ok.get_link(self.url)
+
+        elif 'vtvhub.com/public/dist' in self.url:
+            return vanlongstreaming.get_link(self.url, self.media)
 
         elif 'vhstream.xyz' in self.url \
                 or 'vtvhub.com' in self.url \

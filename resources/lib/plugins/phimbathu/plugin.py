@@ -10,7 +10,7 @@ class Phimbathu:
 
     def getCategory(self):
         response = Request().get(self.domain)
-        return Category().get(response), None
+        return Category().get(response), Channel().get(response)
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
@@ -33,7 +33,7 @@ class Phimbathu:
 
     def getLink(self, movie):
         response = Request().get(movie['link'])
-        return Movie().get_link(response, self.domain)
+        return Movie().get_link(response, self.domain, movie['link'])
 
     def search(self, text, page=1):
         url = "%s/tim-kiem/%s.html" % (self.domain, urllib.quote_plus(text))

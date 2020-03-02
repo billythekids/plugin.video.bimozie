@@ -41,7 +41,7 @@ class Parser:
                 'title': "Tập %s" % episode.text.encode('utf-8')
             })
 
-    def get_link(self, response, domain):
+    def get_link(self, response, domain, originUrl):
         movie = {
             'group': {},
             'episode': [],
@@ -77,7 +77,8 @@ class Parser:
                 'link': link[0],
                 'title': 'Link %s' % link[1],
                 'type': link[1],
-                'resolve': False
+                'resolve': False,
+                'originUrl': originUrl
             })
 
         return movie
