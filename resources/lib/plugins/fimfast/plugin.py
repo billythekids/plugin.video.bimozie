@@ -15,7 +15,7 @@ class Fimfast:
 
     def getCategory(self):
         response = self.request.get(self.domain)
-        return Category().get(response), None
+        return Category().get(response), Channel().get(response, 1)
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, '')

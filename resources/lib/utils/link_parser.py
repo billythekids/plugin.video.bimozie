@@ -30,6 +30,7 @@ from .hosts import fshare, \
     manga123, \
     googlevideo, \
     iframeembed, \
+    fantvh, \
     verystream
 
 
@@ -63,6 +64,9 @@ class LinkParser:
 
         elif 'googlevideo.com' in self.url:
             return googlevideo.get_link(self.url, self.media)
+
+        elif 'fantvh.net' in self.url:
+            return fantvh.get_link(self.url, self.media)
 
         elif re.search('manga123.net', self.url):
             return manga123.get_link(self.url, self.media)

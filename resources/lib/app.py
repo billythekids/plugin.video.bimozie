@@ -370,7 +370,7 @@ def show_links(movie, movie_item, module, class_name):
         return
 
     print("***********************Found Total Link {}".format(len(movie['links'])))
-    thumb = movie_item.get('thumb').encode('utf8')
+    thumb = movie_item.get('thumb')
     title = movie_item.get('realtitle').encode('utf8')
 
     xbmcplugin.setPluginCategory(HANDLE, title)
@@ -393,7 +393,7 @@ def show_links(movie, movie_item, module, class_name):
 
 
 def play(movie, movie_item, direct=False):
-    thumb = movie_item.get('thumb').encode('utf8')
+    thumb = movie_item.get('thumb')
     title = movie_item.get('realtitle').encode('utf8')
 
     print("*********************** playing {}".format(title))
@@ -507,7 +507,8 @@ def dosearch(plugin, module, classname, text, page=1, recall=False):
                     'thumb': item['thumb'],
                 })
                 url = build_url(
-                    {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
+                    {'mode': 'movie',
+                     'movie_item': json.dumps(item),
                      'module': module, 'className': classname})
                 is_folder = True
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
@@ -654,7 +655,8 @@ def do_global_search(text):
                     'thumb': item['thumb'],
                 })
                 url = build_url(
-                    {'mode': 'movie', 'url': item['id'], 'thumb': item['thumb'], 'title': item['title'],
+                    {'mode': 'movie',
+                     'movie_item': json.dumps(item),
                      'module': module, 'className': classname})
                 is_folder = True
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)

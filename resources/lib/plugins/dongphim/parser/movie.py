@@ -17,48 +17,9 @@ class Parser:
             'links': [],
         }
 
-        # get all server list
-        mid = None
-        try:
-            mid = re.search(r'drt:direction,mid:"(.*)",idx:idx,', response).group(1)
-        except: pass
-        if not mid:
-            mid = re.search(r'mid:\s?"(.*?)",', response).group(1)
-
-
-        list_eps = re.search(r'div class="movie-eps-nav" data-min="(\d+)" data-max="(\d+)"', response)
-        # http://dongphim.net/content/subitems?drt=down&mid=8ghRyAh1&idx=400
-        request = Request()
-        idx = int(list_eps.group(1))
-        eps = ""
-        while True:
-            if idx < 11:
-                break
-            else:
-                url = "http://dongphim.net/content/subitems?drt=down&mid=%s&idx=%s" % (mid, idx)
-                data = json.loads(request.get(url))
-                eps += data['data']
-                idx = data['idx']
-
-        eps = eps.replace('\t\n\t', '')
-        eps = eps.replace('\n\t\t', '')
-        eps = eps.replace('\\\"', '"')
-        eps = eps.replace('\n\t', '')
-        eps = eps.replace('\t', '')
-
-        soup = BeautifulSoup(eps, "html.parser")
-        movie['group']['Dongphim'] = []
-        eps = soup.select('a.movie-eps-item')
-        for i in reversed(range(len(eps))):
-            ep = eps[i]
-            if 'disabled' in ep.get('class'): continue
-            movie['group']['Dongphim'].append({
-                'link': ep.get('href').encode('utf-8'),
-                'title': ep.get('title').encode('utf-8'),
-            })
-
         soup = BeautifulSoup(response, "html.parser")
-        eps = soup.select('a.movie-eps-item')
+        movie['group']['Dongphim'] = []
+        eps = soup.select('div.movie-eps-wrapper > a.movie-eps-item')
         for i in reversed(range(len(eps))):
             ep = eps[i]
             if 'disabled' in ep.get('class'): continue
@@ -83,13 +44,13 @@ class Parser:
 
         if sources:
             source = json.loads(sources.group(1))[0]
-            print source
             params = {
                 'v': 2,
                 'url': source['url'],
                 'bk_url': source['burl'],
                 'pr_url': source['purl'],
-                'ex_hls[]': source.get('exhls'),
+                'if_url[]': source.get('iurl'),
+                'do_url[]': source.get('durl'),
                 'prefer': prefers[0],
                 'ts': 1556547428839,
                 'item_id': item_id,
@@ -99,22 +60,27 @@ class Parser:
             response = Request().get('http://dongphim.net/content/parseUrl', params=params)
             response = json.loads(response)
 
-            if not response['hls']:
+            if response['hls']:
                 self.get_media_url(response, movie['links'])
 
             params_alt = {
                 'v': 2,
+                'len': 1,
                 'url': source['url'],
                 'bk_url': source['burl'],
                 'pr_url': source['purl'],
-                'ex_hls[]': source.get('exhls'),
+                'if_url[]': source.get('iurl'),
+                'do_url[]': source.get('durl'),
                 'prefer': prefers[0],
                 'ts': 1556547428839,
                 'item_id': item_id,
                 'username': username,
                 'err[pr][ended]': 'true',
+                'err[do][ended]': 'true',
+                'err[hdx][ended]': 'true',
                 'err[eh][num]': 1,
-                'err[eh][dr][]': 'https://ok.ru',
+                # 'err[eh][dr][]': 'https://ok.ru',
+                'err[gbak][dr][]': 'https://sgp.dgo.dongphim.net'
             }
 
             response = json.loads(Request().get('http://dongphim.net/content/parseUrl', params=params_alt))

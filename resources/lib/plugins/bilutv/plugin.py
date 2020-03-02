@@ -11,7 +11,7 @@ class Bilutv:
     def getCategory(self):
         url = "%s/%s" % (self.domain, 'danh-sach/')
         response = Request().get(url)
-        return Category().get(response), None
+        return Category().get(response), Channel().get(response)
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")

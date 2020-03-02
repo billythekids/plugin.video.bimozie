@@ -30,7 +30,7 @@ class Tvhay:
             'Referer': 'http://tvhay.org/',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
         })
-        return Category().get(response), None
+        return Category().get(response), Channel().get(response, 1)
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
@@ -62,7 +62,7 @@ class Tvhay:
             'Referer': 'http://tvhay.org/',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
         })
-        return Movie().get_link(response)
+        return Movie().get_link(response, movie['link'])
 
     def search(self, text):
         url = "%ssearch/%s" % (self.domain, urllib.quote_plus(text))

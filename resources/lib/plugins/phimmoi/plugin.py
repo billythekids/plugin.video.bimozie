@@ -26,7 +26,7 @@ class Phimmoi:
 
     def getCategory(self):
         response = self.request.get(self.domain)
-        return Category().get(response), None
+        return Category().get(response), Channel().getTop(response)
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")

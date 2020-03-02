@@ -43,7 +43,7 @@ def get_link(url):
     listitems = []
     for i in items:
         listitems.append("%s (%s)" % (i[1], i[0]))
-    index = xbmcgui.Dialog().select("Select stream", listitems)
+    index = xbmcgui.Dialog().select("Select ok.ru stream", listitems)
     if index == -1:
         return None, None
     else:

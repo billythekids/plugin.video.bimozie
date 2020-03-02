@@ -30,6 +30,8 @@ class Parser:
 
             if movie.select_one('div.status > span.status_r'):
                 type = movie.select_one('div.status > span.status_r').text.strip()
+            else:
+                type = movie.select_one('div.status').text.strip()
 
             if movie.select_one('span.process > span.process_r'):
                 type = '%s - %s' % (type, movie.select_one('span.process > span.process_r').text.strip())
