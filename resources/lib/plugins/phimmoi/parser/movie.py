@@ -93,35 +93,37 @@ class Parser:
         #                 'originUrl': self.originURL
         #             })
 
-        if jsonresponse.get('embedUrls'):
-            for item in jsonresponse.get('embedUrls'):
-                url = self.get_url(CryptoAES().decrypt(item, bytes(self.key.encode('utf-8'))))
-                if not re.search('hydrax', url):
-                    movie['links'].append({
-                        'link': url,
-                        'title': 'Link Unknow',
-                        'type': 'mp4',
-                        'resolve': False,
-                        'originUrl': self.originURL
-                    })
-                else:
-                    movie['links'].append({
-                        'link': url,
-                        'title': 'Link hydrax',
-                        'type': 'hls',
-                        'resolve': False,
-                        'originUrl': self.originURL
-                    })
+        # if jsonresponse.get('embedUrls'):
+        #     for item in jsonresponse.get('embedUrls'):
+        #         url = self.get_url(CryptoAES().decrypt(item, bytes(self.key.encode('utf-8'))))
+        #         if not re.search('hydrax', url):
+        #             movie['links'].append({
+        #                 'link': url,
+        #                 'title': 'Link Unknow',
+        #                 'type': 'mp4',
+        #                 'resolve': False,
+        #                 'originUrl': self.originURL
+        #             })
+        #         else:
+        #             movie['links'].append({
+        #                 'link': url,
+        #                 'title': 'Link hydrax',
+        #                 'type': 'hls',
+        #                 'resolve': False,
+        #                 'originUrl': self.originURL
+        #             })
 
         if jsonresponse['thirdParty']:
             jobs = []
             for item in jsonresponse['thirdParty']:
                 if 'hydrax.html' not in item.get('embed'):
-                    jobs.append({'url': item.get('embed'), 'headers': {
-                        "Referer": self.originURL
-                    }, 'parser': self.parse_thirdparty_link})
-
-            AsyncRequest(request=request).get(jobs, args=movie['links'])
+                    movie['links'].append({
+                        'link': item.get('embed'),
+                        'title': 'Link {}'.format(item.get('label', 'HD')),
+                        'type': item.get('type'),
+                        'resolve': False,
+                        'originUrl': self.originURL
+                    })
 
         return movie
 
@@ -150,7 +152,6 @@ class Parser:
             return re.search("setDecryptKey\('(.*)'\);watching", a).group(1)
         except:
             helper.message(response, "Phimmoi", 15000)
-
 
     def get_token_url(self, response):
         a = WisePacker.decode(response)
@@ -186,5 +187,14 @@ class Parser:
                     'originUrl': self.originURL
                 })
 
+        source = re.search(r'var\sVIDEO_URL=swapServer\("(.*)"\);', response)
+        if source:
+            movie_links.append({
+                    'link': source.group(1),
+                    'title': 'Link {}'.format('Third Party'),
+                    'type': 'hls',
+                    'resolve': False,
+                    'originUrl': self.originURL
+                })
 
 

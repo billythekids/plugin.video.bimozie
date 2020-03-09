@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re, json
 from utils.mozie_request import Request
 import utils.xbmc_helper as helper

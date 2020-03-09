@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 import requests
 import utils.xbmc_helper as helper

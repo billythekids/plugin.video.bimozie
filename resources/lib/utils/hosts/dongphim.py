@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import re
 from urlparse import urlparse
 from utils.mozie_request import Request, AsyncRequest

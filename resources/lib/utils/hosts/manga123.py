@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re, json, base64
 from urlparse import urlparse
 from utils.mozie_request import Request, AsyncRequest

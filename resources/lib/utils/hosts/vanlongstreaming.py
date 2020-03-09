@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 import json
 from urlparse import urlparse, parse_qs

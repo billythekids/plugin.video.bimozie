@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 from urlparse import urlparse, parse_qs
 from urllib import urlencode

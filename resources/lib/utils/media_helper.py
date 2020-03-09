@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from utils.link_parser import LinkParser
 import utils.xbmc_helper as helper
 import re

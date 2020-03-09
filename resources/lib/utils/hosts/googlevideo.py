@@ -1,9 +1,4 @@
-import re
-from urlparse import urlparse
-from utils.mozie_request import Request
-from urllib import urlencode
-import cors
-
+# -*- coding: utf-8 -*-
 
 def get_link(url, media):
     return str(url), 'Google Video'

@@ -355,7 +355,8 @@ def _build_ep_list(items, movie_item, module, class_name):
 
 
 def show_server_links(items, movie_item, server, module, class_name):
-    xbmcplugin.setPluginCategory(HANDLE, "%s - %s " % (movie_item.get('title'), server))
+    title = movie_item.get('title').encode('utf8')
+    xbmcplugin.setPluginCategory(HANDLE, "%s - %s " % (title, server))
     xbmcplugin.setContent(HANDLE, 'videos')
 
     label = "[COLOR red][B][---- %s : [COLOR yellow]%d eps[/COLOR] ----][/B][/COLOR]" % (server, len(items))

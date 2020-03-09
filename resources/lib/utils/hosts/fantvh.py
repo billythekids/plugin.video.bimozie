@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import json
 from utils.mozie_request import Request
 from urlparse import urlparse

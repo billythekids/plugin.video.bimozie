@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import xbmcaddon
 import base64
 from urllib import urlencode

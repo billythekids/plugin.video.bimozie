@@ -6,6 +6,8 @@ from urllib import urlencode
 from .hosts import fshare, \
     imacdn, \
     phimmoi, \
+    gpt2_phimmoi, \
+    pzc_phimmoi, \
     hydrax, \
     fptplay, \
     ok, \
@@ -60,7 +62,8 @@ class LinkParser:
         elif 'fimfast.com' in self.url \
                 or 'phimngay.com' in self.url \
                 or 'animehay.tv' in self.url \
-                or 'beverly-downing' in self.url:
+                or 'beverly-downing' in self.url \
+                or 'googleapicdn.com' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
 
         elif 'phimnhe.net/player/yotube.php' in self.url:
@@ -148,6 +151,16 @@ class LinkParser:
                 or re.search('116.203.139.97', self.url) \
                 or re.search('tstream.xyz', self.url):
             return self.get_referer_link()
+
+        elif 'pzc.phimmoi.net' in self.url:
+            return pzc_phimmoi.get_link(self.url, self.media)
+
+        elif 'gpt.phimmoi.net' in self.url:
+            helper.message('Phimmoi gpt.phimmoi.net link parsing', 'Get Link')
+            return pzc_phimmoi.get_link(self.url, self.media)
+
+        elif 'gpt2.phimmoi.net' in self.url:
+            return gpt2_phimmoi.get_link(self.url, self.media)
 
         elif re.search('hls.phimmoi.[net|link]', self.url):
             helper.message('Phimmoi hls link parsing', 'Get Link')

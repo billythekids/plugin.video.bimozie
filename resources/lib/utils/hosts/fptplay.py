@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re, urllib
 from utils.mozie_request import Request
 from utils.pastebin import PasteBin
