@@ -5,7 +5,6 @@ import re
 import json
 from urlparse import urlparse
 from utils.mozie_request import Request
-from utils.mozie_request import AsyncRequest
 
 
 class Parser:
@@ -51,7 +50,7 @@ class Parser:
         # get all movie links
         soup = BeautifulSoup(response, "html.parser")
         servers = soup.select('div.list-server > div.server-item > div.option > span')
-        movie_id = re.search("MovieID\s?=\s?'(.*?)';", response).group(1)
+        movie_id = re.search("MovieID\s?=\s?'(.*?)'", response).group(1)
 
         ep_id = soup.select_one('ul.list-episode > li > a.current')
         if ep_id:
