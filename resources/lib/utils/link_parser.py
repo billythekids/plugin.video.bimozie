@@ -52,6 +52,7 @@ class LinkParser:
             return vanlongstreaming.get_link(self.url, self.media)
 
         elif 'vhstream.xyz' in self.url \
+                or 'vdicdn.com' in self.url \
                 or 'vtvhub.com' in self.url \
                 or 'vkooltv.com' in self.url \
                 or 'vn.phimmoicdn.net' in self.url \

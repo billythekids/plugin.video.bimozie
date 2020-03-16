@@ -55,7 +55,7 @@ class Fimfast:
         movieurl = '%s%s' % (self.domain, movie['link'])
         response = self.request.get(movieurl)
         fid, epid = Movie().get_movie_id(response)
-        url = '%s/films/%s/episodes/%s' % (self.api, fid, epid)
+        url = '%s/films/%s/episodes/%s/true' % (self.api, fid, epid)
 
         response = self.request.get(url, headers={
             'referer': movieurl,

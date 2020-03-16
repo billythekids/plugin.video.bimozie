@@ -47,8 +47,8 @@ class Parser:
 
         videos = videos['sources']
         for videotype in videos:
-            if videos[videotype] and ('hff' in videotype or 'htt' in videotype):
-                url = self.encodeString(videos['hff'], 69)
+            if videos[videotype] and ('hls' in videotype or 'htt' in videotype or 'hff' in videotype):
+                url = self.encodeString(videos[videotype], 69)
                 movie['links'].append({
                     'link': url,
                     'title': 'Link {}'.format(videotype),
