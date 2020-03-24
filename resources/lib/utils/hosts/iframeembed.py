@@ -16,11 +16,20 @@ def get_link(url, media):
         }
 
     resp = request.get(url, headers=header)
-
-    print resp
-    sources = re.search(r'sources\s?[=:]\s?(\[.*?\])', resp)
-    if sources:
+    req = request.get_request()
+    if req.history:
+        r_url = req.url
+        rurl = urlparse(r_url)
+        rurl = rurl.scheme + '://' + rurl.netloc
+        rid = re.search(r'id=(.*)', r_url).group(1)
+        rurl = "{}/getLinkStreamMd5/{}".format(rurl, rid)
+        sources = request.get(rurl, headers=header)
+        sources = json.loads(sources)
+    else:
+        sources = re.search(r'sources\s?[=:]\s?(\[.*?\])', resp)
         sources = json.loads(sources.group(1))
+
+    if sources:
         if len(sources) > 1:
             listitems = []
             for i in sources:

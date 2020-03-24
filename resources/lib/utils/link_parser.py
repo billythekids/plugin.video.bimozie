@@ -67,7 +67,8 @@ class LinkParser:
                 or 'googleapicdn.com' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
 
-        elif 'phimnhe.net/player/yotube.php' in self.url:
+        elif 'phimnhe.net/player/yotube.php' in self.url \
+                or 'phimgi.tv/player/yotube.php' in self.url:
             return iframeembed.get_link(self.url, self.media)
 
         elif 'googlevideo.com' in self.url:
@@ -78,6 +79,9 @@ class LinkParser:
 
         elif re.search('manga123.net', self.url):
             return manga123.get_link(self.url, self.media)
+
+        elif re.search('mixdrop.co', self.url):
+            return self.get_link_resolveurl()
 
         elif re.search('mixdrop.co', self.url):
             return mixdrop.get_link(self.url, self.media), 'mixdrop.co'

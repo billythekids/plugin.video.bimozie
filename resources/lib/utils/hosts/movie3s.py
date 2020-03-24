@@ -62,24 +62,3 @@ def get_link(url, movie):
         return create_stream(medias['720p'], base_url)
 
     return url, base_url
-
-
-def create_stream(stream, base_url):
-    txt = "#EXTM3U\n#EXT-X-VERSION:5\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-TARGETDURATION:" + str(
-        stream['td']) + "\n#EXT-X-MEDIA-SEQUENCE:0\n"
-
-    for i in range(len(stream['data'][0])):
-        extif = stream['data'][0][i]
-        byterange = stream['data'][1][i]
-        chunk = stream['data'][2][i]
-        txt += "#EXTINF:%s,\n" % extif
-        txt += "#EXT-X-BYTERANGE:%s\n" % byterange
-        l, s = byterange.split('@')
-        # /drive/hls/8ee495cd1565893812e9b5708ed50d03/8ee495cd1565893812e9b5708ed50d030.html?ch=8ee495cd1565893812e9b5708ed50d03-chunk-0.txt&s=18&l=2431404
-        txt += "%s/drive/hls/%s/%s.html?ch=%s-chunk-%s.txt&s=%s&l=%s\n" % \
-               (base_url, stream['md5'], stream['md5'], stream['md5'], chunk, s, l)
-
-    txt += "#EXT-X-ENDLIST"
-
-    url = PasteBin().dpaste(txt, name='movie3s', expire=60)
-    return url, 'hls5'

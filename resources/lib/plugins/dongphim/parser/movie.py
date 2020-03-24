@@ -97,7 +97,6 @@ class Parser:
         urls = response['formats']
 
         for i in urls:
-            print urls[i]
             movie.append({
                 'link': urls[i],
                 'title': 'Link %s' % i,
