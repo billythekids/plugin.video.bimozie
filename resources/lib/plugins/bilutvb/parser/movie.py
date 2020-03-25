@@ -39,10 +39,10 @@ class Parser:
             'links': [],
         }
         # get all movie links
-        nonce = re.search(r'ajax_player\s=.*"nonce":"(.*?)"', response).group(1)
+        nonce = re.search(r'ajax_player\s?=.*"nonce":"(.*?)"', response).group(1)
         post_id = re.search(r'"post_id":"(\d+)",', response).group(1)
-        episode = re.search(r'episode:\s(\d+),', response).group(1)
-        server = re.search(r'server:\s(\d+),', response).group(1)
+        episode = re.search(r'episode:\s?(\d+),', response).group(1)
+        server = re.search(r'server:\s?(\d+),', response).group(1)
         response = Request().post("https://bilutvb.com/wp-admin/admin-ajax.php", params={
             "action": "halim_ajax_player",
             "nonce": nonce,

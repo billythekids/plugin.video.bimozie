@@ -19,7 +19,7 @@ h = {
 
 
 class Phimmedia:
-    domain = "https://www.phimmedia.tv"
+    domain = "https://ww1.phimmedia.tv"
 
     def __init__(self):
         self.request = Request(h, session=True)
