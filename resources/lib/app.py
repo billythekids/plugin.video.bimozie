@@ -191,6 +191,13 @@ SITES = [
         'plugin': 'xomphimhay.plugin',
         'version': 1
     },
+    {
+        'name': 'phim7z.tv',
+        'logo': 'https://phim7z.tv/wp-content/themes/khophim/assets/images/logo-dark.png',
+        'className': 'Phim7z',
+        'plugin': 'phim7z.plugin',
+        'version': 1
+    },
 ]
 
 

@@ -42,15 +42,14 @@ class Parser:
         if response:
             response = json.loads(response.group(1), encoding='utf-8')
             if len(response['medias']['levels']) > 0:
-                for file in response['medias']['levels']:
-                    url = CryptoAES().decrypt(file['file'], file['key'])
+                for f in response['medias']['levels']:
+                    url = CryptoAES().decrypt(f['file'], f['key'])
                     movie['links'].append({
                         'link': url,
-                        'title': 'Link %s' % file['label'],
-                        'type': file['type'],
+                        'title': 'Link %s' % f['label'],
+                        'type': f['type'],
                         'resolve': False,
                         'originUrl': domain
                     })
-                    print
 
         return movie
