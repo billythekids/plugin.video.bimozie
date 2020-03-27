@@ -184,6 +184,13 @@ SITES = [
         'plugin': 'xemphimso.plugin',
         'version': 1
     },
+    {
+        'name': 'xomphimhay.com',
+        'logo': 'https://xomphimhay.com/logo2.png?4',
+        'className': 'Xomphimhay',
+        'plugin': 'xomphimhay.plugin',
+        'version': 1
+    },
 ]
 
 

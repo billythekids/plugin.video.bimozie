@@ -9,8 +9,8 @@ from threading import Thread
 class Request:
     TIMEOUT = 60
     user_agent = (
-        # "Mozilla/5.0 (X11; Linux x86_64) "
-        # "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Mozilla/5.0 (X11; Linux x86_64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/59.0.3071.115 Safari/537.36"
     )
     DEFAULT_HEADERS = {
@@ -79,6 +79,9 @@ class Request:
             self.r = requests.options(url, headers=headers, timeout=self.TIMEOUT, params=params,
                                       allow_redirects=redirect)
         return self.r
+
+    def set_session(self, session):
+        self.session = session
 
     def get_request_session(self):
         return self.session
