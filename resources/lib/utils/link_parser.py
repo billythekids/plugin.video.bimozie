@@ -64,6 +64,7 @@ class LinkParser:
                 or 'phimngay.com' in self.url \
                 or 'animehay.tv' in self.url \
                 or 'beverly-downing' in self.url \
+                or 'xemphimso.tv/proxy/direct.php' in self.url \
                 or 'googleapicdn.com' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
 

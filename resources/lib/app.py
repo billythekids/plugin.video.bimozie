@@ -177,6 +177,13 @@ SITES = [
         'plugin': 'xemphim.plugin',
         'version': 31
     },
+    {
+        'name': 'xemphimso.tv',
+        'logo': 'https://xemphimso.tv/assets/themes/img/logo.png?v=66',
+        'className': 'Xemphimso',
+        'plugin': 'xemphimso.plugin',
+        'version': 1
+    },
 ]
 
 
