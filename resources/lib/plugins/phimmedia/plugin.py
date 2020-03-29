@@ -19,14 +19,14 @@ h = {
 
 
 class Phimmedia:
-    domain = "https://ww1.phimmedia.tv"
+    domain = "https://www.phimmedia.tv"
 
     def __init__(self):
         self.request = Request(h, session=True)
-        self.request.post('https://www.phimmedia.tv/mak.php', params={
-            'mak_firewall_redirect': self.domain,
-            'mak_firewall_postcontent': ''
-        })
+        # self.request.post('https://www.phimmedia.tv/mak.php', params={
+        #     'mak_firewall_redirect': self.domain,
+        #     'mak_firewall_postcontent': ''
+        # })
 
     def getCategory(self):
         response = self.request.get(self.domain)

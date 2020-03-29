@@ -24,6 +24,7 @@ class Parser:
                         'link': ep.get('href').encode('utf-8'),
                         'title': ep.get('title').encode('utf-8'),
                     })
+                break
 
         return movie
 
@@ -33,47 +34,65 @@ class Parser:
             'episode': [],
             'links': []
         }
-        print("***********************Get Movie Link*****************************")
-        sources = re.findall("file: (.*), label: \"(\d+)\"", response, re.MULTILINE)
+
+        # print("***********************Get Movie Link*****************************")
+        # sources = re.findall("file: (.*), label: \"(\d+)\"", response, re.MULTILINE)
+        # if sources and len(sources) > 0:
+        #     print("***********************Get Movie Link 1*****************************")
+        #     sources = sorted(sources, key=lambda elem: elem[1], reverse=True)
+        #     for source in sources:
+        #         match = re.search(source[0] + "=.*\(\"(.*)\"\);", response)
+        #         if match is not None:
+        #             link = self.decode(match.group(1))
+        #             movie['links'].append({
+        #                 'link': link,
+        #                 'title': 'Link %sp' % source[1],
+        #                 'type': source[1],
+        #                 'resolve': False,
+        #                 'originUrl': originUrl
+        #             })
+        #
+        #     return movie
+        #
+        # sources = re.findall(r'file:\s?[\'|"](.*?)[\'|"],\s?label: "(\d+)"', response, re.MULTILINE)
+        # if sources and len(sources) > 0:
+        #     print("***********************Get Movie Link 2*****************************")
+        #     for source in sources:
+        #         url = self.decode(source[0])
+        #
+        #         movie['links'].append({
+        #             'link': url,
+        #             'title': 'Link %sp' % source[1],
+        #             'type': source[1],
+        #             'resolve': False,
+        #             'originUrl': originUrl
+        #         })
+
+        sources = re.findall(r'.*\d=define\d+\("(.*)"\);', response)
         if sources and len(sources) > 0:
-            sources = sorted(sources, key=lambda elem: elem[1], reverse=True)
+            print("***********************Get Movie Link 2*****************************")
             for source in sources:
-                match = re.search(source[0] + "=.*\(\"(.*)\"\);", response)
-                if match is not None:
-                    link = self.decode(match.group(1))
+                url = self.decode(source)
+                if len(url) > 0:
                     movie['links'].append({
-                        'link': link,
+                        'link': url,
                         'title': 'Link %sp' % source[1],
                         'type': source[1],
                         'resolve': False,
                         'originUrl': originUrl
                     })
+            movie['links'].reverse()
 
-            return movie
-
-        sources = re.findall(r'file:\s?[\'|"](.*?)[\'|"],\s?label: "(\d+)"', response, re.MULTILINE)
-        if sources and len(sources) > 0:
-            for source in sources:
-                url = source[0]
-
-                movie['links'].append({
-                    'link': url,
-                    'title': 'Link %sp' % source[1],
-                    'type': source[1],
-                    'resolve': False,
-                    'originUrl': originUrl
-                })
-
-            return movie
+        return movie
 
     def decode(self, link):
         r = base64.b64decode(link)
-        print(r)
         r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
-        r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
+        r = r.replace("https://bit.ly/2zE7Kmg?temp=", "")
         r = r.replace("ms.com?test=", "")
 
-        rep_text = re.findall(r'(?:(?!\d+\.mp4)(.*?/)(\d)(\d).mp4/)', r)
+        rep_text = re.findall(r'(.*?)(\d)(\d.mp4/)+', r)
+
         if len(rep_text) > 0:
             rep_text = rep_text[0][0] + rep_text[0][1]
 
