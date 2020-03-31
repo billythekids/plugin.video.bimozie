@@ -88,7 +88,8 @@ class LinkParser:
         elif re.search('mixdrop.co', self.url):
             return mixdrop.get_link(self.url, self.media), 'mixdrop.co'
 
-        elif 'wowza' in self.url:
+        elif 'wowza' in self.url \
+             or 'apihls.vproxy.online' in self.url:
             return streamlink.get_link(self.url, self.media)
 
         elif 'plb.animehay.tv' in self.url:
@@ -100,7 +101,9 @@ class LinkParser:
         elif 'lb.animehay.tv' in self.url:
             return animehay.get_link(self.url), 'animehay.tv'
 
-        elif re.search('toolsp2p', self.url) or re.search('hls.hphim.org', self.url):
+        elif re.search('toolsp2p', self.url) \
+                or re.search('player.toolpg.com', self.url) \
+                or re.search('hls.hphim.org', self.url):
             return toolpg.get_link(self.url, self.media)
 
         elif re.search('hphim.org', self.url):

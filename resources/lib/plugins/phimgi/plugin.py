@@ -37,19 +37,7 @@ class Phimgi:
 
     def getLink(self, movie):
         data = movie['link'].split('|') # postid|serverid|epid|nounce
-
-        params = {
-            'action': 'halim_ajax_player',
-            'episode': data[2],
-            'server': data[1],
-            'postid': data[0],
-            'nonce': data[3],
-            'ipv': 4
-        }
-
-        url = "%s/wp-admin/admin-ajax.php" % self.domain
-        response = Request().post(url, params)
-        return Movie().get_link(response, url)
+        return Movie().get_link(data, self.domain)
 
     def search(self, text):
         text = urllib.quote_plus(text)

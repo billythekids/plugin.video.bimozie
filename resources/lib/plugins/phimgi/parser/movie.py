@@ -1,5 +1,6 @@
 # coding=utf-8
 from bs4 import BeautifulSoup
+from utils.mozie_request import AsyncRequest, Request
 import utils.xbmc_helper as helper
 import re
 import json
@@ -37,58 +38,59 @@ class Parser:
 
         return movie
 
-    def get_link(self, response, originUrl):
+    def get_link(self, data, domain):
         movie = {
             'group': {},
             'episode': [],
             'links': [],
         }
 
-        # subitle
-        subtitle = None
-        sub_re = re.search(r'tracks:\s?(\[.*\]),', response, re.DOTALL)
-        if sub_re:
-            try:
-                sub_re = re.search(r'file:\s?"(.*?)",', sub_re.group(1))
-                subtitle = sub_re.group(1)
-            except: pass
+        # get all server list
+        # data = postid|serverid|epid|nounce
+        params = {
+            'action': 'halim_get_listsv',
+            'episode': data[2],
+            'server': data[1],
+            'postid': data[0],
+            'nonce': data[3],
+        }
 
-        sources = re.search(r'sources:\s?(.*?)\n', response)
-        if sources:
-            try:
-                sources = helper.convert_js_2_json(sources.group(1).replace('}],', '}]'))
-                sources = json.loads(sources)
-                sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
-            except: pass
+        jobs = []
+        url = "%s/wp-admin/admin-ajax.php" % domain
+        response = Request().post(url, params)
 
-            if len(sources) > 0:
-                for source in sources:
-                    label = 'label' in source and source['label'] or ''
-                    movie['links'].append({
-                        'link': self.parse_link(source['file']),
-                        'title': 'Link %s' % label.encode('utf-8'),
-                        'type': label.encode('utf-8'),
-                        'resolve': False,
-                        'subtitle': subtitle,
-                        'originUrl': originUrl
-                    })
+        soup = BeautifulSoup(response, "html.parser")
+        servers = soup.select("span")
+        for server in servers:
+            params = {
+                # 'action': 'halim_ajax_player',
+                'action': 'halim_play_listsv',
+                'episode': data[2],
+                'server': data[1],
+                'postid': data[0],
+                'nonce': data[3],
+                'ep_link': server.get('data-url')
+            }
+            jobs.append({'url': url, 'params': params, 'parser': Parser.extract_link})
+        AsyncRequest().post(jobs, args=movie['links'])
 
-            return movie
+        return movie
 
+    @staticmethod
+    def extract_link(response, movie_links):
+        print response.encode('utf8')
         sources = re.search('<iframe.*src=(".*?")', response)
         if sources is not None:
             source = sources.group(1).replace('"', '')
             if source:
-                movie['links'].append({
+                movie_links.append({
                     'link': source,
                     'title': 'Link %s' % source.encode('utf-8'),
                     'type': 'Unknow',
                     'resolve': False,
-                    'originUrl': originUrl
-                })
-                return movie
+                    'originUrl': source
 
-        return movie
+                })
 
     def parse_link(self, url):
         return url
