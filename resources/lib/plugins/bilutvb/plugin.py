@@ -3,16 +3,20 @@ from utils.mozie_request import Request
 from bilutvb.parser.category import Parser as Category
 from bilutvb.parser.channel import Parser as Channel
 from bilutvb.parser.movie import Parser as Movie
-import urllib
+import urllib, re
 
 
 class Bilutvb:
     domain = "https://bilutvb.com"
 
-    def getCategory(self):
-        response = Request().get(self.domain, headers={
-            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
+    def __init__(self):
+        self.request = Request(header={
+            "Accept-Language": "en-US,en;q=0.9,vi;q=0.8",
+            "accept-encoding": "deflate"
         })
+
+    def getCategory(self):
+        response = self.request.get(self.domain)
         return Category().get(response), Channel().get(response)
 
     def getChannel(self, channel, page=1):
@@ -20,38 +24,30 @@ class Bilutvb:
         if page > 1:
             channel = channel.replace('.html/', "/")
             channel = channel.replace('.html', "/")
-            url = '%s%spage/%d/' % (self.domain, channel, page)
+            url = '%s%s/page/%d' % (self.domain, channel, page)
         else:
             url = '%s%s' % (self.domain, channel)
 
-        response = Request().get(url, headers={
-            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
-        })
+        response = self.request.get(url)
         return Channel().get(response)
 
     def getMovie(self, url):
-        # url = "%s/phim-0-%s.html" % (self.domain, id)
-        response = Request().get(url, headers={
-            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
-        })
-        url = Movie().get_movie_link(response)
-        response = Request().get(url, headers={
-            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
-        })
+        # https://bilutvb.com/ajax/movie_load_info/1936
+        mid = re.search(r'load_info/(\d+)', url).group(1)
+        # https://bilutvb.com/ajax/get_episodes/1936
+        response = self.request.get('%s/ajax/get_episodes/%s' % (self.domain, mid))
         return Movie().get(response)
 
     def getLink(self, movie):
-        response = Request().get(movie['link'], headers={
-            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
-        })
-        return Movie().get_link(response, self.domain)
+        # response = self.request.get(movie['link'])
+        # https://bilutvb.com/ajax/get_sources/67325
+        response = self.request.get('%s/ajax/get_sources/%s' % (self.domain, movie['link']))
+        return Movie().get_link(response, self.request, self.domain)
 
     def search(self, text, page=1):
         # url = "%s/search/%s" % (self.domain, urllib.quote_plus(text))
         url = "%s/wp-admin/admin-ajax.php" % self.domain
-        response = Request().post(url, headers={
-            "Accept-Language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7,de-DE;q=0.6,de;q=0.5,nb;q=0.4"
-        }, params={
+        response = self.request.post(url, params={
             'action': 'halimthemes_ajax_search',
             'search': text
         })

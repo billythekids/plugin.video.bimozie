@@ -46,11 +46,11 @@ class Parser:
             source = json.loads(sources.group(1))[0]
             params = {
                 'v': 2,
-                'url': source['url'],
+                'url': "",
                 'bk_url': source['burl'],
                 'pr_url': source['purl'],
                 'if_url[]': source.get('iurl'),
-                'do_url[]': source.get('durl'),
+                'vd_url[]': source.get('vdurl'),
                 'prefer': prefers[0],
                 'ts': 1556547428839,
                 'item_id': item_id,
@@ -66,30 +66,34 @@ class Parser:
             params_alt = {
                 'v': 2,
                 'len': 1,
-                'url': source['url'],
+                'url': "",
                 'bk_url': source['burl'],
                 'pr_url': source['purl'],
                 'if_url[]': source.get('iurl'),
-                'do_url[]': source.get('durl'),
+                'vd_url[]': source.get('vdurl'),
+                'rts_url[]': source.get('rtsurl'),
                 'prefer': prefers[0],
                 'ts': 1556547428839,
                 'item_id': item_id,
                 'username': username,
-                'err[pr][ended]': 'true',
-                'err[do][ended]': 'true',
-                'err[hdx][ended]': 'true',
-                'err[eh][num]': 1,
+                'err[dryt][dr][]': 'https://r1---sn-a5mekned.c.youtube.com',
+                'err[dryt][num]': 1,
+                'err[dryt][dr_s]': response.get('sig'),
+                # 'err[pr][ended]': 'true',
+                # 'err[do][ended]': 'true',
+                # 'err[hdx][ended]': 'true',
+                # 'err[eh][num]': 1,
                 # 'err[eh][dr][]': 'https://ok.ru',
-                'err[gbak][dr][]': 'https://sgp.dgo.dongphim.net'
+                # 'err[gbak][dr][]': 'https://sgp.dgo.dongphim.net'
             }
 
             response = json.loads(Request().get('http://dongphim.net/content/parseUrl', params=params_alt))
             self.get_media_url(response, movie['links'])
 
-        if len(movie['links']) > 1:
-            try:
-                movie['links'] = sorted(movie['links'], key=lambda elem: int(re.search(r'(\d+)', elem['title']).group(1)), reverse=True)
-            except Exception as e: print(e)
+        # if len(movie['links']) > 1:
+        #     try:
+        #         movie['links'] = sorted(movie['links'], key=lambda elem: int(re.search(r'(\d+)', elem['title']).group(1)), reverse=True)
+        #     except Exception as e: print(e)
 
         return movie
 

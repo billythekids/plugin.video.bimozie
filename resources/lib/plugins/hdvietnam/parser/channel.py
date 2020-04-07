@@ -33,6 +33,7 @@ class Parser:
                     'id': tag.get('href'),
                     'label': title,
                     'title': title,
+                    'intro': title,
                     'realtitle': title,
                     'thumb': thumb,
                     'type': None

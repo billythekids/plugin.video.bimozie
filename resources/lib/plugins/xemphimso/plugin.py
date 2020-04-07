@@ -10,7 +10,7 @@ class Xemphimso:
     api = "https://xemphimso.tv/api/v1/episodes/%s/player"
 
     def __init__(self):
-        self.request = Request();
+        self.request = Request()
 
     def getCategory(self):
         response = self.request.get(self.domain)

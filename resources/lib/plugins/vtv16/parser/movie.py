@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 from utils.mozie_request import Request, AsyncRequest
-
+from urlparse import unquote
 
 
 def from_char_code(*args):
@@ -138,6 +138,7 @@ class Parser:
     def extract_link(response, movie_links):
         sources = re.search("<iframe.*src=\"(.*)\"", response)
         if sources:
+            sources = re.search("var url\s=\s'(.*)';", response)
             source = sources.group(1)
-            movie_links.append(source)
+            movie_links.append(unquote(source))
 

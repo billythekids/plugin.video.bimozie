@@ -37,14 +37,21 @@ class Parser:
         if source:
             # https://player.phim7z.tv/hls/getlink.php?id=d1FMYzZMVlkrdHRmOEZRamc5NTRNejhUYy85Rld5SG8vcmhUL2lIeHlEeU1UTXJLd0tiUkF5d0Q2emp3Z1hhaQ==
             response = json.loads(request.get(api_url % source.group(1)))
-            sources = json.loads(response.get('data'))
-            for f in sources:
-                    movie['links'].append({
-                        'link': f.get('file'),
-                        'title': 'Link %s' % f['label'],
-                        'type': f['type'],
-                        'resolve': False,
-                        'originUrl': domain
-                    })
+            Parser.create_link(movie['links'], response, domain)
+            response = json.loads(request.get((api_url % source.group(1)) + '&type=hls'))
+            Parser.create_link(movie['links'], response, domain)
 
         return movie
+
+    @staticmethod
+    def create_link(links, response, domain):
+        if response.get('status') is 1:
+            sources = json.loads(response.get('data'))
+            for f in sources:
+                links.append({
+                    'link': f.get('file'),
+                    'title': 'Link %s' % f['label'],
+                    'type': f['type'],
+                    'resolve': False,
+                    'originUrl': domain
+                })

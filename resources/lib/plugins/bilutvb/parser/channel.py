@@ -20,36 +20,24 @@ class Parser:
 
         soup = BeautifulSoup(response, "html.parser")
         # get total page
-        pages = soup.select('ul.page-numbers li > a.page-numbers')
+        pages = soup.select('ul.pagination li > a')
         if pages and len(pages) > 3:
             channel['page'] = int(pages[-2].text.encode('utf8'))
 
-        for movie in soup.select('div.halim_box > article.grid-item > div.halim-item > a.halim-thumb'):
-            title = movie.get('title').encode('utf8', errors="ignore")
+        for movie in soup.select('div.movies-list > div.ml-item > a'):
+            title = movie.select_one('span.mli-info > h2').find(text=True, recursive=True).encode('utf8', errors="ignore")
             mtype = ""
 
-            episode = movie.select_one('span.episode')
-            duration = movie.select_one('span.duration')
-            if episode and duration:
-                mtype = "{}/{}".format(
-                    episode.text.encode('utf8'),
-                    duration.find(text=True, recursive=False).encode('utf8')
-                )
-
-            realtitle = movie.select_one('p.original_title').text.encode('utf8')
-            if realtitle is not None:
-                label = "[{}] {} - {}".format(mtype, title, realtitle)
-            else:
-                label = "[{}] {}".format(mtype, title)
-
-            movie_id = movie.get('href')
+            episode = ' '.join(movie.select_one('span.mli-eps').find_all(text=True, recursive=True)).encode('utf8')
+            label = "[{}] {}".format(episode, title)
+            movie_id = movie.get('data-url')
 
             channel['movies'].append({
                 'id': movie_id,
                 'label': label,
                 'title': title,
-                'realtitle': realtitle,
-                'thumb': movie.select_one('figure > img.lazy').get('data-src'),
+                'realtitle': title,
+                'thumb': movie.select_one('img').get('data-original'),
                 'type': mtype,
             })
 

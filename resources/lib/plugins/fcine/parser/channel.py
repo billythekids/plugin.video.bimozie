@@ -22,8 +22,7 @@ class Parser:
 
         for movie in soup.select('div.esnList_item > div.esnList_item_border'):
             thumb = movie.select_one('div.esnList_item_img > a > img').get('src')
-
-            title = movie.select_one('div.ipsTruncate').text.strip()
+            title = movie.select_one('ul.ipsDataList > li.ipsDataItem > span > a').get('title').strip()
             type = ""
             realtitle = ""
 

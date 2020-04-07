@@ -39,12 +39,13 @@ class Xomphimhay:
         url = Movie().get_movie_link(response)
         response = self.request.get(url)
         self.updateSession()
-        return Movie().get(response)
+        return Movie().get(response, url)
 
     def getLink(self, movie):
         # https://xemphimso.tv/api/v1/episodes/1000289/player
-        response = self.request.get(self.api % movie['link'])
-        return Movie().get_link(response, self.domain, self.request)
+        url, mid = movie['link'].split('|')
+        response = self.request.get(self.api % mid)
+        return Movie().get_link(response, self.domain, self.request, url)
 
     def search(self, text, page=1):
         url = "%s/tim-kiem/%s/" % (self.domain, urllib.quote_plus(text))

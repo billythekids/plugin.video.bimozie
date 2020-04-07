@@ -12,7 +12,7 @@ def get_link(url, media):
         'Origin': 'http://dongphim.net'
     }
 
-    url = get_stream(url)
+    # url = get_stream(url)
     return str(url) + "|%s" % urlencode(header), 'dongphim'
 
 

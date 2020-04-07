@@ -34,6 +34,7 @@ from .hosts import fshare, \
     iframeembed, \
     fantvh, \
     vanlongstreaming, \
+    feurl, \
     verystream
 
 
@@ -48,12 +49,10 @@ class LinkParser:
             # return self.get_link_resolveurl()
             return ok.get_link(self.url)
 
-        elif 'vtvhub.com/public/dist' in self.url:
-            return vanlongstreaming.get_link(self.url, self.media)
+        if re.search('feurl.com', self.url):
+            return feurl.get_link(self.url, self.media)
 
         elif 'vhstream.xyz' in self.url \
-                or 'vdicdn.com' in self.url \
-                or 'vtvhub.com' in self.url \
                 or 'vkooltv.com' in self.url \
                 or 'vn.phimmoicdn.net' in self.url \
                 or 'hls.phimmoi' in self.url \
@@ -61,6 +60,7 @@ class LinkParser:
             return cors.get_link(self.url, self.media)
 
         elif 'fimfast.com' in self.url \
+                or 'vdicdn.com' in self.url \
                 or 'phimngay.com' in self.url \
                 or 'animehay.tv' in self.url \
                 or 'beverly-downing' in self.url \
@@ -89,7 +89,8 @@ class LinkParser:
             return mixdrop.get_link(self.url, self.media), 'mixdrop.co'
 
         elif 'wowza' in self.url \
-             or 'apihls.vproxy.online' in self.url:
+                :
+            # or 'apihls.vproxy.online' in self.url:
             return streamlink.get_link(self.url, self.media)
 
         elif 'plb.animehay.tv' in self.url:
@@ -183,8 +184,8 @@ class LinkParser:
             helper.message('hydrax link parsing', 'Get Link')
             return hydrax.get_guest_hydrax(self.url, self.media)
 
-        elif re.search('youtube.com', self.url):
-            return self.get_youtube()
+        # elif re.search('youtube.com', self.url):
+        #     return self.get_youtube()
 
         elif re.search('imacdn.com', self.url):
             helper.message('imacdn HFF', 'Movie Found')

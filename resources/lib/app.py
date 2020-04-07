@@ -198,6 +198,13 @@ SITES = [
         'plugin': 'phim7z.plugin',
         'version': 1
     },
+    {
+        'name': 'motphim.net',
+        'logo': 'https://motphim.net/motphim.png',
+        'className': 'Motphim',
+        'plugin': 'motphim.plugin',
+        'version': 31
+    },
 ]
 
 
@@ -317,6 +324,8 @@ def show_episode(movie, movie_item, module, class_name):
             li.setInfo('video', {'title': item['title']})
             li.setProperty('fanart_image', thumb)
             li.setArt({'thumb': thumb})
+            if 'intro' in movie:
+                li.setInfo(type='video', infoLabels={'plot': movie['intro']})
             url = build_url({'mode': 'play',
                              'url': json.dumps(item),
                              'movie_item': json.dumps(movie_item),
@@ -365,6 +374,9 @@ def _build_ep_list(items, movie_item, module, class_name):
         li.setArt({'thumb': thumb})
         li.setInfo(type='video', infoLabels={'plot': movie_item.get('intro')})
         li.setLabel2(title)
+        if 'intro' in item:
+            li.setInfo(type='video', infoLabels={'plot': item['intro']})
+
         url = build_url({'mode': 'play',
                          'url': json.dumps(item),
                          'movie_item': json.dumps(movie_item),
@@ -402,6 +414,8 @@ def show_links(movie, movie_item, module, class_name):
         li.setInfo('video', {'title': item['title']})
         li.setProperty('fanart_image', thumb)
         li.setArt({'thumb': thumb})
+        if 'intro' in item:
+            li.setInfo(type='video', infoLabels={'plot': item['intro']})
 
         url = build_url({'mode': 'play',
                          'url': json.dumps(item),

@@ -78,7 +78,6 @@ class Parser:
 
     @staticmethod
     def extract_link(response, movie_links):
-        print response.encode('utf8')
         sources = re.search('<iframe.*src=(".*?")', response)
         if sources is not None:
             source = sources.group(1).replace('"', '')
