@@ -35,6 +35,7 @@ from .hosts import fshare, \
     fantvh, \
     vanlongstreaming, \
     feurl, \
+    hls_parser, \
     verystream
 
 
@@ -59,7 +60,12 @@ class LinkParser:
                 :
             return cors.get_link(self.url, self.media)
 
+        elif 'cdnplay.xyz' in self.url \
+                :
+            return hls_parser.get_link(self.url, self.media)
+
         elif 'fimfast.com' in self.url \
+                or 'cdnplay.xyz' in self.url \
                 or 'vdicdn.com' in self.url \
                 or 'phimngay.com' in self.url \
                 or 'animehay.tv' in self.url \
@@ -108,7 +114,7 @@ class LinkParser:
             return toolpg.get_link(self.url, self.media)
 
         elif re.search('hphim.org', self.url):
-            return hphim.get_link(self.url, self.media), 'hphim.org'
+            return vanlongstreaming.get_link(self.url, self.media)
 
         elif re.search('openload.co', self.url):
             return self.get_link_openload()

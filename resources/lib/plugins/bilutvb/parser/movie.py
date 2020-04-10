@@ -55,7 +55,7 @@ class Parser:
                 if not 'http' in url:
                     url = 'https://{}'.format(url)
                 links.append({
-                    'link': url.replace('http://', 'https://'),
+                    'link': url.replace('http://', 'https://').replace('////', '//'),
                     'title': 'Link %s' % f['label'],
                     'type': f['type'],
                     'resolve': False,

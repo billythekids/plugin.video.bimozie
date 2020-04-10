@@ -13,7 +13,8 @@ def get_link(url, media, including_agent=True):
 
         header = {
             'Referer': media.get('originUrl'),
-            'Origin': base_url
+            'Origin': base_url,
+            'verifypeer': 'false'
         }
 
         if including_agent:

@@ -63,7 +63,7 @@ SITES = [
         'logo': 'https://bilutvb.com/wp-content/uploads/2019/05/logov.png',
         'className': 'Bilutvb',
         'plugin': 'bilutvb.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'phimmedia.tv',
@@ -119,7 +119,7 @@ SITES = [
         'logo': 'http://phim14.net/application/views/frontend/default/images/logo.png',
         'className': 'Phim14',
         'plugin': 'phim14.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'fcine.net',
@@ -196,7 +196,7 @@ SITES = [
         'logo': 'https://phim7z.tv/wp-content/themes/khophim/assets/images/logo-dark.png',
         'className': 'Phim7z',
         'plugin': 'phim7z.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'motphim.net',

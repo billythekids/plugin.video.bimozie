@@ -34,7 +34,7 @@ class Request:
             headers = self.DEFAULT_HEADERS
         if self.session:
             self.r = self.session.get(url, headers=headers, timeout=self.TIMEOUT, params=params,
-                                      allow_redirects=redirect, cookies=cookies)
+                                      allow_redirects=redirect, cookies=cookies, verify=False)
         else:
             self.r = requests.get(url, headers=headers, timeout=self.TIMEOUT, params=params, allow_redirects=redirect,
                                   cookies=cookies)
@@ -140,9 +140,9 @@ class AsyncRequest:
                     if action is 'head':
                         data = self.request.head(url, params=params, headers=headers, redirect=redirect)
                     if action is 'get':
-                        data = self.request.get(url, params=params, headers=headers)
+                        data = self.request.get(url, params=params, headers=headers, redirect=redirect)
                     if action is 'post':
-                        data = self.request.post(url, params=params, headers=headers, json=json)
+                        data = self.request.post(url, params=params, headers=headers, json=json, redirect=redirect)
                     if parser:
                         if required_response_header:
                             response_headers = self.request.get_request().headers
@@ -170,7 +170,7 @@ class AsyncRequest:
         self.__start_thread('head', params, headers, redirect, parser, args)
         return self.results
 
-    def get(self, urls, headers=None, params=None, redirect=False, parser=None, args=None):
+    def get(self, urls, headers=None, params=None, redirect=True, parser=None, args=None):
         self.__create_queue(urls)
         self.__start_thread('get', params, headers, redirect, parser, args)
         return self.results

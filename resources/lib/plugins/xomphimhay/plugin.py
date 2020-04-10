@@ -15,9 +15,14 @@ class Xomphimhay:
         if helper.has_file_path('xomphimhay.bin'):
             with open(helper.get_file_path('xomphimhay.bin')) as f:
                 self.request.set_session(pickle.load(f))
+            cookies_jar = self.request.get_request_session().cookies
+            cookies_jar.set('vietnamese', 'true', domain='xomphimhay.com', path='/')
+            print cookies_jar
+
 
     def updateSession(self):
         with open(helper.get_file_path('xomphimhay.bin'), 'wb') as f:
+            print self.request.get_request_session()
             pickle.dump(self.request.get_request_session(), f)
 
     def getCategory(self):

@@ -4,6 +4,7 @@ from urlparse import urlparse
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
 from urllib import urlencode
+import hls_parser
 
 
 def get_link(url, movie):
@@ -21,7 +22,11 @@ def get_link(url, movie):
             'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
             'Referer': url
         }
-        return hosturl + "|%s" % urlencode(header), 'hls5'
+
+        return hls_parser.get_link(hosturl, movie)
+
+        # return hosturl + "|%s" % urlencode(header), 'hls5'
+
     except:
         pass
 
