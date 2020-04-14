@@ -25,7 +25,16 @@ def has_file_path(filename):
 
 
 def get_file_path(filename):
+    print os.path.join(addon_data_dir, filename)
     return os.path.join(addon_data_dir, filename)
+
+
+def remove_file(filename):
+    return os.remove(get_file_path(filename))
+
+
+def get_last_modified_time_file(filename):
+    return int(os.path.getmtime(get_file_path(filename)))
 
 
 def message(message='', title='', timeShown=5000):

@@ -55,7 +55,6 @@ class Parser:
 
         soup = BeautifulSoup(response, "html.parser")
         for movie in soup.select('div.pl-carousel-cell > a'):
-            print movie
 
             title = movie.select_one('div.pl-carousel-content h6').text.strip()
             realtitle = movie.select_one('div.pl-carousel-content p').text.strip()

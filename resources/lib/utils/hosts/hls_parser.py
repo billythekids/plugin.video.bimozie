@@ -25,7 +25,10 @@ def get_stream(url, header):
     base_url = base_url.scheme + '://' + base_url.netloc
 
     if re.search('EXT-X-STREAM-INF', r):
-        r = get_adaptive_link(r, req, base_url, header)
+        ad_url = get_adaptive_link(r, req, base_url, header)
+        if 'http' not in ad_url:
+            ad_url = base_url + ad_url
+        r = req.get(ad_url, headers=header)
 
     playlist = ""
     links = []
@@ -60,7 +63,7 @@ def get_stream(url, header):
     return url
 
 
-def get_adaptive_link(response, req, base_url, header):
+def get_adaptive_link(response):
     resolutions = re.findall(r'RESOLUTION=\d+x(\d+)', response)
     matches = re.findall(r'^(?!#)(.*)', response, re.MULTILINE)
     if '1080' in resolutions:
@@ -76,10 +79,7 @@ def get_adaptive_link(response, req, base_url, header):
         idx = next((resolutions.index(i) for i in resolutions if '480' == i), -1)
         url = matches[idx]
 
-    if 'http' not in url:
-        url = base_url + url
-
-    return req.get(url, headers=header)
+    return url
 
 
 def parse_link(response, args, response_headers):

@@ -5,14 +5,16 @@ import xbmcgui
 from Queue import Queue
 from threading import Thread
 
+user_agent = (
+    "Mozilla/5.0 (X11; Linux x86_64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/59.0.3071.115 Safari/537.36"
+)
+
 
 class Request:
     TIMEOUT = 60
-    user_agent = (
-        "Mozilla/5.0 (X11; Linux x86_64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/59.0.3071.115 Safari/537.36"
-    )
+
     DEFAULT_HEADERS = {
         'User-Agent': user_agent
     }
@@ -28,13 +30,13 @@ class Request:
             self.session = requests.session()
             self.session.cookies.update(cookies)
 
-    def get(self, url, headers=None, params=None, redirect=True, cookies=None):
+    def get(self, url, headers=None, params=None, redirect=True, cookies=None, verify=True):
         print("Request URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
             self.r = self.session.get(url, headers=headers, timeout=self.TIMEOUT, params=params,
-                                      allow_redirects=redirect, cookies=cookies, verify=False)
+                                      allow_redirects=redirect, cookies=cookies, verify=verify)
         else:
             self.r = requests.get(url, headers=headers, timeout=self.TIMEOUT, params=params, allow_redirects=redirect,
                                   cookies=cookies)
@@ -59,7 +61,7 @@ class Request:
                                    cookies=cookies, json=json)
         return self.r.text
 
-    def head(self, url, params=None, headers=None, redirect=True):
+    def head(self, url, params=None, headers=None, redirect=True, cookies=None):
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
@@ -69,7 +71,7 @@ class Request:
             self.r = requests.head(url, headers=headers, timeout=self.TIMEOUT, params=params, allow_redirects=redirect)
         return self.r
 
-    def options(self, url, params=None, headers=None, redirect=True):
+    def options(self, url, params=None, headers=None, redirect=True, cookies=None):
         # if headers:
         #     headers = self.DEFAULT_HEADERS.update(headers)
         if self.session:
@@ -120,7 +122,7 @@ class AsyncRequest:
         print("*********************** All %s thread done" % self.length)
         self.dialog.close()
 
-    def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None, json=None):
+    def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None, json=None, cookies=None):
         while not self.q.empty():
             work = self.q.get()
             url = work[1]
@@ -131,6 +133,7 @@ class AsyncRequest:
                 parser = 'parser' in url and url['parser'] or parser
                 args = 'args' in url and url['args'] or args
                 json = 'json' in url and url['json'] or json
+                cookies = 'cookies' in url and url['cookies'] or cookies
                 required_response_header = 'responseHeader' in url and True or False
                 url = work[1]['url']
 
@@ -138,11 +141,11 @@ class AsyncRequest:
             while retry > 0:
                 try:
                     if action is 'head':
-                        data = self.request.head(url, params=params, headers=headers, redirect=redirect)
+                        data = self.request.head(url, params=params, headers=headers, redirect=redirect, cookies=cookies)
                     if action is 'get':
-                        data = self.request.get(url, params=params, headers=headers, redirect=redirect)
+                        data = self.request.get(url, params=params, headers=headers, redirect=redirect, cookies=cookies)
                     if action is 'post':
-                        data = self.request.post(url, params=params, headers=headers, json=json, redirect=redirect)
+                        data = self.request.post(url, params=params, headers=headers, json=json, redirect=redirect, cookies=cookies)
                     if parser:
                         if required_response_header:
                             response_headers = self.request.get_request().headers
@@ -165,17 +168,17 @@ class AsyncRequest:
             self.q.task_done()
         return True
 
-    def head(self, urls, params=None, headers=None, redirect=False, parser=None, args=None):
+    def head(self, urls, params=None, headers=None, redirect=False, parser=None, args=None, cookies=None):
         self.__create_queue(urls)
-        self.__start_thread('head', params, headers, redirect, parser, args)
+        self.__start_thread('head', params, headers, redirect, parser, args, cookies)
         return self.results
 
-    def get(self, urls, headers=None, params=None, redirect=True, parser=None, args=None):
+    def get(self, urls, headers=None, params=None, redirect=True, parser=None, args=None, cookies=None):
         self.__create_queue(urls)
-        self.__start_thread('get', params, headers, redirect, parser, args)
+        self.__start_thread('get', params, headers, redirect, parser, args, cookies)
         return self.results
 
-    def post(self, urls, params=None, headers=None, json=None, redirect=False, parser=None, args=None):
+    def post(self, urls, params=None, headers=None, json=None, redirect=False, parser=None, args=None, cookies=None):
         self.__create_queue(urls)
-        self.__start_thread('post', params, headers, redirect, parser, args, json)
+        self.__start_thread('post', params, headers, redirect, parser, args, json, cookies)
         return self.results

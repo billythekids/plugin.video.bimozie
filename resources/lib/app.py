@@ -137,7 +137,7 @@ SITES = [
     },
     {
         'name': 'vuviphim.com',
-        'logo': 'https://vuviphim.com/wp-content/uploads/2017/08/logo-vuviphim.png',
+        'logo': 'https://vuviphimmoi.com/wp-content/uploads/2020/04/logo-vuvi.png',
         'className': 'Vuviphim',
         'plugin': 'vuviphim.plugin',
         'version': 1

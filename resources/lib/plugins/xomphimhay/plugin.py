@@ -2,7 +2,7 @@ from utils.mozie_request import Request
 from xomphimhay.parser.category import Parser as Category
 from xomphimhay.parser.channel import Parser as Channel
 from xomphimhay.parser.movie import Parser as Movie
-import urllib, pickle
+import urllib, pickle, time
 import utils.xbmc_helper as helper
 
 
@@ -12,6 +12,9 @@ class Xomphimhay:
 
     def __init__(self):
         self.request = Request(session=True)
+        if helper.has_file_path('xomphimhay.bin') and helper.get_last_modified_time_file('xomphimhay.bin') + 43200 < int(time.time()):
+            helper.remove_file('xomphimhay.bin')
+
         if helper.has_file_path('xomphimhay.bin'):
             with open(helper.get_file_path('xomphimhay.bin')) as f:
                 self.request.set_session(pickle.load(f))

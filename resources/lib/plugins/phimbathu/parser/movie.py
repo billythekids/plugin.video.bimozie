@@ -8,11 +8,14 @@ from utils.mozie_request import AsyncRequest
 
 
 class Parser:
+    def __init__(self, cookies=None):
+        self.cookies = cookies
+
     def get_movie_link(self, response):
         soup = BeautifulSoup(response, "html.parser")
         return soup.select_one("a.btn-see").get('href')
 
-    def get(self, response):
+    def get(self, response, request):
         movie = {
             'links': [],
             'episode': [],
@@ -20,14 +23,23 @@ class Parser:
         }
         soup = BeautifulSoup(response, "html.parser")
 
-        movie_types = soup.select('ul.choose-server > li > a')
-        for movie_type in movie_types:
-            if re.search('http', movie_type.get('href')):
-                response = Request().get(movie_type.get('href'))
-                soup = BeautifulSoup(response, "html.parser")
-                self.get_server_link(soup, movie_type, movie)
-            else:
-                self.get_server_link(soup, movie_type, movie)
+        movie['group']['phimbathu'] = []
+        movies = soup.select('ul#list_episodes > li')
+        for video in movies:
+            video = video.select_one('> a')
+            movie['group']['phimbathu'].append({
+                'link': video.get('href'),
+                'title': video.get('title').encode('utf-8')
+            })
+
+        # movie_types = soup.select('ul.choose-server > li > a')
+        # for movie_type in movie_types:
+        #     if re.search('http', movie_type.get('href')):
+        #         response = request.get(movie_type.get('href'))
+        #         soup = BeautifulSoup(response, "html.parser")
+        #         self.get_server_link(soup, movie_type, movie)
+        #     else:
+        #         self.get_server_link(soup, movie_type, movie)
 
         return movie
 
@@ -41,7 +53,7 @@ class Parser:
                 'title': "Tập %s" % episode.text.encode('utf-8')
             })
 
-    def get_link(self, response, domain, originUrl):
+    def get_link(self, response, domain, originUrl, request):
         movie = {
             'group': {},
             'episode': [],
@@ -50,7 +62,8 @@ class Parser:
         # get all movie links
         soup = BeautifulSoup(response, "html.parser")
         servers = soup.select('div.list-server > div.server-item > div.option > span')
-        movie_id = re.search("MovieID\s?=\s?'(.*?)';", response).group(1)
+        # print response.encode('utf-8')
+        movie_id = re.search(r"MovieID\s?=\s?'(.*?)';", response).group(1)
 
         ep_id = soup.select_one('ul.list-episode > li > a.current')
         if ep_id:
@@ -70,7 +83,7 @@ class Parser:
             }
             jobs.append({'url': url, 'params': params, 'parser': Parser.extract_link})
 
-        AsyncRequest().post(jobs, args=links)
+        AsyncRequest(request).post(jobs, args=links, cookies=self.cookies)
 
         for link in links:
             movie['links'].append({

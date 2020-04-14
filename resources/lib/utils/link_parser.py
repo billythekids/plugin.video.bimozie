@@ -57,6 +57,8 @@ class LinkParser:
                 or 'vkooltv.com' in self.url \
                 or 'vn.phimmoicdn.net' in self.url \
                 or 'hls.phimmoi' in self.url \
+                or 'hls.phimmoi' in self.url \
+                or 'loadblancer.xemphimmedia.com' in self.url \
                 :
             return cors.get_link(self.url, self.media)
 
@@ -155,7 +157,8 @@ class LinkParser:
         elif re.search('24hd.club', self.url):
             return hdclub.get_link(self.url)
 
-        elif re.search('vuviphim.xyz', self.url):
+        elif re.search('vuviphim.xyz', self.url) \
+             or re.search('vuviphimmoi.com', self.url) :
             return vuviphim.get_link(self.url)
 
         elif re.search('fptplay.net', self.url):

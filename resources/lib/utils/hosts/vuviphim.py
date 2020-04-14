@@ -13,6 +13,8 @@ def get_link(url):
     enc2 = re.search(r'sources:\s?(\[.*?\]),', response)
     found = False
 
+    print "Apply VUVIPHIM parser"
+
     if enc:
         sources = enc.group(1)
         sources = Packer().unpack(sources)
@@ -29,6 +31,8 @@ def get_link(url):
         except:
             pass
         sources = json.loads(sources)
+
+        print sources
         score = {'sd': 1, 'hd': 2, '360p': 1, '480p': 2, '720p': 3, '1080p': 3}
         if len(sources) > 0:
             try:

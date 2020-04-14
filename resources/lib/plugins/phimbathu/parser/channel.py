@@ -3,6 +3,7 @@ import re
 
 
 class Parser:
+
     def get(self, response):
 
         channel = {
