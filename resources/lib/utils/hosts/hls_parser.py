@@ -12,7 +12,7 @@ def get_link(url, media):
         'Referer': media.get('originUrl'),
     }
 
-    url = get_stream(url, header)
+    # url = get_stream(url, header)
     # return None, None
     return str(url) + "|%s" % urlencode(header), 'm3u8'
 
@@ -50,16 +50,16 @@ def get_stream(url, header):
                 links.append({'url': path, 'parser': parse_link, 'responseHeader': True})
             else:
                 path = line
-
             playlist += '%s\n' % path
+            break
 
     if is_redirect and len(playlist) > 0:
         arequest = AsyncRequest(request=req)
-        results = arequest.get(links, redirect=False, headers=header)
+        results = arequest.get(links, redirect=False, headers=header, verify=False)
         for i in range(len(links)):
             playlist = playlist.replace(links[i].get('url'), results[i])
 
-    url = PasteBin().dpaste(playlist, name='dongphim', expire=60)
+    # url = PasteBin().dpaste(playlist, name='dongphim', expire=60)
     return url
 
 

@@ -74,6 +74,7 @@ class LinkParser:
                 or 'beverly-downing' in self.url \
                 or 'xemphimso.tv/proxy' in self.url \
                 or 'play.xomphimhay.com/load-stream' in self.url \
+                or 'proxymedia.site' in self.url \
                 or 'googleapicdn.com' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
 
@@ -179,7 +180,8 @@ class LinkParser:
             helper.message('Phimmoi gpt.phimmoi.net link parsing', 'Get Link')
             return pzc_phimmoi.get_link(self.url, self.media)
 
-        elif 'gpt2.phimmoi.net' in self.url:
+        # elif 'gpt2.phimmoi.net' in self.url:
+        elif re.search(r'gpt\d.phimmoi.net', self.url):
             return gpt2_phimmoi.get_link(self.url, self.media)
 
         elif re.search('hls.phimmoi.[net|link]', self.url):

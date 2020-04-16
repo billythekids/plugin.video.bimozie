@@ -42,7 +42,7 @@ class Request:
                                   cookies=cookies)
         return self.r.text
 
-    def post(self, url, params=None, headers=None, redirect=True, cookies=None, json=None):
+    def post(self, url, params=None, headers=None, redirect=True, cookies=None, json=None, verify=True):
         try:
             print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
         except:
@@ -53,7 +53,7 @@ class Request:
         # print("Post URL: %s header: %s" % (url, urllib.urlencode(headers)))
         if self.session:
             self.r = self.session.post(url, data=params, headers=headers, timeout=self.TIMEOUT,
-                                       allow_redirects=redirect, cookies=cookies, json=json)
+                                       allow_redirects=redirect, cookies=cookies, json=json, verify=verify)
             # for resp in self.r.history:
             #     print(resp.status_code, resp.url)
         else:
@@ -61,22 +61,22 @@ class Request:
                                    cookies=cookies, json=json)
         return self.r.text
 
-    def head(self, url, params=None, headers=None, redirect=True, cookies=None):
+    def head(self, url, params=None, headers=None, redirect=True, cookies=None, verify=True):
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
             self.r = self.session.head(url, headers=headers, timeout=self.TIMEOUT, params=params,
-                                       allow_redirects=redirect)
+                                       allow_redirects=redirect, verify=verify)
         else:
             self.r = requests.head(url, headers=headers, timeout=self.TIMEOUT, params=params, allow_redirects=redirect)
         return self.r
 
-    def options(self, url, params=None, headers=None, redirect=True, cookies=None):
+    def options(self, url, params=None, headers=None, redirect=True, cookies=None, verify=True):
         # if headers:
         #     headers = self.DEFAULT_HEADERS.update(headers)
         if self.session:
             self.r = self.session.options(url, headers=headers, timeout=self.TIMEOUT, params=params,
-                                          allow_redirects=redirect)
+                                          allow_redirects=redirect, verify=verify)
         else:
             self.r = requests.options(url, headers=headers, timeout=self.TIMEOUT, params=params,
                                       allow_redirects=redirect)
@@ -122,7 +122,7 @@ class AsyncRequest:
         print("*********************** All %s thread done" % self.length)
         self.dialog.close()
 
-    def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None, json=None, cookies=None):
+    def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None, json=None, cookies=None, verify=True):
         while not self.q.empty():
             work = self.q.get()
             url = work[1]
@@ -135,17 +135,19 @@ class AsyncRequest:
                 json = 'json' in url and url['json'] or json
                 cookies = 'cookies' in url and url['cookies'] or cookies
                 required_response_header = 'responseHeader' in url and True or False
+                verify = 'verify' in url and url['verify'] or verify
                 url = work[1]['url']
 
             retry = self.RETRY
             while retry > 0:
+                print verify
                 try:
                     if action is 'head':
-                        data = self.request.head(url, params=params, headers=headers, redirect=redirect, cookies=cookies)
+                        data = self.request.head(url, params=params, headers=headers, redirect=redirect, cookies=cookies, verify=verify)
                     if action is 'get':
-                        data = self.request.get(url, params=params, headers=headers, redirect=redirect, cookies=cookies)
+                        data = self.request.get(url, params=params, headers=headers, redirect=redirect, cookies=cookies, verify=verify)
                     if action is 'post':
-                        data = self.request.post(url, params=params, headers=headers, json=json, redirect=redirect, cookies=cookies)
+                        data = self.request.post(url, params=params, headers=headers, json=json, redirect=redirect, cookies=cookies, verify=verify)
                     if parser:
                         if required_response_header:
                             response_headers = self.request.get_request().headers
@@ -168,17 +170,17 @@ class AsyncRequest:
             self.q.task_done()
         return True
 
-    def head(self, urls, params=None, headers=None, redirect=False, parser=None, args=None, cookies=None):
+    def head(self, urls, params=None, headers=None, redirect=False, parser=None, args=None, cookies=None, verify=True):
         self.__create_queue(urls)
-        self.__start_thread('head', params, headers, redirect, parser, args, cookies)
+        self.__start_thread('head', params, headers, redirect, parser, args, cookies, verify)
         return self.results
 
-    def get(self, urls, headers=None, params=None, redirect=True, parser=None, args=None, cookies=None):
+    def get(self, urls, headers=None, params=None, redirect=True, parser=None, args=None, cookies=None, verify=True):
         self.__create_queue(urls)
-        self.__start_thread('get', params, headers, redirect, parser, args, cookies)
+        self.__start_thread('get', params, headers, redirect, parser, args, cookies, verify)
         return self.results
 
-    def post(self, urls, params=None, headers=None, json=None, redirect=False, parser=None, args=None, cookies=None):
+    def post(self, urls, params=None, headers=None, json=None, redirect=False, parser=None, args=None, cookies=None, verify=True):
         self.__create_queue(urls)
-        self.__start_thread('post', params, headers, redirect, parser, args, json, cookies)
+        self.__start_thread('post', params, headers, redirect, parser, args, json, cookies, verify)
         return self.results

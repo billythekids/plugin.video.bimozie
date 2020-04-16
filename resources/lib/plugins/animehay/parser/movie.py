@@ -45,6 +45,18 @@ class Parser:
             'links': [],
         }
 
+        sources = re.search(r'player.setup.*"sources":\s?(\[.*?\])', response, re.DOTALL)
+        if sources:
+            sources = json.loads(sources.group(1))
+            if sources and len(sources) > 0:
+                for source in sources:
+                    movie['links'].append({
+                        'link': source['file'],
+                        'title': 'Link %s' % source['label'],
+                        'type': source['type'],
+                        'resolve': False
+                    })
+
         sources = re.search(r"<iframe.*?src=['|\"](.*animehay.tv/play.*?)['|\"]\s?", response)
         if sources:
             res = Request()
@@ -120,18 +132,20 @@ class Parser:
             else:
                 res.get(sources.group(1))
                 link = res.get_request().url
-                vkey = re.search('id=(.*)', link).group(1)
-                base_url = urlparse(link)
-                base_url = base_url.scheme + '://' + base_url.netloc
-                urlVideo = "{}/hls/{}/{}.playlist.m3u8".format(base_url, vkey, vkey)
+                vkey = re.search('id=(.*)', link)
+                if vkey:
+                    vkey = vkey.group(1)
+                    base_url = urlparse(link)
+                    base_url = base_url.scheme + '://' + base_url.netloc
+                    urlVideo = "{}/hls/{}/{}.playlist.m3u8".format(base_url, vkey, vkey)
 
-                movie['links'].append({
-                    'link': urlVideo,
-                    'title': 'Link p2pdrive',
-                    'type': 'hls',
-                    'resolve': False,
-                    'originUrl': originUrl
-                })
+                    movie['links'].append({
+                        'link': urlVideo,
+                        'title': 'Link p2pdrive',
+                        'type': 'hls',
+                        'resolve': False,
+                        'originUrl': originUrl
+                    })
 
 
         # sources = re.search('<script rel="nofollow" src="(.*)" async>', response)

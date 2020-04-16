@@ -38,11 +38,11 @@ class Parser:
             'links': [],
         }
 
-        response = re.search(r'"source":({.*?}})', response)
-        if response:
-            response = json.loads(response.group(1), encoding='utf-8')
-            if len(response['medias']['levels']) > 0:
-                for f in response['medias']['levels']:
+        sources = re.search(r'"source":({.*?}})', response)
+        if sources:
+            sources = json.loads(sources.group(1), encoding='utf-8')
+            if len(sources['medias']['levels']) > 0:
+                for f in sources['medias']['levels']:
                     url = CryptoAES().decrypt(f['file'], f['key'])
                     movie['links'].append({
                         'link': url,
@@ -52,4 +52,17 @@ class Parser:
                         'originUrl': domain
                     })
 
+        sources = re.search(r'"sourcebk":(\[.*?\])', response)
+        if sources:
+            sources = json.loads(sources.group(1), encoding='utf-8')
+            if len(sources) > 0:
+                for f in sources:
+                    url = CryptoAES().decrypt(f['link'], f['key'])
+                    movie['links'].append({
+                        'link': url,
+                        'title': 'Link %s' % f['namesv'],
+                        'type': f['typeplay'],
+                        'resolve': False,
+                        'originUrl': domain
+                    })
         return movie

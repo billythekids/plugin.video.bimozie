@@ -19,14 +19,17 @@ def get_link(url, movie):
         }
 
         items = json.loads(Request().get(hosturl, headers=header))
-        listitems = []
-        for i in items:
-            listitems.append("%s (%s)" % (i['label'], i['file']))
-        index = xbmcgui.Dialog().select("Select stream", listitems)
-        if index == -1:
-            return None, None
+        if len(items)>0:
+            listitems = []
+            for i in items:
+                listitems.append("%s (%s)" % (i['label'], i['file']))
+            index = xbmcgui.Dialog().select("Select stream", listitems)
+            if index == -1:
+                return None, None
+            else:
+                return items[index]['file'], base_url
         else:
-            return items[index]['file'], base_url
+            return None, None
     except:
         pass
 
