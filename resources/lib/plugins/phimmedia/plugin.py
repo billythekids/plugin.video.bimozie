@@ -2,7 +2,11 @@ from utils.mozie_request import Request
 from phimmedia.parser.category import Parser as Category
 from phimmedia.parser.channel import Parser as Channel
 from phimmedia.parser.movie import Parser as Movie
+from cloudscraper2 import CloudScraper
+import pickle, time
+import utils.xbmc_helper as helper
 import urllib
+
 
 user_agent = (
     "Mozilla/5.0 (X11; Linux x86_64) "
@@ -20,16 +24,29 @@ h = {
 
 class Phimmedia:
     domain = "https://www.phimmedia.tv"
+    cookies = {}
 
     def __init__(self):
         self.request = Request(h, session=True)
-        # self.request.post('https://www.phimmedia.tv/mak.php', params={
-        #     'mak_firewall_redirect': self.domain,
-        #     'mak_firewall_postcontent': ''
-        # })
+
+        if helper.has_file_path('phimmedia.bin') and helper.get_last_modified_time_file('phimmedia.bin') + 43200 > \
+                int(time.time()):
+            with open(helper.get_file_path('phimmedia.bin')) as f:
+                self.cookies = pickle.load(f)
+        else:
+            self.updateSession(self.domain)
+
+    def updateSession(self, url, delay=10):
+        try:
+            scraper = CloudScraper.create_scraper(delay=delay)
+            scraper.headers.update({'User-Agent': user_agent})
+            self.cookies = scraper.get(url).cookies.get_dict()
+            with open(helper.get_file_path('phimmedia.bin'), 'wb') as f:
+                pickle.dump(self.cookies, f)
+        except: pass
 
     def getCategory(self):
-        response = self.request.get(self.domain)
+        response = self.request.get(self.domain, cookies=self.cookies)
         return Category().get(response), Channel().get(response)
 
     def getChannel(self, channel, page=1):
@@ -39,19 +56,19 @@ class Phimmedia:
             url = '%s%s&page=%d' % (self.domain, channel, page)
         else:
             url = '%s%s' % (self.domain, channel)
-        response = self.request.get(url)
+        response = self.request.get(url, cookies=self.cookies)
         return Channel().get(response)
 
     def getMovie(self, id):
         url = "%sxem-online.html" % id
-        response = self.request.get(url)
+        response = self.request.get(url, cookies=self.cookies)
         return Movie().get(response)
 
     def getLink(self, movie):
-        response = self.request.get(movie['link'])
+        response = self.request.get(movie['link'], cookies=self.cookies)
         return Movie().get_link(response, movie['link'])
 
     def search(self, text, page=1):
         url = "%s/index.php?keyword=%s&do=phim&act=search&page=%s" % (self.domain, urllib.quote_plus(text), page)
-        response = self.request.get(url)
+        response = self.request.get(url, cookies=self.cookies)
         return Channel().get(response)
