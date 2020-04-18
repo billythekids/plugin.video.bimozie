@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+
+import re, json, xbmc
 from bs4 import BeautifulSoup
-import re
-import json
 from utils.aes import CryptoAES
 from utils.mozie_request import AsyncRequest
 
@@ -59,10 +59,19 @@ class Parser:
                                 'originUrl': originURL
                             })
 
-                AsyncRequest(request=request, retry=50, thread=1).get(jobs, headers={
-                    # 'origin': 'https://xomphimhay.com',
-                    'referer': originURL
-                }, args=(movie['links'], originURL))
+                for job in jobs:
+                    try:
+                        Parser.extract_link(request.get(job.get('url'), headers={
+                            # 'origin': domain,
+                            'referer': originURL
+                        }), (movie['links'], originURL))
+                        xbmc.sleep(1000)
+                    except: pass
+
+                # AsyncRequest(request=request, retry=1, thread=1).get(jobs, headers={
+                #     'origin': 'https://xomphimhay.com',
+                # 'referer': originURL
+                # }, args=(movie['links'], originURL))
         return movie
 
     @staticmethod

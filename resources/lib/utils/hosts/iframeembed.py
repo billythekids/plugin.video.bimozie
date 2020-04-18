@@ -27,7 +27,8 @@ def get_link(url, media):
         sources = json.loads(sources)
     else:
         sources = re.search(r'sources\s?[=:]\s?(\[.*?\])', resp)
-        sources = json.loads(sources.group(1))
+        if sources:
+            sources = json.loads(sources.group(1))
 
     if sources:
         if len(sources) > 1:

@@ -20,8 +20,6 @@ class Xomphimhay:
                 self.request.set_session(pickle.load(f))
             cookies_jar = self.request.get_request_session().cookies
             cookies_jar.set('vietnamese', 'true', domain='xomphimhay.com', path='/')
-            print cookies_jar
-
 
     def updateSession(self):
         with open(helper.get_file_path('xomphimhay.bin'), 'wb') as f:
@@ -50,7 +48,7 @@ class Xomphimhay:
         return Movie().get(response, url)
 
     def getLink(self, movie):
-        # https://xemphimso.tv/api/v1/episodes/1000289/player
+        # https://xomphimhay.com/api/v1/episodes/1155146/player
         url, mid = movie['link'].split('|')
         response = self.request.get(self.api % mid)
         return Movie().get_link(response, self.domain, self.request, url)

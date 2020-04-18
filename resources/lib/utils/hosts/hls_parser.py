@@ -14,7 +14,7 @@ def get_link(url, media):
 
     # url = get_stream(url, header)
     # return None, None
-    return str(url) + "|%s" % urlencode(header), 'm3u8'
+    return str(url) + "|%s" % urlencode(header), 'hls_parser'
 
 
 def get_stream(url, header):

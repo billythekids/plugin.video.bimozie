@@ -119,28 +119,35 @@ class AsyncRequest:
             worker.start()
 
         self.q.join()
-        print("*********************** All %s thread done" % self.length)
+        print("*********************** All %s threads done" % self.length)
         self.dialog.close()
 
     def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None, json=None, cookies=None, verify=True):
+        print "params {}, headers {}, json: {}, redirect {}, cookies {}, verify {}"\
+                .format(params, headers, json, redirect, cookies, verify)
+
         while not self.q.empty():
             work = self.q.get()
             url = work[1]
+            required_response_header = False
+            data = None
             if type(url) is dict:
-                params = 'params' in url and url['params'] or params
-                headers = 'headers' in url and url['headers'] or headers
-                redirect = 'redirect' in url and url['redirect'] or redirect
-                parser = 'parser' in url and url['parser'] or parser
-                args = 'args' in url and url['args'] or args
-                json = 'json' in url and url['json'] or json
-                cookies = 'cookies' in url and url['cookies'] or cookies
-                required_response_header = 'responseHeader' in url and True or False
-                verify = 'verify' in url and url['verify'] or verify
+                if url.get('params'): params = url.get('params')
+                if url.get('headers'): headers = url.get('headers')
+                if url.get('redirect'): redirect = url.get('redirect')
+                if url.get('parser'): parser = url.get('parser')
+                if url.get('args'): args = url.get('args')
+                if url.get('json'): json = url.get('json')
+                if url.get('cookies'): cookies = url.get('cookies')
+                if url.get('responseHeader'): required_response_header = True
+                if url.get('verify') is False: verify = False
                 url = work[1]['url']
 
             retry = self.RETRY
+            print "url {}, params {}, headers {}, json: {}, redirect {}, cookies {}, verify {}, required_header {}"\
+                .format(url, params, headers, json, redirect, cookies, verify, required_response_header)
+
             while retry > 0:
-                print verify
                 try:
                     if action is 'head':
                         data = self.request.head(url, params=params, headers=headers, redirect=redirect, cookies=cookies, verify=verify)
@@ -158,8 +165,8 @@ class AsyncRequest:
                     self.results[work[0]] = data
                     retry = 0
                 except Exception as inst:
-                    print inst
-                    print('Request %s fail retry %d' % (work[1], retry))
+                    print 'Async error: {}'.format(inst.message)
+                    print('Async Request %s fail retry %d' % (work[1], retry))
                     self.results[work[0]] = {}
                 finally:
                     retry -= 1
@@ -172,12 +179,12 @@ class AsyncRequest:
 
     def head(self, urls, params=None, headers=None, redirect=False, parser=None, args=None, cookies=None, verify=True):
         self.__create_queue(urls)
-        self.__start_thread('head', params, headers, redirect, parser, args, cookies, verify)
+        self.__start_thread('head', params, headers, redirect, parser, args, None, cookies, verify)
         return self.results
 
     def get(self, urls, headers=None, params=None, redirect=True, parser=None, args=None, cookies=None, verify=True):
         self.__create_queue(urls)
-        self.__start_thread('get', params, headers, redirect, parser, args, cookies, verify)
+        self.__start_thread('get', params, headers, redirect, parser, args, None, cookies, verify)
         return self.results
 
     def post(self, urls, params=None, headers=None, json=None, redirect=False, parser=None, args=None, cookies=None, verify=True):

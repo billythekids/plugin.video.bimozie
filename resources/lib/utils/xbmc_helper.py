@@ -25,7 +25,6 @@ def has_file_path(filename):
 
 
 def get_file_path(filename):
-    print os.path.join(addon_data_dir, filename)
     return os.path.join(addon_data_dir, filename)
 
 
