@@ -24,7 +24,10 @@ class Phimbathu:
         scraper = CloudScraper.create_scraper(delay=delay)
         scraper.headers.update({'User-Agent': user_agent})
         self.cookies = scraper.get(url).cookies.get_dict()
-        with open(helper.get_file_path('phimbathu.bin'), 'wb') as f:
+        if not helper.has_file_path('phimbathu.bin'):
+            helper.write_file('phimbathu.bin', '')
+
+        with open(helper.get_file_path('phimbathu.bin'), 'wb+') as f:
             pickle.dump(self.cookies, f)
 
     def getCategory(self):

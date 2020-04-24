@@ -50,7 +50,7 @@ class Request:
         if not headers:
             headers = self.DEFAULT_HEADERS
 
-        # print("Post URL: %s header: %s" % (url, urllib.urlencode(headers)))
+        print("Post URL: %s header: %s" % (url, urllib.urlencode(headers)))
         if self.session:
             self.r = self.session.post(url, data=params, headers=headers, timeout=self.TIMEOUT,
                                        allow_redirects=redirect, cookies=cookies, json=json, verify=verify)

@@ -57,8 +57,6 @@ class Parser:
                         'resolve': False
                     })
 
-            return movie
-
         sources = re.search("var urlPlay = '(.*)';", response)
         if sources:
             sources = sources.group(1)
@@ -77,13 +75,13 @@ class Parser:
                         })
                 else:
                     for source in sources:
-                            movie['links'].append({
-                                'link': source['file'].replace('\\', ''),
-                                'title': 'Link %s' % source['type'].encode('utf-8'),
-                                'type': source['type'].encode('utf-8'),
-                                'originUrl': originUrl,
-                                'resolve': False
-                            })
+                        movie['links'].append({
+                            'link': source['file'].replace('\\', ''),
+                            'title': 'Link %s' % source['type'].encode('utf-8'),
+                            'type': source['type'].encode('utf-8'),
+                            'originUrl': originUrl,
+                            'resolve': False
+                        })
 
                 return movie
 
@@ -123,9 +121,9 @@ class Parser:
 
             AsyncRequest(request=request).post(jobs, args=links)
             for link in links:
-                title = 'movie3s.net' in link and 'Movie3s' or 'Unknow'
+                title = 'movie3s.net' in link[0] and 'Movie3s' or link[1]
                 movie['links'].append({
-                    'link': link,
+                    'link': link[0],
                     'title': 'Link %s' % title,
                     'type': 'file',
                     'originUrl': originUrl,
@@ -136,9 +134,15 @@ class Parser:
 
     @staticmethod
     def extract_link(response, movie_links):
-        sources = re.search("<iframe.*src=\"(.*)\"", response)
+        # print response.encode('utf8')
+        sources = re.search(r"<iframe.*src=\"(.*)\"", response)
         if sources:
-            sources = re.search("var url\s=\s'(.*)';", response)
+            sources = re.search(r"var url\s=\s'(.*)';", response)
             source = sources.group(1)
-            movie_links.append(unquote(source))
+            movie_links.append((unquote(source), 'unknown'))
 
+        sources = re.search(r"var source = (\[.*?\])", response)
+        if sources:
+            sources = json.loads(sources.group(1))
+            for link in sources:
+                movie_links.append((link.get('file'), link.get('label')))

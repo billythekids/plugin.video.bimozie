@@ -59,8 +59,9 @@ class Parser:
 
             response = Request().get('http://dongphim.net/content/parseUrl', params=params)
             response = json.loads(response)
+            print response
 
-            if response['hls']:
+            if response.get('formats'):
                 self.get_media_url(response, movie['links'])
 
             params_alt = {
@@ -76,9 +77,9 @@ class Parser:
                 'ts': 1556547428839,
                 'item_id': item_id,
                 'username': username,
-                'err[dryt][dr][]': 'https://r1---sn-a5mekned.c.youtube.com',
-                'err[dryt][num]': 1,
-                'err[dryt][dr_s]': response.get('sig'),
+                'err[{}][dr][]'.format(response.get('type')): 'https://r1---sn-a5mekned.c.youtube.com',
+                'err[{}][num]'.format(response.get('type')): 1,
+                'err[{}][dr_s]'.format(response.get('type')): response.get('sig'),
                 # 'err[pr][ended]': 'true',
                 # 'err[do][ended]': 'true',
                 # 'err[hdx][ended]': 'true',

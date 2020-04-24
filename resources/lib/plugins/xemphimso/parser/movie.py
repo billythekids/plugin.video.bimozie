@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-import re
-import json
+import re, json
 from utils.aes import CryptoAES
+from utils.mozie_request import Request
 
 
 class Parser:
@@ -52,6 +52,21 @@ class Parser:
                         'originUrl': domain
                     })
 
+        sources = re.search(r'"source":(\[.*?\])', response)
+        if sources:
+            print sources.group(1).decode('utf8')
+            sources = json.loads(sources.group(1), encoding='utf-8')
+            for f in sources:
+                url = CryptoAES().decrypt(f['link'], f['key'])
+                if not Parser.parse_link(url, domain, movie['links']):
+                    movie['links'].append({
+                        'link': url,
+                        'title': 'Link %s' % f['namesv'],
+                        'type': f['typeplay'],
+                        'resolve': False,
+                        'originUrl': domain
+                    })
+
         sources = re.search(r'"sourcebk":(\[.*?\])', response)
         if sources:
             sources = json.loads(sources.group(1), encoding='utf-8')
@@ -66,3 +81,24 @@ class Parser:
                         'originUrl': domain
                     })
         return movie
+
+    @staticmethod
+    def parse_link(url, domain, links):
+        if 'play.xemphimso.tv/load-stream' in url:
+            response = Request().get(url, headers={
+                'origin': domain,
+                'referer': domain
+            })
+
+            response = json.loads(response)
+            for f in response:
+                url = CryptoAES().decrypt(f.get('file'), f.get('key'))
+                links.append({
+                    'link': url,
+                    'title': 'Link %s' % f.get('label'),
+                    'type': f.get('label'),
+                    'resolve': False,
+                    'originUrl': domain
+                })
+            return True
+        return False

@@ -74,7 +74,11 @@ class LinkParser:
                 or 'beverly-downing' in self.url \
                 or 'xemphimso.tv/proxy' in self.url \
                 or 'play.xomphimhay.com/load-stream' in self.url \
+                or 'play.xemphimso.tv/load-stream' in self.url \
                 or 'proxymedia.site' in self.url \
+                or 'goostreams.online' in self.url \
+                or 'goolink.site' in self.url \
+                or 'vtv16.site' in self.url \
                 or 'googleapicdn.com' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
 

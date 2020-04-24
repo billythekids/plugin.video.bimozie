@@ -22,7 +22,10 @@ class Xomphimhay:
             cookies_jar.set('vietnamese', 'true', domain='xomphimhay.com', path='/')
 
     def updateSession(self):
-        with open(helper.get_file_path('xomphimhay.bin'), 'wb') as f:
+        if not helper.has_file_path('xomphimhay.bin'):
+            helper.write_file('xomphimhay.bin', '')
+
+        with open(helper.get_file_path('xomphimhay.bin'), 'wb+') as f:
             print self.request.get_request_session()
             pickle.dump(self.request.get_request_session(), f)
 
