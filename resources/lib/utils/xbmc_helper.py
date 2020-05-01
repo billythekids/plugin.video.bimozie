@@ -117,6 +117,7 @@ def wait(sec):
 
 def convert_js_2_json(str):
     vstr = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', str)
+    vstr = vstr.replace("'", '"')
     return json.loads(vstr)
 
 

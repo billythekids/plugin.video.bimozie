@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import re, json, base64, xbmcgui
+import re, json, base64, xbmcgui, os
+import utils.xbmc_helper as helper
 from utils.mozie_request import Request
 from urlparse import urlparse
 from urllib import urlencode
@@ -10,10 +11,12 @@ def get_link(url, media):
     base_url = urlparse(media.get('originUrl'))
     base_url = base_url.scheme + '://' + base_url.netloc
     header = {
-            'Referer': media.get('originUrl'),
-            'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
-            'Origin': base_url
-        }
+        'Referer': media.get('originUrl'),
+        'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+        'Origin': base_url
+    }
+
+    print "Apply iframeembed url %s" % url
 
     resp = request.get(url, headers=header)
     req = request.get_request()
@@ -26,9 +29,11 @@ def get_link(url, media):
         sources = request.get(rurl, headers=header)
         sources = json.loads(sources)
     else:
-        sources = re.search(r'sources\s?[=:]\s?(\[.*?\])', resp)
+        sources = re.search(r'sources\s?[=:]\s?(\[.*?\])', resp, re.DOTALL)
         if sources:
-            sources = json.loads(sources.group(1))
+            sources = "".join([s for s in sources.group(1).splitlines() if s.strip("\r\n")])
+            sources = re.sub(r'\s+', '', sources)
+            sources = helper.convert_js_2_json(sources)
 
     if sources:
         if len(sources) > 1:

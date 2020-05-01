@@ -2,6 +2,7 @@
 import urllib
 import requests
 import xbmcgui
+import sys, traceback
 from Queue import Queue
 from threading import Thread
 
@@ -161,12 +162,13 @@ class AsyncRequest:
                             data = parser(data, args, response_headers)
                         else:
                             data = parser(data, args)
-                    # print('Requested %s' % work[1])
+                    print('Async Requested %s' % work[1])
                     self.results[work[0]] = data
                     retry = 0
                 except Exception as inst:
                     print 'Async error: {}'.format(inst.message)
                     print('Async Request %s fail retry %d' % (work[1], retry))
+                    traceback.print_exc()
                     self.results[work[0]] = {}
                 finally:
                     retry -= 1

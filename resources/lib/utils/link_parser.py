@@ -66,6 +66,11 @@ class LinkParser:
                 :
             return hls_parser.get_link(self.url, self.media)
 
+        elif 'phimnhe.net/player/yotube.php' in self.url \
+                or 'aio.vtvhub.com' in self.url \
+                or 'phimgi.tv/player/yotube.php' in self.url:
+            return iframeembed.get_link(self.url, self.media)
+
         elif 'fimfast.com' in self.url \
                 or 'cdnplay.xyz' in self.url \
                 or 'vdicdn.com' in self.url \
@@ -75,16 +80,13 @@ class LinkParser:
                 or 'xemphimso.tv/proxy' in self.url \
                 or 'play.xomphimhay.com/load-stream' in self.url \
                 or 'play.xemphimso.tv/load-stream' in self.url \
+                or 'node.xemphimso.tv' in self.url \
                 or 'proxymedia.site' in self.url \
                 or 'goostreams.online' in self.url \
                 or 'goolink.site' in self.url \
                 or 'vtv16.site' in self.url \
                 or 'googleapicdn.com' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
-
-        elif 'phimnhe.net/player/yotube.php' in self.url \
-                or 'phimgi.tv/player/yotube.php' in self.url:
-            return iframeembed.get_link(self.url, self.media)
 
         elif 'googlevideo.com' in self.url:
             return googlevideo.get_link(self.url, self.media)

@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 import re
 import json
+from urlparse import urlparse
 from utils.mozie_request import Request, AsyncRequest
 from urlparse import unquote
 
@@ -138,8 +139,10 @@ class Parser:
         sources = re.search(r"<iframe.*src=\"(.*)\"", response)
         if sources:
             sources = re.search(r"var url\s=\s'(.*)';", response)
-            source = sources.group(1)
-            movie_links.append((unquote(source), 'unknown'))
+            if sources:
+                source = sources.group(1)
+                base_url = urlparse(unquote(source))
+                movie_links.append((unquote(source), base_url.netloc))
 
         sources = re.search(r"var source = (\[.*?\])", response)
         if sources:
