@@ -7,7 +7,7 @@ import utils.xbmc_helper as XbmcHelper
 
 
 class Dongphim:
-    domain = "https://www.dongphim.net"
+    domain = "https://www.dongphim.tv"
 
     def __init__(self):
         self.request = Request()
@@ -33,10 +33,10 @@ class Dongphim:
             mid = re.search(r'data-playlist-contain="(.*?)"', response)
             if mid:
                 # https://stats.dongphim.net/content/subitems?mid=DMnhnQL0&a=1587703526&type=all
-                response = self.request.get('https://stats.dongphim.net/content/subitems?mid={}&a=1587703526&type=all'.format(mid.group(1)))
+                response = self.request.get('https://stats.dongphim.tv/content/subitems?mid={}&a=1587703526&type=all'.format(mid.group(1)))
                 response = json.loads(response)
                 response = response.get('data').encode('utf-8', errors='ignore')
-                print response
+
                 eps = Movie().get(response)
         return eps
 

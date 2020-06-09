@@ -10,10 +10,8 @@ class MediaHelper:
         link = media['link']
         mediatype = '720'
 
-        r = re.search('^https?:', link)
-        if not r:
-            link = 'http:%s' % link
-            media['link'] = link
+        link = MediaHelper.build_url(link)
+        media['link'] = link
 
         if 'resolve' in media and not media['resolve']:
             if media and 'link' in media:
@@ -24,6 +22,7 @@ class MediaHelper:
             media['link'] = None
             return
 
+        link = MediaHelper.build_url(link)
         media['link'] = link
         return mediatype
 
@@ -31,3 +30,10 @@ class MediaHelper:
     def resolve_subtitle(media):
         if 'subtitle' in media:
             pass
+
+    @staticmethod
+    def build_url(link):
+        r = re.search('^https?:', link)
+        if not r:
+            return 'http:%s' % link
+        return link

@@ -4,7 +4,7 @@ from urlparse import urlparse
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
 from urllib import urlencode
-import iframeembed
+import iframeembed, cors
 
 
 def get_link(url, movie):
@@ -25,21 +25,12 @@ def get_link(url, movie):
 
     # method 1
     try:
-        mid = re.search(r'\?id=(.*)', url).group(1)
-        hosturl = '%s/getHost/%s' % (base_url, mid)
-        response = Request().post(hosturl, headers={
-            'origin': base_url,
-            'referer': url
-        })
+        mid = re.search(r'\?id=((?:(?!\?).)*)', url).group(1)
+        base_url = urlparse(url)
+        base_url = base_url.scheme + '://' + base_url.netloc
+        url = "%s/hls/%s/%s.playlist.m3u8" % (base_url, mid, mid)
 
-        movie_url = base64.b64decode(response)
-
-        header = {
-            'Origin': 'http://www.vtv16.com',
-            'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
-            'Referer': movie.get('originUrl')
-        }
-        return movie_url + "|%s" % urlencode(header), base_url
+        return cors.get_link(url, movie, including_agent=False)
     except:
         pass
 

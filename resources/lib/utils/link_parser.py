@@ -36,6 +36,7 @@ from .hosts import fshare, \
     vanlongstreaming, \
     feurl, \
     hls_parser, \
+    streamtape, \
     verystream
 
 
@@ -52,6 +53,9 @@ class LinkParser:
 
         if re.search('feurl.com', self.url):
             return feurl.get_link(self.url, self.media)
+
+        if re.search('streamtape.com', self.url):
+            return streamtape.get_link(self.url, self.media)
 
         elif 'vhstream.xyz' in self.url \
                 or 'vkooltv.com' in self.url \
@@ -81,6 +85,7 @@ class LinkParser:
                 or 'play.xomphimhay.com/load-stream' in self.url \
                 or 'play.xemphimso.tv/load-stream' in self.url \
                 or 'node.xemphimso.tv' in self.url \
+                or 'api.xemphimso.tv' in self.url \
                 or 'proxymedia.site' in self.url \
                 or 'goostreams.online' in self.url \
                 or 'goolink.site' in self.url \
@@ -97,8 +102,8 @@ class LinkParser:
         elif re.search('manga123.net', self.url):
             return manga123.get_link(self.url, self.media)
 
-        elif re.search('mixdrop.co', self.url):
-            return self.get_link_resolveurl()
+        # elif re.search('mixdrop.co', self.url):
+        #     return self.get_link_resolveurl()
 
         elif re.search('mixdrop.co', self.url):
             return mixdrop.get_link(self.url, self.media), 'mixdrop.co'

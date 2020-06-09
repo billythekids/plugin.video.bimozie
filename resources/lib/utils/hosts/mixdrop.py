@@ -15,9 +15,8 @@ def get_link(url, media):
     else:
         sources = response
 
-    source = re.search(r'furl="(.*?)";', sources).group(1)
+    source = re.search(r'wurl="(.*?)";', sources).group(1)
     if 'http' not in source:
         source = 'https:{}'.format(source)
 
-    print(source)
     return source

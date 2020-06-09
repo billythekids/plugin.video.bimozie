@@ -57,9 +57,8 @@ class Parser:
                 'username': username,
             }
 
-            response = Request().get('http://dongphim.net/content/parseUrl', params=params)
+            response = Request().get('http://dongphim.tv/content/parseUrl', params=params)
             response = json.loads(response)
-            print response
 
             if response.get('formats'):
                 self.get_media_url(response, movie['links'])
@@ -88,7 +87,7 @@ class Parser:
                 # 'err[gbak][dr][]': 'https://sgp.dgo.dongphim.net'
             }
 
-            response = json.loads(Request().get('http://dongphim.net/content/parseUrl', params=params_alt))
+            response = json.loads(Request().get('http://dongphim.tv/content/parseUrl', params=params_alt))
             self.get_media_url(response, movie['links'])
 
         # if len(movie['links']) > 1:
