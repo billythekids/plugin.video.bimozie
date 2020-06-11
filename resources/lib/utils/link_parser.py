@@ -219,8 +219,9 @@ class LinkParser:
         elif re.search('hls.hydrax.net', self.url):
             return hls_hydrax.get_link(self.url, self.media), 'hls5'
 
-        elif re.search('dgo.dongphim.net', self.url):
-            return dongphim.get_link(self.url, self.media)
+        elif re.search('dgo.dongphim.net', self.url) \
+        or re.search('dgo.dongphim.tv', self.url):
+            return cors.get_link(self.url, self.media)
 
         elif '.xyz' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)

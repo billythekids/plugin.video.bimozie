@@ -54,7 +54,6 @@ class Parser:
 
         sources = re.search(r'"source":(\[.*?\])', response)
         if sources:
-            print sources.group(1).decode('utf8')
             sources = json.loads(sources.group(1), encoding='utf-8')
             for f in sources:
                 url = CryptoAES().decrypt(f['link'], f['key'])

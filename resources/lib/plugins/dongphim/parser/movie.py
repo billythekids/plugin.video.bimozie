@@ -30,7 +30,7 @@ class Parser:
 
         return movie
 
-    def get_link(self, response):
+    def get_link(self, response, originUrl):
         movie = {
             'group': {},
             'episode': [],
@@ -61,7 +61,7 @@ class Parser:
             response = json.loads(response)
 
             if response.get('formats'):
-                self.get_media_url(response, movie['links'])
+                self.get_media_url(response, movie['links'], originUrl)
 
             params_alt = {
                 'v': 2,
@@ -88,7 +88,7 @@ class Parser:
             }
 
             response = json.loads(Request().get('http://dongphim.tv/content/parseUrl', params=params_alt))
-            self.get_media_url(response, movie['links'])
+            Parser.get_media_url(response, movie['links'], originUrl)
 
         # if len(movie['links']) > 1:
         #     try:
@@ -97,7 +97,8 @@ class Parser:
 
         return movie
 
-    def get_media_url(self, response, movie):
+    @staticmethod
+    def get_media_url(response, movie, originUrl):
         urls = response['formats']
 
         for i in urls:
@@ -106,4 +107,5 @@ class Parser:
                 'title': 'Link %s' % i,
                 'type': 'mp4',
                 'resolve': False,
+                'originUrl': originUrl
             })

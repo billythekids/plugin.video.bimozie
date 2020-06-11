@@ -7,7 +7,7 @@ import utils.xbmc_helper as XbmcHelper
 
 
 class Dongphim:
-    domain = "https://www.dongphim.tv"
+    domain = "https://dongphim.tv/en"
 
     def __init__(self):
         self.request = Request()
@@ -42,7 +42,7 @@ class Dongphim:
 
     def getLink(self, movie):
         response = self.request.get(movie['link'])
-        return Movie().get_link(response)
+        return Movie().get_link(response, movie['link'])
 
     def search(self, text):
         url = "%s/content/search?t=kw&q=%s" % (self.domain, urllib.quote_plus(text))
