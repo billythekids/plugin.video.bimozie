@@ -74,7 +74,7 @@ SITES = [
     },
     {
         'name': 'phimmoi.net',
-        'logo': 'http://www.phimmoi.net/logo/phimmoi-square.png',
+        'logo': 'http://www.phimmoiz.com/logo/phimmoi-square.png',
         'className': 'Phimmoi',
         'plugin': 'phimmoi.plugin',
         'version': 1

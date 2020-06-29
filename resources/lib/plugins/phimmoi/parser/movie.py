@@ -65,6 +65,8 @@ class Parser:
         response = Request().get(url)
 
         self.key = self.get_decrypt_key(response)
+
+        self.key
         if not self.key:
             return movie
 
@@ -115,10 +117,12 @@ class Parser:
 
         if jsonresponse['thirdParty']:
             jobs = []
+            self.key = "@@@3rd"
             for item in jsonresponse['thirdParty']:
                 if 'hydrax.html' not in item.get('embed'):
+                    movie_url = self.get_url(CryptoAES().decrypt(item.get('embed'), bytes(self.key.encode('utf-8'))))
                     movie['links'].append({
-                        'link': item.get('embed'),
+                        'link': movie_url,
                         'title': 'Link {}'.format(item.get('label', 'HD')),
                         'type': item.get('type'),
                         'resolve': False,

@@ -13,12 +13,12 @@ user_agent = (
 h = {
     'User-Agent': user_agent,
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Host': 'www.phimmoi.net',
-    'Referer': 'http://www.phimmoi.net/vn.php'
+    'Host': 'www.phimmoiz.com',
+    'Referer': 'http://www.phimmoiz.com/vn.php'
 }
 
 class Phimmoi:
-    domain = "http://www.phimmoi.net/"
+    domain = "http://www.phimmoiz.com/"
 
     def __init__(self):
         self.request = Request(h, session=True)

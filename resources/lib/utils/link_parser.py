@@ -184,7 +184,7 @@ class LinkParser:
                 or re.search('tstream.xyz', self.url):
             return self.get_referer_link()
 
-        elif 'pzc.phimmoi.net' in self.url:
+        elif 'pzc.phimmoiz.com' in self.url:
             return pzc_phimmoi.get_link(self.url, self.media)
 
         elif 'gpt.phimmoi.net' in self.url:
