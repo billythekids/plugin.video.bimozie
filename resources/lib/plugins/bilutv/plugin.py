@@ -6,7 +6,7 @@ import urllib
 
 
 class Bilutv:
-    domain = "https://bilutv.org"
+    domain = "https://bilutvz.com"
 
     def getCategory(self):
         url = "%s/%s" % (self.domain, 'danh-sach/')

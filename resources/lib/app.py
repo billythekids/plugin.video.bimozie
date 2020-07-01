@@ -44,7 +44,7 @@ SITES = [
         'version': 1
     },
     {
-        'name': 'fimfast.com',
+        'name': 'fimfast.tv',
         'logo': 'https://fimfast.com/assets/img/logo.png',
         'className': 'Fimfast',
         'plugin': 'fimfast.plugin',
@@ -56,7 +56,7 @@ SITES = [
         'logo': 'http://bilutv.org/Theme/images/bilutv-logo-noel.png',
         'className': 'Bilutv',
         'plugin': 'bilutv.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'bilutvb.com',
@@ -105,7 +105,7 @@ SITES = [
         'logo': 'http://phimbathu.org/Theme/images/phimbathu-logo.png',
         'className': 'Phimbathu',
         'plugin': 'phimbathu.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'kenh88.com',
@@ -147,14 +147,14 @@ SITES = [
         'logo': 'https://yt3.ggpht.com/a-/AN66SAx84wKI577rKgX2IeQUiG31GaOhmVIu2le2rQ=s900-mo-c-c0xffffffff-rj-k-no',
         'className': 'Vtv16',
         'plugin': 'vtv16.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'phimgi.net',
         'logo': 'https://cdn-img.phimgi.net/wp-content/uploads/2019/01/phimgi-02.png',
         'className': 'Phimgi',
         'plugin': 'phimgi.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'dongphim.net',

@@ -7,7 +7,8 @@ import utils.xbmc_helper as XbmcHelper
 
 
 class Dongphim:
-    domain = "https://dongphim.tv/en"
+    domain = "https://dongphim.biz"
+    api = "https://dp.voocdn.com"
 
     def __init__(self):
         self.request = Request()
@@ -32,8 +33,8 @@ class Dongphim:
         if len(eps.get('group').get(eps.get('group').keys()[0])) == 0:
             mid = re.search(r'data-playlist-contain="(.*?)"', response)
             if mid:
-                # https://stats.dongphim.net/content/subitems?mid=DMnhnQL0&a=1587703526&type=all
-                response = self.request.get('https://stats.dongphim.tv/content/subitems?mid={}&a=1587703526&type=all'.format(mid.group(1)))
+                # https://dp.voocdn.com/content/subitems?mid=BG56xgbS&a=1593610184&type=all
+                response = self.request.get('{}/content/subitems?mid={}&a=1587703526&type=all'.format(self.api, mid.group(1)))
                 response = json.loads(response)
                 response = response.get('data').encode('utf-8', errors='ignore')
 
@@ -42,7 +43,7 @@ class Dongphim:
 
     def getLink(self, movie):
         response = self.request.get(movie['link'])
-        return Movie().get_link(response, movie['link'])
+        return Movie().get_link(response, movie['link'], self.api)
 
     def search(self, text):
         url = "%s/content/search?t=kw&q=%s" % (self.domain, urllib.quote_plus(text))

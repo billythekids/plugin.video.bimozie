@@ -30,7 +30,7 @@ class Parser:
 
         return movie
 
-    def get_link(self, response, originUrl):
+    def get_link(self, response, originUrl, api):
         movie = {
             'group': {},
             'episode': [],
@@ -57,7 +57,7 @@ class Parser:
                 'username': username,
             }
 
-            response = Request().get('http://dongphim.tv/content/parseUrl', params=params)
+            response = Request().get('{}/content/parseUrl'.format(api), params=params)
             response = json.loads(response)
 
             if response.get('formats'):
@@ -87,7 +87,7 @@ class Parser:
                 # 'err[gbak][dr][]': 'https://sgp.dgo.dongphim.net'
             }
 
-            response = json.loads(Request().get('http://dongphim.tv/content/parseUrl', params=params_alt))
+            response = json.loads(Request().get('{}/content/parseUrl'.format(api), params=params_alt))
             Parser.get_media_url(response, movie['links'], originUrl)
 
         # if len(movie['links']) > 1:

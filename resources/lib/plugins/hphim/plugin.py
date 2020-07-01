@@ -7,7 +7,7 @@ from hphim.parser.movie import Parser as Movie
 
 
 class Hphim:
-    domain = "http://biphim.tv"
+    domain = "http://bitv.tv"
 
     def getCategory(self):
         response = Request().get(self.domain)

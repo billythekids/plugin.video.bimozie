@@ -79,11 +79,12 @@ class Parser:
                         'resolve': False,
                         'originUrl': domain
                     })
+
         return movie
 
     @staticmethod
     def parse_link(url, domain, links):
-        if 'play.xemphimso.tv/load-stream' in url:
+        if 'play.xemphimso.info/load-stream' in url:
             response = Request().get(url, headers={
                 'origin': domain,
                 'referer': domain
@@ -100,4 +101,25 @@ class Parser:
                     'originUrl': domain
                 })
             return True
+
+        if 'drive.php' in url:
+            response = Request().get("{}{}".format(domain, url), headers={
+                'origin': domain,
+                'referer': domain
+            })
+
+            js_sources = re.search(r'sources:\s(\[.*?\])', response)
+            if js_sources:
+                js_sources = json.loads(js_sources.group(1))
+                for f in js_sources:
+                    url = f.get('file')
+                    links.append({
+                        'link': url,
+                        'title': 'Link %s' % f.get('label'),
+                        'type': f.get('type'),
+                        'resolve': False,
+                        'originUrl': domain
+                    })
+            return True
+
         return False

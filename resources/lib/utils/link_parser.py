@@ -51,6 +51,9 @@ class LinkParser:
             # return self.get_link_resolveurl()
             return ok.get_link(self.url)
 
+        if re.search('drive.google.com', self.url):
+            return self.get_link_resolveurl()
+
         if re.search('feurl.com', self.url):
             return feurl.get_link(self.url, self.media)
 
@@ -59,6 +62,7 @@ class LinkParser:
 
         elif 'vhstream.xyz' in self.url \
                 or 'vkooltv.com' in self.url \
+                or '3s.live' in self.url \
                 or 'vn.phimmoicdn.net' in self.url \
                 or 'hls.phimmoi' in self.url \
                 or 'hls.phimmoi' in self.url \
@@ -72,6 +76,7 @@ class LinkParser:
 
         elif 'phimnhe.net/player/yotube.php' in self.url \
                 or 'aio.vtvhub.com' in self.url \
+                or 'xomphimhay.com/proxy/loadstream.php' in self.url \
                 or 'phimgi.tv/player/yotube.php' in self.url:
             return iframeembed.get_link(self.url, self.media)
 
@@ -81,11 +86,11 @@ class LinkParser:
                 or 'phimngay.com' in self.url \
                 or 'animehay.tv' in self.url \
                 or 'beverly-downing' in self.url \
-                or 'xemphimso.tv/proxy' in self.url \
+                or 'xemphimso.info/proxy' in self.url \
                 or 'play.xomphimhay.com/load-stream' in self.url \
-                or 'play.xemphimso.tv/load-stream' in self.url \
-                or 'node.xemphimso.tv' in self.url \
-                or 'api.xemphimso.tv' in self.url \
+                or 'play.xemphimso.info/load-stream' in self.url \
+                or 'node.xemphimso.info' in self.url \
+                or 'api.xemphimso.info' in self.url \
                 or 'proxymedia.site' in self.url \
                 or 'goostreams.online' in self.url \
                 or 'goolink.site' in self.url \
@@ -127,7 +132,8 @@ class LinkParser:
                 or re.search('hls.hphim.org', self.url):
             return toolpg.get_link(self.url, self.media)
 
-        elif re.search('hphim.org', self.url):
+        elif re.search('hphim.org', self.url) \
+                or re.search('facebookstream.cloud', self.url):
             return vanlongstreaming.get_link(self.url, self.media)
 
         elif re.search('openload.co', self.url):
@@ -170,7 +176,7 @@ class LinkParser:
             return hdclub.get_link(self.url)
 
         elif re.search('vuviphim.xyz', self.url) \
-             or re.search('vuviphimmoi.com', self.url) :
+                or re.search('vuviphimmoi.com', self.url):
             return vuviphim.get_link(self.url)
 
         elif re.search('fptplay.net', self.url):
@@ -220,7 +226,7 @@ class LinkParser:
             return hls_hydrax.get_link(self.url, self.media), 'hls5'
 
         elif re.search('dgo.dongphim.net', self.url) \
-        or re.search('dgo.dongphim.tv', self.url):
+                or re.search('dgo.dongphim.tv', self.url):
             return cors.get_link(self.url, self.media)
 
         elif '.xyz' in self.url:
