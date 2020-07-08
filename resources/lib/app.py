@@ -52,11 +52,11 @@ SITES = [
     },
 
     {
-        'name': 'bilutv.org',
-        'logo': 'http://bilutv.org/Theme/images/bilutv-logo-noel.png',
+        'name': 'bilutvz.com',
+        'logo': 'https://bilutvz.com/Theme/images/bilutvz-logo.png',
         'className': 'Bilutv',
         'plugin': 'bilutv.plugin',
-        'version': 31
+        'version': 1
     },
     {
         'name': 'bilutvb.com',

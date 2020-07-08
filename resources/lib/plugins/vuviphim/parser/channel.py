@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-import re
+import re, json
 from requests.utils import quote
 
 
@@ -62,19 +62,15 @@ class Parser:
             'movies': []
         }
 
-        soup = BeautifulSoup(response, "html.parser")
-        for movie in soup.select('div.asp_r_pagepost'):
-            tag = movie.select_one('div.asp_content > h3 > a')
-            title = tag.find(text=True, recursive=False).strip().encode("utf-8")
-            thumb = movie.select_one('a.asp_res_image_url > div.asp_image').get('style')
-            thumb = re.search("\('(http.*?)'\);", thumb).group(1)
+        response = json.loads(response)
 
+        for key, movie in response.iteritems():
             channel['movies'].append({
-                'id': tag.get('href'),
-                'label': title,
-                'title': title,
-                'realtitle': title,
-                'thumb': thumb.encode("utf-8"),
+                'id': movie.get('url'),
+                'label': movie.get('title'),
+                'title': movie.get('title'),
+                'realtitle': movie.get('title'),
+                'thumb': movie.get('img'),
                 'type': ''
             })
 

@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 from utils.cpacker import cPacker as Packer
 from utils.mozie_request import Request
+import utils.xbmc_helper as helper
 import re
 import json
 
@@ -71,17 +72,16 @@ class Parser:
 
         sources = re.search(r'sources:\s?(\[.*?\]),', response)
         if sources:
-            sources = sources.group(1)
-            sources = json.loads(sources)
+            sources = helper.convert_js_2_json(sources.group(1))
             try:
                 sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
             except:
                 pass
             for source in sources:
                 movie['links'].append({
-                    'link': source['file'].replace('\\', ''),
-                    'title': 'Link %s' % source['label'].encode('utf-8'),
-                    'type': source['type'].encode('utf-8'),
+                    'link': source.get('file').replace('\\', ''),
+                    'title': 'Link {}'.format(source.get('label')).encode('utf8'),
+                    'type': source.get('type').encode('utf-8'),
                     'originUrl': movie_url,
                     'resolve': False
                 })

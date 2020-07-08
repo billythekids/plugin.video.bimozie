@@ -77,6 +77,8 @@ class LinkParser:
         elif 'phimnhe.net/player/yotube.php' in self.url \
                 or 'aio.vtvhub.com' in self.url \
                 or 'xomphimhay.com/proxy/loadstream.php' in self.url \
+                or 'xem-phim.tv/proxy' in self.url \
+                or 'xemphimso.org/proxy' in self.url \
                 or 'phimgi.tv/player/yotube.php' in self.url:
             return iframeembed.get_link(self.url, self.media)
 
@@ -86,15 +88,13 @@ class LinkParser:
                 or 'phimngay.com' in self.url \
                 or 'animehay.tv' in self.url \
                 or 'beverly-downing' in self.url \
-                or 'xemphimso.info/proxy' in self.url \
                 or 'play.xomphimhay.com/load-stream' in self.url \
                 or 'play.xemphimso.info/load-stream' in self.url \
-                or 'node.xemphimso.info' in self.url \
-                or 'api.xemphimso.info' in self.url \
                 or 'proxymedia.site' in self.url \
                 or 'goostreams.online' in self.url \
                 or 'goolink.site' in self.url \
                 or 'vtv16.site' in self.url \
+                or 'fbcdn.net' in self.url \
                 or 'googleapicdn.com' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
 
@@ -226,7 +226,8 @@ class LinkParser:
             return hls_hydrax.get_link(self.url, self.media), 'hls5'
 
         elif re.search('dgo.dongphim.net', self.url) \
-                or re.search('dgo.dongphim.tv', self.url):
+                or re.search('dgo.dongphim.tv', self.url) \
+                or re.search('dgo.dongphim.biz', self.url):
             return cors.get_link(self.url, self.media)
 
         elif '.xyz' in self.url:

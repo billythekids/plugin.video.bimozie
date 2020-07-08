@@ -4,6 +4,7 @@ from utils.mozie_request import Request
 from utils.mozie_request import AsyncRequest
 from utils.pastebin import PasteBin
 from urlparse import urlparse
+import utils.xbmc_helper as helper
 import re
 import json
 
@@ -46,6 +47,7 @@ class Parser:
         }
 
         sources = re.search(r'player.setup.*"sources":\s?(\[.*?\])', response, re.DOTALL)
+
         if sources:
             sources = json.loads(sources.group(1))
             if sources and len(sources) > 0:
@@ -147,6 +149,16 @@ class Parser:
                         'originUrl': originUrl
                     })
 
+        sources = re.search(r'player.setup\((.*?)\);', response, re.DOTALL)
+        if sources:
+            source = sources.group(1)
+            source = re.search(r'"file":\s"(.*?)",', source)
+            movie['links'].append({
+                'link': source.group(1),
+                'title': 'Link direct',
+                'type': 'mp4',
+                'resolve': False
+            })
 
         # sources = re.search('<script rel="nofollow" src="(.*)" async>', response)
         # if sources:

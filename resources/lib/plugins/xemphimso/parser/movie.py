@@ -93,6 +93,7 @@ class Parser:
             response = json.loads(response)
             for f in response:
                 url = CryptoAES().decrypt(f.get('file'), f.get('key'))
+                print('Link found %s' % url)
                 links.append({
                     'link': url,
                     'title': 'Link %s' % f.get('label'),

@@ -6,8 +6,8 @@ import urllib
 
 
 class Xemphimso:
-    domain = "https://xemphimso.info"
-    api = "https://xemphimso.info/api/v1/episodes/%s/player"
+    domain = "https://xemphimso.org"
+    api = "https://xemphimso.org/api/v1/episodes/%s/player"
 
     def __init__(self):
         self.request = Request()
