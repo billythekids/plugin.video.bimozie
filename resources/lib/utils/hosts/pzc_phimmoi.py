@@ -14,8 +14,9 @@ def get_link(url, media):
 
     response = Request().get(url, headers=header)
 
-    source = re.search(r'var\sVIDEO_URL="(.*?)";', response) or re.search(r'var\sVIDEO_URL=swapServer\("(.*)"\);',
-                                                                          response)
+    source = re.search(r'var\sVIDEO_URL="(.*?)";', response) \
+             or re.search(r'var\sVIDEO_URL=swapServer\("(.*)"\);', response)
+
     if source:
         return cors.get_link(source.group(1), media)
 

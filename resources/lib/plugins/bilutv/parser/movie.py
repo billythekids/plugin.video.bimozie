@@ -38,7 +38,7 @@ class Parser:
             if server_name not in movie['group']: movie['group'][server_name] = []
             movie['group'][server_name].append({
                 'link': episode.get('href'),
-                'title': "Tập %s" % episode.text.encode('utf-8')
+                'title': "%s" % episode.text.encode('utf-8')
             })
 
     def get_link(self, response, domain):

@@ -8,7 +8,7 @@ class Parser:
 
         for item in soup.select('ul.top-menu > li')[1:-2]:
             category.append({
-                'title': item.select_one('a').text.encode("latin1"),
+                'title': item.select_one('a').text.encode("utf8"),
                 'link': item.select_one('a').get('href'),
                 'subcategory': self.getsubmenu(item)
             })
@@ -19,7 +19,7 @@ class Parser:
         category = []
         for item in xpath.select('ul.sub-menu > li > a'):
             category.append({
-                'title': item.text.encode("latin1"),
+                'title': item.text.encode("utf8"),
                 'link': item.get('href')
             })
         return category

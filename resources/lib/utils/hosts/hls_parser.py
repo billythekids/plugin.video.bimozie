@@ -17,12 +17,15 @@ def get_link(url, media):
     return str(url) + "|%s" % urlencode(header), 'hls_parser'
 
 
-def get_stream(url, header):
+def get_stream(url, header, base_path=None, action="HEAD"):
     req = Request()
     r = req.get(url, headers=header)
 
-    base_url = urlparse(url)
-    base_url = base_url.scheme + '://' + base_url.netloc
+    if not base_path:
+        base_url = urlparse(url)
+        base_url = base_url.scheme + '://' + base_url.netloc
+    else:
+        base_url= base_path
 
     if re.search('EXT-X-STREAM-INF', r):
         ad_url = get_adaptive_link(r, req, base_url, header)
@@ -33,14 +36,17 @@ def get_stream(url, header):
     playlist = ""
     links = []
     is_redirect = True
-    for line in r.splitlines():
+    lines = r.splitlines()
+    for line in lines:
         if len(line) > 0:
             # guess link
-            if line[0] not in '#':
-                if re.match('http', line):
+            if '#' not in line[0]:
+                if 'http' in line:
                     path = line
+                elif '/' in line[0]:
+                    path = "{}/{}".format(base_url, line)
                 else:
-                    path = "{}{}".format(base_url, line)
+                    path = "{}/{}".format(base_url, line)
 
                 if 'vdacdn.com' in path:
                     is_redirect = False
@@ -51,7 +57,6 @@ def get_stream(url, header):
             else:
                 path = line
             playlist += '%s\n' % path
-            break
 
     if is_redirect and len(playlist) > 0:
         arequest = AsyncRequest(request=req)
@@ -59,7 +64,7 @@ def get_stream(url, header):
         for i in range(len(links)):
             playlist = playlist.replace(links[i].get('url'), results[i])
 
-    # url = PasteBin().dpaste(playlist, name='dongphim', expire=60)
+    url = PasteBin().dpaste(playlist, name='adaptivestream', expire=60)
     return url
 
 

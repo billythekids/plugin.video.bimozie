@@ -4,7 +4,7 @@ import urllib
 
 
 class Parser:
-    def get(self, response):
+    def get(self, response, domain="https://www.phim.media", replace_domain="https://www.phimmedia.tv"):
 
         channel = {
             'page': 1,
@@ -35,12 +35,14 @@ class Parser:
             else:
                 label = "[%s] %s" % (type, title)
 
+            thumbnail = movie.select_one('img').get('src').replace(replace_domain, domain)
+
             channel['movies'].append({
-                'id': movie.select_one('a').get('href'),
+                'id': movie.select_one('a').get('href').replace(replace_domain, domain),
                 'label': label.encode("utf-8"),
                 'title': title.encode("utf-8"),
                 'realtitle': realtitle.encode("utf-8"),
-                'thumb': movie.select_one('img').get('src'),
+                'thumb': thumbnail,
                 'type': type.encode("utf-8"),
             })
 

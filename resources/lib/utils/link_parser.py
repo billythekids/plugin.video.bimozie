@@ -64,15 +64,13 @@ class LinkParser:
                 or 'vkooltv.com' in self.url \
                 or '3s.live' in self.url \
                 or 'vn.phimmoicdn.net' in self.url \
-                or 'hls.phimmoi' in self.url \
-                or 'hls.phimmoi' in self.url \
                 or 'loadblancer.xemphimmedia.com' in self.url \
                 :
             return cors.get_link(self.url, self.media)
 
-        elif 'cdnplay.xyz' in self.url \
-                :
-            return hls_parser.get_link(self.url, self.media)
+        # elif 'cdnplay.xyz' in self.url \
+        #         :
+        #     return hls_parser.get_link(self.url, self.media)
 
         elif 'phimnhe.net/player/yotube.php' in self.url \
                 or 'aio.vtvhub.com' in self.url \
@@ -190,18 +188,18 @@ class LinkParser:
                 or re.search('tstream.xyz', self.url):
             return self.get_referer_link()
 
-        elif 'pzc.phimmoiz.com' in self.url:
+        elif 'pzc.phimmoi' in self.url:
             return pzc_phimmoi.get_link(self.url, self.media)
 
-        elif 'gpt.phimmoi.net' in self.url:
+        elif 'gpt.phimmoi' in self.url:
             helper.message('Phimmoi gpt.phimmoi.net link parsing', 'Get Link')
             return pzc_phimmoi.get_link(self.url, self.media)
 
         # elif 'gpt2.phimmoi.net' in self.url:
-        elif re.search(r'gpt\d.phimmoi.net', self.url):
+        elif re.search(r'gpt\d.phimmoi', self.url):
             return gpt2_phimmoi.get_link(self.url, self.media)
 
-        elif re.search('hls.phimmoi.[net|link]', self.url):
+        elif re.search('hls.phimmoi', self.url):
             helper.message('Phimmoi hls link parsing', 'Get Link')
             return phimmoi.get_link(self.url, self.media['originUrl'])
 

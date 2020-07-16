@@ -34,11 +34,19 @@ class Parser:
                 'label': Parser.text(label),
                 'title': Parser.text(title),
                 'realtitle': Parser.text(title),
-                'thumb': img,
+                'thumb': Parser.extract_img_url(img),
                 'type': Parser.text(mtype)
             })
 
         return channel
+
+    @staticmethod
+    def extract_img_url(url):
+        if '&url=https://' in url:
+            return re.search(r'&url=(https:\/\/.*?)', url).group(1)
+
+        return url
+
 
     @staticmethod
     def text(txt):

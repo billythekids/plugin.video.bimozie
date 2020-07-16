@@ -7,7 +7,8 @@ import utils.xbmc_helper as XbmcHelper
 
 
 class Dongphim:
-    domain = "https://dongphim.biz"
+    # domain = "https://dongphim.biz"
+    domain = "https://dongphym.net"
     api = "https://dp.voocdn.com"
 
     def __init__(self):
@@ -42,7 +43,8 @@ class Dongphim:
         return eps
 
     def getLink(self, movie):
-        response = self.request.get(movie['link'])
+        link = "{}{}".format(self.domain, movie['link'].replace(self.domain, ""))
+        response = self.request.get(link)
         return Movie().get_link(response, movie['link'], self.api)
 
     def search(self, text):

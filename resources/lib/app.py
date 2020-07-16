@@ -52,8 +52,8 @@ SITES = [
     },
 
     {
-        'name': 'bilutvz.com',
-        'logo': 'https://bilutvz.com/Theme/images/bilutvz-logo.png',
+        'name': 'bilutvz.org',
+        'logo': 'https://bilutvz.org/Theme/images/bilutvzorg-logo.png',
         'className': 'Bilutv',
         'plugin': 'bilutv.plugin',
         'version': 1
@@ -73,14 +73,14 @@ SITES = [
         'version': 1
     },
     {
-        'name': 'phimmoi.net',
+        'name': 'phimmoizz.net',
         'logo': 'http://www.phimmoiz.com/logo/phimmoi-square.png',
         'className': 'Phimmoi',
         'plugin': 'phimmoi.plugin',
         'version': 1
     },
     {
-        'name': 'biphim.tv',
+        'name': 'biphimz.net',
         'logo': 'https://i.ibb.co/tBKrQtK/image.png',
         'className': 'Hphim',
         'plugin': 'hphim.plugin',
@@ -150,11 +150,11 @@ SITES = [
         'version': 31
     },
     {
-        'name': 'phimgi.net',
+        'name': 'phimnhe.net',
         'logo': 'https://cdn-img.phimgi.net/wp-content/uploads/2019/01/phimgi-02.png',
         'className': 'Phimgi',
         'plugin': 'phimgi.plugin',
-        'version': 31
+        'version': 1
     },
     {
         'name': 'dongphim.net',
@@ -196,7 +196,7 @@ SITES = [
         'logo': 'https://phim7z.tv/wp-content/themes/khophim/assets/images/logo-dark.png',
         'className': 'Phim7z',
         'plugin': 'phim7z.plugin',
-        'version': 31
+        'version': 1
     },
     {
         'name': 'motphim.net',

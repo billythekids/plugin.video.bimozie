@@ -17,13 +17,14 @@ user_agent = (
 h = {
     'User-Agent': user_agent,
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Host': 'www.phimmedia.tv',
-    'Referer': 'www.phimmedia.tv'
+    # 'Host': 'www.phimmedia.tv',
+    # 'Referer': 'www.phimmedia.tv'
 }
 
 
 class Phimmedia:
-    domain = "https://www.phimmedia.tv"
+    replace_domain = "https://www.phimmedia.tv"
+    domain = "https://www.phim.media"
     cookies = {}
 
     def __init__(self):
@@ -46,11 +47,11 @@ class Phimmedia:
         except: pass
 
     def getCategory(self):
-        response = self.request.get(self.domain, cookies=self.cookies)
+        response = self.request.get("{}/en/".format(self.domain), cookies=self.cookies)
         return Category().get(response), Channel().get(response)
 
     def getChannel(self, channel, page=1):
-        channel = channel.replace(self.domain, "")
+        channel = channel.replace(self.replace_domain, "")
 
         if page > 1:
             url = '%s%s&page=%d' % (self.domain, channel, page)
@@ -65,7 +66,9 @@ class Phimmedia:
         return Movie().get(response)
 
     def getLink(self, movie):
-        response = self.request.get(movie['link'], cookies=self.cookies)
+        movie_link = movie['link'].replace(self.replace_domain, self.domain)
+
+        response = self.request.get(movie_link, cookies=self.cookies)
         return Movie().get_link(response, movie['link'])
 
     def search(self, text, page=1):
