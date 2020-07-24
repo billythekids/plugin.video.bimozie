@@ -5,7 +5,7 @@ from phut90.parser.movie import Parser as Movie
 
 
 class Phut90:
-    domain = "https://live.90p.tv"
+    domain = "https://live1.90p.tv"
 
     def getCategory(self):
         channel = Channel.get(Request().get(self.domain))

@@ -37,6 +37,7 @@ from .hosts import fshare, \
     feurl, \
     hls_parser, \
     streamtape, \
+    vproxy, \
     verystream
 
 
@@ -140,7 +141,11 @@ class LinkParser:
         elif re.search('movie3s.net', self.url):
             return movie3s.get_link(self.url, self.media)
 
-        elif re.search('vtvhub.com', self.url):
+        elif 'phim7z.vproxy.online' in self.url:
+            return vproxy.get_link(self.url, self.media)
+
+        elif re.search('vtvhub.com', self.url) \
+                or 'phim7z.vproxy.online' in self.url:
             return vtvhub.get_link(self.url, self.media)
 
         elif re.search('smamuhh1metro.com', self.url):
@@ -174,7 +179,8 @@ class LinkParser:
             return hdclub.get_link(self.url)
 
         elif re.search('vuviphim.xyz', self.url) \
-                or re.search('vuviphimmoi.com', self.url):
+                or re.search('vuviphimmoi.com', self.url) \
+                or re.search('thoctv.com', self.url):
             return vuviphim.get_link(self.url)
 
         elif re.search('fptplay.net', self.url):

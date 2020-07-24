@@ -35,5 +35,5 @@ class MediaHelper:
     def build_url(link):
         r = re.search('^https?:', link)
         if not r:
-            return 'http:%s' % link
+            return 'https:%s' % link
         return link

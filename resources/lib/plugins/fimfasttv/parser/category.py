@@ -10,7 +10,7 @@ class Parser:
         category = []
         soup = BeautifulSoup(response, "html.parser")
 
-        for item in soup.select('div#navbar-left > div.navbar-menu > li.navbar-menu-item')[:-1]:
+        for item in soup.select('ul#menu-main-menu > li')[1:]:
             menu = item.select_one('a')
             category.append({
                 'title': menu.text.encode("utf-8"),
@@ -21,7 +21,7 @@ class Parser:
 
     def getsubmenu(self, xpath):
         category = []
-        for item in xpath.select('ul.navbar-submenu > li > a'):
+        for item in xpath.select('ul.dropdown-menu > li > a'):
             category.append({
                 'title': item.text.encode("utf-8"),
                 'link': item.get('href')

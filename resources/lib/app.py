@@ -22,7 +22,7 @@ KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 
 SITES = [
     {
-        'name': 'live.90m.tv',
+        'name': 'live1.90p.tv',
         'logo': 'https://i.imgur.com/jyM3inb.png',
         'className': 'Phut90',
         'plugin': 'phut90.plugin',
@@ -44,8 +44,8 @@ SITES = [
         'version': 1
     },
     {
-        'name': 'fimfast.tv',
-        'logo': 'https://fimfast.com/assets/img/logo.png',
+        'name': 'phim1080.net',
+        'logo': 'https://phim1080.net/assets/img/phim1080.png',
         'className': 'Fimfast',
         'plugin': 'fimfast.plugin',
         'version': 1
@@ -80,14 +80,14 @@ SITES = [
         'version': 1
     },
     {
-        'name': 'biphimz.net',
+        'name': 'biphimz.tv',
         'logo': 'https://i.ibb.co/tBKrQtK/image.png',
         'className': 'Hphim',
         'plugin': 'hphim.plugin',
         'version': 1
     },
     {
-        'name': 'tvhay.org',
+        'name': 'tvhayz.org',
         'logo': 'https://kodi-addons.club/data/d1/d14a048c56373761664ca89a773d694d.png',
         'className': 'Tvhay',
         'plugin': 'tvhay.plugin',
@@ -136,8 +136,8 @@ SITES = [
         'version': 1
     },
     {
-        'name': 'vuviphim.com',
-        'logo': 'https://vuviphimmoi.com/wp-content/uploads/2020/04/logo-vuvi.png',
+        'name': 'vuviphimz.com',
+        'logo': 'https://vuviphimz.com/wp-content/uploads/2020/07/logo-4.png',
         'className': 'Vuviphim',
         'plugin': 'vuviphim.plugin',
         'version': 1
@@ -150,7 +150,7 @@ SITES = [
         'version': 31
     },
     {
-        'name': 'phimnhe.net',
+        'name': 'phimgi.tv',
         'logo': 'https://cdn-img.phimgi.net/wp-content/uploads/2019/01/phimgi-02.png',
         'className': 'Phimgi',
         'plugin': 'phimgi.plugin',
@@ -178,15 +178,15 @@ SITES = [
         'version': 31
     },
     {
-        'name': 'xemphimso.tv',
+        'name': 'xemphimsoz.com',
         'logo': 'https://xemphimso.tv/assets/themes/img/logo.png?v=66',
         'className': 'Xemphimso',
         'plugin': 'xemphimso.plugin',
         'version': 1
     },
     {
-        'name': 'xomphimhay.com',
-        'logo': 'https://xomphimhay.com/logo2.png?4',
+        'name': 'xem-phim.tv',
+        'logo': 'https://xem-phim.tv/logo2.png',
         'className': 'Xomphimhay',
         'plugin': 'xomphimhay.plugin',
         'version': 1

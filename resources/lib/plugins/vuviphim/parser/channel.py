@@ -22,14 +22,14 @@ class Parser:
             channel['page'] = int(page)
 
         for movie in soup.select('div.module > div.content > div.items > article.item'):
-            tag = movie.select_one('div.poster > a img')
+            tag = movie.select_one('div.poster > img')
             title = movie.select_one('div.data > h3 > a').text.strip()
             thumb = ""
             if tag and tag.get('src'):
                 thumb = self.parse_url(tag.get('src').encode("utf-8"))
 
             try:
-                type = movie.select_one('div.poster > span.quality').text.strip()
+                type = movie.select_one('div.mepo > span.quality').text.strip()
             except:
                 type = ""
             label = "[%s] %s" % (type, title)
@@ -39,7 +39,7 @@ class Parser:
                 intro = ""
 
             channel['movies'].append({
-                'id': movie.select_one('div.poster > a').get('href'),
+                'id': movie.select_one('div.data > h3 > a').get('href'),
                 'label': label.encode("utf-8"),
                 'title': title.encode("utf-8"),
                 'realtitle': title.encode("utf-8"),

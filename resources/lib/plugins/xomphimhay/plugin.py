@@ -7,8 +7,8 @@ import utils.xbmc_helper as helper
 
 
 class Xomphimhay:
-    domain = "https://xomphimhay.com"
-    api = "https://xomphimhay.com/api/v1/episodes/%s/player"
+    domain = "https://xem-phim.tv"
+    api = "https://xem-phim.tv/api/v1/episodes/%s/player"
 
     def __init__(self):
         self.request = Request(session=True)

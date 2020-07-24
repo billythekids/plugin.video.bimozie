@@ -43,8 +43,7 @@ class Parser:
     @staticmethod
     def extract_img_url(url):
         if '&url=https://' in url:
-            return re.search(r'&url=(https:\/\/.*?)', url).group(1)
-
+            url = re.search(r'&url=(https:\/\/.*)', url).group(1)
         return url
 
 

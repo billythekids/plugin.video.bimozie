@@ -35,7 +35,7 @@ def get_link(url, movie):
         else:
             # https://dr.vtvhub.com/getLinkStreamMd5/411157b50473a98867d561aab273b4d2
             ajax_url = "%s/getLinkStreamMd5/%s" % (base_url, mid)
-            response = json.loads(Request().get(ajax_url , headers=header))
+            response = json.loads(Request().get(ajax_url, headers=header))
             if len(response) > 0:
                 m_url = response[0].get('file')
 

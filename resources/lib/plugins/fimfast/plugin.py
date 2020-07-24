@@ -7,8 +7,8 @@ from fimfast.parser.movie import Parser as Movie
 
 
 class Fimfast:
-    domain = "http://fimfast.tv"
-    api = "http://fimfast.tv/wp-content/themes/halimmovies/player.php"
+    domain = "https://phim1080.net"
+    api = "https://phim1080.net/api/v2"
 
     def __init__(self):
         self.request = Request(session=True)
@@ -23,27 +23,47 @@ class Fimfast:
         if page == 1:
             response = self.request.get(baseurl)
         else:
-            baseurl = "{}/page/{}".format(baseurl, page)
+            baseurl = "{}?page={}".format(baseurl, page)
             response = self.request.get(baseurl)
 
-        return Channel().get(response, page, self.domain)
+        return Channel().get(response, page)
 
     def getMovie(self, id):
-        id = id.replace(self.domain, "")
         movieurl = '%s%s' % (self.domain, id)
         response = self.request.get(movieurl)
+        fid, epid = Movie().get_movie_id(response)
+        url = '%s/films/%s/episodes?sort=name' % (self.api, fid)
 
-        return Movie().get(response)
-
-    def getLink(self, movie):
-        episode_slug, server_id, post_id = movie.get('link').split(',')
-        response = self.request.get(self.api, headers={
+        response = self.request.get(url, headers={
+            'referer': movieurl,
+            'authority': 'fimfast.com',
             'x-requested-with': 'XMLHttpRequest',
-        }, params={
-            'episode_slug': episode_slug, 'server_id': server_id, 'post_id': post_id
         })
 
-        return Movie().get_link(response)
+        response = json.loads(response)
+        url = '%s/films/%s/episodes?sort=name' % (self.api, fid)
+        if 'ova' in response: url += '&ova=true'
+
+        response = self.request.get(url, headers={
+            'referer': movieurl,
+            'authority': 'fimfast.com',
+            'x-requested-with': 'XMLHttpRequest',
+        })
+        return Movie().get(response, fid)
+
+    def getLink(self, movie):
+        movieurl = '%s%s' % (self.domain, movie['link'])
+        response = self.request.get(movieurl)
+        fid, epid = Movie().get_movie_id(response)
+        url = '%s/films/%s/episodes/%s/true' % (self.api, fid, epid)
+
+        response = self.request.get(url, headers={
+            'referer': movieurl,
+            'authority': 'fimfast.com',
+            'x-requested-with': 'XMLHttpRequest',
+        })
+
+        return Movie().get_link(response, movieurl)
 
     def search(self, text):
         # https://fimfast.com/api/v2/search?q=nu%20hon&limit=12

@@ -6,7 +6,7 @@ from vuviphim.parser.movie import Parser as Movie
 
 
 class Vuviphim:
-    domain = "https://vuviphimmoi.com"
+    domain = "https://vuviphimz.com"
 
     def getCategory(self):
         response = Request().get(self.domain)
