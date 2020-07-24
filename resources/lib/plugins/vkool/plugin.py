@@ -13,13 +13,12 @@ user_agent = (
 h = {
     'User-Agent': user_agent,
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    # 'Host': 'http://www.phimmoizz.net',
-    # 'Referer': 'http://www.phimmoizz.net/vn.php'
 }
 
 
 class Vkool:
-    domain = "http://phim.vkool.tv"
+    domain = "http://phim.vkool.net"
+    # replace_domain = "http://phim.vkool.net"
 
     def __init__(self):
         self.request = Request(h, session=True)
