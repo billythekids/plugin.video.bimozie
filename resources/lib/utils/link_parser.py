@@ -38,6 +38,7 @@ from .hosts import fshare, \
     hls_parser, \
     streamtape, \
     vproxy, \
+    header_location, \
     verystream
 
 
@@ -141,6 +142,9 @@ class LinkParser:
         elif re.search('movie3s.net', self.url):
             return movie3s.get_link(self.url, self.media)
 
+        elif 'apihls.vproxy.online' in self.url:
+            return self.url, 'inputstream'
+
         elif 'phim7z.vproxy.online' in self.url:
             return vproxy.get_link(self.url, self.media)
 
@@ -150,6 +154,9 @@ class LinkParser:
 
         elif re.search('smamuhh1metro.com', self.url):
             return smamuhh1metro.get_link(self.url, self.media)
+
+        elif re.search('stream.kiwi', self.url):
+            return header_location.get_link(self.url, self.media)
 
         elif re.search('fshare.vn', self.url):
             return self.get_link_fshare()

@@ -7,13 +7,14 @@ from phimgi.parser.movie import Parser as Movie
 
 class Phimgi:
     domain = "https://phimgi.tv"
+    replace_domain = "https://phimnhe.net"
 
     def getCategory(self):
         response = Request().get(self.domain)
         return Category().get(response), Channel().get(response, 1)
 
     def getChannel(self, channel, page=1):
-        channel = channel.replace(self.domain, "")
+        channel = channel.replace(self.domain, "").replace(self.replace_domain, "")
         if page > 1:
             url = '%s%spage/%d' % (self.domain, channel, page)
         else:
