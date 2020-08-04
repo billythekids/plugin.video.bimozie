@@ -22,7 +22,7 @@ class Parser:
             channel['page'] = int(page)
 
         for movie in soup.select('div.module > div.content > div.items > article.item'):
-            tag = movie.select_one('div.poster > img')
+            tag = movie.select_one('div.poster > noscript > img')
             title = movie.select_one('div.data > h3 > a').text.strip()
             thumb = ""
             if tag and tag.get('src'):

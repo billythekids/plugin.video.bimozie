@@ -83,7 +83,10 @@ class Parser:
             'movies': []
         }
 
-        data = re.search(r'__NUXT__=(.*);', response)
+        data = re.search(r'__NUXT__=(.*?);</script>', response)
+
+        print data.group(1).encode('utf8')
+
         if not data:
             return channel
 

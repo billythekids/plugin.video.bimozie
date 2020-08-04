@@ -24,7 +24,7 @@ h = {
 
 class Phimmedia:
     replace_domain = "https://www.phimmedia.tv"
-    domain = "https://www.phim.media"
+    domain = "https://www.phimmedia.info"
     cookies = {}
 
     def __init__(self):
@@ -51,7 +51,7 @@ class Phimmedia:
         return Category().get(response), Channel().get(response)
 
     def getChannel(self, channel, page=1):
-        channel = channel.replace(self.replace_domain, "")
+        channel = channel.replace(self.replace_domain, "").replace(self.domain, "")
 
         if page > 1:
             url = '%s%s&page=%d' % (self.domain, channel, page)

@@ -187,6 +187,7 @@ class LinkParser:
 
         elif re.search('vuviphim.xyz', self.url) \
                 or re.search('vuviphimmoi.com', self.url) \
+                or re.search('vuviphimz.com', self.url) \
                 or re.search('thoctv.com', self.url):
             return vuviphim.get_link(self.url)
 
