@@ -23,7 +23,10 @@ class Parser:
 
         for movie in soup.select('div.ml-item > a'):
             title = movie.select_one('span.mli-info > h2').text
-            mtype = movie.select_one('span.mli-eps').getText().strip()
+            mtype = ""
+            try:
+                mtype = movie.select_one('span.mli-eps').getText()
+            except: pass
             label = "[%s] %s" % (mtype, title)
 
             img = movie.select_one('img').get('src') or movie.select_one('img').get('data-original')

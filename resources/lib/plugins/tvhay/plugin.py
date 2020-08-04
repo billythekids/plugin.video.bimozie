@@ -53,6 +53,6 @@ class Tvhay:
         return Movie().get_link(response, movie['link'])
 
     def search(self, text):
-        url = "%ssearch/%s" % (self.domain, urllib.quote_plus(text))
+        url = "%s/search/%s" % (self.domain, urllib.quote_plus(text))
         response = self.request.get(url, cookies=self.cookie)
         return Channel().get(response, 1)
