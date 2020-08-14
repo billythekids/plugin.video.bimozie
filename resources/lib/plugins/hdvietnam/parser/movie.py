@@ -23,7 +23,7 @@ class Parser:
 
         return block, postLinks
 
-    def get(self, response):
+    def get(self, response, origin_url=""):
         self.found_links = []
         movie = {
             'group': {},
@@ -52,7 +52,8 @@ class Parser:
                         'intro': name,
                         'type': 'Unknown',
                         'resolve': False,
-                        'isFolder': FShareVN.is_folder(self.found_links[idx])
+                        'isFolder': FShareVN.is_folder(self.found_links[idx]),
+                        'originUrl': origin_url
                     })
                 else:
                     movie['links'].append({
@@ -60,7 +61,8 @@ class Parser:
                         'title': self.found_links[idx],
                         'type': 'Unknown',
                         'resolve': False,
-                        'isFolder': FShareVN.is_folder(self.found_links[idx])
+                        'isFolder': FShareVN.is_folder(self.found_links[idx]),
+                        'originUrl': origin_url
                     })
 
         return movie

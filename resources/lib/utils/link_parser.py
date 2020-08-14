@@ -70,9 +70,9 @@ class LinkParser:
                 :
             return cors.get_link(self.url, self.media)
 
-        # elif 'cdnplay.xyz' in self.url \
-        #         :
-        #     return hls_parser.get_link(self.url, self.media)
+        elif 'cdnplay.xyz' in self.url \
+                :
+            return hls_parser.get_link(self.url, self.media, parser=True)
 
         elif 'phimnhe.net/player/yotube.php' in self.url \
                 or 'aio.vtvhub.com' in self.url \
@@ -84,6 +84,7 @@ class LinkParser:
 
         elif 'fimfast.com' in self.url \
                 or 'cdnplay.xyz' in self.url \
+                or 'vodcdn.xyz' in self.url \
                 or 'vdicdn.com' in self.url \
                 or 'phimngay.com' in self.url \
                 or 'animehay.tv' in self.url \
@@ -106,9 +107,6 @@ class LinkParser:
 
         elif re.search('manga123.net', self.url):
             return manga123.get_link(self.url, self.media)
-
-        # elif re.search('mixdrop.co', self.url):
-        #     return self.get_link_resolveurl()
 
         elif re.search('mixdrop.co', self.url):
             return mixdrop.get_link(self.url, self.media), 'mixdrop.co'
@@ -284,11 +282,12 @@ class LinkParser:
             return None, None
 
         if helper.getSetting('fshare.enable'):
-            return fshare.FShareVN(
+            f_url = fshare.FShareVN(
                 self.url,
                 helper.getSetting('fshare.username'),
                 helper.getSetting('fshare.password')
-            ).get_link(), 'Fshare'
+            ).get_link()
+            return cors.get_link(f_url, self.media, including_agent=True)
         else:
             return fshare.FShareVN(self.url).get_link(), 'Fshare'
 

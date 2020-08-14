@@ -17,7 +17,7 @@ class Request:
     TIMEOUT = 60
 
     DEFAULT_HEADERS = {
-        'User-Agent': user_agent
+        'User-Agent': user_agent,
     }
     session = None
     r = None
@@ -31,16 +31,16 @@ class Request:
             self.session = requests.session()
             self.session.cookies.update(cookies)
 
-    def get(self, url, headers=None, params=None, redirect=True, cookies=None, verify=True):
+    def get(self, url, headers=None, params=None, redirect=True, cookies=None, verify=True, stream=False):
         print("Request URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
         if self.session:
             self.r = self.session.get(url, headers=headers, timeout=self.TIMEOUT, params=params,
-                                      allow_redirects=redirect, cookies=cookies, verify=verify)
+                                      allow_redirects=redirect, cookies=cookies, verify=verify, stream=stream)
         else:
             self.r = requests.get(url, headers=headers, timeout=self.TIMEOUT, params=params, allow_redirects=redirect,
-                                  cookies=cookies)
+                                  cookies=cookies, stream=stream)
         return self.r.text
 
     def post(self, url, params=None, headers=None, redirect=True, cookies=None, json=None, verify=True):
@@ -65,6 +65,7 @@ class Request:
     def head(self, url, params=None, headers=None, redirect=True, cookies=None, verify=True):
         if not headers:
             headers = self.DEFAULT_HEADERS
+        print("Head URL: %s header: %s" % (url, urllib.urlencode(headers)))
         if self.session:
             self.r = self.session.head(url, headers=headers, timeout=self.TIMEOUT, params=params,
                                        allow_redirects=redirect, verify=verify)

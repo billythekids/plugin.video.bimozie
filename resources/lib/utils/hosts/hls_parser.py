@@ -7,12 +7,15 @@ from utils.pastebin import PasteBin
 from urllib import urlencode
 
 
-def get_link(url, media):
+def get_link(url, media, parser=False):
     header = {
         'Referer': media.get('originUrl'),
     }
 
-    # url = get_stream(url, header)
+    print "HLS parser: {}".format(url)
+
+    if parser:
+        url = get_stream(url, header)
     # return None, None
     return str(url) + "|%s" % urlencode(header), 'hls_parser'
 
@@ -28,7 +31,7 @@ def get_stream(url, header, base_path=None, action="HEAD"):
         base_url= base_path
 
     if re.search('EXT-X-STREAM-INF', r):
-        ad_url = get_adaptive_link(r, req, base_url, header)
+        ad_url = get_adaptive_link(r)
         if 'http' not in ad_url:
             ad_url = base_url + ad_url
         r = req.get(ad_url, headers=header)
@@ -43,6 +46,8 @@ def get_stream(url, header, base_path=None, action="HEAD"):
             if '#' not in line[0]:
                 if 'http' in line:
                     path = line
+                elif '//' in line[0:2]:
+                    path = "{}{}".format("https:", line)
                 elif '/' in line[0]:
                     path = "{}/{}".format(base_url, line)
                 else:
@@ -51,6 +56,9 @@ def get_stream(url, header, base_path=None, action="HEAD"):
                 if 'vdacdn.com' in path:
                     is_redirect = False
                     path = path.replace('https://', 'http://')
+
+                if 'cdnplay.xyz' in path:
+                    is_redirect = False
 
                 # path += "|%s" % urlencode(header)
                 links.append({'url': path, 'parser': parse_link, 'responseHeader': True})
@@ -83,6 +91,11 @@ def get_adaptive_link(response):
     elif '480' in resolutions:
         idx = next((resolutions.index(i) for i in resolutions if '480' == i), -1)
         url = matches[idx]
+    elif '360' in resolutions:
+        idx = next((resolutions.index(i) for i in resolutions if '360' == i), -1)
+        url = matches[idx]
+    if '//' in url[0:2]:
+        url = "{}{}".format("https:", url)
 
     return url
 

@@ -65,7 +65,7 @@ class Hdvietnam:
             self.thank(movie, token[0], postLinks)
             response = self.request.get(url)
 
-        result = parser.get(response)
+        result = parser.get(response, url)
         return result
 
     def search(self, text):

@@ -36,10 +36,11 @@ class Parser:
         source = re.search(r'iframe.*id=(.*?)\\?"', response)
         if source:
             # https://player.phim7z.tv/hls/getlink.php?id=d1FMYzZMVlkrdHRmOEZRamc5NTRNejhUYy85Rld5SG8vcmhUL2lIeHlEeU1UTXJLd0tiUkF5d0Q2emp3Z1hhaQ==
+            print api_url % source.group(1)
             response = json.loads(request.get(api_url % source.group(1)))
             Parser.create_link(movie['links'], response, domain)
-            response = json.loads(request.get((api_url % source.group(1)) + '&type=hls'))
-            Parser.create_link(movie['links'], response, domain)
+            response = json.loads(request.get((api_url % source.group(1))))
+            Parser.create_link(movie['links'], response, api_url % source.group(1))
 
         return movie
 

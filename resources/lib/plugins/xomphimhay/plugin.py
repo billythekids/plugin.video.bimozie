@@ -26,7 +26,6 @@ class Xomphimhay:
             helper.write_file('xomphimhay.bin', '')
 
         with open(helper.get_file_path('xomphimhay.bin'), 'wb+') as f:
-            print self.request.get_request_session()
             pickle.dump(self.request.get_request_session(), f)
 
     def getCategory(self):
