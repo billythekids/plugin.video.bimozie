@@ -11,7 +11,7 @@ def get_link(url, media):
     base_url = urlparse(media.get('originUrl'))
     base_url = base_url.scheme + '://' + base_url.netloc
     header = {
-        'Referer': media.get('originUrl'),
+        'Referer': url,
         'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
         'Origin': base_url
     }
@@ -28,12 +28,16 @@ def get_link(url, media):
         rurl = "{}/getLinkStreamMd5/{}".format(rurl, rid)
         sources = request.get(rurl, headers=header)
         sources = json.loads(sources)
+        print 11111111111111111111111111
+        print sources
     else:
         sources = re.search(r'sources\s?[=:]\s?(\[.*?\])', resp, re.DOTALL)
         if sources:
             sources = "".join([s for s in sources.group(1).splitlines() if s.strip("\r\n")])
             sources = re.sub(r'\s+', '', sources)
             sources = helper.convert_js_2_json(sources)
+            print 2222222222222222222222222
+        print sources
 
     if sources:
         if len(sources) > 1:

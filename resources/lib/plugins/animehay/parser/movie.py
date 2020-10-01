@@ -46,6 +46,21 @@ class Parser:
             'links': [],
         }
 
+        sources = re.findall(r"<iframe.*?src=['|\"](http.*?)['|\"]\s?", response)
+        if len(sources) > 0:
+            for source in sources:
+                if source in 'http://lb.animehay.tv/play/' and len(source) == len('http://lb.animehay.tv/play/'):
+                    continue
+
+                movie['links'].append({
+                'link': source,
+                'title': 'Link direct',
+                'type': 'mp4',
+                'resolve': False
+            })
+
+            return movie
+
         sources = re.search(r'player.setup.*"sources":\s?(\[.*?\])', response, re.DOTALL)
 
         if sources:

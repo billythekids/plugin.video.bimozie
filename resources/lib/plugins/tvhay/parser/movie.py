@@ -29,7 +29,7 @@ class Parser:
         for server in servers:
             server_name = server.select_one('div.label').text.strip().encode('utf-8')
             # if server_name != 'F.PRO:'.encode('utf-8') or server_name != 'R.PRO:'.encode('utf-8'): continue
-            if not re.search('[RB].PRO:', server_name): continue
+            if not re.search('[SRB].PRO:', server_name): continue
             if server_name not in movie['group']: movie['group'][server_name] = []
             for ep in server.select('ul.episodelist li a'):
                 movie['group'][server_name].append({
@@ -62,7 +62,7 @@ class Parser:
 
             return movie
 
-        m = re.search('<iframe.*src=".*\?link=(.*?)"', response)
+        m = re.search('<iframe.*src="(.*?)"', response)
         if m is not None:
             source = urllib.unquote(m.group(1)).replace('\\', '')
             if source:

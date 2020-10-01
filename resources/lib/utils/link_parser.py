@@ -39,6 +39,16 @@ from .hosts import fshare, \
     streamtape, \
     vproxy, \
     header_location, \
+    vudeo, \
+    aparat, \
+    upstream, \
+    voe, \
+    okru_biphim_club, \
+    animehay_cca, \
+    animehay_kyun, \
+    animehay_moekawaii, \
+    proxy_playphim, \
+    playoffsite, \
     verystream
 
 
@@ -58,6 +68,9 @@ class LinkParser:
 
         if re.search('feurl.com', self.url):
             return feurl.get_link(self.url, self.media)
+
+        if 'play.playoffsite.xyz' in self.url:
+            return playoffsite.get_link(self.url, self.media)
 
         if re.search('streamtape.com', self.url):
             return streamtape.get_link(self.url, self.media)
@@ -82,12 +95,14 @@ class LinkParser:
                 or 'phimgi.tv/player/yotube.php' in self.url:
             return iframeembed.get_link(self.url, self.media)
 
+        elif 'https://proxy.playphim.info' in self.url:
+            return proxy_playphim.get_link(self.url, self.media)
+
         elif 'fimfast.com' in self.url \
                 or 'cdnplay.xyz' in self.url \
                 or 'vodcdn.xyz' in self.url \
                 or 'vdicdn.com' in self.url \
                 or 'phimngay.com' in self.url \
-                or 'animehay.tv' in self.url \
                 or 'beverly-downing' in self.url \
                 or 'play.xomphimhay.com/load-stream' in self.url \
                 or 'play.xemphimso.info/load-stream' in self.url \
@@ -98,6 +113,7 @@ class LinkParser:
                 or 'fbcdn.net' in self.url \
                 or 'googleapicdn.com' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
+
 
         elif 'googlevideo.com' in self.url:
             return googlevideo.get_link(self.url, self.media)
@@ -116,14 +132,39 @@ class LinkParser:
             # or 'apihls.vproxy.online' in self.url:
             return streamlink.get_link(self.url, self.media)
 
-        elif 'plb.animehay.tv' in self.url:
-            return self.input_stream()
+        elif 'okru.biphim.club' in self.url:
+            return okru_biphim_club.get_link(self.url, self.media)
 
         elif '90p.tv' in self.url:
             return phut90.get_link(self.url, self.media), '90p.tv'
 
+        # Animehay
+        elif 'plb.animehay.tv' in self.url:
+            return self.input_stream()
+
         elif 'lb.animehay.tv' in self.url:
             return animehay.get_link(self.url), 'animehay.tv'
+
+        elif 'animehay.tv/cca.php' in self.url:
+            return animehay_cca.get_link(self.url)
+
+        elif 'animehay.kyunkyun.net/stream' in self.url:
+            return animehay_kyun.get_link(self.url)
+
+        elif 'https://moekawaii.stream/embed/animehay.php' in self.url:
+            return animehay_moekawaii.get_link(self.url)
+
+        elif 'vudeo.net' in self.url:
+            return vudeo.get_link(self.url)
+
+        elif 'aparat.cam' in self.url:
+            return aparat.get_link(self.url)
+
+        elif 'upstream.to' in self.url:
+            return upstream.get_link(self.url)
+
+        elif 'voe.sx' in self.url:
+            return voe.get_link(self.url)
 
         elif re.search('toolsp2p', self.url) \
                 or re.search('player.toolpg.com', self.url) \

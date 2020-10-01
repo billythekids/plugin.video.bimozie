@@ -154,7 +154,7 @@ SITES = [
         'logo': 'https://cdn-img.phimgi.net/wp-content/uploads/2019/01/phimgi-02.png',
         'className': 'Phimgi',
         'plugin': 'phimgi.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'dongphim.net',
@@ -189,14 +189,14 @@ SITES = [
         'logo': 'https://xem-phim.tv/logo2.png',
         'className': 'Xomphimhay',
         'plugin': 'xomphimhay.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'phim7z.tv',
         'logo': 'https://phim7z.tv/wp-content/themes/khophim/assets/images/logo-dark.png',
         'className': 'Phim7z',
         'plugin': 'phim7z.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'motphim.net',

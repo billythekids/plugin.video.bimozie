@@ -43,7 +43,7 @@ class Request:
                                   cookies=cookies, stream=stream)
         return self.r.text
 
-    def post(self, url, params=None, headers=None, redirect=True, cookies=None, json=None, verify=True):
+    def post(self, url, params=None, headers=None, redirect=True, cookies=None, json=None, verify=True, data=None):
         try:
             print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
         except:
