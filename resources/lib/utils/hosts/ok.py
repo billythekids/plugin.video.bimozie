@@ -29,6 +29,9 @@ def rsl(s):
 
 
 def get_link(url):
+    if 'apitvh.net' in url:
+        url = re.search(r'\?link=(.*)', url).group(1)
+
     response = Request().get(url)
     m = re.search('data-options="(.+?)"', response)
     h = HTMLParser.HTMLParser()

@@ -52,8 +52,8 @@ SITES = [
     },
 
     {
-        'name': 'bilutvz.org',
-        'logo': 'https://bilutvz.org/Theme/images/bilutvzorg-logo.png',
+        'name': 'bilutvz.net',
+        'logo': 'https://bilutvz.net/Theme/images/bilutvznet-logo.png?v=1.0',
         'className': 'Bilutv',
         'plugin': 'bilutv.plugin',
         'version': 1
@@ -200,10 +200,10 @@ SITES = [
     },
     {
         'name': 'motphim.net',
-        'logo': 'https://motphim.net/motphim.png',
+        'logo': 'https://motphimzz.com/motphim.png',
         'className': 'Motphim',
         'plugin': 'motphim.plugin',
-        'version': 31
+        'version': 1
     },
 ]
 
@@ -719,6 +719,7 @@ def router():
         onInit()
 
     elif mode[0] == 'category':
+        print("*********************** Display category")
         if 'subcategory' in ARGS:
             list_category(cats=json.loads(ARGS.get('subcategory')[0]), module=module, classname=classname)
         else:
@@ -736,16 +737,19 @@ def router():
         # id = ARGS.get('url')[0]
         movie_item = json.loads(ARGS.get('movie_item')[0])
         movie = instance().getMovie(movie_item.get('id'))
-        # print("*********************** Display movie {} {}".format(movie_item.get('title'), movie_item.get('id')))
+        print("*********************** Display movie {}".format(movie_item.get('title').encode('utf8')))
         if len(movie['episode']) > 0 or len(movie['group']) > 0:
+            print("*********************** Display movie episode")
             show_episode(movie, movie_item, module, classname)
         else:
+            print("*********************** Display movie links")
             show_links(movie, movie_item, module, classname)
 
     elif mode[0] == 'server':
         server = ARGS.get('server')[0]
         items = json.loads(ARGS.get('items')[0])
         movie_item = json.loads(ARGS.get('movie_item')[0])
+        print("*********************** Display movie server link group")
         show_server_links(items, movie_item, server, module, classname)
 
     elif mode[0] == 'links':

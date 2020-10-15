@@ -49,6 +49,7 @@ from .hosts import fshare, \
     animehay_moekawaii, \
     proxy_playphim, \
     playoffsite, \
+    motphim, \
     verystream
 
 
@@ -160,6 +161,9 @@ class LinkParser:
         elif 'aparat.cam' in self.url:
             return aparat.get_link(self.url)
 
+        elif 'motphim.net' in self.url:
+            return motphim.get_link(self.url)
+
         elif 'upstream.to' in self.url:
             return upstream.get_link(self.url)
 
@@ -226,7 +230,7 @@ class LinkParser:
 
         elif re.search('vuviphim.xyz', self.url) \
                 or re.search('vuviphimmoi.com', self.url) \
-                or re.search('vuviphimz.com', self.url) \
+                or re.search('vuviphimzz.com', self.url) \
                 or re.search('thoctv.com', self.url):
             return vuviphim.get_link(self.url)
 

@@ -14,7 +14,7 @@ user_agent = (
 
 
 class Request:
-    TIMEOUT = 60
+    TIMEOUT = 30
 
     DEFAULT_HEADERS = {
         'User-Agent': user_agent,

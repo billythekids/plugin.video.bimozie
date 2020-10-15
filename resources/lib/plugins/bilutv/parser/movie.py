@@ -20,21 +20,17 @@ class Parser:
         }
         soup = BeautifulSoup(response, "html.parser")
 
-        movie_types = soup.select('ul.choose-server > li > a')
-        for movie_type in movie_types:
-            if re.search('http', movie_type.get('href')):
-                response = Request().get(movie_type.get('href'))
-                soup = BeautifulSoup(response, "html.parser")
-                self.get_server_link(soup, movie_type, movie)
-            else:
-                self.get_server_link(soup, movie_type, movie)
+        movie_types = soup.select('div.control-box > div.episodes > div.caption')
+        episodes = soup.select('ul.list-episode')
+        for i in range(len(movie_types)):
+            items = episodes[i].select('li > a')
+            self.get_server_link(items, movie_types[i], movie)
 
         return movie
 
-    def get_server_link(self, soup, movie_type, movie):
-        episodes = soup.select('ul.list-episode > li > a')
+    def get_server_link(self, episodes, movie_type, movie):
         for episode in episodes:
-            server_name = "%s" % (movie_type.text.strip().encode('utf-8'))
+            server_name = "%s" % (movie_type.select_one('span').text.strip().encode('utf-8'))
             if server_name not in movie['group']: movie['group'][server_name] = []
             movie['group'][server_name].append({
                 'link': episode.get('href'),

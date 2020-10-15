@@ -6,7 +6,7 @@ from utils.aes import CryptoAES
 
 
 class Parser:
-    key = 'motphim.net45904818772018'
+    key = 'motphimzz.com45904818772018'
 
     def get_movie_link(self, response):
         soup = BeautifulSoup(response, "html.parser")
@@ -56,17 +56,14 @@ class Parser:
         })
 
         sources = json.loads(response, encoding='utf8')
-        print sources
-        return movie
+        url = CryptoAES().decrypt(sources.get('mirror_link'), self.key)
 
-        for f in sources.get('playlist'):
-            url = CryptoAES().decrypt(f['file'], self.key)
-            movie['links'].append({
-                'link': url,
-                'title': 'Link %s' % f['label'],
-                'type': f['type'],
-                'resolve': False,
-                'originUrl': domain
-            })
+        movie['links'].append({
+            'link': url,
+            'title': 'Link motphim',
+            'type': 'unknown',
+            'resolve': False,
+            'originUrl': domain
+        })
 
         return movie

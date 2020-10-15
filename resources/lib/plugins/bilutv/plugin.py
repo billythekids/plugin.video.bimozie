@@ -6,7 +6,7 @@ import urllib
 
 
 class Bilutv:
-    domain = "https://bilutvz.org"
+    domain = "https://bilutvz.net"
 
     def getCategory(self):
         url = "%s/%s" % (self.domain, 'danh-sach/')
@@ -26,7 +26,7 @@ class Bilutv:
         return Channel().get(response)
 
     def getMovie(self, id):
-        url = "%s/phim-0-%s.html" % (self.domain, id)
+        url = "%s/phim/%s-0000.html" % (self.domain, id)
         response = Request().get(url)
         url = Movie().get_movie_link(response)
         response = Request().get(url)
