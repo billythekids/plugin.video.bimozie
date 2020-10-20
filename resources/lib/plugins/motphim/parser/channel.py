@@ -17,9 +17,9 @@ class Parser:
         if len(pages) > 1:
             for page in pages:
                 if page.select_one('a'):
-                    num = re.search(r'/(\d+)', page.select_one('a').get('href'))
-                    if num and int(num.group(1)) > channel['page']:
-                        channel['page'] = int(num.group(1))
+                    num = page.select_one('a').text
+                    if num.isnumeric() and int(num) > channel['page']:
+                        channel['page'] = int(num)
 
         for movie in soup.select('div.list-films > ul > li'):
             title = movie.select_one('a').get('title')
