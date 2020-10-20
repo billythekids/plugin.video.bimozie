@@ -44,7 +44,6 @@ class Motphim:
     def getLink(self, movie):
         url = "%s%s" % (self.domain, movie['link'])
         response = self.request.get(url)
-        print self.request.get_request().cookies
         # self.updateSession()
         return Movie().get_link(response, self.request, self.api, self.domain, url)
 

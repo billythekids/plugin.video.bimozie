@@ -15,5 +15,9 @@
         <setting label="HDvietnam username" type="text" id="hdvietnam.username" default=""/>
         <setting label="HDvietnam password" type="text" id="hdvietnam.password" option="hidden"  enable="!eq(-1,)" default=""/>
         <setting label="HDvietnam allows get extra info (slow)" type="bool" id="hdvietnam.extra" default="true"/>
+
+        <setting label="Animehay.tv" type="lsep"/>
+        <setting label="Animehay username" type="text" id="animehay.username" default="animehay"/>
+        <setting label="Animehay password" type="text" id="animehay.password" option="hidden"  enable="!eq(-1,)" default="123456"/>
     </category>
 </settings>

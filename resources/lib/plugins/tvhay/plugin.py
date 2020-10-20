@@ -33,6 +33,7 @@ class Tvhay:
         return Category().get(response), Channel().get(response, 1)
 
     def getChannel(self, channel, page=1):
+        channel = channel.replace("http://tvhayzz.org", "")
         channel = channel.replace(self.domain, "")
         if page > 1:
             url = '%s%spage/%d' % (self.domain, channel, page)
