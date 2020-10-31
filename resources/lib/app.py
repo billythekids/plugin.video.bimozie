@@ -22,7 +22,7 @@ KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 
 SITES = [
     {
-        'name': 'live1.90p.tv',
+        'name': '90p.live',
         'logo': 'https://i.imgur.com/jyM3inb.png',
         'className': 'Phut90',
         'plugin': 'phut90.plugin',
@@ -44,7 +44,7 @@ SITES = [
         'version': 1
     },
     {
-        'name': 'phim1080.net',
+        'name': 'phim1080.me',
         'logo': 'https://phim1080.net/assets/img/phim1080.png',
         'className': 'Fimfast',
         'plugin': 'fimfast.plugin',
@@ -52,7 +52,7 @@ SITES = [
     },
 
     {
-        'name': 'bilutvz.net',
+        'name': 'bilutvzz.net',
         'logo': 'https://bilutvz.net/Theme/images/bilutvznet-logo.png?v=1.0',
         'className': 'Bilutv',
         'plugin': 'bilutv.plugin',
@@ -140,7 +140,7 @@ SITES = [
         'logo': 'https://vuviphimz.com/wp-content/uploads/2020/07/logo-4.png',
         'className': 'Vuviphim',
         'plugin': 'vuviphim.plugin',
-        'version': 1
+        'version': 31
     },
     {
         'name': 'vtv16.com',
@@ -199,11 +199,11 @@ SITES = [
         'version': 31
     },
     {
-        'name': 'motphim.net',
+        'name': 'motphimzzz.net',
         'logo': 'https://motphimzz.com/motphim.png',
         'className': 'Motphim',
         'plugin': 'motphim.plugin',
-        'version': 1
+        'version': 31
     },
 ]
 

@@ -7,8 +7,8 @@ from fimfast.parser.movie import Parser as Movie
 
 
 class Fimfast:
-    domain = "https://phim1080.net"
-    api = "https://phim1080.net/api/v2"
+    domain = "https://phim1080.me"
+    api = "https://phim1080.me/api/v2"
 
     def __init__(self):
         self.request = Request(session=True)

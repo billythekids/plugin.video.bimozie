@@ -49,7 +49,9 @@ class Parser:
             'links': [],
         }
 
-        sources = re.search(r'sources:\s?(.*?)\n', response)
+        sources = re.search(r'sources:\s?(.*?),', response)
+        print "******************************************************************"
+        print sources
         if sources:
             sources = json.loads(sources.group(1).replace('}],', '}]'))
             try:

@@ -7,7 +7,7 @@ import urllib, pickle
 
 
 class Motphim:
-    domain = "https://motphimzz.com"
+    domain = "https://motphimzzz.com"
     api = "https://api.mpapis.xyz"
 
     def __init__(self):

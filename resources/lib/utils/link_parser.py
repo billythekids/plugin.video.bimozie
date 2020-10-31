@@ -136,7 +136,8 @@ class LinkParser:
         elif 'okru.biphim.club' in self.url:
             return okru_biphim_club.get_link(self.url, self.media)
 
-        elif '90p.tv' in self.url:
+        elif '90p.tv' in self.url \
+                or 'binhluanvidamme.online' in self.url:
             return phut90.get_link(self.url, self.media), '90p.tv'
 
         # Animehay
