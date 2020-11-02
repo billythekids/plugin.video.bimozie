@@ -33,14 +33,25 @@ class Parser:
             'links': [],
         }
 
-        source = re.search(r'iframe.*id=(.*?)\\?"', response)
+        source = re.search(r'iframe.*src=\\"(.*?)\\"', response)
         if source:
+            source = source.group(1).replace('\\', '')
+            source = "https:{}".format(source)
+            movie['links'].append({
+                'link': source,
+                'title': 'Link',
+                'type': 'iframe',
+                'resolve': False,
+                'originUrl': domain
+            })
             # https://player.phim7z.tv/hls/getlink.php?id=d1FMYzZMVlkrdHRmOEZRamc5NTRNejhUYy85Rld5SG8vcmhUL2lIeHlEeU1UTXJLd0tiUkF5d0Q2emp3Z1hhaQ==
-            print api_url % source.group(1)
-            response = json.loads(request.get(api_url % source.group(1)))
-            Parser.create_link(movie['links'], response, domain)
-            response = json.loads(request.get((api_url % source.group(1))))
-            Parser.create_link(movie['links'], response, api_url % source.group(1))
+            # response = request.get(source)
+            # print response.encode('utf8')
+            #
+            # response = json.loads(response)
+            # Parser.create_link(movie['links'], response, domain)
+            # response = json.loads(request.get((api_url % source.group(1))))
+            # Parser.create_link(movie['links'], response, api_url % source.group(1))
 
         return movie
 

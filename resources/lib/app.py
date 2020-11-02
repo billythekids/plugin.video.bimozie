@@ -196,14 +196,14 @@ SITES = [
         'logo': 'https://phim7z.tv/wp-content/themes/khophim/assets/images/logo-dark.png',
         'className': 'Phim7z',
         'plugin': 'phim7z.plugin',
-        'version': 31
+        'version': 1
     },
     {
         'name': 'motphimzzz.net',
         'logo': 'https://motphimzz.com/motphim.png',
         'className': 'Motphim',
         'plugin': 'motphim.plugin',
-        'version': 31
+        'version': 1
     },
 ]
 

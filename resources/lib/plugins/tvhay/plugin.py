@@ -9,7 +9,7 @@ from tvhay.parser.movie import Parser as Movie
 
 
 class Tvhay:
-    domain = "http://tvhays.org"
+    domain = "http://tvhayz.net"
     cookie = {}
     h = {
         'Referer': domain,

@@ -46,7 +46,6 @@ def get_link(url, media):
         response = req.get("https://play.playoffsite.xyz/play/v1/{}".format(m_id), headers=header)
         domains = re.search(r'var DOMAIN_LIST = (\[.*\])', response).group(1)
         idfile = re.search(r'var idfile = "(.*)";', response).group(1)
-        print idfile
 
         response = req.post("https://play.playoffsite.xyz/apiv1/playhq/{}".format(m_id), headers=header, data="")
         playlist = create_playlist(response, idfile, domains)
