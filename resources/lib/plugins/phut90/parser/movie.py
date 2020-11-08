@@ -63,7 +63,7 @@ class Parser:
                 for source in sources:
                     label = 'label' in source and source['label'] or ''
                     movie['links'].append({
-                        'link': self.parse_link(source['file']),
+                        'link': self.parse_link(source['file']).strip(),
                         'title': 'Link %s' % label.encode('utf-8'),
                         'type': label.encode('utf-8'),
                         'resolve': False,
