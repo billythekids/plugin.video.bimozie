@@ -10,7 +10,7 @@ from utils.mozie_request import Request
 class Parser:
     def get_movie_link(self, response):
         soup = BeautifulSoup(response, "html.parser")
-        return soup.select_one("a.btn-see").get('href')
+        return soup.select_one("a.btn-see.btn-danger").get('href')
 
     def get(self, response):
         movie = {

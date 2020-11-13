@@ -23,7 +23,7 @@ h = {
 
 
 class Phimmedia:
-    replace_domain = "https://www.phimmedia.tv"
+    replace_domain = "https://www.phimmedia.me"
     domain = "https://ww1.phimmedia.tv/"
     cookies = {}
 
