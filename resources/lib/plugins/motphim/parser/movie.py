@@ -6,7 +6,7 @@ from utils.aes import CryptoAES
 
 
 class Parser:
-    key = 'motphimzzz.com45904818772018'
+    key = 'motphjm.net45904818772018'
 
     def get_movie_link(self, response):
         soup = BeautifulSoup(response, "html.parser")

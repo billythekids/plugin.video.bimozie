@@ -199,8 +199,8 @@ SITES = [
         'version': 1
     },
     {
-        'name': 'motphimzzz.net',
-        'logo': 'https://motphimzz.com/motphim.png',
+        'name': 'motphjm.net',
+        'logo': 'https://motphjm.net/motphim.png',
         'className': 'Motphim',
         'plugin': 'motphim.plugin',
         'version': 1

@@ -44,6 +44,7 @@ from .hosts import fshare, \
     upstream, \
     voe, \
     okru_biphim_club, \
+    streamsb_biphim_club, \
     animehay_cca, \
     animehay_kyun, \
     animehay_moekawaii, \
@@ -136,6 +137,9 @@ class LinkParser:
         elif 'okru.biphim.club' in self.url:
             return okru_biphim_club.get_link(self.url, self.media)
 
+        elif 'streamsb.biphim.club' in self.url:
+            return streamsb_biphim_club.get_link(self.url, self.media)
+
         elif '90p.tv' in self.url \
                 or 'binhluanvidamme.online' in self.url:
             return phut90.get_link(self.url, self.media), '90p.tv'
@@ -177,7 +181,8 @@ class LinkParser:
             return toolpg.get_link(self.url, self.media)
 
         elif re.search('hphim.org', self.url) \
-                or re.search('facebookstream.cloud', self.url):
+                or re.search('facebookstream.cloud', self.url) \
+                or re.search('http://biphim.club/', self.url):
             return vanlongstreaming.get_link(self.url, self.media)
 
         elif re.search('openload.co', self.url):

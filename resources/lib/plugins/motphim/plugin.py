@@ -7,7 +7,7 @@ import urllib, pickle
 
 
 class Motphim:
-    domain = "https://motphimzzz.com"
+    domain = "https://motphjm.net"
     api = "https://api.mpapis.xyz"
 
     def __init__(self):
@@ -28,7 +28,7 @@ class Motphim:
         channel = channel.replace(self.domain, "")
         if page > 1:
             channel = channel.replace(".html", "")
-            url = '%s%s-%d.html' % (self.domain, channel, page)
+            url = '%s%s/%d' % (self.domain, channel, page)
         else:
             url = '%s%s' % (self.domain, channel)
 
