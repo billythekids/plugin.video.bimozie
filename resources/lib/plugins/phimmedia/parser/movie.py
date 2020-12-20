@@ -35,7 +35,7 @@ class Parser:
         }
 
         print("***********************Get phimmedia Link*****************************")
-        sources = re.findall("file: (.*), label: \"(\d+)\"", response, re.MULTILINE)
+        sources = re.findall(r"file:\s?(.*?),\s?label: \"(\d+)\"", response, re.MULTILINE)
         if sources and len(sources) > 0:
             print("***********************Get Movie Link 1*****************************")
             sources = sorted(sources, key=lambda elem: elem[1], reverse=True)
@@ -89,8 +89,6 @@ class Parser:
         r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
         r = r.replace("https://bit.ly/2zE7Kmg?temp=", "")
         r = r.replace("ms.com?test=", "")
-
-        print r
 
         rep_text = re.findall(r'(.*?)(\d)(\d.mp4/)+', r)
 

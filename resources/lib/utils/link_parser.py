@@ -77,11 +77,14 @@ class LinkParser:
         if re.search('streamtape.com', self.url):
             return streamtape.get_link(self.url, self.media)
 
+        elif 'loadblancer.xemphimmedia.com' in self.url \
+                :
+            return header_location.get_link(self.url, self.media)
+
         elif 'vhstream.xyz' in self.url \
                 or 'vkooltv.com' in self.url \
                 or '3s.live' in self.url \
                 or 'vn.phimmoicdn.net' in self.url \
-                or 'loadblancer.xemphimmedia.com' in self.url \
                 :
             return cors.get_link(self.url, self.media)
 

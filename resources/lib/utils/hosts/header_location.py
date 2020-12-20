@@ -11,7 +11,7 @@ def get_link(url, media, include_header=True):
     host_url = urlparse(url)
 
     r = Request()
-    results = r.head(url, verify=False)
+    r.head(url)
     if include_header:
         return cors.get_link(r.get_request().history[0].headers['Location'], media)
 

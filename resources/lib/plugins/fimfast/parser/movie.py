@@ -43,7 +43,7 @@ class Parser:
         videos = json.loads(response)
         subtitle = None
         if 'subtitle' in videos and len(videos['subtitle']) > 0 and 'vi' in videos['subtitle']:
-            subtitle = 'https://fimfast.com/subtitle/%s.vtt' % videos['subtitle']['vi']
+            subtitle = 'https://phim1080.me/subtitle/%s.vtt' % videos['subtitle']['vi']
 
         videos = videos['sources']
         for videotype in videos:
