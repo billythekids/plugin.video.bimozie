@@ -22,6 +22,14 @@ KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 
 SITES = [
     {
+        'name': 'TV Online',
+        'logo': 'https://lh3.googleusercontent.com/proxy/QgL2D2ajdx3ntsHKEo0cmbitDGtLvl6V9Ggk7zxAd0K_rzNReITsLzHus0R-3DzpyLt4N1G1VuzKj21FZxgOzoA',
+        'className': 'TVOnline',
+        'plugin': 'tvonline.plugin',
+        'version': 1,
+        'searchable': False
+    },
+    {
         'name': '90p.live',
         'logo': 'https://i.imgur.com/jyM3inb.png',
         'className': 'Phut90',
@@ -233,7 +241,10 @@ def onInit():
             print("***********************Skip version %d" % site['version'])
             continue
 
-        list_item = xbmcgui.ListItem(label=site['name'])
+        if site['className'] == 'TVOnline':
+            list_item = xbmcgui.ListItem(label="[COLOR blue][B] %s [/B][/COLOR]" % site['name'])
+        else:
+            list_item = xbmcgui.ListItem(label=site['name'])
         list_item.addContextMenuItems(globalContextMenu())
         list_item.setArt({'thumb': site['logo'], 'icon': site['logo']})
         url = build_url({'mode': 'category', 'module': site['plugin'], 'className': site['className']})

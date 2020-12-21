@@ -33,14 +33,21 @@ class Request:
 
     def get(self, url, headers=None, params=None, redirect=True, cookies=None, verify=True, stream=False):
         print("Request URL: %s" % url)
+
         if not headers:
             headers = self.DEFAULT_HEADERS
+        else:
+            print("Head URL: %s header: %s" % (url, urllib.urlencode(headers)))
         if self.session:
             self.r = self.session.get(url, headers=headers, timeout=self.TIMEOUT, params=params,
                                       allow_redirects=redirect, cookies=cookies, verify=verify, stream=stream)
         else:
             self.r = requests.get(url, headers=headers, timeout=self.TIMEOUT, params=params, allow_redirects=redirect,
                                   cookies=cookies, stream=stream)
+
+        # print "---------------- Encoding ----------------"
+        # print self.r.encoding
+        # print "---------------- -------- ----------------"
         return self.r.text
 
     def post(self, url, params=None, headers=None, redirect=True, cookies=None, json=None, verify=True, data=None):

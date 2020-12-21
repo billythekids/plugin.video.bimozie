@@ -52,6 +52,7 @@ from .hosts import fshare, \
     playoffsite, \
     motphim, \
     lotus, \
+    xemtivimienphi, \
     verystream
 
 
@@ -74,6 +75,9 @@ class LinkParser:
 
         if 'play.playoffsite.xyz' in self.url:
             return playoffsite.get_link(self.url, self.media)
+
+        if 'xemtivimienphi.com/' in self.url:
+            return xemtivimienphi.get_link(self.url, self.media)
 
         if re.search('streamtape.com', self.url):
             return streamtape.get_link(self.url, self.media)
