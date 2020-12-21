@@ -5,6 +5,7 @@ import utils.xbmc_helper as helper
 
 
 def get_link(url):
+    print "*********************** Apply Apparat url %s" % url
     response = Request().get(url)
     sources = re.search(r'sources:\s(\[.*\]),', response)
     if sources:

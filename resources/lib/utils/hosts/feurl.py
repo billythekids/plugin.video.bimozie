@@ -6,6 +6,7 @@ from urllib import urlencode
 
 
 def get_link(url, media):
+    print "*********************** Apply furl url %s" % url
     request = Request()
 
     base_url = urlparse(media.get('originUrl'))

@@ -51,6 +51,7 @@ from .hosts import fshare, \
     proxy_playphim, \
     playoffsite, \
     motphim, \
+    lotus, \
     verystream
 
 
@@ -80,6 +81,10 @@ class LinkParser:
         elif 'loadblancer.xemphimmedia.com' in self.url \
                 :
             return header_location.get_link(self.url, self.media)
+
+        elif 'lotus.vn/w/embed' in self.url \
+                :
+            return lotus.get_link(self.url, self.media)
 
         elif 'vhstream.xyz' in self.url \
                 or 'vkooltv.com' in self.url \

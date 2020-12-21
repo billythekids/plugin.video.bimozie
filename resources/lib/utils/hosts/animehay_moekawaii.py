@@ -7,6 +7,7 @@ from utils.mozie_request import Request
 
 
 def get_link(url):
+    print "*********************** Apply animehay moekawaii url %s" % url
     req = Request()
 
     response = req.get(url, redirect=True)

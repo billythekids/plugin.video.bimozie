@@ -8,6 +8,7 @@ from urllib import urlencode
 
 
 def get_link(url, media):
+    print "*********************** Apply dongphim url %s" % url
     header = {
         'Origin': 'http://dongphim.net'
     }

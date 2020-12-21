@@ -341,6 +341,7 @@ def show_episode(movie, movie_item, module, class_name):
             idx += 1
             label = "[COLOR red][B][---- %s : [COLOR yellow]%d eps[/COLOR] ----][/B][/COLOR]" % (key, len(items))
             sli = xbmcgui.ListItem(label=label)
+
             if len(items) < 5 or len(movie['group']) < 1:
                 xbmcplugin.addDirectoryItem(HANDLE, None, sli, isFolder=False)
                 _build_ep_list(items, movie_item, module, class_name)
@@ -368,6 +369,7 @@ def _build_ep_list(items, movie_item, module, class_name):
     title = movie_item.get('realtitle').encode('utf8')
 
     for item in items:
+
         li = xbmcgui.ListItem(label=item['title'])
         li.setInfo('video', {'title': item['title']})
         li.setProperty('fanart_image', thumb)
@@ -376,6 +378,12 @@ def _build_ep_list(items, movie_item, module, class_name):
         li.setLabel2(title)
         if 'intro' in item:
             li.setInfo(type='video', infoLabels={'plot': item['intro']})
+
+        try:
+            eps_title = item.get('title').encode('utf8')
+        except: pass
+        finally: eps_title = item.get('title')
+        movie_item['title'] = "%s - %s" % (title, eps_title)
 
         url = build_url({'mode': 'play',
                          'url': json.dumps(item),
@@ -440,6 +448,15 @@ def play(movie, movie_item, direct=False):
         if not movie or 'links' not in movie or len(movie['links']) == 0:
             return
         else:
+            blacklist = ['hydra', 'maya.bbigbunny.ml', 'blob']
+
+            def filter_blacklist(m):
+                for i in blacklist:
+                    if i in m['link']: return False
+                return True
+
+            movie['links'] = list(filter(filter_blacklist, movie['links']))
+
             if len(movie['links']) > 1:
                 # sort all links
                 try:
@@ -450,15 +467,6 @@ def play(movie, movie_item, direct=False):
                 except Exception as e:
                     print(e)
 
-                # blacklist link
-                blacklist = ['hydra', 'maya.bbigbunny.ml', 'blob']
-
-                def filter_blacklist(m):
-                    for i in blacklist:
-                        if i in m['link']: return False
-                    return True
-
-                movie['links'] = list(filter(filter_blacklist, movie['links']))
                 listitems = []
                 appened_list = []
                 for i in movie['links']:

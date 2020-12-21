@@ -8,7 +8,7 @@ import utils.xbmc_helper as helper
 
 
 class Animehay:
-    domain = "http://animehay.tv"
+    domain = "https://animehay.tv"
 
     def __init__(self):
         self.username = helper.getSetting('animehay.username')

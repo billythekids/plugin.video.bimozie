@@ -59,8 +59,6 @@ class Parser:
                 'resolve': False
             })
 
-            return movie
-
         sources = re.search(r'player.setup.*"sources":\s?(\[.*?\])', response, re.DOTALL)
 
         if sources:
@@ -174,6 +172,19 @@ class Parser:
                 'type': 'mp4',
                 'resolve': False
             })
+
+        sources = re.search(r"var\s?source\s?=\s?(\[.*?\]);", response)
+        if sources:
+            sources = helper.convert_js_2_json(sources.group(1))
+            for source in sources:
+                movie['links'].append({
+                    'link': source.get('file'),
+                    'title': 'Link %s' % source.get('label').encode('utf-8'),
+                    'type': source.get('type').encode('utf-8'),
+                    'originUrl': originUrl,
+                    'resolve': False
+                })
+
 
         # sources = re.search('<script rel="nofollow" src="(.*)" async>', response)
         # if sources:

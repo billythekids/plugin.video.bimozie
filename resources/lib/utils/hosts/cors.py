@@ -37,7 +37,7 @@ def get_link(url, media, including_agent=True):
             # print "--------------------------- {}".format(url)
             return url + "|%s" % urlencode(header), host_url.netloc
 
-        return url + "|%s" % urlencode(header), host_url.netloc
+        return url + "|%s" % urlencode(header), "CORS"
     return url, 'CORS'
 
 

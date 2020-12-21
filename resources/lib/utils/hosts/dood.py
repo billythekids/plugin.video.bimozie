@@ -5,6 +5,7 @@ from urllib import urlencode
 
 
 def get_link(url, movie):
+    print "*********************** Apply dood url %s" % url
     req = Request()
     response = req.get(url)
     match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', response, re.DOTALL)
