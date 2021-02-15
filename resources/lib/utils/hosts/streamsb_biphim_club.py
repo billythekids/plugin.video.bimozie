@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re, json
-from utils.mozie_request import Request
+from ..mozie_request import Request
 import dood
 
 

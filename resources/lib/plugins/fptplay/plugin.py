@@ -96,6 +96,5 @@ class Fptplay:
         }
 
         url = "%s/tim-kiem/%s" % (self.domain, text)
-        print url
         response = Request().get(url)
         return Channel().get_search(response)

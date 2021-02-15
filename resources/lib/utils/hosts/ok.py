@@ -10,15 +10,16 @@ from utils.mozie_request import Request
 def rsl(s):
     s = str(s).replace('HDG', '') \
         .replace('HD', '1080') \
-        .replace('SD', '640') \
+        .replace('SD', '480') \
+        .replace('sd', '480') \
         .replace('large', '640') \
         .replace('lowest', '240') \
-        .replace('low', '480') \
+        .replace('low', '360') \
         .replace('hd', '720') \
-        .replace('fullhd', '1080') \
+        .replace('full', '1080') \
         .replace('Auto', '640') \
         .replace('medium', '240') \
-        .replace('mobile', '240') \
+        .replace('mobile', '144') \
         .replace('AUTO', '640')
 
     result = re.search('(\d+)', s)
@@ -32,6 +33,7 @@ def get_link(url):
     if 'apitvh.net' in url \
             or 'tvhayz.net' in url \
             or 'tvhays.org' in url \
+            or 'tvhai.org' in url \
             :
         url = re.search(r'\?link=(.*)', url).group(1)
 
@@ -45,6 +47,7 @@ def get_link(url):
     s = h.unescape(s)
     s = json.loads(s)
     s = json.loads(s['flashvars']['metadata'])
+    print s
     items = [(i['url'], rsl(i['name'])) for i in s['videos']]
     items = sorted(items, key=lambda elem: int(elem[1]), reverse=True)
 

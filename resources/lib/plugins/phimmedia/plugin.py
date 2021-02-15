@@ -24,18 +24,11 @@ h = {
 
 class Phimmedia:
     replace_domain = "https://www.phimmedia.me"
-    domain = "https://ww1.phimmedia.tv/"
+    domain = "https://www.phimmedia.me"
     cookies = {}
 
     def __init__(self):
         self.request = Request(h, session=True)
-        #
-        # if helper.has_file_path('phimmedia.bin') and helper.get_last_modified_time_file('phimmedia.bin') + 43200 > \
-        #         int(time.time()):
-        #     with open(helper.get_file_path('phimmedia.bin')) as f:
-        #         self.cookies = pickle.load(f)
-        # else:
-        #     self.updateSession(self.domain)
 
     def updateSession(self, url, delay=10):
         try:
@@ -47,7 +40,6 @@ class Phimmedia:
         except: pass
 
     def getCategory(self):
-        # response = self.request.get("{}/".format(self.domain), cookies=self.cookies)
         response = self.request.get("{}/".format(self.domain))
         return Category().get(response), Channel().get(response)
 
@@ -59,24 +51,20 @@ class Phimmedia:
         else:
             url = '%s%s' % (self.domain, channel)
         response = self.request.get(url)
-        # response = self.request.get(url, cookies=self.cookies)
         return Channel().get(response)
 
     def getMovie(self, id):
         url = "%sxem-online.html" % id
-        # response = self.request.get(url, cookies=self.cookies)
         response = self.request.get(url)
         return Movie().get(response)
 
     def getLink(self, movie):
         movie_link = movie['link'].replace(self.replace_domain, self.domain)
 
-        # response = self.request.get(movie_link, cookies=self.cookies)
         response = self.request.get(movie_link)
         return Movie().get_link(response, movie['link'])
 
     def search(self, text, page=1):
         url = "%s/index.php?keyword=%s&do=phim&act=search&page=%s" % (self.domain, urllib.quote_plus(text), page)
-        # response = self.request.get(url, cookies=self.cookies)
         response = self.request.get(url)
         return Channel().get(response)

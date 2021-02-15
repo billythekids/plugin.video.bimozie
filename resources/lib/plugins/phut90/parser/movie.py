@@ -51,7 +51,6 @@ class Parser:
 
         sources = re.search(r'sources:\s?(.*?),', response)
         print "******************************************************************"
-        print sources
         if sources:
             sources = json.loads(sources.group(1).replace('}],', '}]'))
             try:

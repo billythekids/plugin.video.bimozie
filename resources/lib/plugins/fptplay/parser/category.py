@@ -25,7 +25,6 @@ class Parser:
         ]
 
         for menu in response['result']:
-            print menu['_id'], menu['name'].encode("utf-8")
             if menu['_id'] in ids:
                 category.append({
                     'title': menu['name'].encode("utf-8"),

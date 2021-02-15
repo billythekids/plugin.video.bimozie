@@ -20,7 +20,7 @@ class Parser:
         }
         soup = BeautifulSoup(response, "html.parser")
 
-        movie_types = soup.select('div.control-box > div.episodes > div.caption')
+        movie_types = soup.select('div.container > div.episodes > div.caption')
         episodes = soup.select('ul.list-episode')
         for i in range(len(movie_types)):
             items = episodes[i].select('li > a')
@@ -45,7 +45,7 @@ class Parser:
         }
         # get all movie links
         soup = BeautifulSoup(response, "html.parser")
-        servers = soup.select('div.list-server > div.server-item > div.option > span')
+        servers = soup.select('div.list-server > div.server-item > div > span.btn')
         movie_id = re.search("MovieID\s?=\s?'(.*?)'", response).group(1)
 
         ep_id = soup.select_one('ul.list-episode > li > a.current')
@@ -89,7 +89,6 @@ class Parser:
             if len(sources) > 0:
                 for s in sources:
                     source = Parser.parse_link(s['file'])
-                    print s
                     if source and source not in movie_links:
                         label = s.get('label') and s.get('label') or s.get('type')
                         movie_links.append((source, label.encode('utf-8')))

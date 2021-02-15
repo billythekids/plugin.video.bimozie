@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 import re
 import urllib
@@ -11,7 +12,7 @@ import json
 from importlib import import_module
 from utils.media_helper import MediaHelper
 from threading import Thread
-import utils.xbmc_helper as XbmcHelper
+import utils.xbmc_helper as helper
 
 ADDON = xbmcaddon.Addon()
 HANDLE = int(sys.argv[1])
@@ -20,200 +21,9 @@ ARGS = urlparse.parse_qs(sys.argv[2][1:])
 ADDON_ID = ADDON.getAddonInfo('id')
 KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 
-SITES = [
-    {
-        'name': 'TV Online',
-        'logo': 'https://lh3.googleusercontent.com/proxy/QgL2D2ajdx3ntsHKEo0cmbitDGtLvl6V9Ggk7zxAd0K_rzNReITsLzHus0R-3DzpyLt4N1G1VuzKj21FZxgOzoA',
-        'className': 'TVOnline',
-        'plugin': 'tvonline.plugin',
-        'version': 1,
-        'searchable': False
-    },
-    {
-        'name': '90p.live',
-        'logo': 'https://i.imgur.com/jyM3inb.png',
-        'className': 'Phut90',
-        'plugin': 'phut90.plugin',
-        'version': 1,
-        'searchable': False
-    },
-    {
-        'name': 'fptplay.vn',
-        'logo': 'https://fptplay.vn/images/logo.png',
-        'className': 'Fptplay',
-        'plugin': 'fptplay.plugin',
-        'version': 1
-    },
-    {
-        'name': 'vkool.tv',
-        'logo': 'https://i.ibb.co/TcWtgB5/rsz-image.png',
-        'className': 'Vkool',
-        'plugin': 'vkool.plugin',
-        'version': 1
-    },
-    {
-        'name': 'phim1080.me',
-        'logo': 'https://phim1080.net/assets/img/phim1080.png',
-        'className': 'Fimfast',
-        'plugin': 'fimfast.plugin',
-        'version': 1
-    },
-
-    {
-        'name': 'bilutvzz.net',
-        'logo': 'https://bilutvz.net/Theme/images/bilutvznet-logo.png?v=1.0',
-        'className': 'Bilutv',
-        'plugin': 'bilutv.plugin',
-        'version': 1
-    },
-    {
-        'name': 'bilutvb.com',
-        'logo': 'https://bilutvb.com/wp-content/uploads/2019/05/logov.png',
-        'className': 'Bilutvb',
-        'plugin': 'bilutvb.plugin',
-        'version': 31
-    },
-    {
-        'name': 'phimmedia.tv',
-        'logo': 'http://www.phimmedia.tv/templates/themes/phim/images/phimmedia-s.png',
-        'className': 'Phimmedia',
-        'plugin': 'phimmedia.plugin',
-        'version': 1
-    },
-    {
-        'name': 'phimmoizz.net',
-        'logo': 'http://www.phimmoiz.com/logo/phimmoi-square.png',
-        'className': 'Phimmoi',
-        'plugin': 'phimmoi.plugin',
-        'version': 1
-    },
-    {
-        'name': 'biphimz.tv',
-        'logo': 'https://i.ibb.co/tBKrQtK/image.png',
-        'className': 'Hphim',
-        'plugin': 'hphim.plugin',
-        'version': 1
-    },
-    {
-        'name': 'tvhayz.org',
-        'logo': 'https://kodi-addons.club/data/d1/d14a048c56373761664ca89a773d694d.png',
-        'className': 'Tvhay',
-        'plugin': 'tvhay.plugin',
-        'version': 1
-    },
-    {
-        'name': 'phim3s.pw',
-        'logo': 'http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium',
-        'className': 'Phim3s',
-        'plugin': 'phim3s.plugin',
-        'version': 31
-    },
-    {
-        'name': 'phimbathu.org',
-        'logo': 'http://phimbathu.org/Theme/images/phimbathu-logo.png',
-        'className': 'Phimbathu',
-        'plugin': 'phimbathu.plugin',
-        'version': 31
-    },
-    {
-        'name': 'kenh88.com',
-        'logo': 'http://www.kenh88.com/images/logo_kenh88.png',
-        'className': 'Kenh88',
-        'plugin': 'kenh88.plugin',
-        'version': 31
-    },
-    {
-        'name': 'phim14.net',
-        'logo': 'http://phim14.net/application/views/frontend/default/images/logo.png',
-        'className': 'Phim14',
-        'plugin': 'phim14.plugin',
-        'version': 31
-    },
-    {
-        'name': 'fcine.net',
-        'logo': 'https://fcine.net/uploads/monthly_2019_01/FCINE-LOGO.png.0d4b6b0253c4fd8a4dbefa7067ac0ac4.png',
-        'className': 'Fcine',
-        'plugin': 'fcine.plugin',
-        'version': 1
-    },
-    {
-        'name': 'animehay.tv',
-        'logo': 'https://i1.wp.com/www.albertgyorfi.com/wp-content/uploads/2017/05/anime-pack.png?fit=256%2C256&ssl=1',
-        'className': 'Animehay',
-        'plugin': 'animehay.plugin',
-        'version': 1
-    },
-    {
-        'name': 'vuviphimz.com',
-        'logo': 'https://vuviphimz.com/wp-content/uploads/2020/07/logo-4.png',
-        'className': 'Vuviphim',
-        'plugin': 'vuviphim.plugin',
-        'version': 31
-    },
-    {
-        'name': 'vtv16.com',
-        'logo': 'https://yt3.ggpht.com/a-/AN66SAx84wKI577rKgX2IeQUiG31GaOhmVIu2le2rQ=s900-mo-c-c0xffffffff-rj-k-no',
-        'className': 'Vtv16',
-        'plugin': 'vtv16.plugin',
-        'version': 31
-    },
-    {
-        'name': 'phimgi.tv',
-        'logo': 'https://cdn-img.phimgi.net/wp-content/uploads/2019/01/phimgi-02.png',
-        'className': 'Phimgi',
-        'plugin': 'phimgi.plugin',
-        'version': 31
-    },
-    {
-        'name': 'dongphim.net',
-        'logo': 'http://media.dongphim.net/media/image/id/5c921766acc399d72c8b456b_200x',
-        'className': 'Dongphim',
-        'plugin': 'dongphim.plugin',
-        'version': 1
-    },
-    {
-        'name': 'hdvietnam.com (beta)',
-        'logo': 'http://www.hdvietnam.com/images/hd-vietnam-logo.png',
-        'className': 'Hdvietnam',
-        'plugin': 'hdvietnam.plugin',
-        'version': 1
-    },
-    {
-        'name': 'xemphim.plus',
-        'logo': 'https://xemphim.plus/static/skin/logo-full.png',
-        'className': 'Xemphim',
-        'plugin': 'xemphim.plugin',
-        'version': 31
-    },
-    {
-        'name': 'xemphimsoz.com',
-        'logo': 'https://xemphimso.tv/assets/themes/img/logo.png?v=66',
-        'className': 'Xemphimso',
-        'plugin': 'xemphimso.plugin',
-        'version': 1
-    },
-    {
-        'name': 'xem-phim.tv',
-        'logo': 'https://xem-phim.tv/logo2.png',
-        'className': 'Xomphimhay',
-        'plugin': 'xomphimhay.plugin',
-        'version': 31
-    },
-    {
-        'name': 'phim7z.tv',
-        'logo': 'https://phim7z.tv/wp-content/themes/khophim/assets/images/logo-dark.png',
-        'className': 'Phim7z',
-        'plugin': 'phim7z.plugin',
-        'version': 1
-    },
-    {
-        'name': 'motphjm.net',
-        'logo': 'https://motphjm.net/motphim.png',
-        'className': 'Motphim',
-        'plugin': 'motphim.plugin',
-        'version': 1
-    },
-]
+PATH = os.path.dirname(os.path.abspath(__file__))
+with open(PATH + '/sites.json') as json_file:
+    SITES = json.load(json_file)
 
 
 def build_url(query):
@@ -229,14 +39,34 @@ def globalContextMenu():
 
 def onInit():
     xbmcplugin.setPluginCategory(HANDLE, 'Websites')
+    xbmcplugin.setContent(HANDLE, 'albums')
+
+    for idx, site in enumerate(SITES):
+        if site['version'] > KODI_VERSION:
+            print("***********************Skip version %d" % site['version'])
+            continue
+
+        list_item = xbmcgui.ListItem(label=site['name'])
+        list_item.addContextMenuItems(globalContextMenu())
+        list_item.setArt({'thumb': site['logo'], 'icon': site['logo']})
+        url = build_url({'mode': 'group', 'group': idx})
+        is_folder = True
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+
+    xbmcplugin.endOfDirectory(HANDLE, cacheToDisc=True)
+
+
+def list_sites(idx):
+    xbmcplugin.setPluginCategory(HANDLE, 'Websites')
     xbmcplugin.setContent(HANDLE, 'movies')
 
     # show global search link
     url = build_url({'mode': 'globalsearch'})
-    xbmcplugin.addDirectoryItem(HANDLE, url,
-                                xbmcgui.ListItem(label="[COLOR yellow][B] %s [/B][/COLOR]" % "Search All..."), True)
+    if SITES[idx]['searchable']:
+        xbmcplugin.addDirectoryItem(HANDLE, url,
+                                    xbmcgui.ListItem(label="[COLOR yellow][B] %s [/B][/COLOR]" % "Search All..."), True)
 
-    for site in SITES:
+    for site in SITES[idx]['sites']:
         if site['version'] > KODI_VERSION:
             print("***********************Skip version %d" % site['version'])
             continue
@@ -392,8 +222,10 @@ def _build_ep_list(items, movie_item, module, class_name):
 
         try:
             eps_title = item.get('title').encode('utf8')
-        except: pass
-        finally: eps_title = item.get('title')
+        except:
+            pass
+        finally:
+            eps_title = item.get('title')
         movie_item['title'] = "%s - %s" % (title, eps_title)
 
         url = build_url({'mode': 'play',
@@ -459,7 +291,7 @@ def play(movie, movie_item, direct=False):
         if not movie or 'links' not in movie or len(movie['links']) == 0:
             return
         else:
-            blacklist = ['hydra', 'maya.bbigbunny.ml', 'blob']
+            blacklist = ['hydrax', 'maya.bbigbunny.ml', 'blob']
 
             def filter_blacklist(m):
                 for i in blacklist:
@@ -543,7 +375,7 @@ def dosearch(plugin, module, classname, text, page=1, recall=False):
     if not text:
         return
 
-    XbmcHelper.search_history_save(text)
+    helper.search_history_save(text)
     print("*********************** searching {}".format(text))
     movies = plugin().search(text)
 
@@ -586,7 +418,7 @@ def search(module, classname=None):
                                 True)
 
     # Support to save search history
-    contents = XbmcHelper.search_history_get()
+    contents = helper.search_history_get()
     if contents:
         url = build_url({'mode': 'clearsearch', 'module': module, 'className': classname})
         xbmcplugin.addDirectoryItem(HANDLE,
@@ -615,7 +447,7 @@ def global_search():
                                 True)
 
     # Support to save search history
-    contents = XbmcHelper.search_history_get()
+    contents = helper.search_history_get()
     if contents:
         url = build_url({'mode': 'clearsearch'})
         xbmcplugin.addDirectoryItem(HANDLE,
@@ -646,7 +478,7 @@ def do_global_search(text):
     if not text:
         return
 
-    XbmcHelper.search_history_save(text)
+    helper.search_history_save(text)
 
     print("*********************** searching {}".format(text))
 
@@ -675,21 +507,24 @@ def do_global_search(text):
             pass
 
     threads = []
-    for site in SITES:
-        if site['version'] > KODI_VERSION or ('searchable' in site and not site['searchable']):
+    for group in SITES:
+        if group['version'] > KODI_VERSION or ('searchable' in group and not group['searchable']):
             continue
-        progress['length'] += 1
-    progress['dialog'].create('Processing', "Searching %d/%d sites" % (progress['counter'], progress['length']))
-    progress['step'] = 100 / progress['length']
+        for site in group['sites']:
+            progress['length'] += 1
+            progress['dialog'].create('Processing', "Searching %d/%d sites" % (progress['counter'], progress['length']))
+            progress['step'] = 100 / progress['length']
 
-    for site in SITES:
-        if site['version'] > KODI_VERSION or ('searchable' in site and not site['searchable']):
+    for group in SITES:
+        if group['version'] > KODI_VERSION or ('searchable' in group and not group['searchable']):
             continue
-
-        process = Thread(target=_search, args=[site, text, progress])
-        process.setDaemon(True)
-        process.start()
-        threads.append(process)
+        for site in group['sites']:
+            if site['version'] > KODI_VERSION or ('searchable' in site and not site['searchable']):
+                continue
+            process = Thread(target=_search, args=[site, text, progress])
+            process.setDaemon(True)
+            process.start()
+            threads.append(process)
 
     for process in threads:
         process.join()
@@ -731,11 +566,18 @@ def router():
     mode = ARGS.get('mode', None)
     instance = module = classname = None
 
-    if mode is not None and mode[0] != 'globalsearch' and mode[0] != 'doglobalsearch' and mode[0] != 'clearsearch':
+    if mode is not None \
+            and mode[0] != 'group' \
+            and mode[0] != 'globalsearch' \
+            and mode[0] != 'doglobalsearch' \
+            and mode[0] != 'clearsearch':
         instance, module, classname = get_plugin(ARGS)
 
     if mode is None:
         onInit()
+
+    elif mode[0] == 'group':
+        list_sites(int(ARGS.get('group')[0]))
 
     elif mode[0] == 'category':
         print("*********************** Display category")
@@ -804,5 +646,5 @@ def router():
         dosearch(instance, module, classname, text)
 
     elif mode[0] == 'clearsearch':
-        XbmcHelper.search_history_clear()
+        helper.search_history_clear()
         return

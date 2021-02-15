@@ -7,14 +7,19 @@ import utils.xbmc_helper as helper
 
 
 def get_link(url, media):
-    print "*********************** Apply Lotus url %s" % url
+    print("*********************** Apply Lotus url %s" % url)
     header = {
             'referer': 'https://lotus.vn/',
             'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
         }
     req = Request()
     response = req.get(url, headers=header)
+    print(response.encode('utf8'))
     source = re.search(r'"link":\s?"(.*?)",', response)
+    
+    if '.mp4' in source.group(1):
+        url = source.group(1)
+        return url, 'lotus'
     if source:
         master_url = source.group(1)
         playlist = get_adaptive_link(Request().get(master_url, headers=header))

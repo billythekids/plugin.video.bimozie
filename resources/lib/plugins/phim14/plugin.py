@@ -17,7 +17,6 @@ class Phim14:
         if page > 1:
             channel = channel.replace('.html', '')
             url = '%s%s/page-%d.html' % (self.domain, channel, page)
-            print(channel)
         else:
             url = '%s%s' % (self.domain, channel)
         response = Request().get(url)

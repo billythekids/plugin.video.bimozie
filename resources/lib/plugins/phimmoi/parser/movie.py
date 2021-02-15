@@ -129,8 +129,6 @@ class Parser:
                         'originUrl': self.originURL
                     })
 
-        print(movie)
-
         return movie
 
     def get_server_list(self, servers):

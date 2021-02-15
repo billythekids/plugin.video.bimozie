@@ -53,11 +53,11 @@ class Parser:
                     continue
 
                 movie['links'].append({
-                'link': source,
-                'title': 'Link direct',
-                'type': 'mp4',
-                'resolve': False
-            })
+                    'link': source,
+                    'title': 'Link direct',
+                    'type': 'mp4',
+                    'resolve': False
+                })
 
         sources = re.search(r'player.setup.*"sources":\s?(\[.*?\])', response, re.DOTALL)
 
@@ -72,7 +72,7 @@ class Parser:
                         'resolve': False
                     })
 
-        sources = re.search(r"<iframe.*?src=['|\"](.*animehay.tv/play.*?)['|\"]\s?", response)
+        sources = re.search(r"<iframe.*?src=['|\"](.*animehay.tv/play/{5,}.*?)['|\"]\s?", response)
         if sources:
             res = Request()
             if 'key=' in sources.group(1):
@@ -185,7 +185,17 @@ class Parser:
                     'resolve': False
                 })
 
-
+        sources = re.search(r'var\s?source\s?=\s?"(\[.*?\])";', response)
+        if sources:
+            sources = helper.convert_js_2_json(sources.group(1).replace('\\', ''))
+            for source in sources:
+                movie['links'].append({
+                    'link': source.get('file'),
+                    'title': 'Link %s' % source.get('label').encode('utf-8'),
+                    'type': source.get('type').encode('utf-8'),
+                    'originUrl': originUrl,
+                    'resolve': False
+                })
         # sources = re.search('<script rel="nofollow" src="(.*)" async>', response)
         # if sources:
         #     response = Request().get(sources.group(1))

@@ -20,7 +20,6 @@ class Parser:
         if last_page is not None:
             page = re.search('/(\d+)/$', last_page.get('href')).group(1)
             channel['page'] = int(page)
-            print(page)
 
         movies = soup.select('ul.list-film > li > div.inner')
         if len(movies) > 0:

@@ -1,0 +1,232 @@
+[
+  {
+    "name": "Sport",
+    "logo": "https://ec.europa.eu/eurostat/documents/6921402/9104237/Shutterstock_Lisa_Kolbasa.png/f988f8b6-4138-4a91-9761-885bacab0ce2?t=1533725002000",
+    "version": 1,
+    "searchable": false,
+    "sites": [
+      {
+        "name": "90p.live",
+        "logo": "https://i.imgur.com/jyM3inb.png",
+        "className": "Phut90",
+        "plugin": "phut90.plugin",
+        "version": 1,
+        "searchable": false
+      }
+    ]
+  },
+  {
+    "name": "TV Online",
+    "logo": "https://tvonline.bg/wp-content/themes/Design3/images/logo.jpg",
+    "version": 1,
+    "searchable": false,
+    "sites": [
+      {
+        "name": "TV Online",
+        "logo": "https://tvonline.bg/wp-content/themes/Design3/images/logo.jpg",
+        "className": "TVOnline",
+        "plugin": "tvonline.plugin",
+        "version": 1,
+        "searchable": false
+      }
+    ]
+  },
+  {
+    "name": "Movies",
+    "logo": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/summer-movies-1587392939.jpg",
+    "version": 1,
+    "searchable": true,
+    "sites": [
+      {
+        "name": "fptplay.vn",
+        "logo": "https://fptplay.vn/images/logo.png",
+        "className": "Fptplay",
+        "plugin": "fptplay.plugin",
+        "version": 1
+      },
+      {
+        "name": "vkool.tv",
+        "logo": "https://i.ibb.co/TcWtgB5/rsz-image.png",
+        "className": "Vkool",
+        "plugin": "vkool.plugin",
+        "version": 1
+      },
+      {
+        "name": "phim1080.me",
+        "logo": "https://phim1080.me/assets/img/phim1080.png",
+        "className": "Fimfast",
+        "plugin": "fimfast.plugin",
+        "version": 1
+      },
+      {
+        "name": "bilutvzz.net",
+        "logo": "https://bilutvzz.net/Theme/images/bilutvznet-logo.png?v=1.0",
+        "className": "Bilutv",
+        "plugin": "bilutv.plugin",
+        "version": 1
+      },
+      {
+        "name": "bilutvb.com",
+        "logo": "https://bilutvb.com/wp-content/uploads/2019/05/logov.png",
+        "className": "Bilutvb",
+        "plugin": "bilutvb.plugin",
+        "version": 31
+      },
+      {
+        "name": "phimmedia.tv",
+        "logo": "https://www.phimmedia.me/templates/themes/phim/images/phimmedia-s.png",
+        "className": "Phimmedia",
+        "plugin": "phimmedia.plugin",
+        "version": 1
+      },
+      {
+        "name": "phimmoizz.net",
+        "logo": "http://www.phimmoizz.net/logo/phimmoi-square.png",
+        "className": "Phimmoi",
+        "plugin": "phimmoi.plugin",
+        "version": 1
+      },
+      {
+        "name": "biphimz.tv",
+        "logo": "https://i.ibb.co/tBKrQtK/image.png",
+        "className": "Hphim",
+        "plugin": "hphim.plugin",
+        "version": 1
+      },
+      {
+        "name": "tvhai.org",
+        "logo": "https://i.ibb.co/WyMTx2c/image.png",
+        "className": "Tvhay",
+        "plugin": "tvhay.plugin",
+        "version": 1
+      },
+      {
+        "name": "phim3s.pw",
+        "logo": "http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium",
+        "className": "Phim3s",
+        "plugin": "phim3s.plugin",
+        "version": 31
+      },
+      {
+        "name": "phimbathu.org",
+        "logo": "http://phimbathu.org/Theme/images/phimbathu-logo.png",
+        "className": "Phimbathu",
+        "plugin": "phimbathu.plugin",
+        "version": 31
+      },
+      {
+        "name": "kenh88.com",
+        "logo": "http://www.kenh88.com/images/logo_kenh88.png",
+        "className": "Kenh88",
+        "plugin": "kenh88.plugin",
+        "version": 31
+      },
+      {
+        "name": "phim14.net",
+        "logo": "http://phim14.net/application/views/frontend/default/images/logo.png",
+        "className": "Phim14",
+        "plugin": "phim14.plugin",
+        "version": 31
+      },
+      {
+        "name": "fcine.net",
+        "logo": "https://fcine.net/uploads/monthly_2019_07/FCINE-LOGO.png.6e9c546f90ccb1b61c0502769b3fe1e8.png",
+        "className": "Fcine",
+        "plugin": "fcine.plugin",
+        "version": 1
+      },
+      {
+        "name": "vuviphimz.com",
+        "logo": "https://vuviphimz.com/wp-content/uploads/2020/07/logo-4.png",
+        "className": "Vuviphim",
+        "plugin": "vuviphim.plugin",
+        "version": 31
+      },
+      {
+        "name": "vtv16.com",
+        "logo": "https://yt3.ggpht.com/a-/AN66SAx84wKI577rKgX2IeQUiG31GaOhmVIu2le2rQ=s900-mo-c-c0xffffffff-rj-k-no",
+        "className": "Vtv16",
+        "plugin": "vtv16.plugin",
+        "version": 31
+      },
+      {
+        "name": "phimgi.tv",
+        "logo": "https://cdn-img.phimgi.net/wp-content/uploads/2019/01/phimgi-02.png",
+        "className": "Phimgi",
+        "plugin": "phimgi.plugin",
+        "version": 31
+      },
+      {
+        "name": "dongphim.net",
+        "logo": "http://media.dongphim.net/media/image/id/5c921766acc399d72c8b456b_200x",
+        "className": "Dongphim",
+        "plugin": "dongphim.plugin",
+        "version": 1
+      },
+      {
+        "name": "hdvietnam.com (beta)",
+        "logo": "http://www.hdvietnam.com/images/hd-vietnam-logo.png",
+        "className": "Hdvietnam",
+        "plugin": "hdvietnam.plugin",
+        "version": 1
+      },
+      {
+        "name": "xemphim.plus",
+        "logo": "https://xemphim.plus/static/skin/logo-full.png",
+        "className": "Xemphim",
+        "plugin": "xemphim.plugin",
+        "version": 31
+      },
+      {
+        "name": "xemphimsoz.com",
+        "logo": "https://xemphimsoz.com/assets/themes/img/logo.png?v=66",
+        "className": "Xemphimso",
+        "plugin": "xemphimso.plugin",
+        "version": 1
+      },
+      {
+        "name": "xem-phim.tv",
+        "logo": "https://xem-phim.tv/logo2.png",
+        "className": "Xomphimhay",
+        "plugin": "xomphimhay.plugin",
+        "version": 31
+      },
+      {
+        "name": "phim7z.tv",
+        "logo": "https://phim7z.tv/wp-content/themes/khophim/assets/images/logo-dark.png",
+        "className": "Phim7z",
+        "plugin": "phim7z.plugin",
+        "version": 1
+      },
+      {
+        "name": "motphjm.net",
+        "logo": "https://motphjm.net/motphim.png",
+        "className": "Motphim",
+        "plugin": "motphim.plugin",
+        "version": 1
+      }
+    ]
+  },
+  {
+    "name": "Anime",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/d/de/Anime_Tv_Channel.jpg",
+    "version": 1,
+    "searchable": true,
+    "sites": [
+      {
+        "name": "animehay.tv",
+        "logo": "https://i1.wp.com/www.albertgyorfi.com/wp-content/uploads/2017/05/anime-pack.png?fit=256%2C256&ssl=1",
+        "className": "Animehay",
+        "plugin": "animehay.plugin",
+        "version": 1
+      },
+      {
+        "name": "anime47.com",
+        "logo": "https://i.ibb.co/swSHyV0/image.png",
+        "className": "anime47",
+        "plugin": "anime47.plugin",
+        "version": 1
+      }
+    ]
+  }
+]

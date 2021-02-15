@@ -285,8 +285,8 @@ class LinkParser:
             helper.message('hydrax link parsing', 'Get Link')
             return hydrax.get_guest_hydrax(self.url, self.media)
 
-        # elif re.search('youtube.com', self.url):
-        #     return self.get_youtube()
+        elif re.search('youtube.com', self.url):
+            return self.get_youtube()
 
         elif re.search('imacdn.com', self.url):
             helper.message('imacdn HFF', 'Movie Found')
@@ -312,6 +312,13 @@ class LinkParser:
         return self.url, 'unknow'
 
     def get_youtube(self):
+        # import YDStreamExtractor
+        # YDStreamExtractor.disableDASHVideo(True)
+        # # vid = YDStreamExtractor.getVideoInfo(self.url, quality=1)  # quality is 0=SD, 1=720p, 2=1080p and is a maximum
+        # vid = YDStreamExtractor.getVideoInfo("q15y18-gD5g", quality=1)  # quality is 0=SD, 1=720p, 2=1080p and is a maximum
+        # stream_url = vid.streamURL()  # This is what Kodi (XBMC) will play
+        # return stream_url, '720'
+
         self.url = self.url.replace(re.search('^http.*(\?.*)', self.url).group(1), '')
         try:
             import urlresolver
@@ -359,6 +366,9 @@ class LinkParser:
         if re.search('51.15.90.176', self.url):  # skip this for phimbathu & bilutv
             return self.url, 'hls5'
 
+        if re.search('web.lotuscdn.vn', self.url):  # skip this for phimbathu & bilutv
+            return self.url, 'hls5'
+
         # hls-streaming.phimgi.net
         if re.search('hls-streaming.phimgi.net', self.url):  # skip this for phimbathu & bilutv
             url = self.url + "|%s" % urlencode({
@@ -367,7 +377,7 @@ class LinkParser:
             })
             return url, 'hls5'
 
-        return self.url, 'hls3'
+        return cors.get_link(self.url, self.media)
 
     def get_referer_link(self):
         url = self.url + "|Referer=https://vuviphim.com/"

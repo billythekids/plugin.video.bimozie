@@ -30,7 +30,6 @@ class Parser:
                 label = "[%s] %s" % (type, title)
 
             img = movie.select_one('div.list-img').get('style')
-            print img
             img = re.search(r"background-image:url\((.*)\)", img).group(1)
 
             if 'https://' not in img:

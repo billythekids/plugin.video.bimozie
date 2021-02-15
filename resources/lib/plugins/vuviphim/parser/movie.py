@@ -102,7 +102,6 @@ class Parser:
         sources = re.search('<iframe.*src="(http.*?)" frameborder', response)
         if sources:
             source = sources.group(1)
-            print source
 
             movie['links'].append({
                 'link': source,

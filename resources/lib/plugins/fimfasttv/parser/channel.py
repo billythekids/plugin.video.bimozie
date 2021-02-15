@@ -14,7 +14,6 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
 
         pages = soup.select('ul.page-numbers > li')
-        print(pages)
         if len(pages) > 2:
             channel['page'] = int(pages[-2].select_one('a').find(text=True, recursive=True))
 

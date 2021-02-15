@@ -25,11 +25,10 @@ def get_link(url, media, including_agent=True):
             # url = url.replace('vdicdn.com', '8giaitri.com')
             # host_url = urlparse(url)
             header = {
-                'Origin': 'https://phim1080.me',
+                # 'Referer': 'https://phim1080.me',
                 # 'Referer': media.get('originUrl'),
-                'Host': host_url.netloc,
-                'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
-                'verifypeer': 'false'
+                # 'Host': host_url.netloc,
+                # 'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
             }
 
             url = get_adaptive_link(Request().get(url, headers=header))

@@ -58,6 +58,7 @@ def get_link(url, media):
         response = req.get(link, headers=header)
         domains = re.search(r'var DOMAIN_LIST = (\[.*\])', response).group(1)
         idfile = re.search(r'var idfile = "(.*)";', response).group(1)
+        iduser = re.search(r'var idUser = "(.*)";', response).group(1)
 
         header = {
             'Referer': link,
@@ -66,9 +67,15 @@ def get_link(url, media):
         # get https://api.playoffsite.xyz/apiv1/views/5fc9bad50a6ad5ac5c00a8e8
         # head https://m3u8.playoffsite.xyz/api/v1/png/5fc9bad50a6ad5ac5c00a8e8
         # location https://m3u8.playoffsite.xyz/m3u8/v1/4/png/5fc9bad50a6ad5ac5c00a8e8.m3u8
-        response = req.get("https://api.playoffsite.xyz/apiv1/views/{}".format(idfile), headers=header)
-        req.head("https://m3u8.playoffsite.xyz/api/v1/png/{}".format(idfile), headers=header)
-        url = req.get_request().history[0].headers['Location']
+        response = req.post("https://api-sing.playoffsite.xyz/apiv2/{}/{}".format(iduser, idfile), headers=header, params={
+            'referrer': 'http://tvhai.org',
+            'typeend': 'html'
+        })
+        response = json.loads(response)
+        print response
+        url = response.get('data')
+        # req.head("https://m3u8.playoffsite.xyz/api/v1/png/{}".format(idfile), headers=header)
+        # url = req.get_request().history[0].headers['Location']
 
 
         # response = req.post("https://api.playoffsite.xyz/apiv1/playhq/{}".format(m_id), headers=header, params="referrer=http%3A%2F%2Ftvhayz.net")

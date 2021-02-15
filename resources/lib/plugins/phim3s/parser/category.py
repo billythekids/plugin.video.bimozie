@@ -9,7 +9,6 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
 
         for item in soup.select('div#nav > ul > li'):
-            print(item.get('class'))
             if item.get('class') is not None: continue
             menu = item.select_one('a')
             link = self.getLink(menu)
