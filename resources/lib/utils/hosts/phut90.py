@@ -8,6 +8,12 @@ import cors
 
 def get_link(url, media):
     response = Request().get(url)
+
+    sources = re.search(r'var video_url = "(.*?)";', response)
+    if sources:
+        url, mtype = cors.get_link(sources.group(1), media)
+        return url
+
     sources = re.search(r'sources:\s?(.*?),\n', response)
     sources = helper.convert_js_2_json(sources.group(1).encode('utf-8'))
 
