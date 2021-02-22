@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 import re
-import xbmcaddon
+
 import utils.xbmc_helper as helper
-from urllib import urlencode
+import xbmcaddon
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+
 from .hosts import fshare, \
     imacdn, \
     phimmoi, \
@@ -13,7 +19,6 @@ from .hosts import fshare, \
     ok, \
     vtv16, \
     hls_hydrax, \
-    dongphim, \
     fembed, \
     hdclub, \
     animehay, \
@@ -25,7 +30,6 @@ from .hosts import fshare, \
     toolpg, \
     vtvhub, \
     phut90, \
-    hphim, \
     cors, \
     streamlink, \
     mixdrop, \

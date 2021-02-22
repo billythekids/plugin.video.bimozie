@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
-from bs4 import BeautifulSoup
-import urllib
-import re
 import json
-from urlparse import urlparse
+import re
+
+
+from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
 from utils.mozie_request import Request
+from six.moves.urllib.parse import quote, unquote
+
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
+
 
 
 class Parser:
     def get_movie_link(self, response):
         soup = BeautifulSoup(response, "html.parser")
-        return soup.select_one("a.btn-see.btn-danger").get('href')
+        return soup.select_one("a.bg-violet-600").get('href')
 
     def get(self, response):
         movie = {
@@ -30,11 +38,11 @@ class Parser:
 
     def get_server_link(self, episodes, movie_type, movie):
         for episode in episodes:
-            server_name = "%s" % (movie_type.select_one('span').text.strip().encode('utf-8'))
+            server_name = "%s" % py2_encode(movie_type.select_one('span').text.strip())
             if server_name not in movie['group']: movie['group'][server_name] = []
             movie['group'][server_name].append({
                 'link': episode.get('href'),
-                'title': "%s" % episode.text.encode('utf-8')
+                'title': "%s" % py2_encode(episode.text)
             })
 
     def get_link(self, response, domain):
@@ -65,7 +73,7 @@ class Parser:
                 'ep': ep_id
             }
             if sv_id > 0: params['sv'] = sv_id
-            Parser.extract_link(r.post(url, params=params).encode('utf-8'), links)
+            Parser.extract_link(r.post(url, params=params), links)
 
         for link in links:
             movie['links'].append({
@@ -91,34 +99,34 @@ class Parser:
                     source = Parser.parse_link(s['file'])
                     if source and source not in movie_links:
                         label = s.get('label') and s.get('label') or s.get('type')
-                        movie_links.append((source, label.encode('utf-8')))
+                        movie_links.append((source, py2_encode(label)))
 
-        m = re.search('<iframe.*?src=".*?url=(http.*)" frameborder', response)
+        m = re.search(r'<iframe.*?src=".*?url=(http.*)" frameborder', response)
         if m is not None:
-            source = urllib.unquote(m.group(1))
+            source = unquote(m.group(1))
             source = Parser.parse_link(source)
             if source and source not in movie_links:
                 movie_links.append((source, ''))
 
-        m = re.search('<iframe.*src="(http.*?)" frameborder', response)
+        m = re.search(r'<iframe.*src="(http.*?)" frameborder', response)
         if m is not None:
-            source = urllib.unquote(m.group(1)).replace('\\', '')
+            source = unquote(m.group(1)).replace('\\', '')
             source = Parser.parse_link(source)
             if source and source not in movie_links:
                 movie_links.append((source, ''))
 
     @staticmethod
     def parse_link(url):
-        r = re.search('getLinkSimple', url)
+        r = re.search(r'getLinkSimple', url)
         if r:
             res = Request()
             res.get(url)
             url = res.get_request().url
 
-        r = re.search('128.199.198.106/video\?url=(.*)', url)
+        r = re.search(r'128.199.198.106/video\?url=(.*)', url)
         if r:
-            url = urllib.unquote(r.group(1))
-        if 'error' in url.encode('utf-8'):
+            url = unquote(r.group(1))
+        if 'error' in py2_encode(url):
             return None
 
         r = re.search(r'^/iframe.*?ref=(.*)', url)

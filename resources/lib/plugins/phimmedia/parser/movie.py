@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 import re
 import base64
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -18,11 +19,11 @@ class Parser:
         if len(episodes) > 0:
             for episode in episodes:
                 for ep in episode.select('div.page-tap > ul > li > a'):
-                    server = episode.select_one('h4').text.strip().encode('utf-8')
+                    server = py2_encode(episode.select_one('h4').text.strip())
                     if server not in movie['group']: movie['group'][server] = []
                     movie['group'][server].append({
-                        'link': ep.get('href').encode('utf-8'),
-                        'title': ep.get('title').encode('utf-8'),
+                        'link': py2_encode(ep.get('href')),
+                        'title': py2_encode(ep.get('title')),
                     })
 
         return movie
@@ -85,7 +86,8 @@ class Parser:
         return movie
 
     def decode(self, link):
-        r = base64.b64decode(link)
+        r = base64.b64decode(link).decode('utf8')
+        print(r)
         r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
         r = r.replace("https://bit.ly/2zE7Kmg?temp=", "")
         r = r.replace("ms.com?test=", "")

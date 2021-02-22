@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import urllib
-import re
-from utils.mozie_request import Request
-from fptplay.parser.category import Parser as Category
-from fptplay.parser.channel import Parser as Channel
-from fptplay.parser.movie import Parser as Movie
+
 import utils.fpt_helper as fpt
+from utils.mozie_request import Request
+
+from .parser.category import Parser as Category
+from .parser.channel import Parser as Channel
+from .parser.movie import Parser as Movie
 
 
 class Fptplay:
@@ -60,10 +61,6 @@ class Fptplay:
         })
 
         return Channel().get_page_ajax(response, page=page, domain=self.domain)
-        # else:
-        #     url = '%s/danh-muc/aaa/%s' % (self.domain, channel)
-        #     response = self.request.get(url)
-        #     return Channel().get(response, page=1, domain=self.domain)
 
     def getMovie(self, id):
         url = '%s/xem-video/aaa-%s' % (self.domain, id)

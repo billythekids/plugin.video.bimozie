@@ -1,9 +1,9 @@
-import urllib
 import json
-from utils.mozie_request import Request
+
 from fimfast.parser.category import Parser as Category
 from fimfast.parser.channel import Parser as Channel
 from fimfast.parser.movie import Parser as Movie
+from utils.mozie_request import Request
 
 
 class Fimfast:

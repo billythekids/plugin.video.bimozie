@@ -1,9 +1,19 @@
 # -*- coding: utf-8 -*-
-import re, json, base64, xbmcgui, os
+import json
+import re
+import xbmcgui
+
 import utils.xbmc_helper as helper
 from utils.mozie_request import Request
-from urlparse import urlparse
-from urllib import urlencode
+
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def get_link(url, media):
@@ -16,7 +26,7 @@ def get_link(url, media):
         'Origin': base_url
     }
 
-    print "Apply iframeembed url %s" % url
+    print("Apply iframeembed url %s" % url)
 
     resp = request.get(url, headers=header)
     req = request.get_request()
@@ -28,16 +38,12 @@ def get_link(url, media):
         rurl = "{}/getLinkStreamMd5/{}".format(rurl, rid)
         sources = request.get(rurl, headers=header)
         sources = json.loads(sources)
-        print 11111111111111111111111111
-        print sources
     else:
         sources = re.search(r'sources\s?[=:]\s?(\[.*?\])', resp, re.DOTALL)
         if sources:
             sources = "".join([s for s in sources.group(1).splitlines() if s.strip("\r\n")])
             sources = re.sub(r'\s+', '', sources)
             sources = helper.convert_js_2_json(sources)
-            print 2222222222222222222222222
-        print sources
 
     if sources:
         if len(sources) > 1:

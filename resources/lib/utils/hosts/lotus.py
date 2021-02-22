@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import re
-from urlparse import urlparse
-from urllib import urlencode
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 from utils.mozie_request import Request
 import utils.xbmc_helper as helper
 

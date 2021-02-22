@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-import re, json, base64, xbmcgui
-from urlparse import urlparse
-from utils.mozie_request import Request, AsyncRequest
+from utils.mozie_request import Request
 from utils.pastebin import PasteBin
-from urllib import urlencode
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def get_link(url, movie):

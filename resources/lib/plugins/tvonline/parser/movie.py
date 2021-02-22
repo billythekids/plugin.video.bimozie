@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import re
 from bs4 import BeautifulSoup
-from utils.mozie_request import AsyncRequest
-from utils.hosts.fshare import FShareVN
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -35,7 +33,7 @@ class Parser:
             link = link.get('href')
         return {
             'link': link,
-            'title': item.getText().strip().encode('utf-8'),
+            'title': py2_encode(item.getText().strip()),
             'resolve': False,
             'subtitle': subtitle
         }

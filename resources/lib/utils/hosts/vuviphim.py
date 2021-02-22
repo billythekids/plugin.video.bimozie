@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import re
 import json
+import re
 import urllib
-from utils.mozie_request import Request
+
 import utils.xbmc_helper as helper
 from utils.cpacker import cPacker as Packer
+from utils.mozie_request import Request
 
 
 def get_link(url):
@@ -13,7 +14,7 @@ def get_link(url):
     enc2 = re.search(r'sources:\s?(\[.*?\]),', response)
     found = False
 
-    print "Apply VUVIPHIM parser"
+    print("Apply VUVIPHIM parser")
 
     if enc:
         sources = enc.group(1)
@@ -32,7 +33,6 @@ def get_link(url):
             pass
         sources = json.loads(sources)
 
-        print sources
         score = {'sd': 1, 'hd': 2, '360p': 1, '480p': 2, '720p': 3, '1080p': 3}
         if len(sources) > 0:
             try:

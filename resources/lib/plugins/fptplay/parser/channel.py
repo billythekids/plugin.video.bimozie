@@ -1,33 +1,12 @@
 # -*- coding: utf-8 -*-
 import re
 import json
-from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
 
 
 class Parser:
     def get(self, response, page=1, domain=''):
-        channel = {
-            'page': page,
-            'page_patten': None,
-            'movies': []
-        }
-
-        channel['page'] = 2
-        # soup = BeautifulSoup(response, "html.parser")
-        # for movie in soup.select('#main-content div.block div.block-content > div.row div.global-figure > a'):
-        #     thumb = self.get_thumb(str(movie))
-        #     title = movie.get('data-ctn').encode('utf-8')
-        #
-        #     movie = {
-        #         'id': movie.get('data-ela'),
-        #         'label': title,
-        #         'title': title,
-        #         'realtitle': title,
-        #         'thumb': thumb,
-        #         'type': None
-        #     }
-        #
-        #     channel['movies'].append(movie)
+        channel = {'page': 2, 'page_patten': None, 'movies': []}
 
         data = re.search(r'__NUXT__=(.*?);</script>', response)
         if not data:
@@ -37,12 +16,12 @@ class Parser:
         for movie in data['vods']:
             channel['movies'].append({
                 'id': movie['_id'],
-                'label': movie['title'].encode("utf-8"),
-                'title': (movie['title_vie'] or movie['title']).encode("utf-8"),
-                'realtitle': movie['title_origin'].encode("utf-8"),
+                'label': py2_encode(movie['title']),
+                'title': py2_encode(movie['title_vie'] or movie['title']),
+                'realtitle': py2_encode(movie['title_origin']),
                 'thumb': movie['thumb'],
                 'type': '',
-                'intro': movie['description'].encode("utf-8"),
+                'intro': py2_encode(movie['description']),
             })
 
         return channel
@@ -62,12 +41,12 @@ class Parser:
             channel['movies'].append({
                 # 'id': id,
                 'id': movie['_id'],
-                'label': movie['title'].encode("utf-8"),
-                'title': movie['title_vie'].encode("utf-8"),
+                'label': py2_encode(movie['title']),
+                'title':  py2_encode(movie['title']),
                 'realtitle': movie['title_origin'],
                 'thumb': movie['thumb'],
-                'type': movie['duration'].encode("utf-8"),
-                'intro': movie['description'].encode("utf-8"),
+                'type': py2_encode(movie['duration']),
+                'intro': py2_encode(movie['description']),
             })
 
         return channel
@@ -92,9 +71,9 @@ class Parser:
         for movie in data['searchData']:
             channel['movies'].append({
                 'id': movie['_id'],
-                'label': movie['title'].encode("utf-8"),
-                'title': (movie['title_vie'] or movie['title']).encode("utf-8"),
-                'realtitle': movie['title_origin'].encode("utf-8"),
+                'label': py2_encode(movie['title']),
+                'title': py2_encode(movie['title_vie'] or movie['title']),
+                'realtitle': py2_encode(movie['title_origin']),
                 'thumb': movie['thumb'],
                 'type': '',
                 'intro': '',

@@ -129,13 +129,6 @@
         "version": 31
       },
       {
-        "name": "fcine.net",
-        "logo": "https://fcine.net/uploads/monthly_2019_07/FCINE-LOGO.png.6e9c546f90ccb1b61c0502769b3fe1e8.png",
-        "className": "Fcine",
-        "plugin": "fcine.plugin",
-        "version": 1
-      },
-      {
         "name": "vuviphimz.com",
         "logo": "https://vuviphimz.com/wp-content/uploads/2020/07/logo-4.png",
         "className": "Vuviphim",
@@ -163,13 +156,7 @@
         "plugin": "dongphim.plugin",
         "version": 1
       },
-      {
-        "name": "hdvietnam.com (beta)",
-        "logo": "http://www.hdvietnam.com/images/hd-vietnam-logo.png",
-        "className": "Hdvietnam",
-        "plugin": "hdvietnam.plugin",
-        "version": 1
-      },
+
       {
         "name": "xemphim.plus",
         "logo": "https://xemphim.plus/static/skin/logo-full.png",
@@ -225,6 +212,28 @@
         "logo": "https://i.ibb.co/swSHyV0/image.png",
         "className": "anime47",
         "plugin": "anime47.plugin",
+        "version": 1
+      }
+    ]
+  },
+  {
+    "name": "Fshare",
+    "logo": "https://cache.bloghosting.vn/wp-content/uploads/2017/12/fshare.jpg",
+    "version": 31,
+    "searchable": false,
+    "sites": [
+      {
+        "name": "hdvietnam.com (beta)",
+        "logo": "http://www.hdvietnam.com/images/hd-vietnam-logo.png",
+        "className": "Hdvietnam",
+        "plugin": "hdvietnam.plugin",
+        "version": 1
+      },
+      {
+        "name": "fcine.net",
+        "logo": "https://fcine.net/uploads/monthly_2019_07/FCINE-LOGO.png.6e9c546f90ccb1b61c0502769b3fe1e8.png",
+        "className": "Fcine",
+        "plugin": "fcine.plugin",
         "version": 1
       }
     ]

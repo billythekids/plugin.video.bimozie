@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
+# -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-import urllib
-import re
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -13,7 +13,7 @@ class Parser:
         for item in soup.select('div#navbar-left > div.navbar-menu > li.navbar-menu-item')[:-1]:
             menu = item.select_one('a')
             category.append({
-                'title': menu.text.encode("utf-8"),
+                'title': py2_encode(menu.text),
                 'link': menu.get("href"),
                 'subcategory': self.getsubmenu(item)
             })
@@ -23,7 +23,7 @@ class Parser:
         category = []
         for item in xpath.select('ul.navbar-submenu > li > a'):
             category.append({
-                'title': item.text.encode("utf-8"),
+                'title': py2_encode(item.text),
                 'link': item.get('href')
             })
 

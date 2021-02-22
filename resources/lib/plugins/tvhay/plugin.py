@@ -1,11 +1,8 @@
-import urllib
-import re
-import base64
-from utils.sucuri_cloudproxy import SucuriCloudProxy
-from utils.mozie_request import Request
+from six.moves.urllib.parse import quote_plus
 from tvhay.parser.category import Parser as Category
 from tvhay.parser.channel import Parser as Channel
 from tvhay.parser.movie import Parser as Movie
+from utils.mozie_request import Request
 
 
 class Tvhay:
@@ -54,6 +51,6 @@ class Tvhay:
         return Movie().get_link(response, movie['link'])
 
     def search(self, text):
-        url = "%s/search/%s" % (self.domain, urllib.quote_plus(text))
+        url = "%s/search/%s" % (self.domain, quote_plus(text))
         response = self.request.get(url, cookies=self.cookie)
         return Channel().get(response, 1)

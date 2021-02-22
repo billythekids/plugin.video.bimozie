@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 from utils.aes import CryptoAES
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -24,7 +25,7 @@ class Parser:
         for ep in soup.select('div.episodes > div.list-episode > a'):
             movie['group']['motphim'].append({
                 'link': ep.get('href'),
-                'title': '%s' % ep.text.strip().encode('utf8'),
+                'title': '%s' % py2_encode(ep.text.strip())
             })
 
         return movie

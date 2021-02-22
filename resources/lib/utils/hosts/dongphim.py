@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import re
-from urlparse import urlparse
+
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
-from urllib import urlencode
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def get_link(url, media):
-    print "*********************** Apply dongphim url %s" % url
+    print("*********************** Apply dongphim url %s" % url)
     header = {
         'Origin': 'http://dongphim.net'
     }

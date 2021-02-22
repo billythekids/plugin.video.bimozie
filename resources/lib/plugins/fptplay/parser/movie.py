@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import json
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -26,7 +27,7 @@ class Parser:
                 url = '%s/%s' % (mid, i)
                 movie['group'][server_name].append({
                     'link': url,
-                    'title': ep['title'].encode('utf-8'),
+                    'title': py2_encode(ep['title']),
                     'thumb': ep['thumb'],
                     'type': '',
                     'resolve': False
@@ -47,7 +48,7 @@ class Parser:
             data = data['data']
             movie['links'].append({
                 'link': data['url'],
-                'title': 'Link %s' % data['name'].encode('utf-8'),
+                'title': py2_encode('Link %s' % data['name']),
                 'type': 'hls',
                 'resolve': False
             })

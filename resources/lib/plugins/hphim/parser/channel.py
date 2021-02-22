@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import re
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -31,12 +32,12 @@ class Parser:
 
             channel['movies'].append({
                 'id': movie.get('href'),
-                'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
+                'label': py2_encode(label),
+                'title': py2_encode(title),
+                'realtitle': py2_encode(realtitle),
                 'thumb': thumb,
-                'type': type.encode("utf-8"),
-                'intro': intro.encode("utf-8"),
+                'type': py2_encode(type),
+                'intro': py2_encode(intro),
             })
 
         return channel
@@ -66,12 +67,12 @@ class Parser:
             thumb =  re.search(r"background-image:url\('(.*)'\)", movie.select_one('div.public-film-item-thumb').get('style')).group(1)
 
             channel['movies'].append({
-                'id': movie.get('href').encode("utf-8"),
-                'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
+                'id': py2_encode(movie.get('href')),
+                'label': py2_encode(label),
+                'title': py2_encode(title),
+                'realtitle': py2_encode(realtitle),
                 'thumb': thumb,
-                'type': type.encode("utf-8"),
+                'type': py2_encode(type),
             })
 
         return channel
@@ -87,7 +88,7 @@ class Parser:
             soup = BeautifulSoup(response, "html.parser")
             for movie in soup.select('li.movie-item'):
                 tag = movie.select_one('> a')
-                title = tag.get('title').strip().encode("utf-8")
+                title = py2_encode(tag.get('title').strip())
                 thumb = re.search(r':url\((.*?)\);', movie.select_one('div.movie-thumbnail').get('style')).group(1)
 
                 channel['movies'].append({

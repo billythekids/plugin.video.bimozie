@@ -1,7 +1,18 @@
 # -*- coding: utf-8 -*-
-import json, xbmcgui
-from urlparse import urlparse, parse_qs
-from urllib import urlencode
+import json
+
+import xbmcgui
+
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
+
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 from utils.mozie_request import Request
 
 

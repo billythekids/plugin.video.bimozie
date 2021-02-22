@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
-from bs4 import BeautifulSoup
-from utils.aes import CryptoAES
-from utils.wisepacker import WisePacker
-from urllib import unquote
-from utils.mozie_request import Request, AsyncRequest
-import utils.xbmc_helper as helper
-import re
 import json
+import re
+
+import utils.xbmc_helper as helper
+from bs4 import BeautifulSoup
+from six.moves.urllib.parse import unquote
+from utils.aes import CryptoAES
+from utils.mozie_request import Request
+from utils.wisepacker import WisePacker
+from kodi_six.utils import py2_encode, py2_decode
 
 
 def from_char_code(*args):
@@ -24,7 +26,7 @@ class Parser:
         self.originURL = url
 
         try:
-            error = soup.select_one('div.error-not-available div.alert-subheading').find(text=True, recursive=False).encode('utf-8')
+            error = py2_encode(soup.select_one('div.error-not-available div.alert-subheading').find(text=True, recursive=False))
             if error:
                 helper.message(error, 'Not Found')
                 return movie
@@ -71,7 +73,7 @@ class Parser:
             return movie
 
         jsonresponse = re.search("_responseJson='(.*)';", response).group(1)
-        jsonresponse = json.loads(jsonresponse.decode('utf-8'))
+        jsonresponse = json.loads(py2_decode(jsonresponse))
 
         # if jsonresponse['medias']:
         #     media = sorted(jsonresponse['medias'], key=lambda elem: elem['resolution'], reverse=True)
@@ -119,7 +121,7 @@ class Parser:
             jobs = []
             self.key = "@@@3rd"
             for item in jsonresponse['thirdParty']:
-                movie_url = self.get_url(CryptoAES().decrypt(item.get('embed'), bytes(self.key.encode('utf-8'))))
+                movie_url = self.get_url(CryptoAES().decrypt(item.get('embed'), self.key))
                 if 'hydrax.html' not in movie_url:
                     movie['links'].append({
                         'link': movie_url,
@@ -135,7 +137,7 @@ class Parser:
         items = {}
         for server in servers:
             if server.select_one('h3') is not None:
-                server_name = server.select_one('h3').text.strip().replace("\n", "").encode('utf-8')
+                server_name = py2_encode(server.select_one('h3').text.strip().replace("\n", ""))
             else:
                 return None
 
@@ -145,7 +147,7 @@ class Parser:
                 for episode in server.select('ul.list-episode li a'):
                     items[server_name].append({
                         'link': episode.get('href'),
-                        'title': episode.get('title').encode('utf-8')
+                        'title': py2_encode(episode.get('title'))
                     })
 
         return items

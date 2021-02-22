@@ -6,8 +6,9 @@ import os
 current_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(current_dir, 'resources', 'lib'))
 sys.path.append(os.path.join(current_dir, 'resources', 'lib', 'plugins'))
+sys.path.append(os.path.join(current_dir, 'resources', 'lib', 'utils'))
 
 import app
 
 if __name__ == '__main__':
-    app.router()
+    app.main()

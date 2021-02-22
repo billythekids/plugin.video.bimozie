@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import re
-from urlparse import urlparse
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
 from utils.mozie_request import Request
 
 

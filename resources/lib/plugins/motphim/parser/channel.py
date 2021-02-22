@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-import re
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -42,6 +42,6 @@ class Parser:
     @staticmethod
     def text(txt):
         try:
-            return txt.encode('utf8')
+            return py2_encode(txt)
         except:
-            return txt.encode('latin1')
+            return py2_encode(txt, 'latin1')

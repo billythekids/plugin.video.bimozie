@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from bs4 import BeautifulSoup
-import urllib
-import re
 import json
-from utils.mozie_request import Request
-from utils.mozie_request import AsyncRequest
-from utils.aes import CryptoAES
+import re
 from hashlib import md5
+
+from bs4 import BeautifulSoup
+from utils.aes import CryptoAES
+from utils.mozie_request import AsyncRequest
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -24,13 +24,13 @@ class Parser:
 
         i = 0
         for server_episode in server_episodes:
-            server_name = servers[i].text.strip().encode('utf-8')
+            server_name = py2_encode(servers[i].text.strip())
             if server_name not in movie['group']: movie['group'][server_name] = []
 
             for episode in server_episode.select('a'):
                 movie['group'][server_name].append({
                     'link': episode.get('href'),
-                    'title': "Tập %s" % episode.text.encode('utf-8')
+                    'title': "Tập %s" % py2_encode(episode.text)
                 })
             i += 1
         return movie
@@ -108,7 +108,9 @@ class Parser:
                     if 'http' in source['link']:
                         movie_links.append((source['link'], source['label']))
                     else:
-                        key = md5(response_headers.get('Expires')).hexdigest()
+                        m = md5()
+                        m.update(response_headers.get('Expires').encode('utf-8'))
+                        key = m.hexdigest()
                         source['link'] = CryptoAES().decrypt(source['link'], key)
                         movie_links.append((source['link'], source['label']))
             elif 'http' in sources['link']:

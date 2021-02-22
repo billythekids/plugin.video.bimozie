@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-import re, json, base64
-from urlparse import urlparse
-from utils.mozie_request import Request, AsyncRequest
-from utils.pastebin import PasteBin
-from urllib import urlencode
-import hls_parser
+import re
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def get_link(url, movie):

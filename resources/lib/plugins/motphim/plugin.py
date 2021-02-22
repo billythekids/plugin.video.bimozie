@@ -1,9 +1,11 @@
-from utils.mozie_request import Request
+import pickle
+
+import utils.xbmc_helper as helper
 from motphim.parser.category import Parser as Category
 from motphim.parser.channel import Parser as Channel
 from motphim.parser.movie import Parser as Movie
-import utils.xbmc_helper as helper
-import urllib, pickle
+from six.moves.urllib.parse import quote_plus
+from utils.mozie_request import Request
 
 
 class Motphim:
@@ -49,6 +51,6 @@ class Motphim:
         return Movie().get_link(response, self.request, self.api, self.domain, url)
 
     def search(self, text, page=1):
-        url = "%s/tim-kiem/%s/" % (self.domain, urllib.quote_plus(text))
+        url = "%s/tim-kiem/%s/" % (self.domain, quote_plus(text))
         response = self.request.get(url)
         return Channel().get(response)

@@ -1,9 +1,9 @@
-import urllib
 import re
-from utils.mozie_request import Request
+
 from hphim.parser.category import Parser as Category
 from hphim.parser.channel import Parser as Channel
 from hphim.parser.movie import Parser as Movie
+from utils.mozie_request import Request
 
 
 class Hphim:

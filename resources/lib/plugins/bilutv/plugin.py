@@ -1,12 +1,13 @@
-from utils.mozie_request import Request
+import urllib
+
 from bilutv.parser.category import Parser as Category
 from bilutv.parser.channel import Parser as Channel
 from bilutv.parser.movie import Parser as Movie
-import urllib
+from utils.mozie_request import Request
 
 
 class Bilutv:
-    domain = "https://bilutvzz.net"
+    domain = "https://bilutvs.net"
 
     def getCategory(self):
         url = "%s/%s" % (self.domain, 'danh-sach/')

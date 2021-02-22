@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from bs4 import BeautifulSoup
-from utils.wisepacker import WisePacker
-import re
 import json
-import urllib
+import re
+
+from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
+from six.moves.urllib.parse import unquote
 
 
 def from_char_code(*args):
@@ -28,13 +29,13 @@ class Parser:
         servers = soup.select("div#servers > div.server")
         for server in servers:
             server_name = server.select_one('div.label').text.strip().encode('utf-8')
-            # if server_name != 'F.PRO:'.encode('utf-8') or server_name != 'R.PRO:'.encode('utf-8'): continue
+
             if not re.search('[SRB].PRO:', server_name): continue
             if server_name not in movie['group']: movie['group'][server_name] = []
             for ep in server.select('ul.episodelist li a'):
                 movie['group'][server_name].append({
-                    'link': ep.get('href').encode('utf-8'),
-                    'title': ep.get('title').encode('utf-8'),
+                    'link': py2_encode(ep.get('href')),
+                    'title': py2_encode(ep.get('title'))
                 })
 
         return movie
@@ -51,11 +52,11 @@ class Parser:
         if sources is not None:
             sources = json.loads(sources.group(1))
             for source in sources:
-                url = urllib.unquote(re.search('\?url=(.*)', source['file']).group(1))
+                url = unquote(re.search('\?url=(.*)', source['file']).group(1))
                 movie['links'].append({
                     'link': url,
-                    'title': 'Link %s' % source['label'].encode('utf-8'),
-                    'type': source['label'].encode('utf-8'),
+                    'title': 'Link %s' % py2_encode(source['label']),
+                    'type': py2_encode(source['label']),
                     'originUrl': originURL,
                     'resolve': False
                 })
@@ -64,7 +65,7 @@ class Parser:
 
         m = re.search('<iframe.*src="(.*?)"', response)
         if m is not None:
-            source = urllib.unquote(m.group(1)).replace('\\', '')
+            source = unquote(m.group(1)).replace('\\', '')
             if source:
                 movie['links'].append({
                     'link': source,

@@ -1,5 +1,6 @@
 # coding=utf-8
 from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -10,21 +11,23 @@ class Parser:
         cats = soup.select('ul#mega-menu-1 > li')
 
         for item in cats:
-            menu = item.select_one('> a')
+            menu = item.select_one('a')
             if menu.get("href") == '/': continue # skip 1st
             category.append({
-                'title': menu.text.strip().encode("utf-8"),
+                'title': py2_encode(menu.text.strip()),
                 'link': menu.get("href"),
-                'subcategory': self.getsubmenu(item)
+                'subcategory': Parser.getsubmenu(item)
             })
         return category
 
-    def getsubmenu(self, xpath):
+    @staticmethod
+    def getsubmenu(xpath):
         category = []
-        for item in xpath.select('> ul > li > a'):
-            category.append({
-                'title': item.text.encode("utf-8"),
-                'link': item.get('href')
-            })
+        if xpath.select('ul'):
+            for item in xpath.select('ul > li > a'):
+                category.append({
+                    'title': py2_encode(item.text),
+                    'link': item.get('href')
+                })
 
         return category

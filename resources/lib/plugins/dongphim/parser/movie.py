@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 from utils.mozie_request import Request
+from kodi_six.utils import py2_encode
 import re
 import json
 
@@ -24,8 +25,8 @@ class Parser:
             ep = eps[i]
             if 'disabled' in ep.get('class'): continue
             movie['group']['Dongphim'].append({
-                'link': ep.get('href').encode('utf-8'),
-                'title': ep.get('title').encode('utf-8'),
+                'link': py2_encode(ep.get('href')),
+                'title': py2_encode(ep.get('title')),
             })
 
         return movie

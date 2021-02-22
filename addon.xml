@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.bimozie" name="BimoZie" version="0.4.20" provider-name="billy.nguyen">
+<addon id="plugin.video.bimozie" name="BimoZie" version="1.0.0" provider-name="billy.nguyen">
     <requires>
-        <import addon="xbmc.python" version="2.25.0"/>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.six" version="1.14.0" />
+        <import addon="script.module.kodi-six" version="0.1.3.1" />
         <import addon="script.module.beautifulsoup4" version="4.3.1"/>
-        <import addon="script.module.urlresolver" version="5.0.40"/>
         <import addon="script.module.requests" version="2.7.0"/>
-        <import addon="script.module.youtube.dl" version="18.1107.0"/>
-        <import addon="script.module.cloudscraper" version="1.2.24"/>
-        <import addon="script.module.simplejson" version="3.16.1"/>
         <import addon="script.module.pycryptodome" version="3.4.3"/>
+        <import addon="script.module.routing" version="0.2.3"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <summary>Bimozie addon</summary>
-        <description>This plugin allows you to watch movies from several vietnamese websites vkool phimmoi phimmedia
+        <summary lang="en">Bimozie addon</summary>
+        <description lang="en">This plugin allows you to watch movies from several vietnamese websites vkool phimmoi phimmedia
             hdvietnam...
         </description>
-        <disclaimer>The provider is not responsible for any issues caused by using this addon.
+        <disclaimer lang="en">The provider is not responsible for any issues caused by using this addon.
             Due to the nature of our content, we are not responsible for the content streamed to your device and neither
             do we condone piracy so you must satisfy yourself that either you or the sites accessed for streaming have
             the copyright agreements in place and are entitled to access this content.
@@ -32,5 +31,8 @@
         <platform>all</platform>
         <email>billythekidsde@gmail.com</email>
         <source>https://github.com/billythekids/plugin.video.bimozie</source>
+        <assets>
+            <icon>resources/icon.png</icon>
+        </assets>
     </extension>
 </addon>

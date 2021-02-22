@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import re, time
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -19,12 +20,12 @@ class Parser:
         for movie in soup.select('div.list-channel > a.item'):
             thumb = None
 
-            title = movie.select_one('div.title').text.strip().encode("utf-8")
+            title = py2_encode(movie.select_one('div.title').text.strip())
             type = "Chưa diễn ra"
             realtitle = ""
             type = movie.select_one('div.time > span').get('data-time').strip()
 
-            datetime_str = movie.select_one('div.time > span').get('data-time').strip().encode("utf-8")
+            datetime_str = py2_encode(movie.select_one('div.time > span').get('data-time').strip())
             # datetime_str += " +0700"
             if datetime_str:
                 datetime_object = time.strptime(datetime_str, '%Y-%m-%d %H:%M')  # 2019-10-26 20:30

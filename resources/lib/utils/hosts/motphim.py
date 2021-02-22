@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import re
 import json
-from urlparse import urlparse, parse_qs
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
 from utils.mozie_request import Request
 from utils.aes import CryptoAES
 

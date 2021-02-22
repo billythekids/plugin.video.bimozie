@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import re
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -26,7 +27,7 @@ class Parser:
             title = dom.get('title')
             mtype = ""
             try:
-                mtype = dom.select_one('> span.status').text
+                mtype = dom.select_one('span.status').text
             except: pass
             realtitle = movie.select_one('p.original_title').text.strip()
             if realtitle is not None:
@@ -39,11 +40,11 @@ class Parser:
             movie_id = movie.select_one('a.xpo-thumb').get('href')
             channel['movies'].append({
                 'id': movie_id,
-                'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
+                'label': py2_encode(label),
+                'title': py2_encode(title),
+                'realtitle': py2_encode(realtitle),
                 'thumb': img,
-                'type': mtype.encode("utf-8"),
+                'type': py2_encode(mtype),
             })
 
         return channel

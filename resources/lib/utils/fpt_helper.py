@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import time
 import hashlib
-import xbmc_helper as helper
+import time
 
 api_token = "WEBv6Dkdsad90dasdjlALDDDS"
 suffix = "/api/v6.1_w/"
@@ -16,7 +15,7 @@ def generate_stoken(path):
     token = "%s%s%s%s" % (api_token, a, suffix, o)
 
     m = hashlib.md5()
-    m.update(token)
+    m.update(token.encode('utf-8'))
     return unknown_encrypt(m.hexdigest()), a
 
 

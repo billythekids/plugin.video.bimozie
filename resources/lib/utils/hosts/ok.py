@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import re
 import json
+import re
+
 import xbmcgui
-import HTMLParser
+from six.moves.html_parser import HTMLParser
 from utils.mozie_request import Request
 
 
@@ -39,7 +40,7 @@ def get_link(url):
 
     response = Request().get(url)
     m = re.search('data-options="(.+?)"', response)
-    h = HTMLParser.HTMLParser()
+    h = HTMLParser()
     try:
         s = m.group(1)
     except:
@@ -47,7 +48,6 @@ def get_link(url):
     s = h.unescape(s)
     s = json.loads(s)
     s = json.loads(s['flashvars']['metadata'])
-    print s
     items = [(i['url'], rsl(i['name'])) for i in s['videos']]
     items = sorted(items, key=lambda elem: int(elem[1]), reverse=True)
 

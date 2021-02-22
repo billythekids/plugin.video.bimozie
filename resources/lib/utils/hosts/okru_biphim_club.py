@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-import re, json
+import json
+import re
+
 from utils.mozie_request import Request
-import ok
+
+from . import ok
 
 
 def get_link(url, media):

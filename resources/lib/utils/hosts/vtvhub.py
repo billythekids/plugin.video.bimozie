@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
-import re, json
-from urlparse import urlparse
-from urllib import urlencode
-from . import cors, hls_parser
+import json
+import re
+
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
+
 from utils.mozie_request import Request
-from urlparse import urlparse, parse_qs
+
+from . import cors
 
 
 def get_link(url, movie):
-    print "Apply VTVHUB parser"
+    print("Apply VTVHUB parser")
     base_url = urlparse(url)
 
     is_ajax = re.search(r'embedplay', url)
@@ -42,4 +47,3 @@ def get_link(url, movie):
         return cors.get_link(m_url, movie, including_agent=False)
 
     return None, None
-

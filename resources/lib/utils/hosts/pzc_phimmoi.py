@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import json, re
+import json
+import re
+
+from . import cors
 from utils.mozie_request import Request
-import cors
 
 
 def get_link(url, media):

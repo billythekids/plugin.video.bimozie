@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
-import urllib, pickle, time, json, re
+import json
+import pickle
+import re
+import time
+
 import utils.xbmc_helper as helper
-from utils.mozie_request import Request
 from bs4 import BeautifulSoup
+from utils.mozie_request import Request
 
 
 class FShareVN:
@@ -66,7 +70,6 @@ class FShareVN:
     def get_user(self):
         url = 'https://api.fshare.vn/api/user/get'
         r = self.request.get(url)
-        print r
         r = json.loads(r)
         if not r.get('id'):
             return False

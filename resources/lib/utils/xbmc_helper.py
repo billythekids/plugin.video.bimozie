@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
-import xbmc
-import xbmcaddon
-import xbmcgui
-import os
 import json
+import os
 import re
-import urlparse
-import urllib
+from contextlib import closing
 
-addon = xbmcaddon.Addon()
-ADDON_ID = addon.getAddonInfo('id')
-addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
+from kodi_six import xbmc, xbmcaddon, xbmcvfs, xbmcgui
+from kodi_six.utils import py2_encode, py2_decode
+from six.moves.urllib.parse import quote, unquote
+from six.moves.urllib.parse import urlunsplit, urlsplit
+
+ADDON = xbmcaddon.Addon()
+ADDON_ID = ADDON.getAddonInfo('id')
+KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
+addon_data_dir = os.path.join(py2_decode(xbmc.translatePath('special://userdata/addon_data')), ADDON_ID)
 
 
-def s2u(s): return s.decode('utf-8') if isinstance(s, str) else s
+def s2u(s): return py2_decode(s) if isinstance(s, str) else s
 
 
 def getSetting(key):
-    return addon.getSetting(key)
+    return ADDON.getSetting(key)
 
 
 def has_file_path(filename):
@@ -43,7 +45,7 @@ def message(message='', title='', timeShown=5000):
         message = s2u(message)
         s1 = message
         message = u'XBMC.Notification(%s,%s,%s)' % (s0, s1, timeShown)
-        xbmc.executebuiltin(message.encode("utf-8"))
+        xbmc.executebuiltin(py2_encode(message))
     else:
         xbmc.executebuiltin("Dialog.Close(all, true)")
 
@@ -124,11 +126,11 @@ def convert_js_2_json(str):
 
 def fixurl(url):
     # turn string into unicode
-    if not isinstance(url, unicode):
-        url = url.decode('utf8')
+    # if not isinstance(url, unicode):
+    #     url = url.decode('utf8')
 
     # parse it
-    parsed = urlparse.urlsplit(url)
+    parsed = urlsplit(url)
 
     # divide the netloc further
     userpass, at, hostport = parsed.netloc.rpartition('@')
@@ -137,23 +139,23 @@ def fixurl(url):
 
     # encode each component
     scheme = parsed.scheme.encode('utf8')
-    user = urllib.quote(user.encode('utf8'))
+    user = quote(user.encode('utf8'))
     colon1 = colon1.encode('utf8')
-    pass_ = urllib.quote(pass_.encode('utf8'))
+    pass_ = quote(pass_.encode('utf8'))
     at = at.encode('utf8')
     host = host.encode('idna')
     colon2 = colon2.encode('utf8')
     port = port.encode('utf8')
     path = '/'.join(  # could be encoded slashes!
-        urllib.quote(urllib.unquote(pce).encode('utf8'), '')
+        quote(unquote(pce).encode('utf8'), '')
         for pce in parsed.path.split('/')
     )
-    query = urllib.quote(urllib.unquote(parsed.query).encode('utf8'), '=&?/')
-    fragment = urllib.quote(urllib.unquote(parsed.fragment).encode('utf8'))
+    query = quote(unquote(parsed.query).encode('utf8'), '=&?/')
+    fragment = quote(unquote(parsed.fragment).encode('utf8'))
 
     # put it back together
     netloc = ''.join((user, colon1, pass_, at, host, colon2, port))
-    return urlparse.urlunsplit((scheme, netloc, path, query, fragment))
+    return urlunsplit((scheme, netloc, path, query, fragment))
 
 
 def create_select_dialog(listitems):
@@ -181,3 +183,10 @@ def humanbytes(B):
 
 def sleep(milisecond):
     xbmc.sleep(milisecond)
+
+
+def get_sites_config():
+    file_path = os.path.dirname(os.path.abspath(__file__))
+    with closing(xbmcvfs.File(file_path + '/../sites.json', 'r')) as json_file:
+        sites = json.load(json_file)
+    return sites

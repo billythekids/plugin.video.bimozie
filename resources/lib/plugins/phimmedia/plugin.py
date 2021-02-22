@@ -1,12 +1,12 @@
-from utils.mozie_request import Request
+# from cloudscraper2 import CloudScraper
+import pickle
+import urllib
+
+import utils.xbmc_helper as helper
 from phimmedia.parser.category import Parser as Category
 from phimmedia.parser.channel import Parser as Channel
 from phimmedia.parser.movie import Parser as Movie
-from cloudscraper2 import CloudScraper
-import pickle, time
-import utils.xbmc_helper as helper
-import urllib
-
+from utils.mozie_request import Request
 
 user_agent = (
     "Mozilla/5.0 (X11; Linux x86_64) "
@@ -30,14 +30,14 @@ class Phimmedia:
     def __init__(self):
         self.request = Request(h, session=True)
 
-    def updateSession(self, url, delay=10):
-        try:
-            scraper = CloudScraper.create_scraper(delay=delay)
-            scraper.headers.update({'User-Agent': user_agent})
-            self.cookies = scraper.get(url).cookies.get_dict()
-            with open(helper.get_file_path('phimmedia.bin'), 'wb') as f:
-                pickle.dump(self.cookies, f)
-        except: pass
+    # def updateSession(self, url, delay=10):
+    #     try:
+    #         scraper = CloudScraper.create_scraper(delay=delay)
+    #         scraper.headers.update({'User-Agent': user_agent})
+    #         self.cookies = scraper.get(url).cookies.get_dict()
+    #         with open(helper.get_file_path('phimmedia.bin'), 'wb') as f:
+    #             pickle.dump(self.cookies, f)
+    #     except: pass
 
     def getCategory(self):
         response = self.request.get("{}/".format(self.domain))

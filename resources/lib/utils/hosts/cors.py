@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
 import re
-from urlparse import urlparse
-from urllib import urlencode
+
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 from utils.mozie_request import Request
 
 
 def get_link(url, media, including_agent=True):
-    print "Apply CORS url %s" % media.get('originUrl')
+    print("Apply CORS url %s" % media.get('originUrl'))
     if media.get('originUrl'):
         base_url = urlparse(media.get('originUrl'))
         base_url = base_url.scheme + '://' + base_url.netloc

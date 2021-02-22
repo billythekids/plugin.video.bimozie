@@ -1,21 +1,32 @@
 # -*- coding: utf-8 -*-
-import re, json, base64, xbmcgui
+import json
+import re
+
+import xbmcgui
+
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
 from utils.mozie_request import Request
-from urlparse import urlparse
-from urllib import urlencode
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def get_link(url, media):
-    print "*********************** Apply furl url %s" % url
+    print("*********************** Apply furl url %s" % url)
     request = Request()
 
     base_url = urlparse(media.get('originUrl'))
     base_url = base_url.scheme + '://' + base_url.netloc
     header = {
-            # 'Referer': media.get('originUrl'),
-            # 'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
-            'Referer': url
-        }
+        # 'Referer': media.get('originUrl'),
+        # 'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+        'Referer': url
+    }
 
     mid = re.search('/v/(.*)', url).group(1)
     response = Request().post('https://feurl.com/api/source/%s' % mid, params={

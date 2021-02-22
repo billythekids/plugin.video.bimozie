@@ -1,9 +1,6 @@
-import re
-from utils.mozie_request import Request
-from tvonline.parser.category import Parser as Category
 from tvonline.parser.channel import Parser as Channel
 from tvonline.parser.movie import Parser as Movie
-import utils.xbmc_helper as helper
+from utils.mozie_request import Request
 
 
 class TVOnline:

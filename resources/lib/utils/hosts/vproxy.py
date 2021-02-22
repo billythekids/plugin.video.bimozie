@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
-import re, json
-from urlparse import urlparse
-from urllib import urlencode
-from . import cors, hls_parser
+import json
+
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
 from utils.mozie_request import Request
-from urlparse import urlparse, parse_qs
+
+from . import cors
 
 
 def get_link(url, movie):
-    print "Apply VProxy parser"
+    print("Apply VProxy parser")
     base_url = urlparse(url)
 
     mid = parse_qs(base_url.query).get('id')[0]

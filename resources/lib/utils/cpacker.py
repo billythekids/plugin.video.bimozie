@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib2
+
+from six.moves.urllib.parse import unquote
 
 
 class cPacker():
@@ -43,11 +44,11 @@ class cPacker():
                     return chr(b if (90 if c <= "Z" else 122) >= b else b - 26)
 
                 str = re.sub(r"[a-zA-Z]", openload_re, a[0]);
-                str = urllib2.unquote(str)
+                str = unquote(str)
 
         elif str.find("decodeURIComponent") == 0:
             str = re.sub(r"(^decodeURIComponent\s*\(\s*('|\"))|(('|\")\s*\)$)", "", str);
-            str = urllib2.unquote(str)
+            str = unquote(str)
         elif str.find("\"") == 0:
             str = re.sub(r"(^\")|(\"$)|(\".*?\")", "", str);
         elif str.find("'") == 0:

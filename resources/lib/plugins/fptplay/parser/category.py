@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 # coding=utf-8
 import json
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -27,7 +29,7 @@ class Parser:
         for menu in response['result']:
             if menu['_id'] in ids:
                 category.append({
-                    'title': menu['name'].encode("utf-8"),
+                    'title': py2_encode(menu['name']),
                     # 'link': link,
                     'link': menu['_id'],
                     'subcategory': self.getsubmenu(menu['active_children'])
@@ -38,9 +40,9 @@ class Parser:
     def getsubmenu(self, subs):
         category = []
         for menu in subs:
-            if 'banner' in menu['name'].encode("utf-8"): continue
+            if 'banner' in py2_encode(menu['name']): continue
             category.append({
-                'title': menu['name'].encode("utf-8"),
+                'title': py2_encode(menu['name']),
                 'link': menu['_id']
             })
 

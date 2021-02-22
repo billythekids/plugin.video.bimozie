@@ -1,50 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# import base64
-# from hashlib import md5
-# from Cryptodome.Cipher import AES
-# import math
-# import random
-import re
 
-
-# from bilutv.cipher import AES
-
-# def randArr(num):
-#     return map(lambda i: math.floor(random.random() * 256), xrange(num))
-
-
-# def s2a(s, binary):
-#     return map(lambda s: ord(s), list(s))
+BS = 32
+pad = lambda s: s + (BS - len(s) % BS) * chr(BS - len(s) % BS)
+unpad = lambda s : s[:-ord(s[len(s)-1:])]
 
 
 class CryptoAES:
     def decrypt(self, encrypted, passphrase):
         return gibberishAES(encrypted, passphrase)
-
-# #     def unpad(self, data):
-# #         return data[:-(data[-1] if type(data[-1]) == int else ord(data[-1]))]
-# #
-# #     def bytes_to_key(self, data, salt, output=48):
-# #         # extended from https://gist.github.com/gsakkis/4546068
-# #         data += salt
-# #         key = md5(data).digest()
-# #         final_key = key
-# #         while len(final_key) < output:
-# #             key = md5(key + data).digest()
-# #             final_key += key
-# #         return final_key[:output]
-# #
-# #     def decrypt(self, encrypted, passphrase):
-# #         encrypted = base64.b64decode(encrypted)
-# #         assert encrypted[0:8] == b"Salted__"
-# #         salt = encrypted[8:16]
-# #         key_iv = self.bytes_to_key(passphrase, salt, 32 + 16)
-# #         key = key_iv[:32]
-# #         iv = key_iv[32:]
-# #         aes = AES.new(key, AES.MODE_CBC, iv)
-# #         return self.unpad(aes.decrypt(encrypted[16:])).decode('utf-8')
-# #         # return self.unpad(AES(key).decrypt_cbc(encrypted[16:], iv)).decode('utf-8')
 
 
 def gibberishAES(string, key=''):
@@ -140,7 +104,7 @@ def gibberishAES(string, key=''):
 
     def v(e, r, n, f=''):
         r = S(r);
-        o = len(e) / 16;
+        o = int(len(e) / 16);
         u = [0] * o
         d = [e[16 * t: 16 * (t + 1)] for t in range(o)]
         for t in range(len(d) - 1, -1, -1):
@@ -219,7 +183,7 @@ def gibberishAES(string, key=''):
             d = [t for t in o[f - 1]]
             if 0 == f % r:
                 d = m(w(d));
-                d[0] ^= K[f / r - 1]
+                d[0] ^= K[int(f / r - 1)]
             elif r > 6 and 4 == f % r:
                 d = m(d)
             o.append([o[f - r][t] ^ d[t] for t in range(4)])
@@ -354,16 +318,16 @@ def gibberishAES(string, key=''):
             return n(r(e, d), f)
 
         def b(e):
-            n = len(e);
-            f = n + 8;
-            c = (f - f % 64) / 64;
-            t = 16 * (c + 1);
-            a = [0] * t;
+            n = len(e)
+            f = n + 8
+            c = (f - f % 64) / 64
+            t = int(16 * (c + 1))
+            a = [0] * t
             o = 0
-            for d in range(n): r = (d - d % 4) / 4; o = 8 * (d % 4);    a[r] = a[r] | j2p(e[d] << o)
+            for d in range(n): r = int((d - d % 4) / 4); o = int(8 * (d % 4)); a[r] = a[r] | j2p(e[d] << o)
             d += 1
-            r = (d - d % 4) / 4
-            o = 8 * (d % 4)
+            r = int((d - d % 4) / 4)
+            o = int(8 * (d % 4))
             a[r] = a[r] | j2p(128 << o)
             a[t - 2] = j2p(n << 3)
             a[t - 1] = j2p(rshift(n, 29))
@@ -503,7 +467,7 @@ def gibberishAES(string, key=''):
         l = 0
         while l < 5 or 'decodeLink' not in b:
             try:
-                b = getcode(xsearch("(\w{100,},\w+,\w+,\w+)", b.replace("'", '')));
+                b = getcode(xsearch("(\w{100,},\w+,\w+,\w+)", b.replace("'", '')))
                 l += 1
             except:
                 break
@@ -529,5 +493,5 @@ def xsearch(pattern, string, group=1, flags=0, result=''):
 # key="2HybsHfda81sj01545544327e4f60ae9"
 # text="U2FsdGVkX186iQkL7vT5fjVazd+/+r0eakDVmPrmUrNkmnb8BPps4Nbtq9r/+Pl6P7JrmmlTsTNbqC2nI0VtcT2OiDbhXCVRv6q/w4Eegr7jJf8VaJmbYCrJ7RN+W0odsHlrLEiFjrsPwgoWGKIx64vT8wiS8d1s0bf+uvH1y/Ad5mV0ettppiEeZD1OFWo6qqApl9lAi0sb9cdiQhQAlVTPYHAyEhM9NwqUd6YyL8+euOjgh+aML5xd1GPZJ7oRYd7anjEC/KuQXSsVB/BAL50+98gbx8H14zlVKGLVNCCcIffK69JLX4jImq/SgcruF8wA+T2qytGMOrzccQi9a9rzKG2g3snuz93QuN+RN03KMZhyVz+eEIMqeEivLZUH/fbgzPZ1Q0nnhOibt77dtdnPRia31GpmzPNeqHdp5bFEdyHcu6IztmiRYGzIxHGA/rRWniP5ldHu0FZSNo3PuNeFVhg3D4VikMhUfdAYK3JHEjsBgxxdd2Qu2GwS3qA7LZeFe5UdkGmJO9pt0nUQ87e2VzjPOitziDlSZXLw0G47UnPWgPnz/tEJ0AYaBRszNAnLMPuhr4x25UvD/zwE8jjhPlDL/ouYgZexxAYoIh+Y6mhgO3hNwe7mFocOeaDN7vE0jsCXLyj1P2DHGyaroIKCAXcsjoE4fkzLE48OLITyz3gtDlMyK32azKHiXNijs5dMalMTz5lC/WC4ojt9PE0PzC9BCcyE1Z9o6BsDZP4vcrLP5bS/4zVE5dIEb6gsCp982Dy+KxD8n0RqyE86FKM6x5i9t6ajId6KlpDioL+0BfkXnY88vyVWPULcVELBFujNODBgTVWpSgHKtXjVrSgUU40FEybc9ZLAbOgH/dY="
 #
-# value = CryptoAES().decrypt(text, bytes(key.encode('utf-8')))
+# value = CryptoAES().decrypt(text, key)
 # print(value)

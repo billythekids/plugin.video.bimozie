@@ -1,8 +1,8 @@
+from six.moves.urllib.parse import quote_plus
 from utils.mozie_request import Request
 from xemphimso.parser.category import Parser as Category
 from xemphimso.parser.channel import Parser as Channel
 from xemphimso.parser.movie import Parser as Movie
-import urllib
 
 
 class Xemphimso:
@@ -38,6 +38,6 @@ class Xemphimso:
         return Movie().get_link(response, self.domain)
 
     def search(self, text, page=1):
-        url = "%s/tim-kiem/%s/" % (self.domain, urllib.quote_plus(text))
+        url = "%s/tim-kiem/%s/" % (self.domain, quote_plus(text))
         response = self.request.get(url)
         return Channel().get(response)

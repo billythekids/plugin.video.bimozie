@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re, json
 from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -25,7 +26,7 @@ class Parser:
                     found = True
                     movie['links'].append({
                         'link': "%s%s" % (url, episode.get('href')),
-                        'title': episode.text.strip().encode("utf-8"),
+                        'title': py2_encode(episode.text.strip()),
                         'type': 'Unknown',
                         'originUrl': url,
                         'resolve': False
@@ -50,7 +51,6 @@ class Parser:
         }
 
         sources = re.search(r'sources:\s?(.*?),', response)
-        print "******************************************************************"
         if sources:
             sources = json.loads(sources.group(1).replace('}],', '}]'))
             try:
@@ -62,9 +62,9 @@ class Parser:
                 for source in sources:
                     label = 'label' in source and source['label'] or ''
                     movie['links'].append({
-                        'link': self.parse_link(source['file']).strip(),
-                        'title': 'Link %s' % label.encode('utf-8'),
-                        'type': label.encode('utf-8'),
+                        'link': source['file'].strip(),
+                        'title': 'Link %s' % py2_encode(label),
+                        'type': py2_encode(label),
                         'resolve': False,
                         'originUrl': originUrl
                     })

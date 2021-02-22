@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 import re
-from urlparse import urlparse
-from urllib import urlencode
-from utils.mozie_request import Request, AsyncRequest
+
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+from utils.mozie_request import Request
 from utils.pastebin import PasteBin
 
 

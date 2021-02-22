@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
-import re, string, random, time
+import random
+import re
+import string
+import time
+
 from utils.mozie_request import Request
-from urllib import urlencode
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def get_link(url, movie):
-    print "*********************** Apply dood url %s" % url
+    print("*********************** Apply dood url %s" % url)
     req = Request()
     response = req.get(url)
     match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', response, re.DOTALL)

@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
-import re, json, base64, xbmcgui
-from urlparse import urlparse
-from utils.mozie_request import Request, AsyncRequest
-from utils.pastebin import PasteBin
-from urllib import urlencode
-import iframeembed, cors
+import json
+import re
+
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
+
+from utils.mozie_request import Request
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+from . import iframeembed, cors
 
 
 def get_link(url, movie):

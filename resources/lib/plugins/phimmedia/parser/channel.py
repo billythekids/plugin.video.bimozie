@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import re
 import urllib
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -21,7 +22,7 @@ class Parser:
                 channel['page'] = int(page.text)
                 link_pattern = re.search("(.*)&page=\d+$", page.get('href'))
                 if link_pattern is not None:
-                    channel['page_patten'] = self.create_link(link_pattern.group(1).encode('utf-8'))
+                    channel['page_patten'] = self.create_link(py2_encode(link_pattern.group(1)))
 
         for movie in soup.select('ul.list-film > li > div'):
             title = movie.select_one('a').get('title').strip()
@@ -39,11 +40,11 @@ class Parser:
 
             channel['movies'].append({
                 'id': movie.select_one('a').get('href').replace(replace_domain, domain),
-                'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
+                'label': py2_encode(label),
+                'title': py2_encode(title),
+                'realtitle': py2_encode(realtitle),
                 'thumb': thumbnail,
-                'type': type.encode("utf-8"),
+                'type': py2_encode(type),
             })
 
         return channel
