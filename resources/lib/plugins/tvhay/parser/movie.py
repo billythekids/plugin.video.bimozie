@@ -28,7 +28,7 @@ class Parser:
         # get all server list
         servers = soup.select("div#servers > div.server")
         for server in servers:
-            server_name = server.select_one('div.label').text.strip().encode('utf-8')
+            server_name = py2_encode(server.select_one('div.label').text.strip())
 
             if not re.search('[SRB].PRO:', server_name): continue
             if server_name not in movie['group']: movie['group'][server_name] = []
