@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.bimozie" name="BimoZie" version="1.0.0" provider-name="billy.nguyen">
+<addon id="plugin.video.bimozie.next" name="BimoZie Next" version="1.0.0" provider-name="billy.nguyen">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.six" version="1.14.0" />
@@ -13,9 +13,9 @@
         <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <summary lang="en">Bimozie addon</summary>
-        <description lang="en">This plugin allows you to watch movies from several vietnamese websites vkool phimmoi phimmedia
-            hdvietnam...
+        <summary lang="en">Bimozie addon for Kodi 19</summary>
+        <description lang="en">
+            This plugin allows you to watch movies from several vietnamese websites
         </description>
         <disclaimer lang="en">The provider is not responsible for any issues caused by using this addon.
             Due to the nature of our content, we are not responsible for the content streamed to your device and neither
