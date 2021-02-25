@@ -361,7 +361,7 @@ class LinkParser:
                 helper.getSetting('fshare.username'),
                 helper.getSetting('fshare.password')
             ).get_link()
-            return cors.get_link(f_url, self.media, including_agent=True)
+            return f_url, 'Fshare'
         else:
             return fshare.FShareVN(self.url).get_link(), 'Fshare'
 

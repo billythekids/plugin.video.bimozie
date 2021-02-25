@@ -6,12 +6,13 @@ from threading import Thread
 
 import routing
 import utils.xbmc_helper as helper
-import xbmc
 # from kodi_six import xbmcplugin, xbmcgui, xbmc
+import xbmc
 import xbmcgui
 import xbmcplugin
 from kodi_six.utils import py2_encode
 from utils.media_helper import MediaHelper
+from utils.hosts.fshare import FShareVN as Fshare
 
 plugin = routing.Plugin()
 
@@ -221,6 +222,7 @@ def show_movie():
         print("*********************** Display movie links")
         thumb = movie_item.get('thumb')
         for item in movie['links']:
+
             li = xbmcgui.ListItem(label=item['title'])
             li.setInfo('video', {'title': item['title']})
             li.setProperty('fanart_image', thumb)
@@ -228,12 +230,63 @@ def show_movie():
             if 'intro' in item:
                 li.setInfo(type='video', infoLabels={'plot': item['intro']})
 
+            if 'isFolder' in item and item.get('isFolder') and 'fshare' in item.get('link'):
+                url = plugin.url_for(show_fshare_folder, query=json.dumps({
+                    'item': item, 'movie_item': movie_item
+                }))
+                li.setProperty("IsPlayable", "false")
+                xbmcplugin.addDirectoryItem(plugin.handle, url, li, True)
+            else:
+                url = plugin.url_for(play, query=json.dumps({
+                    'item': item, 'movie_item': movie_item, 'direct': 1,
+                    'module': module, 'className': class_name
+                }))
+                li.setProperty("IsPlayable", "true")
+                xbmcplugin.addDirectoryItem(plugin.handle, url, li, False)
+
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/movieItemFolder')
+def show_fshare_folder():
+    query = json.loads(plugin.args['query'][0])
+    movie_item = query.get('movie_item')
+    item = query.get('item')
+    page = query.get('page') or 1
+    code = query.get('code')
+
+    if code:
+        fshare_items, last_page = Fshare('').handleFolder(code=query.get('code'), page=page)
+    else:
+        fshare_items, last_page = Fshare('').handleFolder(query.get('item').get('link'), page=page)
+
+    for fshare_item in fshare_items:
+        li = xbmcgui.ListItem(label=fshare_item[0])
+        is_folder = False
+        if fshare_item[1].get('type') == 1:
+            li.setInfo('video', {'title': fshare_item[0]})
+            item['link'] = 'https://www.fshare.vn/file/{}'.format(fshare_item[1].get('linkcode'))
             url = plugin.url_for(play, query=json.dumps({
-                'item': item, 'movie_item': movie_item, 'direct': 1,
-                'module': module, 'className': class_name
-            }))
+                    'item': item, 'movie_item': movie_item, 'direct': 1
+                }))
             li.setProperty("IsPlayable", "true")
-            xbmcplugin.addDirectoryItem(plugin.handle, url, li, False)
+        else:
+            is_folder = True
+            url = plugin.url_for(show_fshare_folder, query=json.dumps({
+                'item': item, 'movie_item': movie_item, 'code': fshare_item[1].get('linkcode')
+            }))
+            li.setProperty("IsPlayable", "false")
+        xbmcplugin.addDirectoryItem(plugin.handle, url, li, isFolder=is_folder)
+
+    # show next page
+    if page < last_page:
+        label = "Next page %d / %d >>" % (page, last_page)
+        next_item = xbmcgui.ListItem(label=label)
+
+        url = plugin.url_for(show_fshare_folder, query=json.dumps({
+            'item': item, 'movie_item': movie_item, 'code': code, 'page': page+1
+        }))
+        xbmcplugin.addDirectoryItem(plugin.handle, url, next_item, True)
 
     xbmcplugin.endOfDirectory(plugin.handle)
 
@@ -288,12 +341,16 @@ def _build_ep_list(items, movie_item, module, class_name):
 @plugin.route('/play')
 def play():
     query = json.loads(plugin.args['query'][0])
-    instance, module, class_name = load_plugin(query)
-    movie_item = query.get('movie_item')
-    thumb = py2_encode(movie_item.get('thumb'))
-    title = py2_encode(movie_item.get('realtitle'))
+    play_item = xbmcgui.ListItem()
+
 
     if int(query.get('direct')) == 0:
+        instance, module, class_name = load_plugin(query)
+        movie_item = query.get('movie_item')
+        thumb = py2_encode(movie_item.get('thumb'))
+        title = py2_encode(movie_item.get('title'))
+        realtitle = py2_encode(movie_item.get('realtitle'))
+
         movie = instance().getLink(query.get('item'))
         if not movie or 'links' not in movie or len(movie['links']) == 0:
             return
@@ -331,13 +388,22 @@ def play():
                 else:
                     movie = appened_list[index]
             else:
-                print(movie['links'])
                 movie = movie['links'][0]
+
+            play_item.setArt({'thumb': thumb})
+            play_item.setLabel(title)
+            play_item.setLabel2(realtitle)
+            play_item.setInfo('video', {
+                'title': title,
+                'originaltitle': realtitle,
+                'plot': movie_item.get('intro')
+            })
     else:
         movie = query.get('item')
 
+    # Parse link
     mediatype = MediaHelper.resolve_link(movie)
-    play_item = xbmcgui.ListItem()
+
     if not movie['link']: return
     if movie.get('subtitle'):
         if isinstance(movie['subtitle'], list):
@@ -347,24 +413,12 @@ def play():
     if mediatype == 'inputstream':
         play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
         play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+        play_item.setContentLookup(False)
         link = movie['link'].split('|')
         if link and len(link) > 1:
             play_item.setProperty('inputstream.adaptive.stream_headers', link[1])
 
-        play_item.setContentLookup(False)
-
     play_item.setProperty('IsPlayable', 'true')
-    # update title
-    try:
-        play_item.setInfo('video', {
-            'title': "[{}] {}".format(mediatype, py2_encode(movie_item.get('title'))),
-            'originaltitle': title,
-            'plot': movie_item.get('intro')
-        })
-    except:
-        print(movie['title'], title)
-
-    play_item.setArt({'thumb': thumb})
     play_item.setPath(movie['link'])
     xbmcplugin.setResolvedUrl(plugin.handle, True, listitem=play_item)
 

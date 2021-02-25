@@ -55,6 +55,7 @@ class Request:
         return self.r.text
 
     def post(self, url, params=None, headers=None, redirect=True, cookies=None, json=None, verify=True, data=None):
+        print("Post URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
 
@@ -69,6 +70,7 @@ class Request:
         return self.r.text
 
     def head(self, url, params=None, headers=None, redirect=True, cookies=None, verify=True):
+        print("Head URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
 
@@ -80,6 +82,7 @@ class Request:
         return self.r
 
     def options(self, url, params=None, headers=None, redirect=True, cookies=None, verify=True):
+        print("Options URL: %s" % url)
         # if headers:
         #     headers = self.DEFAULT_HEADERS.update(headers)
         if self.session:
