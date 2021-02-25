@@ -220,7 +220,7 @@
     "name": "Fshare",
     "logo": "https://cache.bloghosting.vn/wp-content/uploads/2017/12/fshare.jpg",
     "version": 1,
-    "searchable": false,
+    "searchable": true,
     "sites": [
       {
         "name": "hdvietnam.com (beta)",

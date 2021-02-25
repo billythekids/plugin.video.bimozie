@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import hashlib
 import json
 import os
 import re
@@ -8,6 +9,7 @@ from kodi_six import xbmc, xbmcaddon, xbmcvfs, xbmcgui
 from kodi_six.utils import py2_encode, py2_decode
 from six.moves.urllib.parse import quote, unquote
 from six.moves.urllib.parse import urlunsplit, urlsplit
+from collections import OrderedDict
 
 ADDON = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo('id')
@@ -111,6 +113,34 @@ def search_history_get():
         content = []
 
     return content
+
+
+def save_last_watch_movie(query):
+    if not query:
+        return
+    content = read_file('watched.json')
+    if content:
+        content = json.loads(content, object_pairs_hook=OrderedDict)
+    else:
+        content = OrderedDict()
+
+    cache_id = hashlib.md5(query.get('movie_item').get('id').encode("utf-8")).hexdigest()
+    content.update({cache_id: query})
+    content.move_to_end(cache_id, last=False)
+    write_file('watched.json', json.dumps(content))
+
+
+def get_last_watch_movie():
+    content = read_file('watched.json')
+    if content:
+        content = json.loads(content)
+    else:
+        content = {}
+    return content
+
+
+def clear_last_watch_movie():
+    write_file('watched.json', '')
 
 
 def wait(sec):

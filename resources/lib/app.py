@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import re
+from collections import OrderedDict
 from importlib import import_module
 from threading import Thread
 
@@ -11,8 +12,8 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 from kodi_six.utils import py2_encode
-from utils.media_helper import MediaHelper
 from utils.hosts.fshare import FShareVN as Fshare
+from utils.media_helper import MediaHelper
 
 plugin = routing.Plugin()
 
@@ -26,7 +27,9 @@ def globalContextMenu():
 @plugin.route('/')
 def index():
     xbmcplugin.setPluginCategory(plugin.handle, 'Websites')
-    xbmcplugin.setContent(plugin.handle, 'albums')
+
+    xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(show_last_watched),
+                                    xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Last Watched..."), True)
 
     for idx, site in enumerate(helper.get_sites_config()):
         if site['version'] > helper.KODI_VERSION:
@@ -46,15 +49,16 @@ def index():
 @plugin.route('/group/<group_index>')
 def show_site_group(group_index):
     xbmcplugin.setPluginCategory(plugin.handle, 'Websites')
-    xbmcplugin.setContent(plugin.handle, 'movies')
 
     group_index = int(group_index)
     sites = helper.get_sites_config()
 
-    url = plugin.url_for(global_search)
     if sites[group_index]['searchable']:
-        xbmcplugin.addDirectoryItem(plugin.handle, url,
+        xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(global_search),
                                     xbmcgui.ListItem(label="[COLOR yellow][B] %s [/B][/COLOR]" % "Search All..."), True)
+
+        xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(show_last_watched),
+                                    xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Last Watched..."), True)
 
     for site in sites[group_index]['sites']:
         if site['version'] > helper.KODI_VERSION:
@@ -81,7 +85,6 @@ def show_site_category():
     instance, module, class_name = load_plugin(query)
     cats, movies = instance().getCategory()
     xbmcplugin.setPluginCategory(plugin.handle, class_name)
-    xbmcplugin.setContent(plugin.handle, 'files')
 
     # show search link
     url = plugin.url_for(search, query=json.dumps({'module': module, 'className': class_name}))
@@ -120,7 +123,6 @@ def show_site_subcategory():
     query = json.loads(plugin.args['query'][0])
     instance, module, class_name = load_plugin(query)
     xbmcplugin.setPluginCategory(plugin.handle, '{} - {}'.format(class_name, query.get('name')))
-    xbmcplugin.setContent(plugin.handle, 'files')
 
     for cat in query.get('subcategory'):
         list_item = xbmcgui.ListItem(label=cat.get('title'))
@@ -138,9 +140,7 @@ def show_movies(movies=None, link=None, page=0, cat_name="", module=None, class_
     if not movies:
         query = json.loads(plugin.args['query'][0])
         instance, module, class_name = load_plugin(query)
-
         xbmcplugin.setPluginCategory(plugin.handle, '{} - {}'.format(class_name, query.get('name')))
-        xbmcplugin.setContent(plugin.handle, 'movies')
 
         link, page, cat_name = query.get('url'), int(query.get('page')), query.get('name')
         movies = instance().getChannel(link, page)
@@ -192,7 +192,6 @@ def show_movie():
 
     xbmcplugin.setPluginCategory(plugin.handle,
                                  '{} - {} - {}'.format(class_name, query.get('cat_name'), movie_item.get('title')))
-    xbmcplugin.setContent(plugin.handle, 'movies')
 
     if len(movie['group']) > 0:
         print("*********************** Display movie episode/group")
@@ -244,6 +243,9 @@ def show_movie():
                 li.setProperty("IsPlayable", "true")
                 xbmcplugin.addDirectoryItem(plugin.handle, url, li, False)
 
+    # save watching movie
+    if 'Phut90' not in class_name and 'TVOnline' not in class_name:
+        helper.save_last_watch_movie(query)
     xbmcplugin.endOfDirectory(plugin.handle)
 
 
@@ -298,7 +300,6 @@ def show_movie_server_group():
 
     xbmcplugin.setPluginCategory(plugin.handle,
                                  "%s - %s " % (query.get('movie_item').get('title'), query.get('server')))
-    xbmcplugin.setContent(plugin.handle, 'videos')
 
     label = "[COLOR red][B][---- %s : [COLOR yellow]%d eps[/COLOR] ----][/B][/COLOR]" % (
         query.get('server'), len(query.get('items'))
@@ -342,7 +343,6 @@ def _build_ep_list(items, movie_item, module, class_name):
 def play():
     query = json.loads(plugin.args['query'][0])
     play_item = xbmcgui.ListItem()
-
 
     if int(query.get('direct')) == 0:
         instance, module, class_name = load_plugin(query)
@@ -426,7 +426,6 @@ def play():
 @plugin.route('/searchAll')
 def global_search():
     xbmcplugin.setPluginCategory(plugin.handle, 'Search All')
-    xbmcplugin.setContent(plugin.handle, 'movies')
 
     xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(searching_all),
                                 xbmcgui.ListItem(label="[COLOR orange][B]%s[/B][/COLOR]" % "Enter search text ..."),
@@ -550,7 +549,6 @@ def search():
     instance, module, class_name = load_plugin(query)
 
     xbmcplugin.setPluginCategory(plugin.handle, 'Search')
-    xbmcplugin.setContent(plugin.handle, 'movies')
     url = plugin.url_for(searching, query=json.dumps({'module': module, 'className': class_name}))
 
     xbmcplugin.addDirectoryItem(plugin.handle, url,
@@ -622,6 +620,38 @@ def searching():
 @plugin.route('/clearSearch')
 def clear_search():
     helper.search_history_clear()
+    return
+
+
+@plugin.route('/lastWatched')
+def show_last_watched():
+    items: dict = helper.get_last_watch_movie()
+    if items:
+        xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(clear_last_watched),
+                                    xbmcgui.ListItem(label="[COLOR red][B]%s[/B][/COLOR]" % "Clear list ..."), True)
+        for item in items.values():
+            movie = item.get('movie_item')
+            list_item = xbmcgui.ListItem(label=movie.get('label'))
+            list_item.addContextMenuItems(globalContextMenu())
+            list_item.setLabel2(movie.get('realtitle'))
+            list_item.setArt({'thumb': movie.get('thumb')})
+            if 'poster' in movie:
+                list_item.setArt({'poster': movie.get('poster')})
+            if 'intro' in movie:
+                list_item.setInfo(type='video', infoLabels={'plot': movie.get('intro')})
+
+            url = plugin.url_for(show_movie, query=json.dumps({
+                'movie_item': movie, 'cat_name': 'Watching',
+                'module': item.get('module'), 'className': item.get('className')
+            }))
+            xbmcplugin.addDirectoryItem(plugin.handle, url, list_item, isFolder=True)
+
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/clearWatched')
+def clear_last_watched():
+    helper.clear_last_watch_movie()
     return
 
 
