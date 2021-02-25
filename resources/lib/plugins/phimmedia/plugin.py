@@ -1,11 +1,9 @@
 # from cloudscraper2 import CloudScraper
-import pickle
-import urllib
 
-import utils.xbmc_helper as helper
 from phimmedia.parser.category import Parser as Category
 from phimmedia.parser.channel import Parser as Channel
 from phimmedia.parser.movie import Parser as Movie
+from six.moves.urllib.parse import quote_plus
 from utils.mozie_request import Request
 
 user_agent = (
@@ -65,6 +63,6 @@ class Phimmedia:
         return Movie().get_link(response, movie['link'])
 
     def search(self, text, page=1):
-        url = "%s/index.php?keyword=%s&do=phim&act=search&page=%s" % (self.domain, urllib.quote_plus(text), page)
+        url = "%s/index.php?keyword=%s&do=phim&act=search&page=%s" % (self.domain, quote_plus(text), page)
         response = self.request.get(url)
         return Channel().get(response)

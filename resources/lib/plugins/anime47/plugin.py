@@ -1,8 +1,10 @@
+import re
+
+from anime47.parser.category import Parser as Category
+from anime47.parser.channel import Parser as Channel
+from anime47.parser.movie import Parser as Movie
 from six.moves.urllib.parse import quote_plus
 from utils.mozie_request import Request
-from phimmoi.parser.category import Parser as Category
-from phimmoi.parser.channel import Parser as Channel
-from phimmoi.parser.movie import Parser as Movie
 
 user_agent = (
     "Mozilla/5.0 (X11; Linux x86_64) "
@@ -12,17 +14,15 @@ user_agent = (
 
 h = {
     'User-Agent': user_agent,
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    # 'Host': 'http://www.phimmoizz.net',
-    # 'Referer': 'http://www.phimmoizz.net/vn.php'
+    'Accept-Encoding': 'utf-8'
 }
 
-class Phimmoi:
-    domain = "http://www.phimmoizz.net"
+
+class anime47:
+    domain = "https://anime47.com"
 
     def __init__(self):
         self.request = Request(h, session=True)
-        self.request.get('{}/vn.php'.format(self.domain))
 
     def getCategory(self):
         response = self.request.get('{}/'.format(self.domain), headers=h)
@@ -30,15 +30,23 @@ class Phimmoi:
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
+        print(channel)
         if page > 1:
-            url = '%s/%spage-%d.html' % (self.domain, channel, page)
+            if channel.endswith(".html"):
+                url = re.sub(r'\d+.html', '{}.html'.format(page), ('%s%s' % (self.domain, channel)))
+            else:
+                url = '%s/%s&page=%d' % (self.domain, channel, page)
+
+            print(url)
         else:
             url = '%s/%s' % (self.domain, channel)
         response = self.request.get(url, headers=h)
         return Channel().get(response, page)
 
-    def getMovie(self, id):
-        url = "%s/%sxem-phim.html" % (self.domain, id)
+    def getMovie(self, movie_id):
+        url = "%s%s" % (self.domain, movie_id)
+        url = Movie().get_movie_link(self.request.get(url, headers=h))
+        url = "%s/%s" % (self.domain, url)
         response = self.request.get(url, headers=h)
         return Movie().get(response, url)
 
@@ -46,9 +54,9 @@ class Phimmoi:
         url = movie['link'].replace(self.domain, '')
         url = "%s/%s" % (self.domain, url)
         response = self.request.get(url, headers=h)
-        return Movie().get_link(response, url, self.request)
+        return Movie().get_link(response, self.domain, url, self.request)
 
     def search(self, text):
-        url = "%s/tim-kiem/%s/" % (self.domain, quote_plus(text))
+        url = "%s/tim-nang-cao/?keyword=%s" % (self.domain, quote_plus(text))
         response = self.request.get(url, headers=h)
         return Channel().get(response, 1)

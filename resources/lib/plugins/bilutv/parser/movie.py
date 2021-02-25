@@ -2,17 +2,15 @@
 import json
 import re
 
-
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
+from six.moves.urllib.parse import unquote
 from utils.mozie_request import Request
-from six.moves.urllib.parse import quote, unquote
 
 try:
     from urlparse import urlparse, parse_qs
 except ImportError:
     from urllib.parse import urlparse, parse_qs
-
 
 
 class Parser:

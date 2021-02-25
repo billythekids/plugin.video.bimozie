@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import urllib
 
 import utils.fpt_helper as fpt
+from six.moves.urllib.parse import quote_plus
 from utils.mozie_request import Request
 
 from .parser.category import Parser as Category
@@ -83,7 +83,7 @@ class Fptplay:
         return result
 
     def search(self, text):
-        text = urllib.quote_plus(text)
+        text = quote_plus(text)
         params = {
             'keywords': text,
             'nodes[]': [337, 116, 150, 33, 57, 123],

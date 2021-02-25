@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import re
-import urllib
+from six.moves.urllib.parse import quote
 from kodi_six.utils import py2_encode
 
 
@@ -50,7 +50,7 @@ class Parser:
         return channel
 
     def create_link(self, link):
-        link = urllib.quote(link)
+        link = quote(link)
         link = link.replace("%3F", "?")
         link = link.replace("%3D", "=")
         link = link.replace("%26", "&")

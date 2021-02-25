@@ -264,8 +264,10 @@ def gibberishAES(string, key=''):
             return a
 
         e = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-        r = r.replace('\n', '');
-        f = [];
+        # r = r.replace('\n', '')
+        r = str(r).replace('\n', '')
+        # r = str.encode(r)
+        f = []
         c = [0] * 4
         for n in range(0, len(r), 4):
             for i in range(len(c)): c[i] = indexOfchar(n + i)

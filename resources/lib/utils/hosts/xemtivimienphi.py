@@ -21,8 +21,10 @@ def get_link(url, media):
         'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.66",
         'referer': media.get('originUrl')
     }
-    response = Request().get(url, headers=header)
 
+    req = Request()
+
+    response = req.get(url, headers=header)
     source = re.search(r'source:\s?"(.*?)",', response)
     if source:
         url = source.group(1)
@@ -46,7 +48,9 @@ def get_link(url, media):
     header = {
         'origin': 'http://www.xemtivimienphi.com',
         'host': base_url,
-        'verifypeer': 'false'
+        # 'verifypeer': 'false',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'
     }
 
+    print(req.options(url, headers=header))
     return url + "|%s" % urlencode(header), 'TVOnline'

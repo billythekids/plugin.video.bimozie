@@ -2,7 +2,7 @@ from utils.mozie_request import Request
 from vkool.parser.category import Parser as Category
 from vkool.parser.channel import Parser as Channel
 from vkool.parser.movie import Parser as Movie
-import urllib
+from six.moves.urllib.parse import quote_plus
 
 user_agent = (
     "Mozilla/5.0 (X11; Linux x86_64) "
@@ -50,6 +50,6 @@ class Vkool:
         return Movie().get_link(response, self.domain, movie['link'], r)
 
     def search(self, text, page=1):
-        url = "%s/search/%s.html" % (self.domain, urllib.quote_plus(text))
+        url = "%s/search/%s.html" % (self.domain, quote_plus(text))
         response = self.request.get(url)
         return Channel().get(response)

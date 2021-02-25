@@ -2,10 +2,12 @@
 import json
 import re
 from importlib import import_module
+from threading import Thread
 
 import routing
 import utils.xbmc_helper as helper
-# from kodi_six import xbmcplugin, xbmcgui
+import xbmc
+# from kodi_six import xbmcplugin, xbmcgui, xbmc
 import xbmcgui
 import xbmcplugin
 from kodi_six.utils import py2_encode
@@ -46,9 +48,14 @@ def show_site_group(group_index):
     xbmcplugin.setContent(plugin.handle, 'movies')
 
     group_index = int(group_index)
+    sites = helper.get_sites_config()
 
-    # TODO add search
-    for site in helper.get_sites_config()[group_index]['sites']:
+    url = plugin.url_for(global_search)
+    if sites[group_index]['searchable']:
+        xbmcplugin.addDirectoryItem(plugin.handle, url,
+                                    xbmcgui.ListItem(label="[COLOR yellow][B] %s [/B][/COLOR]" % "Search All..."), True)
+
+    for site in sites[group_index]['sites']:
         if site['version'] > helper.KODI_VERSION:
             print("***********************Skip version %s" % site['name'])
             continue
@@ -74,7 +81,11 @@ def show_site_category():
     cats, movies = instance().getCategory()
     xbmcplugin.setPluginCategory(plugin.handle, class_name)
     xbmcplugin.setContent(plugin.handle, 'files')
+
     # show search link
+    url = plugin.url_for(search, query=json.dumps({'module': module, 'className': class_name}))
+    xbmcplugin.addDirectoryItem(plugin.handle, url,
+                                xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Search..."), True)
 
     # Show category
     for cat in cats:
@@ -287,7 +298,7 @@ def play():
         if not movie or 'links' not in movie or len(movie['links']) == 0:
             return
         else:
-            blacklist = ['hydrax', 'maya.bbigbunny.ml', 'blob']
+            blacklist = ['hydrax', 'maya.bbigbunny.ml', 'blob', 'short.icu']
 
             def filter_blacklist(m):
                 for i in blacklist:
@@ -320,6 +331,7 @@ def play():
                 else:
                     movie = appened_list[index]
             else:
+                print(movie['links'])
                 movie = movie['links'][0]
     else:
         movie = query.get('item')
@@ -355,6 +367,208 @@ def play():
     play_item.setArt({'thumb': thumb})
     play_item.setPath(movie['link'])
     xbmcplugin.setResolvedUrl(plugin.handle, True, listitem=play_item)
+
+
+@plugin.route('/searchAll')
+def global_search():
+    xbmcplugin.setPluginCategory(plugin.handle, 'Search All')
+    xbmcplugin.setContent(plugin.handle, 'movies')
+
+    xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(searching_all),
+                                xbmcgui.ListItem(label="[COLOR orange][B]%s[/B][/COLOR]" % "Enter search text ..."),
+                                True)
+
+    # Support to save search history
+    contents = helper.search_history_get()
+    if contents:
+        xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(clear_search),
+                                    xbmcgui.ListItem(label="[COLOR red][B]%s[/B][/COLOR]" % "Clear search text ..."),
+                                    True)
+        for txt in contents:
+            xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(searching_all, query=txt),
+                                        xbmcgui.ListItem(label="[COLOR blue][B]%s[/B][/COLOR]" % txt), True)
+
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/searchingAll')
+def searching_all():
+    text = None
+    if not plugin.args:
+        keyboard = xbmc.Keyboard('', 'Search iPlayer')
+        keyboard.doModal()
+        if keyboard.isConfirmed():
+            text = keyboard.getText()
+    else:
+        text = plugin.args.get('query')[0]
+
+    if not text:
+        return
+
+    xbmcplugin.setPluginCategory(plugin.handle, 'Search Result: {}'.format(text))
+    xbmcplugin.setContent(plugin.handle, 'movies')
+
+    helper.search_history_save(text)
+    progress = {
+        'percent': 0,
+        'step': 5,
+        'counter': 0,
+        'length': 0,
+        'dialog': xbmcgui.DialogProgress(),
+        'results': []
+    }
+
+    def _search(site, text, progress):
+        try:
+            plugin, module, class_name = load_plugin({'className': site.get('className'), "module": site.get('plugin')})
+            progress['dialog'].update(
+                int(progress['percent']),
+                'Searching on %s totally %d/%d sites' % (class_name, progress['counter'], progress['length']))
+
+            progress['results'].append((module, class_name, plugin().search(text)))
+            progress['percent'] += progress['step']
+            progress['counter'] += 1
+            progress['dialog'].update(
+                int(progress['percent']),
+                'Searching on %s totally %d/%d sites' % (class_name, progress['counter'], progress['length']))
+
+        except Exception as inst:
+            print(type(inst))
+            print(inst.args)
+            print(inst)
+            pass
+
+    threads = []
+
+    sites = helper.get_sites_config()
+    for group in sites:
+        if group['version'] > helper.KODI_VERSION or ('searchable' in group and not group['searchable']):
+            continue
+        for site in group['sites']:
+            progress['length'] += 1
+            progress['dialog'].create('Processing', "Searching %d/%d sites" % (progress['counter'], progress['length']))
+            progress['step'] = 100 / progress['length']
+
+    for group in sites:
+        if group['version'] > helper.KODI_VERSION or ('searchable' in group and not group['searchable']):
+            continue
+        for site in group['sites']:
+            if site['version'] > helper.KODI_VERSION or ('searchable' in site and not site['searchable']):
+                continue
+            process = Thread(target=_search, args=[site, text, progress])
+            process.setDaemon(True)
+            process.start()
+            threads.append(process)
+
+    for process in threads:
+        process.join()
+
+    for module, class_name, movies in progress['results']:
+        # if movies is not None and len(movies.get('movies')) > 0:
+        label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (
+            class_name, len(movies['movies']))
+        sli = xbmcgui.ListItem(label=label)
+
+        url = plugin.url_for(searching, query=json.dumps({'module': module, 'className': class_name, 'text': text}))
+        xbmcplugin.addDirectoryItem(plugin.handle, url, sli, isFolder=True)
+
+        for item in movies['movies'][:5]:
+            try:
+                list_item = xbmcgui.ListItem(label=item['label'])
+                list_item.setLabel2(item['realtitle'])
+                list_item.setArt({
+                    'thumb': item['thumb'],
+                })
+
+                url = plugin.url_for(show_movie, query=json.dumps({
+                    'movie_item': item, 'cat_name': 'Search',
+                    'module': module, 'className': class_name
+                }))
+                xbmcplugin.addDirectoryItem(plugin.handle, url, list_item, isFolder=True)
+            except:
+                print(item)
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/search')
+def search():
+    query = json.loads(plugin.args['query'][0])
+    instance, module, class_name = load_plugin(query)
+
+    xbmcplugin.setPluginCategory(plugin.handle, 'Search')
+    xbmcplugin.setContent(plugin.handle, 'movies')
+    url = plugin.url_for(searching, query=json.dumps({'module': module, 'className': class_name}))
+
+    xbmcplugin.addDirectoryItem(plugin.handle, url,
+                                xbmcgui.ListItem(label="[COLOR orange][B]%s[/B][/COLOR]" % "Enter search text ..."),
+                                True)
+
+    # Support to save search history
+    contents = helper.search_history_get()
+    if contents:
+        xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(clear_search),
+                                    xbmcgui.ListItem(label="[COLOR red][B]%s[/B][/COLOR]" % "Clear search text ..."),
+                                    True)
+        for txt in contents:
+            try:
+                url = plugin.url_for(searching, query=json.dumps({'module': module, 'className': class_name, 'text': txt}))
+                xbmcplugin.addDirectoryItem(plugin.handle, url,
+                                            xbmcgui.ListItem(label="[COLOR blue][B]%s[/B][/COLOR]" % txt), True)
+            except:
+                pass
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/searching')
+def searching():
+    query = json.loads(plugin.args['query'][0])
+    instance, module, class_name = load_plugin(query)
+    text = query.get('text')
+
+    xbmcplugin.setPluginCategory(plugin.handle, 'Search / %s' % text)
+    xbmcplugin.setContent(plugin.handle, 'movies')
+    if not text:
+        keyboard = xbmc.Keyboard('', 'Search iPlayer')
+        keyboard.doModal()
+        if keyboard.isConfirmed():
+            text = keyboard.getText()
+
+    if not text:
+        return
+
+    helper.search_history_save(text)
+    movies = instance().search(text)
+
+    if movies is not None:
+        label = "[COLOR red][B][---- %s : [COLOR yellow]%d found[/COLOR] View All ----][/B][/COLOR]" % (
+            class_name, len(movies['movies']))
+        sli = xbmcgui.ListItem(label=label)
+        xbmcplugin.addDirectoryItem(plugin.handle, None, sli, isFolder=False)
+
+        for item in movies['movies']:
+            try:
+                list_item = xbmcgui.ListItem(label=item['label'])
+                list_item.setLabel2(item['realtitle'])
+                list_item.setArt({
+                    'thumb': item['thumb'],
+                })
+                url = plugin.url_for(show_movie, query=json.dumps({
+                    'movie_item': item, 'cat_name': 'Search',
+                    'module': module, 'className': class_name
+                }))
+                xbmcplugin.addDirectoryItem(plugin.handle, url, list_item, isFolder=True)
+            except:
+                print(item)
+    else:
+        return
+
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/clearSearch')
+def clear_search():
+    helper.search_history_clear()
+    return
 
 
 def load_plugin(args):

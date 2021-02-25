@@ -1,8 +1,7 @@
-import urllib
-
 from bilutv.parser.category import Parser as Category
 from bilutv.parser.channel import Parser as Channel
 from bilutv.parser.movie import Parser as Movie
+from six.moves.urllib.parse import quote_plus
 from utils.mozie_request import Request
 
 
@@ -38,6 +37,6 @@ class Bilutv:
         return Movie().get_link(response, self.domain)
 
     def search(self, text, page=1):
-        url = "%s/tim-kiem/%s.html" % (self.domain, urllib.quote_plus(text))
+        url = "%s/tim-kiem/%s.html" % (self.domain, quote_plus(text))
         response = Request().get(url)
         return Channel().get(response)
