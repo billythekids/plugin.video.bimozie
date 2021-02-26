@@ -29,7 +29,7 @@ def index():
     xbmcplugin.setPluginCategory(plugin.handle, 'Websites')
 
     xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(show_last_watched),
-                                    xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Last Watched..."), True)
+                                xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Last Watched..."), True)
 
     for idx, site in enumerate(helper.get_sites_config()):
         if site['version'] > helper.KODI_VERSION:
@@ -57,22 +57,20 @@ def show_site_group(group_index):
         xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(global_search),
                                     xbmcgui.ListItem(label="[COLOR yellow][B] %s [/B][/COLOR]" % "Search All..."), True)
 
-        xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(show_last_watched),
-                                    xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Last Watched..."), True)
+    xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(show_last_watched),
+                                xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Last Watched..."), True)
 
     for site in sites[group_index]['sites']:
         if site['version'] > helper.KODI_VERSION:
             print("***********************Skip version %s" % site['name'])
             continue
 
-        if site['className'] == 'TVOnline':
-            list_item = xbmcgui.ListItem(label="[COLOR blue][B] %s [/B][/COLOR]" % site['name'])
-        else:
-            list_item = xbmcgui.ListItem(label=site['name'])
+        list_item = xbmcgui.ListItem(label=site['name'])
         list_item.addContextMenuItems(globalContextMenu())
         list_item.setArt({'thumb': site['logo'], 'icon': site['logo']})
         url = plugin.url_for(show_site_category,
-                             query=json.dumps({'module': site['plugin'], 'className': site['className']}))
+                             query=json.dumps({'searchable': site.get('searchable'), 'module': site['plugin'],
+                                               'className': site['className']}))
 
         xbmcplugin.addDirectoryItem(plugin.handle, url, list_item, isFolder=True)
 
@@ -85,11 +83,13 @@ def show_site_category():
     instance, module, class_name = load_plugin(query)
     cats, movies = instance().getCategory()
     xbmcplugin.setPluginCategory(plugin.handle, class_name)
+    searchable: bool = query.get('searchable')
 
     # show search link
-    url = plugin.url_for(search, query=json.dumps({'module': module, 'className': class_name}))
-    xbmcplugin.addDirectoryItem(plugin.handle, url,
-                                xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Search..."), True)
+    if searchable != False:
+        url = plugin.url_for(search, query=json.dumps({'module': module, 'className': class_name}))
+        xbmcplugin.addDirectoryItem(plugin.handle, url,
+                                    xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Search..."), True)
 
     # Show category
     for cat in cats:
@@ -110,9 +110,10 @@ def show_site_category():
         xbmcplugin.addDirectoryItem(plugin.handle, url, list_item, isFolder=True)
 
     if movies and len(movies) > 0:
-        label = "[COLOR yellow][B][---- New Movies ----][/B][/COLOR]"
-        sli = xbmcgui.ListItem(label=label)
-        xbmcplugin.addDirectoryItem(plugin.handle, None, sli, isFolder=False)
+        if len(cats) > 0:
+            label = "[COLOR yellow][B][---- New Movies ----][/B][/COLOR]"
+            sli = xbmcgui.ListItem(label=label)
+            xbmcplugin.addDirectoryItem(plugin.handle, None, sli, isFolder=False)
         show_movies(movies, '/', 1, '', module, class_name)
     else:
         xbmcplugin.endOfDirectory(plugin.handle)
@@ -122,7 +123,7 @@ def show_site_category():
 def show_site_subcategory():
     query = json.loads(plugin.args['query'][0])
     instance, module, class_name = load_plugin(query)
-    xbmcplugin.setPluginCategory(plugin.handle, '{} - {}'.format(class_name, query.get('name')))
+    xbmcplugin.setPluginCategory(plugin.handle, '{} / {}'.format(class_name, query.get('name')))
 
     for cat in query.get('subcategory'):
         list_item = xbmcgui.ListItem(label=cat.get('title'))
@@ -140,7 +141,7 @@ def show_movies(movies=None, link=None, page=0, cat_name="", module=None, class_
     if not movies:
         query = json.loads(plugin.args['query'][0])
         instance, module, class_name = load_plugin(query)
-        xbmcplugin.setPluginCategory(plugin.handle, '{} - {}'.format(class_name, query.get('name')))
+        xbmcplugin.setPluginCategory(plugin.handle, '{} / {}'.format(class_name, query.get('name')))
 
         link, page, cat_name = query.get('url'), int(query.get('page')), query.get('name')
         movies = instance().getChannel(link, page)
@@ -191,7 +192,8 @@ def show_movie():
     movie = instance().getMovie(movie_item.get('id'))
 
     xbmcplugin.setPluginCategory(plugin.handle,
-                                 '{} - {} - {}'.format(class_name, query.get('cat_name'), movie_item.get('title')))
+                                 '{} / {} / {}'.format(class_name, query.get('cat_name'), movie_item.get('title')))
+    xbmcplugin.setContent(plugin.handle, 'movies')
 
     if len(movie['group']) > 0:
         print("*********************** Display movie episode/group")
@@ -244,7 +246,7 @@ def show_movie():
                 xbmcplugin.addDirectoryItem(plugin.handle, url, li, False)
 
     # save watching movie
-    if 'Phut90' not in class_name and 'TVOnline' not in class_name:
+    if 'Phut90' not in class_name:
         helper.save_last_watch_movie(query)
     xbmcplugin.endOfDirectory(plugin.handle)
 
@@ -269,8 +271,8 @@ def show_fshare_folder():
             li.setInfo('video', {'title': fshare_item[0]})
             item['link'] = 'https://www.fshare.vn/file/{}'.format(fshare_item[1].get('linkcode'))
             url = plugin.url_for(play, query=json.dumps({
-                    'item': item, 'movie_item': movie_item, 'direct': 1
-                }))
+                'item': item, 'movie_item': movie_item, 'direct': 1
+            }))
             li.setProperty("IsPlayable", "true")
         else:
             is_folder = True
@@ -286,7 +288,7 @@ def show_fshare_folder():
         next_item = xbmcgui.ListItem(label=label)
 
         url = plugin.url_for(show_fshare_folder, query=json.dumps({
-            'item': item, 'movie_item': movie_item, 'code': code, 'page': page+1
+            'item': item, 'movie_item': movie_item, 'code': code, 'page': page + 1
         }))
         xbmcplugin.addDirectoryItem(plugin.handle, url, next_item, True)
 
@@ -563,7 +565,8 @@ def search():
                                     True)
         for txt in contents:
             try:
-                url = plugin.url_for(searching, query=json.dumps({'module': module, 'className': class_name, 'text': txt}))
+                url = plugin.url_for(searching,
+                                     query=json.dumps({'module': module, 'className': class_name, 'text': txt}))
                 xbmcplugin.addDirectoryItem(plugin.handle, url,
                                             xbmcgui.ListItem(label="[COLOR blue][B]%s[/B][/COLOR]" % txt), True)
             except:

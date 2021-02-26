@@ -12,6 +12,14 @@
         "plugin": "phut90.plugin",
         "version": 1,
         "searchable": false
+      },
+      {
+        "name": "thuckhuya.com",
+        "logo": "https://thuckhuya.com/wp-content/themes/itfs/assets/images/34191045_981163082042209_6351080930731360256_n.png",
+        "className": "Thuckhuya",
+        "plugin": "thuckhuya.plugin",
+        "version": 1,
+        "searchable": false
       }
     ]
   },
@@ -22,10 +30,18 @@
     "searchable": false,
     "sites": [
       {
-        "name": "TV Online",
+        "name": "Xemtivimienphi.com",
         "logo": "https://tvonline.bg/wp-content/themes/Design3/images/logo.jpg",
         "className": "TVOnline",
         "plugin": "tvonline.plugin",
+        "version": 1,
+        "searchable": false
+      },
+      {
+        "name": "TVmienphi.tv",
+        "logo": "https://tvonline.bg/wp-content/themes/Design3/images/logo.jpg",
+        "className": "TVMienphi",
+        "plugin": "tvmienphi.plugin",
         "version": 1,
         "searchable": false
       }

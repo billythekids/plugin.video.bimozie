@@ -1,11 +1,11 @@
-from tvonline.parser.category import Parser as Category
-from tvonline.parser.channel import Parser as Channel
-from tvonline.parser.movie import Parser as Movie
+from tvmienphi.parser.category import Parser as Category
+from tvmienphi.parser.channel import Parser as Channel
+from tvmienphi.parser.movie import Parser as Movie
 from utils.mozie_request import Request
 
 
-class TVOnline:
-    domain = "http://www.xemtivimienphi.com"
+class TVMienphi:
+    domain = "http://tvmienphi.tv"
     token = None
     member_id = None
 
@@ -27,7 +27,7 @@ class TVOnline:
     def getMovie(self, id):
         url = id.replace(self.domain, '')
         url = url.replace('./', '')
-        url = "{}/{}".format(self.domain, url)
+        url = "{}{}".format(self.domain, url)
         response = self.request.get(url)
         return Movie().get(response, self.domain, url)
 

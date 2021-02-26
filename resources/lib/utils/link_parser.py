@@ -57,7 +57,9 @@ from .hosts import fshare, \
     motphim, \
     lotus, \
     xemtivimienphi, \
-    verystream
+    verystream, \
+    thuckhuya, \
+    tvmienphi
 
 
 class LinkParser:
@@ -309,6 +311,12 @@ class LinkParser:
 
         elif '.xyz' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
+
+        elif 'sv.tvmienphi.tv' in self.url:
+            return tvmienphi.get_link(self.url, self.media)
+
+        elif 'thuckhuya.com' in self.url:
+            return thuckhuya.get_link(self.url, self.media)
 
         elif self.url.endswith('m3u8'):
             return self.get_m3u8()

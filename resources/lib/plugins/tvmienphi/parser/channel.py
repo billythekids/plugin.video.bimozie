@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-import re
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -15,16 +15,15 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         tab = soup.find('div', {'class': 'tab-pane', 'id': page})
 
-        movies = re.findall(r'li\sclass="channel".*href="(.*?)".*src="(.*?)".*title="(.*?)"', str(tab))
+        movies = tab.select('a')
         for movie in movies:
-            # try:
             channel['movies'].append({
-                'id': movie[0],
-                'label': movie[2],
-                'title': movie[2],
-                'realtitle': movie[2],
-                'thumb': movie[1],
-                'type': movie[2]
+                'id': movie.get('href'),
+                'label': py2_encode(movie.get('title')),
+                'title': py2_encode(movie.get('data-key')),
+                'realtitle': py2_encode(movie.get('data-key')),
+                'thumb': movie.select_one('img').get('src'),
+                'type': ''
             })
 
         return channel
