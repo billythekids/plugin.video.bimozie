@@ -54,6 +54,13 @@
     "searchable": true,
     "sites": [
       {
+        "name": "hayghes.com",
+        "logo": "https://hayghes.com/favicon.png",
+        "className": "Hayghes",
+        "plugin": "hayghes.plugin",
+        "version": 1
+      },
+      {
         "name": "fptplay.vn",
         "logo": "https://fptplay.vn/images/logo.png",
         "className": "Fptplay",
@@ -80,13 +87,6 @@
         "className": "Bilutv",
         "plugin": "bilutv.plugin",
         "version": 1
-      },
-      {
-        "name": "bilutvb.com",
-        "logo": "https://bilutvb.com/wp-content/uploads/2019/05/logov.png",
-        "className": "Bilutvb",
-        "plugin": "bilutvb.plugin",
-        "version": 31
       },
       {
         "name": "phimmedia.tv",
@@ -117,20 +117,6 @@
         "version": 1
       },
       {
-        "name": "phim3s.pw",
-        "logo": "http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium",
-        "className": "Phim3s",
-        "plugin": "phim3s.plugin",
-        "version": 31
-      },
-      {
-        "name": "phimbathu.org",
-        "logo": "http://phimbathu.org/Theme/images/phimbathu-logo.png",
-        "className": "Phimbathu",
-        "plugin": "phimbathu.plugin",
-        "version": 31
-      },
-      {
         "name": "kenh88.com",
         "logo": "http://www.kenh88.com/images/logo_kenh88.png",
         "className": "Kenh88",
@@ -152,13 +138,6 @@
         "version": 31
       },
       {
-        "name": "vtv16.com",
-        "logo": "https://yt3.ggpht.com/a-/AN66SAx84wKI577rKgX2IeQUiG31GaOhmVIu2le2rQ=s900-mo-c-c0xffffffff-rj-k-no",
-        "className": "Vtv16",
-        "plugin": "vtv16.plugin",
-        "version": 31
-      },
-      {
         "name": "phimgi.tv",
         "logo": "https://cdn-img.phimgi.net/wp-content/uploads/2019/01/phimgi-02.png",
         "className": "Phimgi",
@@ -171,14 +150,6 @@
         "className": "Dongphim",
         "plugin": "dongphim.plugin",
         "version": 1
-      },
-
-      {
-        "name": "xemphim.plus",
-        "logo": "https://xemphim.plus/static/skin/logo-full.png",
-        "className": "Xemphim",
-        "plugin": "xemphim.plugin",
-        "version": 31
       },
       {
         "name": "xemphimsoz.com",

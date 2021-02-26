@@ -59,6 +59,7 @@ from .hosts import fshare, \
     xemtivimienphi, \
     verystream, \
     thuckhuya, \
+    donganime, \
     tvmienphi
 
 
@@ -312,8 +313,11 @@ class LinkParser:
         elif '.xyz' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
 
+        elif 'stream3.donganime.net' in self.url:
+            return donganime.get_link(self.url, self.media)
+
         elif 'sv.tvmienphi.tv' in self.url:
-            return tvmienphi.get_link(self.url, self.media)
+            return donganime.get_link(self.url, self.media)
 
         elif 'thuckhuya.com' in self.url:
             return thuckhuya.get_link(self.url, self.media)

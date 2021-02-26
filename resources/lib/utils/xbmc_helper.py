@@ -3,13 +3,15 @@ import hashlib
 import json
 import os
 import re
+from collections import OrderedDict
 from contextlib import closing
 
 from kodi_six import xbmc, xbmcaddon, xbmcvfs, xbmcgui
-from kodi_six.utils import py2_encode, py2_decode
+from kodi_six.utils import py2_decode, py2_encode
 from six.moves.urllib.parse import quote, unquote
 from six.moves.urllib.parse import urlunsplit, urlsplit
-from collections import OrderedDict
+
+
 
 ADDON = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo('id')
@@ -149,8 +151,10 @@ def wait(sec):
 
 def convert_js_2_json(str):
     vstr = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', str)
+    vstr = re.sub(r'([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', vstr)
     vstr = vstr.replace("'", '"')
     vstr = re.sub(r'\t+\"', '"', vstr)
+    print(vstr)
     return json.loads(vstr)
 
 
@@ -220,3 +224,14 @@ def get_sites_config():
     with closing(xbmcvfs.File(file_path + '/../sites.json', 'r')) as json_file:
         sites = json.load(json_file)
     return sites
+
+
+# Encode text
+def text_encode(txt, encoding='utf-8'):
+    if 'latin1' in encoding:
+        try:
+            return txt.encode('latin1').decode('utf-8').strip()
+        except:
+            return py2_encode(txt, 'latin1').decode('utf-8').strip()
+
+    return py2_encode(txt, encoding)

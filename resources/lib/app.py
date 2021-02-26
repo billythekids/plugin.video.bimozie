@@ -93,12 +93,12 @@ def show_site_category():
 
     # Show category
     for cat in cats:
-        list_item = xbmcgui.ListItem(label=cat['title'])
+        list_item = xbmcgui.ListItem(label=cat.get('title'))
         list_item.addContextMenuItems(globalContextMenu())
-        if 'subcategory' in cat and len(cat['subcategory']) > 0:
+        if 'subcategory' in cat and len(cat.get('subcategory')) > 0:
             url = plugin.url_for(show_site_subcategory, query=json.dumps({
-                'url': cat.get('link'), 'name': cat['title'],
-                'subcategory': cat['subcategory'],
+                'url': cat.get('link'), 'name': cat.get('title'),
+                'subcategory': cat.get('subcategory'),
                 'module': module, 'className': class_name
             }))
 
@@ -121,6 +121,7 @@ def show_site_category():
 
 @plugin.route('/subcategory')
 def show_site_subcategory():
+    xbmcplugin.setContent(plugin.handle, 'files')
     query = json.loads(plugin.args['query'][0])
     instance, module, class_name = load_plugin(query)
     xbmcplugin.setPluginCategory(plugin.handle, '{} / {}'.format(class_name, query.get('name')))
@@ -246,7 +247,7 @@ def show_movie():
                 xbmcplugin.addDirectoryItem(plugin.handle, url, li, False)
 
     # save watching movie
-    if 'Phut90' not in class_name:
+    if 'Phut90' not in class_name and 'Thuckhuya' not in class_name:
         helper.save_last_watch_movie(query)
     xbmcplugin.endOfDirectory(plugin.handle)
 
@@ -300,6 +301,7 @@ def show_movie_server_group():
     query = json.loads(plugin.args['query'][0])
     instance, module, class_name = load_plugin(query)
 
+    xbmcplugin.setContent(plugin.handle, 'movies')
     xbmcplugin.setPluginCategory(plugin.handle,
                                  "%s - %s " % (query.get('movie_item').get('title'), query.get('server')))
 
