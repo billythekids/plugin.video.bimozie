@@ -317,7 +317,7 @@ class LinkParser:
             return donganime.get_link(self.url, self.media)
 
         elif 'sv.tvmienphi.tv' in self.url:
-            return donganime.get_link(self.url, self.media)
+            return tvmienphi.get_link(self.url, self.media)
 
         elif 'thuckhuya.com' in self.url:
             return thuckhuya.get_link(self.url, self.media)

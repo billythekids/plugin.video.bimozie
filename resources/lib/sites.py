@@ -1,9 +1,11 @@
-[
+# -*- coding: utf-8 -*-
+
+SITES = [
   {
     "name": "Sport",
     "logo": "https://ec.europa.eu/eurostat/documents/6921402/9104237/Shutterstock_Lisa_Kolbasa.png/f988f8b6-4138-4a91-9761-885bacab0ce2?t=1533725002000",
     "version": 1,
-    "searchable": false,
+    "searchable": False,
     "sites": [
       {
         "name": "90p.live",
@@ -11,7 +13,7 @@
         "className": "Phut90",
         "plugin": "phut90.plugin",
         "version": 1,
-        "searchable": false
+        "searchable": False
       },
       {
         "name": "thuckhuya.com",
@@ -19,7 +21,7 @@
         "className": "Thuckhuya",
         "plugin": "thuckhuya.plugin",
         "version": 1,
-        "searchable": false
+        "searchable": False
       }
     ]
   },
@@ -27,7 +29,7 @@
     "name": "TV Online",
     "logo": "https://tvonline.bg/wp-content/themes/Design3/images/logo.jpg",
     "version": 1,
-    "searchable": false,
+    "searchable": False,
     "sites": [
       {
         "name": "Xemtivimienphi.com",
@@ -35,7 +37,7 @@
         "className": "TVOnline",
         "plugin": "tvonline.plugin",
         "version": 1,
-        "searchable": false
+        "searchable": False
       },
       {
         "name": "TVmienphi.tv",
@@ -43,7 +45,7 @@
         "className": "TVMienphi",
         "plugin": "tvmienphi.plugin",
         "version": 1,
-        "searchable": false
+        "searchable": False
       }
     ]
   },
@@ -51,7 +53,7 @@
     "name": "Movies",
     "logo": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/summer-movies-1587392939.jpg",
     "version": 1,
-    "searchable": true,
+    "searchable": True,
     "sites": [
       {
         "name": "hayghes.com",
@@ -185,7 +187,7 @@
     "name": "Anime",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/d/de/Anime_Tv_Channel.jpg",
     "version": 1,
-    "searchable": true,
+    "searchable": True,
     "sites": [
       {
         "name": "animehay.tv",
@@ -207,8 +209,16 @@
     "name": "Fshare",
     "logo": "https://cache.bloghosting.vn/wp-content/uploads/2017/12/fshare.jpg",
     "version": 1,
-    "searchable": true,
+    "searchable": True,
     "sites": [
+      {
+        "name": "My Fshare favorite",
+        "logo": "https://cache.bloghosting.vn/wp-content/uploads/2017/12/fshare.jpg",
+        "className": "FShare",
+        "plugin": "fshare.plugin",
+        "version": 1,
+        "searchable": False
+      },
       {
         "name": "hdvietnam.com (beta)",
         "logo": "http://www.hdvietnam.com/images/hd-vietnam-logo.png",

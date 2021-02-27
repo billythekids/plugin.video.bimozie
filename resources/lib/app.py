@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 import re
-from collections import OrderedDict
 from importlib import import_module
 from threading import Thread
 
@@ -14,6 +13,8 @@ import xbmcplugin
 from kodi_six.utils import py2_encode
 from utils.hosts.fshare import FShareVN as Fshare
 from utils.media_helper import MediaHelper
+
+from .sites import SITES
 
 plugin = routing.Plugin()
 
@@ -31,7 +32,7 @@ def index():
     xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(show_last_watched),
                                 xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Last Watched..."), True)
 
-    for idx, site in enumerate(helper.get_sites_config()):
+    for idx, site in enumerate(SITES):
         if site['version'] > helper.KODI_VERSION:
             print("***********************Skip version %d" % site['version'])
             continue
@@ -51,7 +52,7 @@ def show_site_group(group_index):
     xbmcplugin.setPluginCategory(plugin.handle, 'Websites')
 
     group_index = int(group_index)
-    sites = helper.get_sites_config()
+    sites = SITES
 
     if sites[group_index]['searchable']:
         xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(global_search),
@@ -59,6 +60,12 @@ def show_site_group(group_index):
 
     xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(show_last_watched),
                                 xbmcgui.ListItem(label="[COLOR green][B] %s [/B][/COLOR]" % "Last Watched..."), True)
+
+    if 'fshare' in sites[group_index].get('name').lower():
+        xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(play_with_fshare_code),
+                                    xbmcgui.ListItem(
+                                        label="[COLOR blue][B] %s [/B][/COLOR]" % "Play direct with fshare code..."),
+                                    True)
 
     for site in sites[group_index]['sites']:
         if site['version'] > helper.KODI_VERSION:
@@ -114,6 +121,7 @@ def show_site_category():
             label = "[COLOR yellow][B][---- New Movies ----][/B][/COLOR]"
             sli = xbmcgui.ListItem(label=label)
             xbmcplugin.addDirectoryItem(plugin.handle, None, sli, isFolder=False)
+
         show_movies(movies, '/', 1, '', module, class_name)
     else:
         xbmcplugin.endOfDirectory(plugin.handle)
@@ -159,11 +167,26 @@ def show_movies(movies=None, link=None, page=0, cat_name="", module=None, class_
                 if 'intro' in item:
                     list_item.setInfo(type='video', infoLabels={'plot': item['intro']})
 
-                url = plugin.url_for(show_movie, query=json.dumps({
-                    'movie_item': item, 'cat_name': cat_name,
-                    'module': module, 'className': class_name
-                }))
-                xbmcplugin.addDirectoryItem(plugin.handle, url, list_item, isFolder=True)
+                if item.get('type') == 'Fshare':
+                    is_folder = item.get('isFolder') and True or False
+                    if is_folder:
+                        url = plugin.url_for(show_fshare_folder, query=json.dumps({
+                            'item': item, 'movie_item': item, 'code': item.get('code')
+                        }))
+                    else:
+                        list_item.setInfo('video', {'title': item.get('title')})
+                        url = plugin.url_for(play, query=json.dumps({
+                            'item': item, 'movie_item': item, 'direct': 1
+                        }))
+                        list_item.setProperty("IsPlayable", "true")
+                else:
+                    is_folder = True
+                    url = plugin.url_for(show_movie, query=json.dumps({
+                        'movie_item': item, 'cat_name': cat_name,
+                        'module': module, 'className': class_name
+                    }))
+
+                xbmcplugin.addDirectoryItem(plugin.handle, url, list_item, isFolder=is_folder)
             except Exception as inst:
                 print("*********************** List Movie Exception: {}".format(inst))
                 print(item)
@@ -261,9 +284,11 @@ def show_fshare_folder():
     code = query.get('code')
 
     if code:
-        fshare_items, last_page = Fshare('').handleFolder(code=query.get('code'), page=page)
+        fshare_items, last_page = Fshare().handleFolder(code=query.get('code'), page=page)
     else:
-        fshare_items, last_page = Fshare('').handleFolder(query.get('item').get('link'), page=page)
+        fshare_items, last_page = Fshare().handleFolder(query.get('item').get('link'), page=page)
+
+    if not fshare_items: return
 
     for fshare_item in fshare_items:
         li = xbmcgui.ListItem(label=fshare_item[0])
@@ -344,9 +369,12 @@ def _build_ep_list(items, movie_item, module, class_name):
 
 
 @plugin.route('/play')
-def play():
-    query = json.loads(plugin.args['query'][0])
+def play(query=None):
+    if not query:
+        query = json.loads(plugin.args['query'][0])
     play_item = xbmcgui.ListItem()
+
+    print(query)
 
     if int(query.get('direct')) == 0:
         instance, module, class_name = load_plugin(query)
@@ -423,6 +451,7 @@ def play():
             play_item.setProperty('inputstream.adaptive.stream_headers', link[1])
 
     play_item.setProperty('IsPlayable', 'true')
+    play_item.setProperty('isFolder', 'false')
     play_item.setPath(movie['link'])
     xbmcplugin.setResolvedUrl(plugin.handle, True, listitem=play_item)
 
@@ -497,7 +526,7 @@ def searching_all():
 
     threads = []
 
-    sites = helper.get_sites_config()
+    sites = SITES
     for group in sites:
         if group['version'] > helper.KODI_VERSION or ('searchable' in group and not group['searchable']):
             continue
@@ -658,6 +687,60 @@ def show_last_watched():
 def clear_last_watched():
     helper.clear_last_watch_movie()
     return
+
+
+@plugin.route('/fshareCode')
+def play_with_fshare_code():
+    xbmcplugin.setPluginCategory(plugin.handle, 'Fshare Code')
+
+    list_item = xbmcgui.ListItem(
+        label="Enter code: https://fshare.vn/file/[COLOR orange][B]%s[/B][/COLOR]" % "XXXXXXXXXX",
+    )
+    xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(playing_with_fshare_code), list_item, isFolder=True)
+
+    xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(clear_with_fshare_code),
+                                xbmcgui.ListItem(label="[COLOR red][B]%s[/B][/COLOR]" % "Clear all..."), True)
+
+    # Support to save search history
+    items: dict = helper.get_last_fshare_movie()
+    for item in items.values():
+        url = plugin.url_for(play, query=json.dumps({'item': item, 'direct': 1}))
+        txt = '[%s] %s' % (item.get('size'), item.get('title'))
+        list_item = xbmcgui.ListItem(label=txt)
+        list_item.setProperty("IsPlayable", "true")
+        list_item.setInfo('video', {'title': item.get('title')})
+        xbmcplugin.addDirectoryItem(plugin.handle, url, list_item, False)
+
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/playFshareCode')
+def playing_with_fshare_code():
+    text = None
+    if not plugin.args:
+        keyboard = xbmc.Keyboard('', 'Input fshare code:')
+        keyboard.doModal()
+        if keyboard.isConfirmed():
+            text = keyboard.getText()
+    else:
+        text = plugin.args.get('query')[0]
+
+    if not text:
+        return
+
+    url = 'https://fshare.vn/file/{}'.format(text.strip().upper())
+    title, size = Fshare.get_info(url=url)
+
+    movie = {
+        'resolve': False, 'link': url, 'title': title, 'realtitle': title, 'size': size
+    }
+    helper.save_last_fshare_movie(movie)
+    return
+
+
+@plugin.route('/clearFshareCode')
+def clear_with_fshare_code():
+    helper.clear_last_fshare_movie()
 
 
 def load_plugin(args):

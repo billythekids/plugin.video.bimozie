@@ -34,14 +34,12 @@ class Fcine:
             helper.remove_file('fcine.bin')
 
         if helper.has_file_path('fcine.bin'):
-            with open(helper.get_file_path('fcine.bin'), 'rb+') as f:
-                self.request.set_session(pickle.load(f))
+            self.request.set_session(pickle.loads(helper.read_file('fcine.bin', True)))
         else:
             self.login()
 
     def updateSession(self):
-        with open(helper.get_file_path('fcine.bin'), 'wb+') as f:
-            pickle.dump(self.request.get_request_session(), f)
+        helper.write_file('fcine.bin', pickle.dumps(self.request.get_request_session()), True)
 
     def get_token(self, response=None):
         if not response:

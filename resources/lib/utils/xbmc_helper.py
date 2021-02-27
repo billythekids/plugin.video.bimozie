@@ -11,12 +11,10 @@ from kodi_six.utils import py2_decode, py2_encode
 from six.moves.urllib.parse import quote, unquote
 from six.moves.urllib.parse import urlunsplit, urlsplit
 
-
-
 ADDON = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo('id')
 KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
-addon_data_dir = os.path.join(py2_decode(xbmc.translatePath('special://userdata/addon_data')), ADDON_ID)
+addon_data_dir = os.path.join(py2_decode(xbmcvfs.translatePath('special://userdata/addon_data')), ADDON_ID)
 
 
 def s2u(s): return py2_decode(s) if isinstance(s, str) else s
@@ -32,10 +30,6 @@ def has_file_path(filename):
 
 def get_file_path(filename):
     return os.path.join(addon_data_dir, filename)
-
-
-def remove_file(filename):
-    return os.remove(get_file_path(filename))
 
 
 def get_last_modified_time_file(filename):
@@ -56,14 +50,13 @@ def message(message='', title='', timeShown=5000):
 
 def write_file(name, content, binary=False):
     if not os.path.exists(addon_data_dir):
+        print("********************** create dir path %s" % addon_data_dir)
         os.makedirs(addon_data_dir)
-    path = get_file_path(name)
 
+    path = get_file_path(name)
     try:
-        mode = 'w+'
-        if binary:
-            mode = 'wb+'
-        f = open(path, mode=mode)
+        write_mode = 'wb+' if binary else 'w+'
+        f = open(path, mode=write_mode)
         f.write(content)
         f.close()
     except:
@@ -71,16 +64,23 @@ def write_file(name, content, binary=False):
     return path
 
 
-def read_file(name):
+def read_file(name, binary=False):
     content = None
+    read_mode = 'rb' if binary else 'r'
     try:
         path = get_file_path(name)
-        f = open(path, mode='r')
+        f = open(path, mode=read_mode)
         content = f.read()
         f.close()
     except:
         pass
+
     return content
+
+
+def remove_file(filename):
+    if has_file_path(filename):
+        os.remove(get_file_path(filename))
 
 
 def search_history_save(search_key):
@@ -221,7 +221,7 @@ def sleep(milisecond):
 
 def get_sites_config():
     file_path = os.path.dirname(os.path.abspath(__file__))
-    with closing(xbmcvfs.File(file_path + '/../sites.json', 'r')) as json_file:
+    with closing(xbmcvfs.File(file_path + '/../sites.py', 'r')) as json_file:
         sites = json.load(json_file)
     return sites
 
@@ -235,3 +235,31 @@ def text_encode(txt, encoding='utf-8'):
             return py2_encode(txt, 'latin1').decode('utf-8').strip()
 
     return py2_encode(txt, encoding)
+
+
+def save_last_fshare_movie(query):
+    if not query:
+        return
+    content = read_file('fshare-watched.json')
+    if content:
+        content = json.loads(content, object_pairs_hook=OrderedDict)
+    else:
+        content = OrderedDict()
+
+    cache_id = hashlib.md5(query.get('link').encode("utf-8")).hexdigest()
+    content.update({cache_id: query})
+    content.move_to_end(cache_id, last=False)
+    write_file('fshare-watched.json', json.dumps(content))
+
+
+def get_last_fshare_movie():
+    content = read_file('fshare-watched.json')
+    if content:
+        content = json.loads(content)
+    else:
+        content = {}
+    return content
+
+
+def clear_last_fshare_movie():
+    write_file('fshare-watched.json', '')
