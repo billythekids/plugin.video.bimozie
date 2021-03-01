@@ -9,7 +9,6 @@ from hdvietnam.parser.channel import Parser as Channel
 from hdvietnam.parser.movie import Parser as Movie
 from six.moves.urllib.parse import quote_plus
 from utils.mozie_request import Request
-import xbmc
 
 
 class Hdvietnam:
@@ -62,6 +61,7 @@ class Hdvietnam:
 
         for v in postLink:
             url = '{}/{}'.format(self.domain, v)
+            url = url.replace('likes', 'like')
             self.request.post(url, params=params)
 
 
@@ -79,16 +79,8 @@ class Hdvietnam:
 
     def getMovie(self, movie):
         url = '%s/%s' % (self.domain, movie)
-        # response = self.login(url)
-        # if re.search('romvemot', response):
-        #     print("Found user login")
-
+        self.login(url)
         response = self.request.get(url)
-        if re.search(r'members/romvemot\.1983091/post', response):
-            print("Found user request")
-        else:
-            print("not Found !!!!!!!!!!!")
-
         parser = Movie()
         result, postLinks = parser.is_block(response)
         if result is True:

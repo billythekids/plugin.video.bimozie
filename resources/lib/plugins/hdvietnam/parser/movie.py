@@ -20,7 +20,12 @@ class Parser:
             content = post.select_one('div.messageContent > article > blockquote').decode()
             if re.search(regex, content):
                 block = True
-                postLinks.append(post.select_one('div.messageMeta > div.publicControls > a.LikeLink').get('href'))
+                try:
+                    postLinks.append(post.select_one('div.messageMeta div.publicControls a.LikeLink').get('href'))
+                except: pass
+                try:
+                    postLinks.append(post.select_one('div.likesSummary a.OverlayTrigger').get('href'))
+                except: pass
 
         return block, postLinks
 
