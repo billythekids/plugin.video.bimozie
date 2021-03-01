@@ -14,11 +14,11 @@ class Parser:
         block = False
         postLinks = []
         soup = BeautifulSoup(response, "html.parser")
-        b = r'color:red;padding: 10px;font-weight: bold;font-size: 14px;border: 1px solid #f9d9b0'
+        regex = r'<blockquote style="color:red;padding'
         posts = soup.select("ol.messageList > li.message > div.messageInfo")
         for post in posts:
-            content = py2_encode(post.select_one('div.messageContent > article > blockquote'))
-            if b in content:
+            content = post.select_one('div.messageContent > article > blockquote').decode()
+            if re.search(regex, content):
                 block = True
                 postLinks.append(post.select_one('div.messageMeta > div.publicControls > a.LikeLink').get('href'))
 

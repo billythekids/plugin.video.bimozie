@@ -36,13 +36,13 @@ def get_last_modified_time_file(filename):
     return int(os.path.getmtime(get_file_path(filename)))
 
 
-def message(message='', title='', timeShown=5000):
+def message(message='', title='', time_shown=5000):
     if message:
         title = ': [COLOR blue]%s[/COLOR]' % title if title else ''
         s0 = '[COLOR green][B]Bimozie[/B][/COLOR]' + title
         message = s2u(message)
         s1 = message
-        message = u'XBMC.Notification(%s,%s,%s)' % (s0, s1, timeShown)
+        message = 'Notification(%s,%s,%s)' % (s0, s1, time_shown)
         xbmc.executebuiltin(py2_encode(message))
     else:
         xbmc.executebuiltin("Dialog.Close(all, true)")

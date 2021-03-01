@@ -4,7 +4,7 @@ import pickle
 import re
 import time
 
-import utils.xbmc_helper as helper
+from .. import xbmc_helper as helper
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
 from utils.mozie_request import Request
@@ -21,11 +21,18 @@ class FShareVN:
         self.username = username
         self.password = password
         self.request = Request(session=True)
+        self.current = int(time.time())
 
     def start_session(self):
-        if helper.has_file_path('fshare.bin') and helper.get_last_modified_time_file('fshare.bin') + 86400 < int(
-                time.time()):
+        if helper.has_file_path('fshare.bin') \
+                and helper.get_last_modified_time_file('fshare.bin') + 3600 < self.current:
+            r = pickle.loads(helper.read_file('fshare.bin', True))
             helper.remove_file('fshare.bin')
+            self.request.get_request_session().cookies.set('session_id', r.get('session_id'))
+            try:
+                self.logout()
+            except:
+                pass
 
         if helper.has_file_path('fshare.bin'):
             r = pickle.loads(helper.read_file('fshare.bin', True))
@@ -34,8 +41,7 @@ class FShareVN:
         else:
             self.login()
 
-        if 'vip' not in self.get_user().get('account_type').lower():
-            raise Exception('Fshare', 'Please login with your fshare vip account')
+        user = self.get_user()
 
     @staticmethod
     def is_folder(url):
@@ -65,6 +71,7 @@ class FShareVN:
         return title, size
 
     def login(self):
+        helper.message('Login', 'Fshare')
         r = self.request.post('{}/user/login'.format(self.api_url), json={
             'user_email': self.username,
             'password': self.password,
@@ -76,8 +83,9 @@ class FShareVN:
             helper.write_file('fshare.bin', pickle.dumps(r), True)
         else:
             helper.remove_file('fshare.bin')
-            helper.message('Error', 'Fshare login error')
-            raise Exception('Fshare', 'Login error')
+            helper.message('Invalid user or password', 'Fshare Error')
+            raise Exception('Login error', 'Fshare')
+
         # update session and token
         self.request.get_request_session().cookies.set('session_id', r.get('session_id'))
         self.token = r.get('token')
@@ -86,7 +94,8 @@ class FShareVN:
         r = self.request.get('{}/user/get'.format(self.api_url))
         r = json.loads(r)
         if not r.get('id'):
-            return False
+            helper.message('Fshare login error', 'Error')
+            raise Exception('Login error', 'Fshare')
         return r
 
     def get_my_favorite(self):
@@ -114,20 +123,19 @@ class FShareVN:
         if int(self.request.head(item.get('location')).headers['Content-Length']) > 0:
             self.request.head(item.get('location'))
             self.request.options(item.get('location'))
-            # self.logout(session_id)
-            helper.message("Fshare link folder die")
             return item.get('location')
         return
 
-    def logout(self, session_id):
-        self.request.get('https://api.fshare.vn/api/user/logout/session_id={}'.format(session_id))
+    def logout(self):
+        self.request.get('https://api.fshare.vn/api/user/logout')
         helper.remove_file('fshare.bin')
 
     def handleFolder(self, url=None, code=None, page=1):
         if not code:
             code = re.search(r'/folder/([^\?]+)', url).group(1)
 
-        r = self.request.get('https://www.fshare.vn/api/v3/files/folder?linkcode=%s&sort=type,name&page=%s' % (code, page))
+        r = self.request.get(
+            'https://www.fshare.vn/api/v3/files/folder?linkcode=%s&sort=type,name&page=%s' % (code, page))
         r = json.loads(r)
 
         listitems = []

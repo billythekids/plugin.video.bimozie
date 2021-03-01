@@ -707,9 +707,17 @@ def play_with_fshare_code():
         url = plugin.url_for(play, query=json.dumps({'item': item, 'direct': 1}))
         txt = '[%s] %s' % (item.get('size'), item.get('title'))
         list_item = xbmcgui.ListItem(label=txt)
-        list_item.setProperty("IsPlayable", "true")
-        list_item.setInfo('video', {'title': item.get('title')})
-        xbmcplugin.addDirectoryItem(plugin.handle, url, list_item, False)
+
+        if item.get('is_folder') == True:
+            url = plugin.url_for(show_fshare_folder, query=json.dumps({
+                'item': item, 'movie_item': item
+            }))
+            list_item.setProperty("IsPlayable", "false")
+            xbmcplugin.addDirectoryItem(plugin.handle, url, list_item, True)
+        else:
+            list_item.setProperty("IsPlayable", "true")
+            list_item.setInfo('video', {'title': item.get('title')})
+            xbmcplugin.addDirectoryItem(plugin.handle, url, list_item, False)
 
     xbmcplugin.endOfDirectory(plugin.handle)
 
@@ -729,10 +737,22 @@ def playing_with_fshare_code():
         return
 
     url = 'https://fshare.vn/file/{}'.format(text.strip().upper())
-    title, size = Fshare.get_info(url=url)
+    is_folder = False
+    try:
+        title, size = Fshare.get_info(url=url)
+    except:
+        is_folder = True
+
+    if is_folder:
+        url = 'https://fshare.vn/folder/{}'.format(text.strip().upper())
+        try:
+            Fshare.get_info(url=url)
+            title = url; size = 'Folder'
+        except:
+            return
 
     movie = {
-        'resolve': False, 'link': url, 'title': title, 'realtitle': title, 'size': size
+        'resolve': False, 'link': url, 'title': title, 'realtitle': title, 'size': size, 'is_folder': is_folder
     }
     helper.save_last_fshare_movie(movie)
     return
