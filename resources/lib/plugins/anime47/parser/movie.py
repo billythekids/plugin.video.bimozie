@@ -1,12 +1,22 @@
 # -*- coding: latin1 -*-
-from bs4 import BeautifulSoup
-from utils.mozie_request import Request, AsyncRequest
-import utils.xbmc_helper as helper
-from utils.link_extractor import LinkExtractor
-import re
-import json
 import base64
+import json
+import re
+import codecs
+
+import utils.xbmc_helper as helper
+from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
 from utils.aes import CryptoAES
+from utils.link_extractor import LinkExtractor
+from utils.mozie_request import AsyncRequest
+
+
+def text(txt):
+    try:
+        return txt.encode('latin1').decode('utf-8').strip()
+    except:
+        return py2_encode(txt, 'latin1').decode('utf-8').strip()
 
 
 def from_char_code(*args):
@@ -66,31 +76,12 @@ class Parser:
             group_server = server.select('div.name')
             episodes = server.select('div.episodes')
             for i in range(len(group_server)):
-                server_name = group_server[i].select_one('span').text.strip().replace("\n", "").encode('latin1')
+                server_name = text(group_server[i].select_one('span').text.strip().replace("\n", ""))
                 if server_name not in items: items[server_name] = []
                 for episode in episodes[i].select('ul > li > a'):
                     items[server_name].append({
                         'link': episode.get('href'),
-                        'title': episode.get('data-episode-name').encode('latin1')
-                    })
-
-        return items
-
-
-
-        for server in servers:
-            if server.select_one('div.name > span') is not None:
-                server_name = server.select_one('div.name > span').text.strip().replace("\n", "").encode('latin1')
-            else:
-                return None
-
-            if server_name not in items: items[server_name] = []
-
-            if len(server.select('ul > li > a')) > 0:
-                for episode in server.select('ul > li > a'):
-                    items[server_name].append({
-                        'link': episode.get('href'),
-                        'title': episode.get('data-episode-name').encode('latin1')
+                        'title': text(episode.get('data-episode-name'))
                     })
 
         return items
@@ -139,12 +130,17 @@ class Parser:
         elif re.search(r'atob\(', response):
             cipher_text = re.search(r'atob\("(.*?)"\)', response).group(1)
             enc_data = json.loads(base64.b64decode(cipher_text))
-            cipher_text = 'Salted__' + enc_data['s'].decode('hex') + base64.b64decode(enc_data['ct'])
+            # cipher_text = 'Salted__{}{}'.format(
+            #     codecs.decode(enc_data['s'], 'hex'),
+            #     base64.b64decode(enc_data['ct'])
+            # )
+
+            cipher_text = b'Salted__' + bytearray.fromhex(enc_data['s']) + base64.b64decode(enc_data['ct'])
             cipher_text = base64.b64encode(cipher_text)
             url = CryptoAES().decrypt(cipher_text, 'caphedaklak').replace('\\', '').replace('"', '')
             if url:
                 return url
         else:
-            print response.encode('latin1')
+            print(text(response))
 
         return None

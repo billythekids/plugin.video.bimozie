@@ -9,11 +9,11 @@ def from_char_code(*args):
 class WisePacker:
     @staticmethod
     def decode(text):
-        m = re.search("eval\(.*\);}\('(.*)','(.*)','(.*)','(.*)'\)\);", text)
+        m = re.search(r"eval\(.*\);}\('(.*)','(.*)','(.*)','(.*)'\)\);", text)
         a = WisePacker.__parse(m.group(1), m.group(2), m.group(3), m.group(4))
-        m = re.search("join\(''\);}\('(.*)','(.*)','(.*)','(.*)'\)\);$", a)
+        m = re.search(r"join\(''\);}\('(.*)','(.*)','(.*)','(.*)'\)\);$", a)
         a = WisePacker.__parse(m.group(1), m.group(2), m.group(3), m.group(4))
-        m = re.search("join\(''\);}\('(.*)','(.*)','(.*)','(.*)'\)\);$", a)
+        m = re.search(r"join\(''\);}\('(.*)','(.*)','(.*)','(.*)'\)\);$", a)
         a = WisePacker.__parse(m.group(1), m.group(2), m.group(3), m.group(4))
         return a
 

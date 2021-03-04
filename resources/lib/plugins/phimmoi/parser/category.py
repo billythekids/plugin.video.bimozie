@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 from bs4 import BeautifulSoup
-import urllib
-import re
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -13,7 +12,7 @@ class Parser:
             menu = item.select_one('a')
             if menu.get('href') == './': continue
             category.append({
-                'title': menu.text.encode("utf-8"),
+                'title': py2_encode(menu.text),
                 'link': menu.get("href"),
                 'subcategory': self.getsubmenu(item)
             })
@@ -24,7 +23,7 @@ class Parser:
         category = []
         for item in xpath.select('ul > li'):
             category.append({
-                'title': item.select_one('a').text.encode("utf-8"),
+                'title': py2_encode(item.select_one('a').text),
                 'link': item.select_one('a').get('href')
             })
 

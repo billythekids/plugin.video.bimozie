@@ -4,6 +4,7 @@ import re
 import utils.xbmc_helper as helper
 from utils.mozie_request import AsyncRequest
 from utils.hosts.fshare import FShareVN
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -13,13 +14,18 @@ class Parser:
         block = False
         postLinks = []
         soup = BeautifulSoup(response, "html.parser")
-        b = r'color:red;padding: 10px;font-weight: bold;font-size: 14px;border: 1px solid #f9d9b0'
+        regex = r'<blockquote style="color:red;padding'
         posts = soup.select("ol.messageList > li.message > div.messageInfo")
         for post in posts:
-            content = post.select_one('div.messageContent > article > blockquote').encode('utf-8')
-            if b in content:
+            content = post.select_one('div.messageContent > article > blockquote').decode()
+            if re.search(regex, content):
                 block = True
-                postLinks.append(post.select_one('div.messageMeta > div.publicControls > a.LikeLink').get('href'))
+                try:
+                    postLinks.append(post.select_one('div.messageMeta div.publicControls a.LikeLink').get('href'))
+                except: pass
+                try:
+                    postLinks.append(post.select_one('div.likesSummary a.OverlayTrigger').get('href'))
+                except: pass
 
         return block, postLinks
 
@@ -39,16 +45,18 @@ class Parser:
             arequest = AsyncRequest()
             results = arequest.get(self.found_links)
             for idx, result in enumerate(results):
-                try:
-                    name, size = FShareVN.get_info(content=result)
-                except:
-                    print('Link die %s' % self.found_links[idx])
-                    continue
+                name = sizing = None
+                if not FShareVN.is_folder(self.found_links[idx]):
+                    try:
+                        name, sizing = FShareVN.get_info(content=result)
+                    except:
+                        print('Link die %s' % self.found_links[idx])
+                        continue
 
                 if name:
                     movie['links'].append({
                         'link': self.found_links[idx],
-                        'title': '[%s] %s' % (size, name),
+                        'title': '[%s] %s' % (sizing, name),
                         'intro': name,
                         'type': 'Unknown',
                         'resolve': False,

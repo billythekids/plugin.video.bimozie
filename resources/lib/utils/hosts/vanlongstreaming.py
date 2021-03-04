@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
-from urlparse import urlparse, parse_qs
-import cors
-from urllib import urlencode
+from . import cors
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def create_master_playlist(url):
@@ -13,7 +20,7 @@ def create_master_playlist(url):
 
 
 def get_link(url, media):
-    print "Apply vanlongstreaming parser"
+    print("Apply vanlongstreaming parser")
     base_url = urlparse(url)
     id = parse_qs(base_url.query).get('id')[0]
     base_url = base_url.scheme + '://' + base_url.netloc

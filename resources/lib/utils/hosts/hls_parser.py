@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import re
-from urlparse import urlparse
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
-from urllib import urlencode
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def get_link(url, media, parser=False):
@@ -12,7 +18,7 @@ def get_link(url, media, parser=False):
         'Referer': media.get('originUrl'),
     }
 
-    print "HLS parser: {}".format(url)
+    print("HLS parser: {}".format(url))
 
     if parser:
         url = get_stream(url, header)

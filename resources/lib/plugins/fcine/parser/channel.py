@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import re
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -40,11 +41,11 @@ class Parser:
 
             channel['movies'].append({
                 'id': movie.select_one('div.esnList_item_img > a').get('href'),
-                'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
+                'label': py2_encode(label),
+                'title': py2_encode(title),
+                'realtitle': py2_encode(realtitle),
                 'thumb': thumb,
-                'type': type.encode("utf-8"),
+                'type': py2_encode(type)
             })
 
         return channel

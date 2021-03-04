@@ -1,9 +1,11 @@
-[
+# -*- coding: utf-8 -*-
+
+SITES = [
   {
     "name": "Sport",
     "logo": "https://ec.europa.eu/eurostat/documents/6921402/9104237/Shutterstock_Lisa_Kolbasa.png/f988f8b6-4138-4a91-9761-885bacab0ce2?t=1533725002000",
     "version": 1,
-    "searchable": false,
+    "searchable": False,
     "sites": [
       {
         "name": "90p.live",
@@ -11,7 +13,15 @@
         "className": "Phut90",
         "plugin": "phut90.plugin",
         "version": 1,
-        "searchable": false
+        "searchable": False
+      },
+      {
+        "name": "thuckhuya.com",
+        "logo": "https://thuckhuya.com/wp-content/themes/itfs/assets/images/34191045_981163082042209_6351080930731360256_n.png",
+        "className": "Thuckhuya",
+        "plugin": "thuckhuya.plugin",
+        "version": 1,
+        "searchable": False
       }
     ]
   },
@@ -19,15 +29,23 @@
     "name": "TV Online",
     "logo": "https://tvonline.bg/wp-content/themes/Design3/images/logo.jpg",
     "version": 1,
-    "searchable": false,
+    "searchable": False,
     "sites": [
       {
-        "name": "TV Online",
+        "name": "Xemtivimienphi.com",
         "logo": "https://tvonline.bg/wp-content/themes/Design3/images/logo.jpg",
         "className": "TVOnline",
         "plugin": "tvonline.plugin",
         "version": 1,
-        "searchable": false
+        "searchable": False
+      },
+      {
+        "name": "TVmienphi.tv",
+        "logo": "https://tvonline.bg/wp-content/themes/Design3/images/logo.jpg",
+        "className": "TVMienphi",
+        "plugin": "tvmienphi.plugin",
+        "version": 1,
+        "searchable": False
       }
     ]
   },
@@ -35,8 +53,15 @@
     "name": "Movies",
     "logo": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/summer-movies-1587392939.jpg",
     "version": 1,
-    "searchable": true,
+    "searchable": True,
     "sites": [
+      {
+        "name": "hayghes.com",
+        "logo": "https://hayghes.com/favicon.png",
+        "className": "Hayghes",
+        "plugin": "hayghes.plugin",
+        "version": 1
+      },
       {
         "name": "fptplay.vn",
         "logo": "https://fptplay.vn/images/logo.png",
@@ -64,13 +89,6 @@
         "className": "Bilutv",
         "plugin": "bilutv.plugin",
         "version": 1
-      },
-      {
-        "name": "bilutvb.com",
-        "logo": "https://bilutvb.com/wp-content/uploads/2019/05/logov.png",
-        "className": "Bilutvb",
-        "plugin": "bilutvb.plugin",
-        "version": 31
       },
       {
         "name": "phimmedia.tv",
@@ -101,20 +119,6 @@
         "version": 1
       },
       {
-        "name": "phim3s.pw",
-        "logo": "http://cdn.marketplaceimages.windowsphone.com/v8/images/3143b748-2dd8-4b88-874c-72c0e9542cd1?imageType=ws_icon_medium",
-        "className": "Phim3s",
-        "plugin": "phim3s.plugin",
-        "version": 31
-      },
-      {
-        "name": "phimbathu.org",
-        "logo": "http://phimbathu.org/Theme/images/phimbathu-logo.png",
-        "className": "Phimbathu",
-        "plugin": "phimbathu.plugin",
-        "version": 31
-      },
-      {
         "name": "kenh88.com",
         "logo": "http://www.kenh88.com/images/logo_kenh88.png",
         "className": "Kenh88",
@@ -129,24 +133,10 @@
         "version": 31
       },
       {
-        "name": "fcine.net",
-        "logo": "https://fcine.net/uploads/monthly_2019_07/FCINE-LOGO.png.6e9c546f90ccb1b61c0502769b3fe1e8.png",
-        "className": "Fcine",
-        "plugin": "fcine.plugin",
-        "version": 1
-      },
-      {
         "name": "vuviphimz.com",
         "logo": "https://vuviphimz.com/wp-content/uploads/2020/07/logo-4.png",
         "className": "Vuviphim",
         "plugin": "vuviphim.plugin",
-        "version": 31
-      },
-      {
-        "name": "vtv16.com",
-        "logo": "https://yt3.ggpht.com/a-/AN66SAx84wKI577rKgX2IeQUiG31GaOhmVIu2le2rQ=s900-mo-c-c0xffffffff-rj-k-no",
-        "className": "Vtv16",
-        "plugin": "vtv16.plugin",
         "version": 31
       },
       {
@@ -162,20 +152,6 @@
         "className": "Dongphim",
         "plugin": "dongphim.plugin",
         "version": 1
-      },
-      {
-        "name": "hdvietnam.com (beta)",
-        "logo": "http://www.hdvietnam.com/images/hd-vietnam-logo.png",
-        "className": "Hdvietnam",
-        "plugin": "hdvietnam.plugin",
-        "version": 1
-      },
-      {
-        "name": "xemphim.plus",
-        "logo": "https://xemphim.plus/static/skin/logo-full.png",
-        "className": "Xemphim",
-        "plugin": "xemphim.plugin",
-        "version": 31
       },
       {
         "name": "xemphimsoz.com",
@@ -211,11 +187,11 @@
     "name": "Anime",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/d/de/Anime_Tv_Channel.jpg",
     "version": 1,
-    "searchable": true,
+    "searchable": True,
     "sites": [
       {
         "name": "animehay.tv",
-        "logo": "https://i1.wp.com/www.albertgyorfi.com/wp-content/uploads/2017/05/anime-pack.png?fit=256%2C256&ssl=1",
+        "logo": "https://i.ibb.co/TrRRp1v/image.png",
         "className": "Animehay",
         "plugin": "animehay.plugin",
         "version": 1
@@ -225,6 +201,36 @@
         "logo": "https://i.ibb.co/swSHyV0/image.png",
         "className": "anime47",
         "plugin": "anime47.plugin",
+        "version": 1
+      }
+    ]
+  },
+  {
+    "name": "Fshare",
+    "logo": "https://cache.bloghosting.vn/wp-content/uploads/2017/12/fshare.jpg",
+    "version": 1,
+    "searchable": True,
+    "sites": [
+      {
+        "name": "My Fshare favorite",
+        "logo": "https://cache.bloghosting.vn/wp-content/uploads/2017/12/fshare.jpg",
+        "className": "FShare",
+        "plugin": "fshare.plugin",
+        "version": 1,
+        "searchable": False
+      },
+      {
+        "name": "hdvietnam.com (beta)",
+        "logo": "http://www.hdvietnam.com/images/hd-vietnam-logo.png",
+        "className": "Hdvietnam",
+        "plugin": "hdvietnam.plugin",
+        "version": 1
+      },
+      {
+        "name": "fcine.net",
+        "logo": "https://fcine.net/uploads/monthly_2019_07/FCINE-LOGO.png.6e9c546f90ccb1b61c0502769b3fe1e8.png",
+        "className": "Fcine",
+        "plugin": "fcine.plugin",
         "version": 1
       }
     ]

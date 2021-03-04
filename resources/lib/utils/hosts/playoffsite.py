@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-import re, json
+import json
+import re
+
 from utils.mozie_request import Request
-import utils.xbmc_helper as helper
-from urlparse import urlparse, parse_qs
-from urllib import urlencode
-from utils.pastebin import PasteBin
-import streamlink
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def create_playlist(text, idfile, domains, headers):
@@ -72,7 +74,6 @@ def get_link(url, media):
             'typeend': 'html'
         })
         response = json.loads(response)
-        print response
         url = response.get('data')
         # req.head("https://m3u8.playoffsite.xyz/api/v1/png/{}".format(idfile), headers=header)
         # url = req.get_request().history[0].headers['Location']

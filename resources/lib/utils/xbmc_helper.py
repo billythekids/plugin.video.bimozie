@@ -1,23 +1,27 @@
 # -*- coding: utf-8 -*-
-import xbmc
-import xbmcaddon
-import xbmcgui
-import os
+import hashlib
 import json
+import os
 import re
-import urlparse
-import urllib
+from collections import OrderedDict
+from contextlib import closing
 
-addon = xbmcaddon.Addon()
-ADDON_ID = addon.getAddonInfo('id')
-addon_data_dir = os.path.join(xbmc.translatePath('special://userdata/addon_data').decode('utf-8'), ADDON_ID)
+from kodi_six import xbmc, xbmcaddon, xbmcvfs, xbmcgui
+from kodi_six.utils import py2_decode, py2_encode
+from six.moves.urllib.parse import quote, unquote
+from six.moves.urllib.parse import urlunsplit, urlsplit
+
+ADDON = xbmcaddon.Addon()
+ADDON_ID = ADDON.getAddonInfo('id')
+KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
+addon_data_dir = os.path.join(py2_decode(xbmc.translatePath('special://userdata/addon_data')), ADDON_ID)
 
 
-def s2u(s): return s.decode('utf-8') if isinstance(s, str) else s
+def s2u(s): return py2_decode(s) if isinstance(s, str) else s
 
 
 def getSetting(key):
-    return addon.getSetting(key)
+    return ADDON.getSetting(key)
 
 
 def has_file_path(filename):
@@ -28,36 +32,31 @@ def get_file_path(filename):
     return os.path.join(addon_data_dir, filename)
 
 
-def remove_file(filename):
-    return os.remove(get_file_path(filename))
-
-
 def get_last_modified_time_file(filename):
     return int(os.path.getmtime(get_file_path(filename)))
 
 
-def message(message='', title='', timeShown=5000):
+def message(message='', title='', time_shown=5000):
     if message:
         title = ': [COLOR blue]%s[/COLOR]' % title if title else ''
         s0 = '[COLOR green][B]Bimozie[/B][/COLOR]' + title
         message = s2u(message)
         s1 = message
-        message = u'XBMC.Notification(%s,%s,%s)' % (s0, s1, timeShown)
-        xbmc.executebuiltin(message.encode("utf-8"))
+        message = 'Notification(%s,%s,%s)' % (s0, s1, time_shown)
+        xbmc.executebuiltin(py2_encode(message))
     else:
         xbmc.executebuiltin("Dialog.Close(all, true)")
 
 
 def write_file(name, content, binary=False):
     if not os.path.exists(addon_data_dir):
+        print("********************** create dir path %s" % addon_data_dir)
         os.makedirs(addon_data_dir)
-    path = get_file_path(name)
 
+    path = get_file_path(name)
     try:
-        mode = 'w+'
-        if binary:
-            mode = 'wb+'
-        f = open(path, mode=mode)
+        write_mode = 'wb+' if binary else 'w+'
+        f = open(path, mode=write_mode)
         f.write(content)
         f.close()
     except:
@@ -65,16 +64,23 @@ def write_file(name, content, binary=False):
     return path
 
 
-def read_file(name):
+def read_file(name, binary=False):
     content = None
+    read_mode = 'rb' if binary else 'r'
     try:
         path = get_file_path(name)
-        f = open(path, mode='r')
+        f = open(path, mode=read_mode)
         content = f.read()
         f.close()
     except:
         pass
+
     return content
+
+
+def remove_file(filename):
+    if has_file_path(filename):
+        os.remove(get_file_path(filename))
 
 
 def search_history_save(search_key):
@@ -110,25 +116,30 @@ def search_history_get():
 
     return content
 
-
 def wait(sec):
     xbmc.sleep(sec * 1000)
 
 
-def convert_js_2_json(str):
-    vstr = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', str)
-    vstr = vstr.replace("'", '"')
+def convert_js_2_json(text):
+    try:
+        return json.loads(text)
+    except: pass
+
+    vstr = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', text)
+    vstr = re.sub(r'([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', vstr)
+    # vstr = vstr.replace("'", '"')
     vstr = re.sub(r'\t+\"', '"', vstr)
+    print(vstr)
     return json.loads(vstr)
 
 
 def fixurl(url):
     # turn string into unicode
-    if not isinstance(url, unicode):
-        url = url.decode('utf8')
+    # if not isinstance(url, unicode):
+    #     url = url.decode('utf8')
 
     # parse it
-    parsed = urlparse.urlsplit(url)
+    parsed = urlsplit(url)
 
     # divide the netloc further
     userpass, at, hostport = parsed.netloc.rpartition('@')
@@ -137,23 +148,23 @@ def fixurl(url):
 
     # encode each component
     scheme = parsed.scheme.encode('utf8')
-    user = urllib.quote(user.encode('utf8'))
+    user = quote(user.encode('utf8'))
     colon1 = colon1.encode('utf8')
-    pass_ = urllib.quote(pass_.encode('utf8'))
+    pass_ = quote(pass_.encode('utf8'))
     at = at.encode('utf8')
     host = host.encode('idna')
     colon2 = colon2.encode('utf8')
     port = port.encode('utf8')
     path = '/'.join(  # could be encoded slashes!
-        urllib.quote(urllib.unquote(pce).encode('utf8'), '')
+        quote(unquote(pce).encode('utf8'), '')
         for pce in parsed.path.split('/')
     )
-    query = urllib.quote(urllib.unquote(parsed.query).encode('utf8'), '=&?/')
-    fragment = urllib.quote(urllib.unquote(parsed.fragment).encode('utf8'))
+    query = quote(unquote(parsed.query).encode('utf8'), '=&?/')
+    fragment = quote(unquote(parsed.fragment).encode('utf8'))
 
     # put it back together
     netloc = ''.join((user, colon1, pass_, at, host, colon2, port))
-    return urlparse.urlunsplit((scheme, netloc, path, query, fragment))
+    return urlunsplit((scheme, netloc, path, query, fragment))
 
 
 def create_select_dialog(listitems):
@@ -161,6 +172,8 @@ def create_select_dialog(listitems):
 
 
 def humanbytes(B):
+    if int(B) == 0:
+        return int(B)
     B = float(B)
     KB = float(1024)
     MB = float(KB ** 2)  # 1,048,576
@@ -181,3 +194,73 @@ def humanbytes(B):
 
 def sleep(milisecond):
     xbmc.sleep(milisecond)
+
+
+def get_sites_config():
+    file_path = os.path.dirname(os.path.abspath(__file__))
+    with closing(xbmcvfs.File(file_path + '/../sites.py', 'r')) as json_file:
+        sites = json.load(json_file)
+    return sites
+
+
+# Encode text
+def text_encode(txt, encoding='utf-8'):
+    if 'latin1' in encoding:
+        try:
+            return txt.encode('latin1').decode('utf-8').strip()
+        except:
+            return py2_encode(txt, 'latin1').decode('utf-8').strip()
+
+    return py2_encode(txt, encoding)
+
+
+def save_history_movie(query, file):
+    if not query:
+        return
+
+    content = get_history_movie(file)
+    if not content:
+        content = {}
+
+    cache_id = hashlib.md5(query.get('movie_item').get('id').encode("utf-8")).hexdigest()
+    if cache_id in content:
+        del content[cache_id]
+
+    item = {cache_id: query}
+    item.update(content)
+    # content.move_to_end(cache_id, last=False)
+
+    write_file(file, json.dumps(item))
+
+
+def get_history_movie(file):
+    content = read_file(file)
+    if content:
+        content = json.loads(content)
+    else:
+        content = {}
+    return content
+
+
+def clear_history_movie(file):
+    write_file(file, '')
+
+
+def save_last_fshare_movie(query, file):
+    if not query:
+        return
+
+    content = get_history_movie(file)
+    if not content:
+        content = {}
+
+    cache_id = hashlib.md5(query.get('link').encode("utf-8")).hexdigest()
+    if cache_id in content:
+        del content[cache_id]
+
+    item = {cache_id: query}
+    item.update(content)
+    # content.move_to_end(cache_id, last=False)
+
+    write_file(file, json.dumps(item))
+

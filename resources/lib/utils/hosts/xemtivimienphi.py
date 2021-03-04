@@ -1,18 +1,30 @@
 # -*- coding: utf-8 -*-
-import re, json
-from utils.mozie_request import Request
+import re
+
 import utils.xbmc_helper as helper
-from urllib import urlencode
-import cors
+from utils.mozie_request import Request
+
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def get_link(url, media):
-    print "*********************** Apply xemtivimienphi url %s" % url
+    print("*********************** Apply xemtivimienphi url %s" % url)
     header = {
         'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.66",
         'referer': media.get('originUrl')
     }
-    response = Request().get(url, headers=header)
+
+    req = Request()
+
+    response = req.get(url, headers=header)
     source = re.search(r'source:\s?"(.*?)",', response)
     if source:
         url = source.group(1)
@@ -21,8 +33,24 @@ def get_link(url, media):
     if sources:
         url = helper.convert_js_2_json(sources.group(1))[0]
 
+    sources = re.search(r';link=(\[.*?\]);', response)
+
+    if sources:
+        url = helper.convert_js_2_json(sources.group(1))[0]
+
     source = re.search(r"video.src\s?=\s'(.*?)'", response)
     if source:
         url = source.group(1)
 
-    return url, 'OnlineTv'
+    base_url = urlparse(url)
+    base_url = base_url.netloc
+
+    header = {
+        'origin': 'http://www.xemtivimienphi.com',
+        'host': base_url,
+        # 'verifypeer': 'false',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'
+    }
+
+    print(req.options(url, headers=header))
+    return url + "|%s" % urlencode(header), 'TVOnline'

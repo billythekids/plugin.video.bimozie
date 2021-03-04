@@ -1,152 +1,171 @@
 # -*- coding: utf-8 -*-
-import urllib, pickle, time, json, re
-import utils.xbmc_helper as helper
-from utils.mozie_request import Request
+import json
+import pickle
+import re
+import time
+
+from .. import xbmc_helper as helper
 from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
+from utils.mozie_request import Request
 
 
 class FShareVN:
-    def __init__(self, url, username="", password=""):
+    api_url = 'https://api.fshare.vn/api'
+    api_key = 'L2S7R6ZMagggC5wWkQhX2+aDi467PPuftWUMRFSn'
+    api_app = ''
+
+    def __init__(self, url="", username="", password=""):
         self.token = None
         self.url = url
         self.username = username
         self.password = password
         self.request = Request(session=True)
-        if helper.has_file_path('fshare.bin') and helper.get_last_modified_time_file('fshare.bin') + 43200 < int(
-                time.time()):
+        self.current = int(time.time())
+
+    def start_session(self):
+        if helper.has_file_path('fshare.bin') \
+                and helper.get_last_modified_time_file('fshare.bin') + 3600 < self.current:
+            r = pickle.loads(helper.read_file('fshare.bin', True))
             helper.remove_file('fshare.bin')
+            self.request.get_request_session().cookies.set('session_id', r.get('session_id'))
+            try:
+                self.logout()
+            except:
+                pass
 
         if helper.has_file_path('fshare.bin'):
-            with open(helper.get_file_path('fshare.bin')) as f:
-                cache = pickle.load(f)
-                self.request.get_request_session().cookies.set('session_id', cache.get('session_id'))
+            r = pickle.loads(helper.read_file('fshare.bin', True))
+            self.request.get_request_session().cookies.set('session_id', r.get('session_id'))
+            self.token = r.get('token')
+        else:
+            self.login()
+
+        user = self.get_user()
+
+    @staticmethod
+    def extract_code(url):
+        m = re.search(r'(file|folder)/([A-Z0-9]+)', url)
+        return m.group(2)
+
+    @staticmethod
+    def get_asset_info(url=None, code=None, content=None):
+        if not content:
+            if url:
+                is_folder, code = FShareVN.extract_code(url)
+            content = Request().get('https://www.fshare.vn/api/v3/files/folder?linkcode=%s' % code)
+
+        response = json.loads(content)
+        return response.get('current').get('name'), \
+               helper.humanbytes(response.get('current').get('size'))
+
+    @staticmethod
+    def is_folder(url):
+        return 'folder' in url and True or False
 
     @staticmethod
     def get_info(url=None, content=None):
         if url:
             content = Request().get(url)
 
-        name = False
         size = '0'
         soup = BeautifulSoup(content, "html.parser")
-        title = soup.select_one('title').text.encode('utf-8')
+        title = py2_encode(soup.select_one('title').text)
+        title = title.replace('Fshare', '').replace(' - ', '')
 
         if 'Not Found' in title or '503' in title:
             raise Exception('Fshare', 'link die')
 
-        info = soup.select_one('div.info')
-        if info:
-            name = info.select_one('div.name').get('title').encode('utf-8')
+        elem = soup.select_one('form#form-download button#download-free')
+        if elem:
+            size = py2_encode(elem.text.strip() \
+                              .replace(" ", "") \
+                              .replace("\n", "") \
+                              .replace("save", ""))
+            size = re.search(r'\((.*?)\)', size).group(1)
 
-            size = info.select_one('div.size').get_text().strip() \
-                .replace(" ", "") \
-                .replace("\n", "") \
-                .replace("save", "").encode('utf-8')
+        return title, size
 
-        return name, size
-
-    def login(self, token=""):
-        url = 'https://api.fshare.vn/api/user/login'
-        r = self.request.post(url, json={
+    def login(self):
+        helper.message('Login', 'Fshare')
+        r = self.request.post('{}/user/login'.format(self.api_url), json={
             'user_email': self.username,
             'password': self.password,
-            'app_key': 'L2S7R6ZMagggC5wWkQhX2+aDi467PPuftWUMRFSn'
+            'app_key': self.api_key
         })
 
         r = json.loads(r)
         if r.get('code') == 200:
-            with open(helper.get_file_path('fshare.bin'), 'wb+') as f:
-                pickle.dump(r, f)
+            helper.write_file('fshare.bin', pickle.dumps(r), True)
         else:
             helper.remove_file('fshare.bin')
-            raise Exception('Fshare', 'Login error')
+            helper.message('Invalid user or password', 'Fshare Error')
+            raise Exception('Login error', 'Fshare')
 
-        return r
+        # update session and token
+        self.request.get_request_session().cookies.set('session_id', r.get('session_id'))
+        self.token = r.get('token')
 
     def get_user(self):
-        url = 'https://api.fshare.vn/api/user/get'
-        r = self.request.get(url)
-        print r
+        r = self.request.get('{}/user/get'.format(self.api_url))
         r = json.loads(r)
         if not r.get('id'):
-            return False
-
+            helper.message('Fshare login error', 'Error')
+            raise Exception('Login error', 'Fshare')
         return r
 
-    def get_token(self, url=None):
-        if not self.token:
-            data = self.login()
-            cookie = data.get('session_id')
-            self.request.get_request_session().cookies.set('session_id', cookie)
-            self.token = data.get('token')
-            if 'vip' not in self.get_user().get('account_type').lower():
-                raise Exception('Fshare', 'Please login with your fshare vip account')
+    def get_my_favorite(self):
+        self.start_session()
+        r = self.request.get('{}/fileops/listFavorite'.format(self.api_url))
+        r = json.loads(r)
+        return r
 
-        return self.token
+    def get_link(self, url=None, code=None):
+        self.url = url if url else self.url
 
-    def get_link(self):
-        if re.search(r'/folder/([^\?]+)', self.url):
-            code = self.handleFolder(self.url)
-            if not code:
-                return None
-            else:
-                self.url = "https://www.fshare.vn/file/%s" % code
+        if self.is_folder(self.url):
+            return None
 
+        self.url = self.url if not code else "https://www.fshare.vn/file/%s" % code
         self.url = self.url.split("?")[0]
-        token = self.get_token(self.url)
 
-        r = self.request.post('https://api.fshare.vn/api/session/download', json={
-            'token': token,
+        self.start_session()
+        r = self.request.post('{}/session/download'.format(self.api_url), json={
+            'token': self.token,
             'url': self.url
         })
 
         item = json.loads(r)
-
-        # if 'errors' in item:
-        #     helper.message("Fshare error: %s" % item['errors']['linkcode'][0])
-        #     raise Exception('Fshare', 'error')
-        #     return
-        # # should block ui to wait until able retrieve a link
-        # try:
-        #     with self.request.get(item.get('location'), stream=True) as r:
-        #         raise Exception('Fshare', 'found')
-        # except Exception as ex:
-        #     print ex
-        # finally:
-        #     self.logout()
-        #     return item.get('location')
-
-        if int(self.request.head(item.get('location')).headers['Content-Length']):
-            # self.logout()
-            helper.sleep(3000)
+        if int(self.request.head(item.get('location')).headers['Content-Length']) > 0:
+            self.request.head(item.get('location'))
+            self.request.options(item.get('location'))
             return item.get('location')
         return
 
     def logout(self):
         self.request.get('https://api.fshare.vn/api/user/logout')
+        helper.remove_file('fshare.bin')
 
-    @staticmethod
-    def is_folder(url):
-        return not re.search(r'/folder/([^\?]+)', url) and False or True
-
-    def handleFolder(self, url=None, code=None):
+    def handleFolder(self, url=None, code=None, page=1):
         if not code:
             code = re.search(r'/folder/([^\?]+)', url).group(1)
 
-        r = self.request.get('https://www.fshare.vn/api/v3/files/folder?linkcode=%s&sort=type,name' % code)
+        r = self.request.get(
+            'https://www.fshare.vn/api/v3/files/folder?linkcode=%s&sort=type,name&page=%s' % (code, page))
         r = json.loads(r)
 
         listitems = []
         if 'items' in r and len(r['items']) > 0:
-            listitems = ["[%s] %s" % (i['type'] == 1 and helper.humanbytes(i["size"]) or 'Folder', i["name"]) for i in
+            listitems = [("[%s] %s" % (i['type'] == 1 and helper.humanbytes(i["size"]) or '', i["name"]), i) for i in
                          r['items']]
         else:
             helper.message("Fshare link folder die")
-            return
 
-        index = helper.create_select_dialog(listitems)
-        if index == -1: return None
-        if r['items'][index]['type'] == 1:
-            return r['items'][index]['linkcode']
-        else:
-            return self.handleFolder(code=r['items'][index]['linkcode'])
+        last_page = page
+        if r.get('_links').get('last'):
+            last_page = re.search(r'&page=(\d+)', r.get('_links').get('last')).group(1)
+
+        return listitems, int(last_page)
+
+    def search(self, text):
+        pass

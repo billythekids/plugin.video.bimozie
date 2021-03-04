@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import re, json
+import re
+
 from utils.mozie_request import Request
-import utils.xbmc_helper as helper
 
 
 def get_link(url):

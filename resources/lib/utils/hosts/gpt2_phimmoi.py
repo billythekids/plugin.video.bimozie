@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import json, re
+import json
+import re
+
+from . import cors
+
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
 from utils.mozie_request import Request
-from urlparse import urlparse
-import cors
 
 
 def get_link(url, media):

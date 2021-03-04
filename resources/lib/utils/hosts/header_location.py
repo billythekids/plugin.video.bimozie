@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from urlparse import urlparse
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
+from . import cors
 from utils.mozie_request import Request
-import cors
 
 
 def get_link(url, media, include_header=True):

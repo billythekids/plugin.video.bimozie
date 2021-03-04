@@ -1,4 +1,4 @@
-import urllib
+from six.moves.urllib.parse import quote_plus
 from utils.mozie_request import Request
 from phimmoi.parser.category import Parser as Category
 from phimmoi.parser.channel import Parser as Channel
@@ -49,6 +49,6 @@ class Phimmoi:
         return Movie().get_link(response, url, self.request)
 
     def search(self, text):
-        url = "%s/tim-kiem/%s/" % (self.domain, urllib.quote_plus(text))
+        url = "%s/tim-kiem/%s/" % (self.domain, quote_plus(text))
         response = self.request.get(url, headers=h)
         return Channel().get(response, 1)

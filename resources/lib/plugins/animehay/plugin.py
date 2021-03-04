@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-import urllib
-from utils.mozie_request import Request
+import utils.xbmc_helper as helper
 from animehay.parser.category import Parser as Category
 from animehay.parser.channel import Parser as Channel
 from animehay.parser.movie import Parser as Movie
-import utils.xbmc_helper as helper
+from utils.mozie_request import Request
 
 
 class Animehay:
@@ -48,6 +47,6 @@ class Animehay:
         return Movie().get_link(response, movie['link'])
 
     def search(self, text):
-        url = "%s/tim-kiem?q=%s" % (self.domain, urllib.quote_plus(text))
+        url = "%s/tim-kiem?q=%s" % (self.domain, quote_plus(text))
         response = self.request.get(url)
         return Channel().get(response, 1)

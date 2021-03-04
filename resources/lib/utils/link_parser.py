@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 import re
-import xbmcaddon
+
 import utils.xbmc_helper as helper
-from urllib import urlencode
+import xbmcaddon
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+
 from .hosts import fshare, \
     imacdn, \
     phimmoi, \
@@ -13,7 +19,6 @@ from .hosts import fshare, \
     ok, \
     vtv16, \
     hls_hydrax, \
-    dongphim, \
     fembed, \
     hdclub, \
     animehay, \
@@ -25,7 +30,6 @@ from .hosts import fshare, \
     toolpg, \
     vtvhub, \
     phut90, \
-    hphim, \
     cors, \
     streamlink, \
     mixdrop, \
@@ -53,7 +57,10 @@ from .hosts import fshare, \
     motphim, \
     lotus, \
     xemtivimienphi, \
-    verystream
+    verystream, \
+    thuckhuya, \
+    donganime, \
+    tvmienphi
 
 
 class LinkParser:
@@ -306,6 +313,22 @@ class LinkParser:
         elif '.xyz' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
 
+        elif 'stream3.donganime.net' in self.url:
+            return donganime.get_link(self.url, self.media)
+
+        elif 'sv.tvmienphi.tv' in self.url:
+            return tvmienphi.get_link(self.url, self.media)
+
+        elif 'thuckhuya.com' in self.url:
+            return thuckhuya.get_link(self.url, self.media)
+
+        elif 'clgt.link' in self.url:
+            return self.url + "|%s" % urlencode({
+                'Origin': 'https://anime47.com',
+                'Referer': 'https://anime47.com/',
+                'verifypeer': 'false'
+            }), "CORS"
+
         elif self.url.endswith('m3u8'):
             return self.get_m3u8()
 
@@ -357,7 +380,7 @@ class LinkParser:
                 helper.getSetting('fshare.username'),
                 helper.getSetting('fshare.password')
             ).get_link()
-            return cors.get_link(f_url, self.media, including_agent=True)
+            return f_url, 'Fshare'
         else:
             return fshare.FShareVN(self.url).get_link(), 'Fshare'
 

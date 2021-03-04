@@ -1,8 +1,10 @@
-from utils.mozie_request import Request
+import re
+
 from phim7z.parser.category import Parser as Category
 from phim7z.parser.channel import Parser as Channel
 from phim7z.parser.movie import Parser as Movie
-import urllib, re
+from six.moves.urllib.parse import quote_plus
+from utils.mozie_request import Request
 
 
 class Phim7z:
@@ -40,6 +42,6 @@ class Phim7z:
         return Movie().get_link(response, self.request, self.api, self.domain)
 
     def search(self, text, page=1):
-        url = "%s/search/%s/" % (self.domain, urllib.quote_plus(text))
+        url = "%s/search/%s/" % (self.domain, quote_plus(text))
         response = self.request.get(url)
         return Channel().get(response)

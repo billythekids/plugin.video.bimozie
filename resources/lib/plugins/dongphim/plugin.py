@@ -1,9 +1,11 @@
-import urllib, re, json
-from utils.mozie_request import Request
+import json
+import re
+
 from dongphim.parser.category import Parser as Category
 from dongphim.parser.channel import Parser as Channel
 from dongphim.parser.movie import Parser as Movie
-import utils.xbmc_helper as XbmcHelper
+from six.moves.urllib.parse import quote_plus
+from utils.mozie_request import Request
 
 
 class Dongphim:
@@ -31,7 +33,7 @@ class Dongphim:
         response = self.request.get(id)
         eps = Movie().get(response)
 
-        if len(eps.get('group').get(eps.get('group').keys()[0])) == 0:
+        if len(eps.get('group').get(list(eps.get('group').keys())[0])) == 0:
             mid = re.search(r'data-playlist-contain="(.*?)"', response)
             if mid:
                 # http://dp.voocdn.xyz/subitems?mid=BG56xgbS&a=1593610184&type=all
@@ -48,6 +50,6 @@ class Dongphim:
         return Movie().get_link(response, movie['link'], self.api)
 
     def search(self, text):
-        url = "%s/content/search?t=kw&q=%s" % (self.domain, urllib.quote_plus(text))
+        url = "%s/content/search?t=kw&q=%s" % (self.domain, quote_plus(text))
         response = self.request.get(url)
         return Channel().get(response, 1)

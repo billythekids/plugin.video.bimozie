@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
-from bs4 import BeautifulSoup
-from utils.mozie_request import Request
-from utils.mozie_request import AsyncRequest
-from utils.pastebin import PasteBin
-from urlparse import urlparse
-import utils.xbmc_helper as helper
-import re
 import json
+import re
+
+import utils.xbmc_helper as helper
+from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
+from utils.mozie_request import Request
+
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
 
 
 def from_char_code(*args):
@@ -29,12 +33,12 @@ class Parser:
         # get all server list
         servers = soup.select("div.ah-wf-body > div.ah-wf-le")
         for server in servers:
-            server_name = server.select_one('div.ah-le-server > span').text.strip().encode('utf-8')
+            server_name = py2_encode(server.select_one('div.ah-le-server > span').text.strip())
             if server_name not in movie['group']: movie['group'][server_name] = []
             for ep in server.select('ul > li > a'):
                 movie['group'][server_name].append({
-                    'link': ep.get('href').encode('utf-8'),
-                    'title': 'Episode %s' % ep.text.encode('utf-8'),
+                    'link': py2_encode(ep.get('href')),
+                    'title': 'Episode %s' % py2_encode(ep.text)
                 })
 
         return movie
@@ -179,8 +183,8 @@ class Parser:
             for source in sources:
                 movie['links'].append({
                     'link': source.get('file'),
-                    'title': 'Link %s' % source.get('label').encode('utf-8'),
-                    'type': source.get('type').encode('utf-8'),
+                    'title': 'Link %s' % py2_encode(source.get('label')),
+                    'type': py2_encode(source.get('type')),
                     'originUrl': originUrl,
                     'resolve': False
                 })
@@ -191,8 +195,8 @@ class Parser:
             for source in sources:
                 movie['links'].append({
                     'link': source.get('file'),
-                    'title': 'Link %s' % source.get('label').encode('utf-8'),
-                    'type': source.get('type').encode('utf-8'),
+                    'title': 'Link %s' % py2_encode(source.get('label')),
+                    'type': py2_encode(source.get('type')),
                     'originUrl': originUrl,
                     'resolve': False
                 })

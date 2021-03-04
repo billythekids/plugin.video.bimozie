@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 import re
 import json
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -15,13 +16,13 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         servers = soup.select('div.le-server')
         for server in servers:
-            server_name = server.select_one(
-                'div.les-title > strong').getText().strip().encode('utf8')
+            server_name = py2_encode(server.select_one('div.les-title > strong').getText().strip())
             if server_name not in movie['group']: movie['group'][server_name] = []
+
             for ep in server.select('div.les-content > a'):
                 movie['group'][server_name].append({
                     'link': ep.get('episode-id'),
-                    'title': '%s' % ep.get('title').strip().encode('utf8'),
+                    'title': '%s' % py2_encode(ep.get('title').strip())
                 })
 
         return movie

@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 from utils.mozie_request import AsyncRequest
 import utils.xbmc_helper as helper
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -26,7 +27,7 @@ class Parser:
             # if 'sticky' in movie.get('class'): continue
             tag = movie.select_one('div.listBlock.main a.PreviewTooltip')
             try:
-                title = tag.text.strip().encode("utf-8")
+                title = py2_encode(tag.text.strip())
                 thumb = None
 
                 movie = {
@@ -81,7 +82,7 @@ class Parser:
 
         for movie in soup.select('li.searchResult'):
             tag = movie.select_one('div.listBlock.main div.titleText > h3.title > a')
-            title = tag.text.strip().encode("utf-8")
+            title = py2_encode(tag.text).strip()
             thumb = None
 
             channel['movies'].append({

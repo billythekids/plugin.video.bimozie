@@ -2,12 +2,15 @@
 
 import re
 import json
-from urlparse import urlparse
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse
 from utils.mozie_request import Request
 
 
 def get_link(url):
-    print "*********************** Apply animehay url %s" % url
+    print("*********************** Apply animehay url %s" % url)
     req = Request()
 
     req.get(url, redirect=True)

@@ -7,13 +7,15 @@ class Parser:
     def get(self, response, page):
 
         channel = {
-            'page': page,
+            'page': 1,
             'page_patten': None,
             'movies': []
         }
 
         soup = BeautifulSoup(response, "html.parser")
-        movies = re.findall(r'li\sclass="channel".*href="(.*?)".*src="(.*?)".*title="(.*?)"', str(soup))
+        tab = soup.find('div', {'class': 'tab-pane', 'id': page})
+
+        movies = re.findall(r'li\sclass="channel".*href="(.*?)".*src="(.*?)".*title="(.*?)"', str(tab))
         for movie in movies:
             # try:
             channel['movies'].append({

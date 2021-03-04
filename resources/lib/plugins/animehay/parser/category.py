@@ -1,5 +1,6 @@
 # coding=utf-8
 from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -11,9 +12,9 @@ class Parser:
         subcats = soup.select('div#ah-cat ul.nav > ul.ah-ulsm > ul.ah-ulsm')
 
         for idx, item in enumerate(cats):
-            menu = item.select_one('> a')
+            menu = item.select_one('a')
             category.append({
-                'title': menu.text.encode("utf-8"),
+                'title': py2_encode(menu.text),
                 'link': menu.get("href"),
                 'subcategory': idx < len(subcats) and self.getsubmenu(subcats[idx]) or []
             })
@@ -21,9 +22,9 @@ class Parser:
 
     def getsubmenu(self, xpath):
         category = []
-        for item in xpath.select('> li > a'):
+        for item in xpath.select('li > a'):
             category.append({
-                'title': item.text.encode("utf-8"),
+                'title': py2_encode(item.text),
                 'link': item.get('href')
             })
 

@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from bs4 import BeautifulSoup
-import urllib
-import re
+from kodi_six.utils import py2_encode
+
+
+def text(txt):
+    try:
+        return txt.encode('latin1').decode('utf-8').strip()
+    except:
+        return py2_encode(txt, 'latin1').decode('utf-8').strip()
 
 
 class Parser:
@@ -15,7 +21,7 @@ class Parser:
             if menu.get('href') and menu.get('href').endswith('huong-dan.html'): continue
 
             category.append({
-                'title': u''.join(menu.text).encode('latin1').strip(),
+                'title': text(menu.text),
                 'link': menu.get("href"),
                 'subcategory': self.getsubmenu(item)
             })
@@ -26,7 +32,7 @@ class Parser:
         category = []
         for item in xpath.select('ul > li'):
             category.append({
-                'title': item.select_one('a').text.encode("latin1"),
+                'title': text(item.select_one('a').text),
                 'link': item.select_one('a').get('href')
             })
 

@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 from utils.mozie_request import AsyncRequest
 from utils.hosts.fshare import FShareVN
+from kodi_six.utils import py2_encode
 
 
 def from_char_code(*args):
@@ -28,26 +29,27 @@ class Parser:
             pass
 
         server = servers[-1:][0]
-        items = server.select('> span.ipsDataItem_main a')
+        items = server.select('span.ipsDataItem_main a')
 
         links = []
         for link in items:
-            if link and 'fshare' in link.get('href'): links.append(link.get('href'))
+            f_url = 'https://www.fshare.vn/api/v3/files/folder?linkcode=%s' % FShareVN.extract_code(link.get('href'))
+            if link and 'fshare' in link.get('href'): links.append(f_url)
 
         if len(links) > 0:
             results = AsyncRequest().get(links)
             for idx, result in enumerate(results):
                 try:
-                    name, size = FShareVN.get_info(content=result)
+                    name, size = FShareVN.get_asset_info(content=result)
                     movie['links'].append({
-                        'link': links[idx],
+                        'link': items[idx].get('href'),
                         'title': '[%s] %s' % (size, name),
-                        'type': 'Unknown',
+                        'type': 'Fshare',
                         'subtitle': subtitle,
                         'resolve': False
                     })
                 except:
-                    print('Link die %s' % links[idx])
+                    print('Link die %s' % items[idx].get('href'))
                     continue
 
         return movie
@@ -58,7 +60,7 @@ class Parser:
             link = link.get('href')
         return {
             'link': link,
-            'title': item.getText().strip().encode('utf-8'),
+            'title': py2_encode(item.getText().strip()),
             'resolve': False,
             'subtitle': subtitle
         }

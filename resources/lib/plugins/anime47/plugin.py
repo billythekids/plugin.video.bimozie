@@ -1,8 +1,10 @@
-import urllib, re
-from utils.mozie_request import Request
+import re
+
 from anime47.parser.category import Parser as Category
 from anime47.parser.channel import Parser as Channel
 from anime47.parser.movie import Parser as Movie
+from six.moves.urllib.parse import quote_plus
+from utils.mozie_request import Request
 
 user_agent = (
     "Mozilla/5.0 (X11; Linux x86_64) "
@@ -55,6 +57,6 @@ class anime47:
         return Movie().get_link(response, self.domain, url, self.request)
 
     def search(self, text):
-        url = "%s/tim-nang-cao/?keyword=%s" % (self.domain, urllib.quote_plus(text))
+        url = "%s/tim-nang-cao/?keyword=%s" % (self.domain, quote_plus(text))
         response = self.request.get(url, headers=h)
         return Channel().get(response, 1)

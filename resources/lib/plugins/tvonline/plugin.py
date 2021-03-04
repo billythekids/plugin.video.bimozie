@@ -1,9 +1,7 @@
-import re
-from utils.mozie_request import Request
 from tvonline.parser.category import Parser as Category
 from tvonline.parser.channel import Parser as Channel
 from tvonline.parser.movie import Parser as Movie
-import utils.xbmc_helper as helper
+from utils.mozie_request import Request
 
 
 class TVOnline:
@@ -18,9 +16,13 @@ class TVOnline:
 
     def getCategory(self):
         response = self.request.get(self.domain)
-        movies = Channel().get(response, 1)
-        movies['page'] = 1
-        return [], movies
+        return Category().get(response), None
+
+    def getChannel(self, channel, page=1):
+        url = '%s/%s' % (self.domain, channel)
+        response = self.request.get(url)
+        page = int(channel.replace('#', ''))
+        return Channel().get(response, page)
 
     def getMovie(self, id):
         url = id.replace(self.domain, '')

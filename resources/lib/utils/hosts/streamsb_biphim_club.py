@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-import re, json
+import re
+
+from . import dood
+
 from ..mozie_request import Request
-import dood
 
 
 def get_link(url, media):

@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import json
+
 from utils.mozie_request import Request
-from urlparse import urlparse
+
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
 import xbmcgui
 
 
 def get_link(url, media):
-    print "*********************** Apply fantvh url %s" % url
+    print("*********************** Apply fantvh url %s" % url)
     request = Request()
     base_url = urlparse(url)
     path = urlparse(url).path.replace('/v/', '')

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+import json
+import re
+
 from bs4 import BeautifulSoup
-import re, json
+from kodi_six.utils import py2_encode
 from utils.aes import CryptoAES
 from utils.mozie_request import Request
 
@@ -20,13 +23,13 @@ class Parser:
 
         servers = soup.select('div#xpo-list-server > div.htmlwrap')
         for server in servers:
-            server_name = server.select_one(
-                'div.xpo-server > div.col-md-3 > span.xpo-server-name').getText().strip().encode('utf-8')
+            server_name = py2_encode(server.select_one(
+                'div.xpo-server > div.col-md-3 > span.xpo-server-name').getText().strip())
             if server_name not in movie['group']: movie['group'][server_name] = []
             for ep in server.select('div.xpo-server > div.col-md-9 > ul.xpo-list-eps > li > a'):
                 movie['group'][server_name].append({
-                    'link': ep.get('data-id').encode('utf-8'),
-                    'title': 'Episode %s' % ep.select_one('span').text.strip().encode('utf-8'),
+                    'link': py2_encode(ep.get('data-id')),
+                    'title': 'Episode %s' % py2_encode(ep.select_one('span').text.strip())
                 })
 
         return movie
@@ -93,7 +96,6 @@ class Parser:
             response = json.loads(response)
             for f in response:
                 url = CryptoAES().decrypt(f.get('file'), f.get('key'))
-                print('Link found %s' % url)
                 links.append({
                     'link': url,
                     'title': 'Link %s' % f.get('label'),

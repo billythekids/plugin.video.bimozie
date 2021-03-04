@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
+import traceback
 import urllib
+
 import requests
 import xbmcgui
-import sys, traceback
-from Queue import Queue
+
+try:
+    from Queue import Queue
+except ImportError:
+    import Queue
+
 from threading import Thread
 
 user_agent = (
@@ -33,11 +39,9 @@ class Request:
 
     def get(self, url, headers=None, params=None, redirect=True, cookies=None, verify=True, stream=False):
         print("Request URL: %s" % url)
-
         if not headers:
             headers = self.DEFAULT_HEADERS
-        else:
-            print("Head URL: %s header: %s" % (url, urllib.urlencode(headers)))
+
         if self.session:
             self.r = self.session.get(url, headers=headers, timeout=self.TIMEOUT, params=params,
                                       allow_redirects=redirect, cookies=cookies, verify=verify, stream=stream)
@@ -45,20 +49,16 @@ class Request:
             self.r = requests.get(url, headers=headers, timeout=self.TIMEOUT, params=params, allow_redirects=redirect,
                                   cookies=cookies, stream=stream)
 
-        # print "---------------- Encoding ----------------"
-        # print self.r.encoding
-        # print "---------------- -------- ----------------"
+        # print("---------------- Encoding ----------------")
+        # print(self.r.encoding)
+        # print("---------------- -------- ----------------")
         return self.r.text
 
     def post(self, url, params=None, headers=None, redirect=True, cookies=None, json=None, verify=True, data=None):
-        try:
-            print("Post URL: %s params: %s" % (url, urllib.urlencode(params)))
-        except:
-            pass
+        print("Post URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
 
-        print("Post URL: %s header: %s" % (url, urllib.urlencode(headers)))
         if self.session:
             self.r = self.session.post(url, data=params, headers=headers, timeout=self.TIMEOUT,
                                        allow_redirects=redirect, cookies=cookies, json=json, verify=verify)
@@ -70,9 +70,10 @@ class Request:
         return self.r.text
 
     def head(self, url, params=None, headers=None, redirect=True, cookies=None, verify=True):
+        print("Head URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
-        print("Head URL: %s header: %s" % (url, urllib.urlencode(headers)))
+
         if self.session:
             self.r = self.session.head(url, headers=headers, timeout=self.TIMEOUT, params=params,
                                        allow_redirects=redirect, verify=verify)
@@ -81,6 +82,7 @@ class Request:
         return self.r
 
     def options(self, url, params=None, headers=None, redirect=True, cookies=None, verify=True):
+        print("Options URL: %s" % url)
         # if headers:
         #     headers = self.DEFAULT_HEADERS.update(headers)
         if self.session:
@@ -131,9 +133,10 @@ class AsyncRequest:
         print("*********************** All %s threads done" % self.length)
         self.dialog.close()
 
-    def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None, json=None, cookies=None, verify=True):
-        print "params {}, headers {}, json: {}, redirect {}, cookies {}, verify {}"\
-                .format(params, headers, json, redirect, cookies, verify)
+    def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None, json=None,
+                  cookies=None, verify=True):
+        print("params {}, headers {}, json: {}, redirect {}, cookies {}, verify {}" \
+              .format(params, headers, json, redirect, cookies, verify))
 
         while not self.q.empty():
             work = self.q.get()
@@ -153,17 +156,20 @@ class AsyncRequest:
                 url = work[1]['url']
 
             retry = self.RETRY
-            print "url {}, params {}, headers {}, json: {}, redirect {}, cookies {}, verify {}, required_header {}"\
-                .format(url, params, headers, json, redirect, cookies, verify, required_response_header)
+            print("url {}, params {}, headers {}, json: {}, redirect {}, cookies {}, verify {}, required_header {}" \
+                  .format(url, params, headers, json, redirect, cookies, verify, required_response_header))
 
             while retry > 0:
                 try:
                     if action is 'head':
-                        data = self.request.head(url, params=params, headers=headers, redirect=redirect, cookies=cookies, verify=verify)
+                        data = self.request.head(url, params=params, headers=headers, redirect=redirect,
+                                                 cookies=cookies, verify=verify)
                     if action is 'get':
-                        data = self.request.get(url, params=params, headers=headers, redirect=redirect, cookies=cookies, verify=verify)
+                        data = self.request.get(url, params=params, headers=headers, redirect=redirect, cookies=cookies,
+                                                verify=verify)
                     if action is 'post':
-                        data = self.request.post(url, params=params, headers=headers, json=json, redirect=redirect, cookies=cookies, verify=verify)
+                        data = self.request.post(url, params=params, headers=headers, json=json, redirect=redirect,
+                                                 cookies=cookies, verify=verify)
                     if parser:
                         if required_response_header:
                             response_headers = self.request.get_request().headers
@@ -174,7 +180,7 @@ class AsyncRequest:
                     self.results[work[0]] = data
                     retry = 0
                 except Exception as inst:
-                    print 'Async error: {}'.format(inst.message)
+                    print(inst)
                     print('Async Request %s fail retry %d' % (work[1], retry))
                     traceback.print_exc()
                     self.results[work[0]] = {}
@@ -182,7 +188,7 @@ class AsyncRequest:
                     retry -= 1
 
             done = self.q.qsize()
-            progress = 100 - (done * 100 / self.length)
+            progress = int(100 - (done * 100 / self.length))
             self.dialog.update(progress, 'Processing %d/%d urls' % (self.length - done, self.length))
             self.q.task_done()
         return True
@@ -197,7 +203,8 @@ class AsyncRequest:
         self.__start_thread('get', params, headers, redirect, parser, args, None, cookies, verify)
         return self.results
 
-    def post(self, urls, params=None, headers=None, json=None, redirect=False, parser=None, args=None, cookies=None, verify=True):
+    def post(self, urls, params=None, headers=None, json=None, redirect=False, parser=None, args=None, cookies=None,
+             verify=True):
         self.__create_queue(urls)
         self.__start_thread('post', params, headers, redirect, parser, args, json, cookies, verify)
         return self.results

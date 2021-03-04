@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from bs4 import BeautifulSoup
 import re
+
+from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -18,7 +20,7 @@ class Parser:
         pages = soup.select('ul.pagination > li > a')
         print("*********************** Get pages ")
         for item in pages:
-            if item.text.strip() == "Trang kế →".decode('utf-8'): channel['page'] = int(page)+1
+            if item.text.strip() == py2_encode("Trang kế →"): channel['page'] = int(page)+1
 
         for movie in soup.select('ul.list-movie > li > a'):
             title = movie.select_one('span.movie-title-1').text.strip()
@@ -35,12 +37,12 @@ class Parser:
             thumb = re.search('url\((.*)\);', movie.select_one('div.movie-thumbnail').get('style')).group(1)
 
             channel['movies'].append({
-                'id': movie.get('href').encode("utf-8"),
-                'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
+                'id': py2_encode(movie.get('href')),
+                'label': py2_encode(label),
+                'title': py2_encode(title),
+                'realtitle': py2_encode(realtitle),
                 'thumb': thumb,
-                'type': type.encode("utf-8"),
+                'type': py2_encode(type),
             })
 
         return channel
@@ -67,15 +69,15 @@ class Parser:
             else:
                 label = "[%s] %s" % (type, title)
 
-            thumb =  re.search(r"background-image:url\('(.*)'\)", movie.select_one('div.public-film-item-thumb').get('style')).group(1)
+            thumb = re.search(r"background-image:url\('(.*)'\)", movie.select_one('div.public-film-item-thumb').get('style')).group(1)
 
             channel['movies'].append({
-                'id': movie.get('href').encode("utf-8"),
-                'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
+                'id': py2_encode(movie.get('href')),
+                'label': py2_encode(label),
+                'title': py2_encode(title),
+                'realtitle': py2_encode(realtitle),
                 'thumb': thumb,
-                'type': type.encode("utf-8"),
+                'type': py2_encode(type),
             })
 
         return channel

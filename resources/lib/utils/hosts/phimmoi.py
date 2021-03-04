@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import urllib
+
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
 

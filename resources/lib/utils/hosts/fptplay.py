@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
-import re, urllib
+import re
+
+from six.moves.urllib.parse import quote, unquote
 from utils.mozie_request import Request
 from utils.pastebin import PasteBin
-from urllib import urlencode
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def get_link(url):
-    print "*********************** Apply fptplay url %s" % url
+    print("*********************** Apply fptplay url %s" % url)
     header = {
         'Origin': 'https://fptplay.vn',
         'User-Agent':  "Chrome/59.0.3071.115 Safari/537.36"
@@ -16,7 +22,7 @@ def get_link(url):
     return url, 'hls3'
     r = re.search('streamFPT\?url=(.*)', url)
     if r:
-        url = urllib.unquote(r.group(1))
+        url = unquote(r.group(1))
 
     base_url = url.rpartition('/')[0]
     response = Request().get(url)

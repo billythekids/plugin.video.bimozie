@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -8,7 +9,7 @@ class Parser:
 
         for item in soup.select('ul.top-menu > li')[1:-2]:
             category.append({
-                'title': item.select_one('a').text.encode("utf8"),
+                'title': py2_encode(item.select_one('a').text),
                 'link': item.select_one('a').get('href'),
                 'subcategory': self.getsubmenu(item)
             })
@@ -19,7 +20,7 @@ class Parser:
         category = []
         for item in xpath.select('ul.sub-menu > li > a'):
             category.append({
-                'title': item.text.encode("utf8"),
+                'title': py2_encode(item.text),
                 'link': item.get('href')
             })
         return category

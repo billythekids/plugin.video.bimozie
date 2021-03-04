@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
+import base64
+
 import xbmcaddon
-import base64, json
-from urllib import urlencode
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 def get_link(url, movie, headers=None):

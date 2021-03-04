@@ -2,6 +2,7 @@
 # coding=utf-8
 from bs4 import BeautifulSoup
 import re
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -12,7 +13,7 @@ class Parser:
         for item in items[1:]:
             menu = item.select_one('a')
             category.append({
-                'title': menu.text.encode("utf-8"),
+                'title': py2_encode(menu.text),
                 'link': '',
                 'subcategory': self.getsubmenu(item.parent)
             })
@@ -25,7 +26,7 @@ class Parser:
             link = item.get('href')
             if not re.search('https', link): continue
             category.append({
-                'title': item.text.encode("utf-8"),
+                'title': py2_encode(item.text),
                 'link': item.get('href')
             })
 

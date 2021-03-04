@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -35,11 +36,11 @@ class Parser:
 
             channel['movies'].append({
                 'id': movie.get('href'),
-                'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
+                'label': py2_encode(label),
+                'title': py2_encode(title),
+                'realtitle': py2_encode(realtitle),
                 'thumb': thumb,
-                'type': type.encode("utf-8"),
+                'type': py2_encode(type),
                 # 'intro': movie.select_one('div.des > small').text.strip().encode("utf-8"),
             })
 
@@ -71,11 +72,11 @@ class Parser:
 
             channel['movies'].append({
                 'id': movie.get('href'),
-                'label': label.encode("utf-8"),
-                'title': title.encode("utf-8"),
-                'realtitle': realtitle.encode("utf-8"),
+                'label': py2_encode(label),
+                'title': py2_encode(title),
+                'realtitle': py2_encode(realtitle),
                 'thumb': thumb,
-                'type': type.encode("utf-8"),
+                'type': py2_encode(type),
                 # 'intro': movie.select_one('div.des > small').text.strip().encode("utf-8"),
             })
 

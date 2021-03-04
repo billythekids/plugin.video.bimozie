@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-import re
 import json
-import utils.xbmc_helper as helper
-from urlparse import urlparse
-from utils.mozie_request import Request
-from utils.pastebin import PasteBin
+import re
+from kodi_six.utils import py2_encode
+from six import string_types
 
 
 class Parser:
@@ -27,7 +25,7 @@ class Parser:
         for video in movies:
             movie['group']['fimfast'].append({
                 'link': video['link'],
-                'title': video['full_name'].encode('utf-8'),
+                'title': py2_encode(video['full_name']),
                 'thumb': video['thumbnail']
             })
 
@@ -58,8 +56,9 @@ class Parser:
                     'originUrl': movieurl
                 })
 
-            if videos[videotype] and type(videos[videotype]) is not unicode:
-                for key, link in enumerate(videos[videotype]):
+            if videos[videotype] and not isinstance(videos[videotype], string_types):
+                for key in videos[videotype]:
+                    link = videos[videotype][key]
                     match = re.search(r'(&title=.*)&?', link['src'])
                     if match:
                         link['src'] = link['src'].replace(match.group(1), '')

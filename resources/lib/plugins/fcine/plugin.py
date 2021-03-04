@@ -1,9 +1,12 @@
+import pickle
 import re
-from utils.mozie_request import Request
+import time
+
+import utils.xbmc_helper as helper
 from fcine.parser.category import Parser as Category
 from fcine.parser.channel import Parser as Channel
 from fcine.parser.movie import Parser as Movie
-import utils.xbmc_helper as helper
+from utils.mozie_request import Request
 
 
 class Fcine:
@@ -26,6 +29,15 @@ class Fcine:
             'referer': 'https://fcine.net/login/',
         }, session=True)
 
+        if helper.has_file_path('fcine.bin') and helper.get_last_modified_time_file('fcine.bin') + 86400 < int(
+                time.time()):
+            helper.remove_file('fcine.bin')
+
+        if helper.has_file_path('fcine.bin'):
+            self.request.set_session(pickle.loads(helper.read_file('fcine.bin', True)))
+        else:
+            self.login()
+
     def get_token(self, response=None):
         if not response:
             response = self.request.get('%s/page/help/' % self.domain)
@@ -35,16 +47,20 @@ class Fcine:
 
         return self.token, self.member_id
 
-    def login(self, username, password, header):
+    def login(self):
+        self.get_token()
+
         params = {
             'login__standard_submitted': 1,
             'csrfKey': self.token,
-            'auth': username,
-            'password': password,
+            'auth': self.username,
+            'password': self.password,
             'remember_me': 1,
             'remember_me_checkbox': 1
         }
-        return self.request.post('%s/login/' % self.domain, params, headers=header)
+
+        self.request.post('%s/login/' % self.domain, params)
+        helper.write_file('fcine.bin', pickle.dumps(self.request.get_request_session()), True)
 
     def getCategory(self):
         response = self.request.get(self.domain)
@@ -58,11 +74,7 @@ class Fcine:
         return Channel().get(response, page)
 
     def getMovie(self, id):
-        self.get_token()
-        response = self.login(
-            self.username,
-            self.password,
-            {'referer': id})
+        response = self.request.get(id)
         return Movie().get(response)
 
     def getLink(self, url):
