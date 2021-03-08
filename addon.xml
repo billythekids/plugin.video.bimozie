@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.bimozie-next" name="BimoZie Next" version="1.0.5" provider-name="billy.nguyen">
+<addon id="plugin.video.bimozie-next" name="BimoZie Next" version="1.0.6" provider-name="billy.nguyen">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.six" version="1.14.0"/>
         <import addon="script.module.kodi-six" version="0.1.3.1"/>
         <import addon="script.module.beautifulsoup4" version="4.3.1"/>
         <import addon="script.module.requests" version="2.7.0"/>
-        <import addon="script.module.requests_cache" version="0.0.0"/>
+        <import addon="script.module.requests-cache" version="0.5.2"/>
         <import addon="script.module.pycryptodome" version="3.4.3"/>
         <import addon="script.module.routing" version="0.2.3"/>
     </requires>
