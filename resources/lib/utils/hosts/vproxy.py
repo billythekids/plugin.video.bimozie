@@ -8,10 +8,11 @@ except ImportError:
 from utils.mozie_request import Request
 
 from . import cors
+import utils.xbmc_helper as helper
 
 
 def get_link(url, movie):
-    print("Apply VProxy parser")
+    helper.log("Apply VProxy parser")
     base_url = urlparse(url)
 
     mid = parse_qs(base_url.query).get('id')[0]

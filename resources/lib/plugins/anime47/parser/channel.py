@@ -3,6 +3,7 @@ import re
 
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
+import utils.xbmc_helper as helper
 
 
 def text(txt):
@@ -24,7 +25,7 @@ class Parser:
         # get total page
         pages = soup.select_one('ul.pagination')
 
-        print("*********************** Get pages ")
+        helper.log("*********************** Get pages ")
         m = re.findall(r'(page)?[/|=](\d+)(.html)?', str(pages))
         if m:
             m = [int(x[1]) for x in m]

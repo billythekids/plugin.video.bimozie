@@ -18,7 +18,7 @@ def get_link(url, media, parser=False):
         'Referer': media.get('originUrl'),
     }
 
-    print("HLS parser: {}".format(url))
+    helper.log("HLS parser: {}".format(url))
 
     if parser:
         url = get_stream(url, header)

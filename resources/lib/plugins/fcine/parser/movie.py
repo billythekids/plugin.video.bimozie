@@ -33,22 +33,23 @@ class Parser:
 
         links = []
         for link in items:
-            if link and 'fshare' in link.get('href'): links.append(link.get('href'))
+            f_url = 'https://www.fshare.vn/api/v3/files/folder?linkcode=%s' % FShareVN.extract_code(link.get('href'))
+            if link and 'fshare' in link.get('href'): links.append(f_url)
 
         if len(links) > 0:
             results = AsyncRequest().get(links)
             for idx, result in enumerate(results):
                 try:
-                    name, size = FShareVN.get_info(content=result)
+                    name, size = FShareVN.get_asset_info(content=result)
                     movie['links'].append({
-                        'link': links[idx],
+                        'link': items[idx].get('href'),
                         'title': '[%s] %s' % (size, name),
-                        'type': 'Unknown',
+                        'type': 'Fshare',
                         'subtitle': subtitle,
                         'resolve': False
                     })
                 except:
-                    print('Link die %s' % links[idx])
+                    print('Link die %s' % items[idx].get('href'))
                     continue
 
         return movie

@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import re
 from six.moves.urllib.parse import quote
 from kodi_six.utils import py2_encode
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -16,7 +17,7 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         # get total page
         pages = soup.select('div.Paging ul > li > a')
-        print("*********************** Get pages ")
+        helper.log("*********************** Get pages ")
         for page in pages:
             if re.compile("(\d+)").match(page.text.strip()):
                 channel['page'] = int(page.text)

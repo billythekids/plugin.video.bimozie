@@ -3,9 +3,11 @@ import json
 import math
 import re
 
-from . import smamuhh1metro
+import utils.xbmc_helper as helper
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
+
+from . import smamuhh1metro
 
 origin = "http://www.phimmoi.net"
 
@@ -201,7 +203,7 @@ def get_hydrax_phimmoi_stream(stream, n):
             if media_url not in media_urls:
                 media_urls.append(media_url)
         except:
-            print(links[i])
+            helper.log(links[i])
 
     if stream['type'] == 2:
         max_targetduration = 12

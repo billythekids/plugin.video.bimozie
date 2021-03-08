@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 
-import utils.xbmc_helper as helper
 from utils.mozie_request import Request
 
 try:
@@ -13,10 +12,11 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
+import utils.xbmc_helper as helper
 
 
 def get_link(url, media):
-    print("*********************** Apply tvmienphi url %s" % url)
+    helper.log("*********************** Apply tvmienphi url %s" % url)
     header = {
         'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.66",
         'referer': media.get('originUrl')
@@ -31,6 +31,6 @@ def get_link(url, media):
         url_path = "{}://{}{}".format(local.scheme, local.hostname, url_path)
 
     url = req.get(url_path, headers=header)
-    print(url)
+    helper.log(url)
 
     return url + "|%s" % urlencode(header), 'tvmienphi'

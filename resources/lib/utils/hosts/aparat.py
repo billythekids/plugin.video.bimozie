@@ -6,7 +6,7 @@ from utils.mozie_request import Request
 
 
 def get_link(url):
-    print("*********************** Apply Apparat url %s" % url)
+    helper.log("*********************** Apply Apparat url %s" % url)
     response = Request().get(url)
     sources = re.search(r'sources:\s(\[.*\]),', response)
     if sources:

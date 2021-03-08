@@ -4,10 +4,11 @@ import pickle
 import re
 import time
 
-from .. import xbmc_helper as helper
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
-from utils.mozie_request import Request
+
+from .. import xbmc_helper as helper
+from ..mozie_request import Request
 
 
 class FShareVN:
@@ -42,6 +43,22 @@ class FShareVN:
             self.login()
 
         user = self.get_user()
+
+    @staticmethod
+    def extract_code(url):
+        m = re.search(r'(file|folder)/([A-Z0-9]+)', url)
+        return m.group(2)
+
+    @staticmethod
+    def get_asset_info(url=None, code=None, content=None):
+        if not content:
+            if url:
+                is_folder, code = FShareVN.extract_code(url)
+            content = Request().get('https://www.fshare.vn/api/v3/files/folder?linkcode=%s' % code)
+
+        response = json.loads(content)
+        return response.get('current').get('name'), \
+               helper.humanbytes(response.get('current').get('size') if int(response.get('current').get('size')) > 0 else 0)
 
     @staticmethod
     def is_folder(url):
@@ -120,10 +137,14 @@ class FShareVN:
         })
 
         item = json.loads(r)
-        if int(self.request.head(item.get('location')).headers['Content-Length']) > 0:
-            self.request.head(item.get('location'))
-            self.request.options(item.get('location'))
-            return item.get('location')
+        if 'location' in item:
+            url = helper.get_host_address_url(item.get('location'))
+            with self.request.get(url, stream=True) as r:
+                r.raise_for_status()
+                for chunk in r.iter_content(chunk_size=1024):
+                    return url
+
+            return url
         return
 
     def logout(self):

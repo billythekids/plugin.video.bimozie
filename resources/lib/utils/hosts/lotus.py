@@ -9,14 +9,14 @@ import utils.xbmc_helper as helper
 
 
 def get_link(url, media):
-    print("*********************** Apply Lotus url %s" % url)
+    helper.log("*********************** Apply Lotus url %s" % url)
     header = {
             'referer': 'https://lotus.vn/',
             'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
         }
     req = Request()
     response = req.get(url, headers=header)
-    print(response.encode('utf8'))
+    helper.log(response.encode('utf8'))
     source = re.search(r'"link":\s?"(.*?)",', response)
     
     if '.mp4' in source.group(1):

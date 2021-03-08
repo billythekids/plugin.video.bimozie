@@ -11,10 +11,11 @@ try:
 except ImportError:
     from urllib import urlencode
 from utils.mozie_request import Request
+import utils.xbmc_helper as helper
 
 
 def get_link(url, media):
-    print("*********************** Apply donganime.net url %s" % url)
+    helper.log("*********************** Apply donganime.net url %s" % url)
     req = Request()
     response = req.get(url)
     sources = LinkExtractor.play_sources(response)

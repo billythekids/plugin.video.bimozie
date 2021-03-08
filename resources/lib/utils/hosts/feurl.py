@@ -2,6 +2,7 @@
 import json
 import re
 
+import utils.xbmc_helper as helper
 import xbmcgui
 
 try:
@@ -17,7 +18,7 @@ except ImportError:
 
 
 def get_link(url, media):
-    print("*********************** Apply furl url %s" % url)
+    helper.log("*********************** Apply furl url %s" % url)
     request = Request()
 
     base_url = urlparse(media.get('originUrl'))

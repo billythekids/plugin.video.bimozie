@@ -4,6 +4,7 @@ import re
 
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -18,7 +19,7 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         # get total page
         last_page = soup.select_one('div.wp-pagenavi > a.last')
-        print("*********************** Get pages ")
+        helper.log("*********************** Get pages ")
         if last_page is not None:
             page = re.search('/(\d+)/$', last_page.get('href')).group(1)
             channel['page'] = int(page)

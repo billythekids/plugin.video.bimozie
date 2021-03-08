@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
 import re
-import xbmcgui
 
-import utils.xbmc_helper as helper
+import xbmcgui
 from utils.mozie_request import Request
 
 try:
@@ -14,6 +13,7 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
+import utils.xbmc_helper as helper
 
 
 def get_link(url, media):
@@ -26,7 +26,7 @@ def get_link(url, media):
         'Origin': base_url
     }
 
-    print("Apply iframeembed url %s" % url)
+    helper.log("Apply iframeembed url %s" % url)
 
     resp = request.get(url, headers=header)
     req = request.get_request()

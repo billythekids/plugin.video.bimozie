@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from utils.link_extractor import LinkExtractor
 from utils.mozie_request import Request
 from utils.xbmc_helper import text_encode
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -33,7 +34,7 @@ class Parser:
             })
 
     def get_link(self, response, domain, referrer_url, request):
-        print("***********************Get Movie Link*****************************")
+        helper.log("***********************Get Movie Link*****************************")
         movie = {
             'group': {},
             'episode': [],

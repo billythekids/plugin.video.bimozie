@@ -4,6 +4,7 @@ import urllib
 
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
+import utils.xbmc_helper as helper
 
 
 def get_link(url, originURL):
@@ -46,7 +47,7 @@ def get_link_deprecated(url, originURL):
             try:
                 response = response.replace(links[i], results[i].headers['location'])
             except:
-                print(links[i], results[i].headers)
+                helper.log(links[i], results[i].headers)
     else:
         media_type = 'hls3'
 

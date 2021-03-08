@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-import utils.xbmc_helper as helper
+from . import xbmc_helper as helper
 import xbmcaddon
 
 try:
@@ -69,7 +69,7 @@ class LinkParser:
         self.url = media['link']
 
     def get_link(self):
-        print("LinkParser:: Find link source of %s" % self.url)
+        helper.log("LinkParser:: Find link source of %s" % self.url)
         if re.search('ok.ru', self.url):
             # return self.get_link_resolveurl()
             return ok.get_link(self.url)
@@ -367,15 +367,14 @@ class LinkParser:
             xbmcaddon.Addon().openSettings()
             return None, None
 
-        if helper.getSetting('fshare.enable'):
-            f_url = fshare.FShareVN(
+        f_url = fshare.FShareVN(
                 self.url,
                 helper.getSetting('fshare.username'),
                 helper.getSetting('fshare.password')
             ).get_link()
-            return f_url, 'Fshare'
-        else:
-            return fshare.FShareVN(self.url).get_link(), 'Fshare'
+
+        self.media['originUrl'] = self.url
+        return cors.get_link(f_url, self.media, including_agent=True)
 
     def get_m3u8(self):
         # support to run with inputstream.adaptive

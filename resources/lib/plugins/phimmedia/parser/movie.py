@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import base64
 from kodi_six.utils import py2_encode
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -35,10 +36,10 @@ class Parser:
             'links': []
         }
 
-        print("***********************Get phimmedia Link*****************************")
+        helper.log("***********************Get phimmedia Link*****************************")
         sources = re.findall(r"file:\s?(.*?),\s?label: \"(\d+)\"", response, re.MULTILINE)
         if sources and len(sources) > 0:
-            print("***********************Get Movie Link 1*****************************")
+            helper.log("***********************Get Movie Link 1*****************************")
             sources = sorted(sources, key=lambda elem: elem[1], reverse=True)
             for source in sources:
                 match = re.search(source[0] + "=.*\(\"(.*)\"\);", response)
@@ -56,7 +57,7 @@ class Parser:
 
         sources = re.findall(r'file:\s?[\'|"](.*?)[\'|"],\s?label: "(\d+)"', response, re.MULTILINE)
         if sources and len(sources) > 0:
-            print("***********************Get Movie Link 2*****************************")
+            helper.log("***********************Get Movie Link 2*****************************")
             for source in sources:
                 url = self.decode(source[0])
 
@@ -70,7 +71,7 @@ class Parser:
 
         sources = re.findall(r'.*\d=define\d+\("(.*)"\);', response)
         if sources and len(sources) > 0:
-            print("***********************Get Movie Link 3*****************************")
+            helper.log("***********************Get Movie Link 3*****************************")
             for source in sources:
                 url = self.decode(source)
                 if len(url) > 0:
@@ -87,7 +88,7 @@ class Parser:
 
     def decode(self, link):
         r = base64.b64decode(link).decode('utf8')
-        print(r)
+        helper.log(r)
         r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
         r = r.replace("https://bit.ly/2zE7Kmg?temp=", "")
         r = r.replace("ms.com?test=", "")

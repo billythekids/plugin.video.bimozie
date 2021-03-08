@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 from utils.mozie_request import Request
 from kodi_six.utils import py2_encode
+import utils.xbmc_helper as helper
 import re
 import json
 
@@ -94,7 +95,7 @@ class Parser:
         # if len(movie['links']) > 1:
         #     try:
         #         movie['links'] = sorted(movie['links'], key=lambda elem: int(re.search(r'(\d+)', elem['title']).group(1)), reverse=True)
-        #     except Exception as e: print(e)
+        #     except Exception as e: helper.log(e)
 
         return movie
 

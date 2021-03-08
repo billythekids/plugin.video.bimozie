@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import re
 
 BS = 32
 pad = lambda s: s + (BS - len(s) % BS) * chr(BS - len(s) % BS)

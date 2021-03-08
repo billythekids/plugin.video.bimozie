@@ -7,6 +7,7 @@ except ImportError:
     from urllib.parse import urlparse, parse_qs
 from utils.mozie_request import Request
 from utils.aes import CryptoAES
+import utils.xbmc_helper as helper
 
 
 def get_link(url):
@@ -27,4 +28,4 @@ def get_link(url):
 
 
 def create_playlist(data):
-    print(data)
+    helper.log(data)

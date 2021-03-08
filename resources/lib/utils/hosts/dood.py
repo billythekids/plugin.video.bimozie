@@ -4,6 +4,7 @@ import re
 import string
 import time
 
+import utils.xbmc_helper as helper
 from utils.mozie_request import Request
 
 try:
@@ -13,7 +14,7 @@ except ImportError:
 
 
 def get_link(url, movie):
-    print("*********************** Apply dood url %s" % url)
+    helper.log("*********************** Apply dood url %s" % url)
     req = Request()
     response = req.get(url)
     match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', response, re.DOTALL)

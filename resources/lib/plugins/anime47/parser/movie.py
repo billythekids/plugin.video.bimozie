@@ -50,7 +50,7 @@ class Parser:
         # get episode if possible
         servers = soup.select('div.servers > div.server')
         if skipEps is False and len(servers) > 0:
-            print("***********************Get Movie Episode*****************************")
+            helper.log("***********************Get Movie Episode*****************************")
             found = False
             items = self.get_server_list(servers)
             if items is not None and len(items) > 0:
@@ -87,7 +87,7 @@ class Parser:
         return items
 
     def get_link(self, response, domain, originURL, request):
-        print("***********************Get Movie Link*****************************")
+        helper.log("***********************Get Movie Link*****************************")
         movie = {
             'group': {},
             'episode': [],
@@ -141,6 +141,6 @@ class Parser:
             if url:
                 return url
         else:
-            print(text(response))
+            helper.log(text(response))
 
         return None

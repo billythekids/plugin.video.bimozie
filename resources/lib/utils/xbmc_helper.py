@@ -3,6 +3,7 @@ import hashlib
 import json
 import os
 import re
+import socket
 from collections import OrderedDict
 from contextlib import closing
 
@@ -11,10 +12,22 @@ from kodi_six.utils import py2_decode, py2_encode
 from six.moves.urllib.parse import quote, unquote
 from six.moves.urllib.parse import urlunsplit, urlsplit
 
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
+
 ADDON = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo('id')
 KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 addon_data_dir = os.path.join(py2_decode(xbmcvfs.translatePath('special://userdata/addon_data')), ADDON_ID)
+REQUEST_CACHE = xbmc.translatePath(os.path.join(addon_data_dir, 'requests_cache'))
+
+
+def log(msg, level=xbmc.LOGDEBUG):
+    xbmc.log("----------------Start Log-----------------", level=level)
+    xbmc.log("%s: %s" % ("Bimozie", msg), level=level)
+    xbmc.log("---------------- End Log -----------------", level=level)
 
 
 def s2u(s): return py2_decode(s) if isinstance(s, str) else s
@@ -50,7 +63,7 @@ def message(message='', title='', time_shown=5000):
 
 def write_file(name, content, binary=False):
     if not os.path.exists(addon_data_dir):
-        print("********************** create dir path %s" % addon_data_dir)
+        log("********************** create dir path %s" % addon_data_dir)
         os.makedirs(addon_data_dir)
 
     path = get_file_path(name)
@@ -150,11 +163,14 @@ def wait(sec):
 
 
 def convert_js_2_json(str):
+    try:
+        return json.loads(str)
+    except: pass
+
     vstr = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', str)
     vstr = re.sub(r'([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', vstr)
     vstr = vstr.replace("'", '"')
     vstr = re.sub(r'\t+\"', '"', vstr)
-    print(vstr)
     return json.loads(vstr)
 
 
@@ -263,3 +279,17 @@ def get_last_fshare_movie():
 
 def clear_last_fshare_movie():
     write_file('fshare-watched.json', '')
+
+
+def extract_domain_port(url):
+    base_url = urlparse(url)
+    return base_url.netloc, 443 if 'https' in base_url.scheme else 80
+
+
+def get_host_address_url(url):
+    domain, port = extract_domain_port(url)
+    address = socket.gethostbyname(domain)
+    return url.replace(domain, address)
+
+
+

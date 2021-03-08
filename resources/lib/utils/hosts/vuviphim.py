@@ -14,7 +14,7 @@ def get_link(url):
     enc2 = re.search(r'sources:\s?(\[.*?\]),', response)
     found = False
 
-    print("Apply VUVIPHIM parser")
+    helper.log("Apply VUVIPHIM parser")
 
     if enc:
         sources = enc.group(1)

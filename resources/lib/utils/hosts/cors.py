@@ -5,7 +5,7 @@ try:
     from urlparse import urlparse
 except ImportError:
     from urllib.parse import urlparse
-
+import utils.xbmc_helper as helper
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -14,7 +14,7 @@ from utils.mozie_request import Request
 
 
 def get_link(url, media, including_agent=True):
-    print("Apply CORS url %s" % media.get('originUrl'))
+    helper.log("Apply CORS url %s" % media.get('originUrl'))
     if media.get('originUrl'):
         base_url = urlparse(media.get('originUrl'))
         base_url = base_url.scheme + '://' + base_url.netloc

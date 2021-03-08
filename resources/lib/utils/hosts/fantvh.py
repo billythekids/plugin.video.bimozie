@@ -2,6 +2,7 @@
 
 import json
 
+import utils.xbmc_helper as helper
 from utils.mozie_request import Request
 
 try:
@@ -12,7 +13,7 @@ import xbmcgui
 
 
 def get_link(url, media):
-    print("*********************** Apply fantvh url %s" % url)
+    helper.log("*********************** Apply fantvh url %s" % url)
     request = Request()
     base_url = urlparse(url)
     path = urlparse(url).path.replace('/v/', '')

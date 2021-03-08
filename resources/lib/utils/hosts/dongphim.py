@@ -2,6 +2,7 @@
 
 import re
 
+import utils.xbmc_helper as helper
 from utils.mozie_request import Request, AsyncRequest
 from utils.pastebin import PasteBin
 
@@ -12,7 +13,7 @@ except ImportError:
 
 
 def get_link(url, media):
-    print("*********************** Apply dongphim url %s" % url)
+    helper.log("*********************** Apply dongphim url %s" % url)
     header = {
         'Origin': 'http://dongphim.net'
     }

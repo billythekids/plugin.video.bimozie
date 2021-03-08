@@ -9,6 +9,7 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
+import utils.xbmc_helper as helper
 
 
 def create_master_playlist(url):
@@ -20,7 +21,7 @@ def create_master_playlist(url):
 
 
 def get_link(url, media):
-    print("Apply vanlongstreaming parser")
+    helper.log("Apply vanlongstreaming parser")
     base_url = urlparse(url)
     id = parse_qs(base_url.query).get('id')[0]
     base_url = base_url.scheme + '://' + base_url.netloc
