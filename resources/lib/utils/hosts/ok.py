@@ -5,7 +5,7 @@ import re
 
 import xbmcgui
 from six.moves.html_parser import HTMLParser
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 
 def rsl(s):

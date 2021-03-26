@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 try:
     from urlparse import urlparse
@@ -12,7 +12,7 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
-import utils.xbmc_helper as helper
+from .. import xbmc_helper as helper
 
 
 def get_link(url, media):

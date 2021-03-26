@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
 
-from utils.link_extractor import LinkExtractor
-from utils.pastebin import PasteBin
+from ..link_extractor import LinkExtractor
+from ..pastebin import PasteBin
 
 from . import hls_parser as hls
 
@@ -10,8 +10,8 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
-from utils.mozie_request import Request
-import utils.xbmc_helper as helper
+from ..mozie_request import Request
+from .. import xbmc_helper as helper
 
 
 def get_link(url, media):

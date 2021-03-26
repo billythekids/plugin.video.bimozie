@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from bs4 import BeautifulSoup
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 
 def get_link(url):

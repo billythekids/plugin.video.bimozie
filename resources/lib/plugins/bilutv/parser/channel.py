@@ -22,14 +22,17 @@ class Parser:
                 except:
                     pass
 
-        for movie in soup.select('div.left-content > div.block-film > ul.list-film > li > div'):
+        for movie in soup.select('ul.list-film > li > div'):
             title = movie.select_one('p.name').text
-            type = movie.select_one('label').text
-            realtitle = movie.select_one('p.real-name').text
+            m_type = movie.select_one('label').text
+            realtitle = movie.select_one('.real-name')
+            if realtitle:
+                realtitle = realtitle.text
+
             if realtitle is not None:
-                label = "[%s] %s - %s" % (type, title, realtitle)
+                label = "[%s] %s - %s" % (m_type, title, realtitle)
             else:
-                label = "[%s] %s" % (type, title)
+                label = "[%s] %s" % (m_type, title)
 
             img = movie.select_one('div.list-img').get('style')
             img = re.search(r"background-image:url\((.*)\)", img).group(1)
@@ -44,7 +47,7 @@ class Parser:
                 'title': py2_encode(title),
                 'realtitle': py2_encode(realtitle),
                 'thumb': img,
-                'type': py2_encode(type),
+                'type': py2_encode(m_type),
             })
 
         return channel

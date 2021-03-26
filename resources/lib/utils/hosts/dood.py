@@ -4,8 +4,8 @@ import re
 import string
 import time
 
-import utils.xbmc_helper as helper
-from utils.mozie_request import Request
+from .. import xbmc_helper as helper
+from ..mozie_request import Request
 
 try:
     from urllib.parse import urlencode

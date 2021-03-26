@@ -67,7 +67,7 @@ class PlayerHandler:
                 play_item.setArt({'thumb': thumb})
                 play_item.setLabel(title)
                 play_item.setLabel2(realtitle)
-                play_item.setInfo('video', {
+                play_item.setInfo('Video', {
                     'title': title,
                     'originaltitle': realtitle,
                     'plot': movie_item.get('intro')
@@ -96,7 +96,10 @@ class PlayerHandler:
         play_item.setProperty('isFolder', 'false')
         play_item.setPath(str(movie['link']))
         xbmcplugin.setResolvedUrl(plugin.handle, True, listitem=play_item)
-        # Player().play(str(movie['link']), listitem=play_item)
+        player = Player()
+        player.play(str(movie['link']), listitem=play_item)
+        while not player.isPlaying():
+            xbmc.sleep(100)
 
 
 class Player(xbmc.Player):

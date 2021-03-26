@@ -18,7 +18,7 @@ h = {
 
 
 class Hayghes:
-    domain = "https://hayghes.com"
+    domain = "https://hayghes.net"
 
     def __init__(self):
         self.request = Request(h, session=True)

@@ -13,7 +13,7 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 
 def get_link(url, movie):

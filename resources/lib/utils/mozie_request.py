@@ -2,12 +2,12 @@
 import traceback
 
 import requests
-import utils.xbmc_helper as helper
 import xbmcgui
 import time
 import concurrent.futures
-import requests_cache
-requests_cache.install_cache(helper.REQUEST_CACHE, backend='sqlite', expire_after=604800 )
+from . import xbmc_helper as helper
+# import requests_cache
+# requests_cache.install_cache(helper.REQUEST_CACHE, backend='sqlite', expire_after=604800)
 
 try:
     from queue import Queue
@@ -21,7 +21,6 @@ user_agent = (
     "AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/59.0.3071.115 Safari/537.36"
 )
-
 
 class Request:
     TIMEOUT = 30
@@ -168,13 +167,13 @@ class AsyncRequest:
 
             while retry > 0:
                 try:
-                    if action is 'head':
+                    if action == 'head':
                         data = self.request.head(url, params=params, headers=headers, redirect=redirect,
                                                  cookies=cookies, verify=verify)
-                    if action is 'get':
+                    if action == 'get':
                         data = self.request.get(url, params=params, headers=headers, redirect=redirect, cookies=cookies,
                                                 verify=verify)
-                    if action is 'post':
+                    if action == 'post':
                         data = self.request.post(url, params=params, headers=headers, json=json, redirect=redirect,
                                                  cookies=cookies, verify=verify)
                     if parser:

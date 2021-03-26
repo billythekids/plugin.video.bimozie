@@ -2,14 +2,14 @@
 import json
 import re
 
-import utils.xbmc_helper as helper
+from .. import xbmc_helper as helper
 import xbmcgui
 
 try:
     from urlparse import urlparse
 except ImportError:
     from urllib.parse import urlparse
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 try:
     from urllib.parse import urlencode

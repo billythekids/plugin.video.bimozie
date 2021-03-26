@@ -9,9 +9,9 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
-from utils.mozie_request import Request
-from utils.pastebin import PasteBin
-import utils.xbmc_helper as helper
+from ..mozie_request import Request
+from ..pastebin import PasteBin
+from .. import xbmc_helper as helper
 
 
 def get_link(url, media):

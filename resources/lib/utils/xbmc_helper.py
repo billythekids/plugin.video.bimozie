@@ -167,10 +167,11 @@ def convert_js_2_json(str):
         return json.loads(str)
     except: pass
 
-    vstr = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', str)
-    vstr = re.sub(r'([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', vstr)
-    vstr = vstr.replace("'", '"')
+    vstr = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)\s?([a-zA-Z][a-zA-Z0-9]*)', r'"\1"', str)
+    vstr = re.sub(r'([a-zA-Z][a-zA-Z0-9]*)(?=:)\s?([a-zA-Z][a-zA-Z0-9]*)', r'"\1"', vstr)
     vstr = re.sub(r'\t+\"', '"', vstr)
+    vstr = vstr.replace("'", '"')
+
     return json.loads(vstr)
 
 

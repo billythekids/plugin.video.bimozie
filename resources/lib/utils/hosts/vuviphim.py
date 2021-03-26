@@ -3,9 +3,9 @@ import json
 import re
 import urllib
 
-import utils.xbmc_helper as helper
-from utils.cpacker import cPacker as Packer
-from utils.mozie_request import Request
+from .. import xbmc_helper as helper
+from ..cpacker import cPacker as Packer
+from ..mozie_request import Request
 
 
 def get_link(url):

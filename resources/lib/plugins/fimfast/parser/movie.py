@@ -58,14 +58,18 @@ class Parser:
 
             if videos[videotype] and not isinstance(videos[videotype], string_types):
                 for key in videos[videotype]:
-                    link = videos[videotype][key]
+                    try:
+                        link = videos[videotype][key]
+                    except:
+                        link = key
+
                     match = re.search(r'(&title=.*)&?', link['src'])
                     if match:
                         link['src'] = link['src'].replace(match.group(1), '')
                     movie['links'].append({
                         'link': link['src'],
-                        'title': 'Link %s' % link['quality'].encode('utf-8'),
-                        'type': link['type'].encode('utf-8'),
+                        'title': 'Link %s' % py2_encode(link['quality']),
+                        'type': py2_encode(link['type']),
                         'resolve': False,
                         'subtitle': subtitle,
                         'originUrl': movieurl

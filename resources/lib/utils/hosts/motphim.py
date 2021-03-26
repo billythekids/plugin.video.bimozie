@@ -5,9 +5,9 @@ try:
     from urlparse import urlparse, parse_qs
 except ImportError:
     from urllib.parse import urlparse, parse_qs
-from utils.mozie_request import Request
-from utils.aes import CryptoAES
-import utils.xbmc_helper as helper
+from ..mozie_request import Request
+from ..aes import CryptoAES
+from .. import xbmc_helper as helper
 
 
 def get_link(url):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-from utils.link_extractor import LinkExtractor
-from utils.mozie_request import Request
+from ..link_extractor import LinkExtractor
+from ..mozie_request import Request
 
 from . import cors
 

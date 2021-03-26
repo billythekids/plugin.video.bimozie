@@ -9,7 +9,7 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
-import utils.xbmc_helper as helper
+from .. import xbmc_helper as helper
 
 
 def create_master_playlist(url):

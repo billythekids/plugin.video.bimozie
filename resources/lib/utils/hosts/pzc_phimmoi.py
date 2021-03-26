@@ -4,7 +4,7 @@ import json
 import re
 
 from . import cors
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 
 def get_link(url, media):

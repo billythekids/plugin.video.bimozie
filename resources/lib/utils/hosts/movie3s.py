@@ -7,7 +7,7 @@ try:
 except ImportError:
     from urllib.parse import urlparse
 
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 try:
     from urllib.parse import urlencode

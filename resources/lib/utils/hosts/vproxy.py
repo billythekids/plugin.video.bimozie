@@ -5,10 +5,10 @@ try:
     from urlparse import urlparse, parse_qs
 except ImportError:
     from urllib.parse import urlparse, parse_qs
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 from . import cors
-import utils.xbmc_helper as helper
+from .. import xbmc_helper as helper
 
 
 def get_link(url, movie):

@@ -5,12 +5,13 @@ try:
     from urlparse import urlparse
 except ImportError:
     from urllib.parse import urlparse
-import utils.xbmc_helper as helper
+from .. import xbmc_helper as helper
+
 try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 
 def get_link(url, media, including_agent=True):

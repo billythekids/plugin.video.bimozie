@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-import utils.xbmc_helper as helper
-from utils.mozie_request import Request
+from .. import xbmc_helper as helper
+from ..mozie_request import Request
 
 
 def get_link(url, media):

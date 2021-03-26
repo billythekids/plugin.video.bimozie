@@ -2,7 +2,7 @@
 
 import re
 
-import utils.xbmc_helper as helper
+from . import xbmc_helper as helper
 from six.moves.urllib.parse import unquote
 
 

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-import utils.xbmc_helper as helper
+from .. import xbmc_helper as helper
 from six.moves.urllib.parse import unquote
-from utils.mozie_request import Request
-from utils.pastebin import PasteBin
+from ..mozie_request import Request
+from ..pastebin import PasteBin
 
 try:
     from urllib.parse import urlencode

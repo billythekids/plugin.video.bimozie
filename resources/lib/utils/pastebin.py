@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import requests
-import utils.xbmc_helper as helper
+from . import xbmc_helper as helper
 
 
 class PasteBin:

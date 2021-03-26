@@ -2,9 +2,9 @@
 
 import re
 
-import utils.xbmc_helper as helper
-from utils.mozie_request import Request, AsyncRequest
-from utils.pastebin import PasteBin
+from .. import xbmc_helper as helper
+from ..mozie_request import Request, AsyncRequest
+from ..pastebin import PasteBin
 
 try:
     from urllib.parse import urlencode

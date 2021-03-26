@@ -3,14 +3,14 @@ import json
 import math
 import re
 
-import utils.xbmc_helper as helper
+from .. import xbmc_helper as helper
 
 try:
     from urlparse import urlparse, parse_qs
 except ImportError:
     from urllib.parse import urlparse, parse_qs
-from utils.mozie_request import Request, AsyncRequest
-from utils.pastebin import PasteBin
+from ..mozie_request import Request, AsyncRequest
+from ..pastebin import PasteBin
 try:
     from urllib.parse import urlencode
 except ImportError:

@@ -7,8 +7,8 @@ from utils.mozie_request import Request
 
 
 class Fimfast:
-    domain = "https://phim1080.me"
-    api = "https://phim1080.me/api/v2"
+    domain = "https://phim1080zz.com"
+    api = "https://phim1080zz.com/api/v2"
 
     def __init__(self):
         self.request = Request(session=True)
@@ -55,11 +55,11 @@ class Fimfast:
         movieurl = '%s%s' % (self.domain, movie['link'])
         response = self.request.get(movieurl)
         fid, epid = Movie().get_movie_id(response)
-        url = '%s/films/%s/episodes/%s/true' % (self.api, fid, epid)
+        url = '%s/films/%s/episodes/%s' % (self.api, fid, epid)
 
         response = self.request.get(url, headers={
             'referer': movieurl,
-            'authority': 'fimfast.com',
+            'authority': 'phim1080zz.com',
             'x-requested-with': 'XMLHttpRequest',
         })
 

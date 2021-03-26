@@ -183,5 +183,5 @@ class MovieHandler:
         )
         sli = xbmcgui.ListItem(label=label)
         xbmcplugin.addDirectoryItem(plugin.handle, None, sli, isFolder=False)
-        app._build_ep_list(query.get('items'), query.get('movie_item'), module, class_name)
+        _build_ep_list(query.get('items'), query.get('movie_item'), module, class_name)
         xbmcplugin.endOfDirectory(plugin.handle)

@@ -2,6 +2,8 @@
 import re
 
 from . import xbmc_helper as helper
+from .link_extractor import LinkExtractor
+from .mozie_request import Request
 import xbmcaddon
 
 try:
@@ -274,7 +276,6 @@ class LinkParser:
             return pzc_phimmoi.get_link(self.url, self.media)
 
         elif 'gpt.phimmoi' in self.url:
-            helper.message('Phimmoi gpt.phimmoi.net link parsing', 'Get Link')
             return pzc_phimmoi.get_link(self.url, self.media)
 
         # elif 'gpt2.phimmoi.net' in self.url:
@@ -318,6 +319,10 @@ class LinkParser:
 
         elif 'sv.tvmienphi.tv' in self.url:
             return tvmienphi.get_link(self.url, self.media)
+
+        elif 'fb.phimtvb.net' in self.url:
+            content = Request().get(self.url)
+            return LinkExtractor.play_sources(content)[0].get('file'), 'phimtvb'
 
         elif 'thuckhuya.com' in self.url:
             return thuckhuya.get_link(self.url, self.media)
@@ -372,6 +377,8 @@ class LinkParser:
                 helper.getSetting('fshare.username'),
                 helper.getSetting('fshare.password')
             ).get_link()
+
+        return f_url, 'fshare'
 
         self.media['originUrl'] = self.url
         return cors.get_link(f_url, self.media, including_agent=True)

@@ -7,8 +7,13 @@ import time
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
 
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+
 from .. import xbmc_helper as helper
-from ..mozie_request import Request
+from ..mozie_request import Request, user_agent
 
 
 class FShareVN:
@@ -26,14 +31,10 @@ class FShareVN:
 
     def start_session(self):
         if helper.has_file_path('fshare.bin') \
-                and helper.get_last_modified_time_file('fshare.bin') + 3600 < self.current:
+                and helper.get_last_modified_time_file('fshare.bin') + 60 < self.current:
             r = pickle.loads(helper.read_file('fshare.bin', True))
-            helper.remove_file('fshare.bin')
             self.request.get_request_session().cookies.set('session_id', r.get('session_id'))
-            try:
-                self.logout()
-            except:
-                pass
+            self.logout()
 
         if helper.has_file_path('fshare.bin'):
             r = pickle.loads(helper.read_file('fshare.bin', True))
@@ -88,7 +89,6 @@ class FShareVN:
         return title, size
 
     def login(self):
-        helper.message('Login', 'Fshare')
         r = self.request.post('{}/user/login'.format(self.api_url), json={
             'user_email': self.username,
             'password': self.password,
@@ -106,6 +106,7 @@ class FShareVN:
         # update session and token
         self.request.get_request_session().cookies.set('session_id', r.get('session_id'))
         self.token = r.get('token')
+        # helper.message('Login success', 'Fshare')
 
     def get_user(self):
         r = self.request.get('{}/user/get'.format(self.api_url))
@@ -138,13 +139,19 @@ class FShareVN:
 
         item = json.loads(r)
         if 'location' in item:
-            url = helper.get_host_address_url(item.get('location'))
-            with self.request.get(url, stream=True) as r:
-                r.raise_for_status()
-                for chunk in r.iter_content(chunk_size=1024):
-                    return url
-
+            url = item.get('location')
+            # url = helper.get_host_address_url(item.get('location'))
+            # with self.request.get(url, stream=True) as r:
+            #     r.raise_for_status()
+            #     for chunk in r.iter_content(chunk_size=1024):
+            #         return None
+            helper.sleep(2000)
             return url
+
+            return '{}|{}'.format(url, urlencode({
+                'user-agent': user_agent,
+                'verifypeer': 'true'
+            }))
         return
 
     def logout(self):

@@ -2,13 +2,13 @@
 
 import re
 
-import utils.xbmc_helper as helper
+from .. import xbmc_helper as helper
 
 try:
     from urlparse import urlparse, parse_qs
 except ImportError:
     from urllib.parse import urlparse
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 
 def get_link(url):
