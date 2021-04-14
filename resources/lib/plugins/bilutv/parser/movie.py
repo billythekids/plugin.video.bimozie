@@ -16,7 +16,8 @@ except ImportError:
 class Parser:
     def get_movie_link(self, response):
         soup = BeautifulSoup(response, "html.parser")
-        return soup.select_one("a.active-menus").get('href')
+        # play_button = soup.find_all('a', class_=['btn-see', 'btn-danger'])[0]
+        return soup.select_one("a.btn-see.btn-danger").get('href')
 
     def get(self, response):
         movie = {
@@ -26,7 +27,7 @@ class Parser:
         }
         soup = BeautifulSoup(response, "html.parser")
 
-        movie_types = soup.select('div.container > div.episodes div.caption')
+        movie_types = soup.select('div.control-box > div.episodes div.caption')
         episodes = soup.select('ul.list-episode')
         for i in range(len(movie_types)):
             items = episodes[i].select('li > a')

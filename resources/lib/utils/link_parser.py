@@ -82,7 +82,8 @@ class LinkParser:
         if re.search('feurl.com', self.url):
             return feurl.get_link(self.url, self.media)
 
-        if 'play.playoffsite.xyz' in self.url:
+        if 'play.playoffsite.xyz' in self.url or \
+                'play.vstreamplay.xyz' in self.url:
             return playoffsite.get_link(self.url, self.media)
 
         if 'xemtivimienphi.com/' in self.url:
@@ -162,7 +163,8 @@ class LinkParser:
             return streamsb_biphim_club.get_link(self.url, self.media)
 
         elif '90p.tv' in self.url \
-                or 'binhluanvidamme.online' in self.url:
+                or 'binhluanvidamme.online' in self.url \
+                or 'phut91.online' in self.url:
             return phut90.get_link(self.url, self.media), '90p.tv'
 
         # Animehay
@@ -314,7 +316,7 @@ class LinkParser:
         elif '.xyz' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
 
-        elif 'stream3.donganime.net' in self.url:
+        elif 'donganime.net' in self.url:
             return donganime.get_link(self.url, self.media)
 
         elif 'sv.tvmienphi.tv' in self.url:

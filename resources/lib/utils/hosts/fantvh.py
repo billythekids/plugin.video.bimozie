@@ -20,9 +20,9 @@ def get_link(url, media):
     base_url = base_url.scheme + '://' + base_url.netloc
 
     header = {
-        'Referer': media.get('originUrl'),
-        'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
-        'Origin': base_url
+        'referer': media.get('originUrl'),
+        'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
+        'origin': base_url
     }
 
     resp = request.post('https://fantvh.net/api/source/{}'.format(path), headers=header)

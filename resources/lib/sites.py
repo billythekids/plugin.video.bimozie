@@ -109,7 +109,7 @@ SITES = [
         "logo": "https://i.ibb.co/tBKrQtK/image.png",
         "className": "Hphim",
         "plugin": "hphim.plugin",
-        "version": 1
+        "version": 31
       },
       {
         "name": "tvhai.org",

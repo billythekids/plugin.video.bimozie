@@ -26,7 +26,7 @@ class Request:
     TIMEOUT = 30
 
     DEFAULT_HEADERS = {
-        'User-Agent': user_agent,
+        'user-agent': user_agent,
     }
     session = None
     r = None

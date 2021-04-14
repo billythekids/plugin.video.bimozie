@@ -16,7 +16,7 @@ def get_link(url):
     helper.log("*********************** Apply fptplay url %s" % url)
     header = {
         'Origin': 'https://fptplay.vn',
-        'User-Agent':  "Chrome/59.0.3071.115 Safari/537.36"
+        'user-agent':  "Chrome/59.0.3071.115 Safari/537.36"
     }
     return str(url) + "|%s" % urlencode(header), 'hls3'
 

@@ -25,7 +25,7 @@ class Hayghes:
 
     def getCategory(self):
         response = self.request.get('{}'.format(self.domain), headers=h)
-        return Category().get(response), []
+        return Category().get(response), Channel().get(response, 1)
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")

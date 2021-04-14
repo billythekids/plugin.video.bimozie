@@ -8,13 +8,15 @@ from . import cors
 
 
 def get_link(url, media):
-    response = Request().get(url)
     req = Request()
+    response = req.get(url)
 
     match = re.search(r'''<div id="player">(.*?)</div>''', response)
     if match:
         url = LinkExtractor.iframe(match.group(1))
-        response = req.get(url)
+        response = req.get(url, headers={
+            'referer': 'https://thuckhuya.com'
+        })
 
     match = re.search(r'''var urlStream = "(.*?)"''', response)
     if match:

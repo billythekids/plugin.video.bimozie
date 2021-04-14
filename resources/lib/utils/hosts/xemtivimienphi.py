@@ -18,7 +18,7 @@ except ImportError:
 def get_link(url, media):
     helper.log("*********************** Apply xemtivimienphi url %s" % url)
     header = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.66",
+        'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.66",
         'referer': media.get('originUrl')
     }
 
@@ -46,11 +46,12 @@ def get_link(url, media):
     base_url = base_url.netloc
 
     header = {
-        'origin': 'http://www.xemtivimienphi.com',
-        'host': base_url,
+        # 'origin': 'http://www.xemtivimienphi.com',
+        # 'x-forwarded-host': base_url,
+        # 'referer': base_url,
         # 'verifypeer': 'false',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'
     }
 
-    helper.log(req.options(url, headers=header))
+    helper.log(req.get(url, headers=header))
     return url + "|%s" % urlencode(header), 'TVOnline'

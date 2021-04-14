@@ -12,7 +12,7 @@ def get_link(url, media):
     helper.log("*********************** Apply Lotus url %s" % url)
     header = {
             'referer': 'https://lotus.vn/',
-            'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+            'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
         }
     req = Request()
     response = req.get(url, headers=header)

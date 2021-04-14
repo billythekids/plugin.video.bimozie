@@ -27,7 +27,7 @@ def get_link(url, movie):
     if url.endswith('m3u8'):
         header = {
             'Origin': 'http://www.vtv16.com',
-            'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+            'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
             'Referer': movie.get('originUrl')
         }
         return url + "|%s" % urlencode(header), base_url

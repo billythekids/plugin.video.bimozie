@@ -23,8 +23,14 @@ class Parser:
                     pass
 
         for movie in soup.select('ul.list-film > li > div'):
-            title = movie.select_one('p.name').text
-            m_type = movie.select_one('label').text
+            title = movie.select_one('p.name')
+            if title:
+                title = title.text
+            elif movie.select_one('div.title'):
+                title = movie.select_one('div.title').text
+            m_type = movie.select_one('label')
+            if m_type:
+                m_type = m_type.text
             realtitle = movie.select_one('.real-name')
             if realtitle:
                 realtitle = realtitle.text
@@ -40,9 +46,9 @@ class Parser:
             if 'https://' not in img:
                 img = 'https://{}'.format(img)
 
-            movie_id = re.search(r"((\d{2,}))", movie.select_one('a').get('href')).group(1)
+            # movie_id = re.search(r"((\d{2,}))", movie.select_one('a').get('href')).group(1)
             channel['movies'].append({
-                'id': movie_id,
+                'id': movie.select_one('a').get('href'),
                 'label': py2_encode(label),
                 'title': py2_encode(title),
                 'realtitle': py2_encode(realtitle),

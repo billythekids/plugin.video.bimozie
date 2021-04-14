@@ -12,6 +12,10 @@ except ImportError:
     from urllib import urlencode
 from ..mozie_request import Request
 from .. import xbmc_helper as helper
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
 
 
 def get_link(url, media):
@@ -20,7 +24,11 @@ def get_link(url, media):
     response = req.get(url)
     sources = LinkExtractor.play_sources(response)
     if sources:
-        url = 'https://stream3.donganime.net{}'.format(sources[0].get('file'))
+        base_url = urlparse(url)
+        base_url = base_url.scheme + '://' + base_url.netloc
+        url = '{}{}'.format(base_url, sources[0].get('file'))
+        print(url)
+        return url, 'donganime'
 
     content = hls.get_adaptive_link(req.get(url))
 

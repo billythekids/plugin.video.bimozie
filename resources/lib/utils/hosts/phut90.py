@@ -7,6 +7,7 @@ from ..mozie_request import Request
 
 
 def get_link(url, media):
+    helper.log("Apply 90phut url %s - %s" % (media.get('originUrl'), url))
     response = Request().get(url)
 
     sources = re.search(r'var video_url = "(.*?)";', response)
@@ -32,7 +33,7 @@ def get_link(url, media):
         # if re.search('pegasus-pop.com', url):
         #     header = {
                 # 'Origin': 'https://live.90m.tv',
-                # 'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+                # 'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
                 # 'referer': media.get('originUrl')
             # }
             # return url + "|%s" % urlencode(header)

@@ -50,6 +50,8 @@ class Parser:
                   or re.search("var sources[\s]?=[\s]?(\[{.*}\]);var", response)
 
         if sources is not None:
+            print(12313)
+            return movie
             sources = json.loads(sources.group(1))
             for source in sources:
                 url = unquote(re.search('\?url=(.*)', source['file']).group(1))
@@ -61,20 +63,21 @@ class Parser:
                     'resolve': False
                 })
 
-            return movie
 
         m = re.search('<iframe.*src="(.*?)"', response)
         if m is not None:
             source = unquote(m.group(1)).replace('\\', '')
             if source:
+                if 'embedss.php?link=' in source:
+                    source = re.search(r'embedss.php\?link=(.*)', source).group(1)
+
                 movie['links'].append({
                     'link': source,
-                    'title': source.encode('utf-8'),
+                    'title': py2_encode(source),
                     'type': 'Unknow',
                     'originUrl': originURL,
                     'resolve': False
                 })
-                return movie
 
         return movie
 

@@ -22,7 +22,7 @@ def get_link(url, media):
     base_url = base_url.scheme + '://' + base_url.netloc
     header = {
         'Referer': url,
-        'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+        'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
         'Origin': base_url
     }
 

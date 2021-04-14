@@ -96,10 +96,11 @@ class PlayerHandler:
         play_item.setProperty('isFolder', 'false')
         play_item.setPath(str(movie['link']))
         xbmcplugin.setResolvedUrl(plugin.handle, True, listitem=play_item)
-        player = Player()
-        player.play(str(movie['link']), listitem=play_item)
-        while not player.isPlaying():
-            xbmc.sleep(100)
+        # player = Player()
+        # player.play(str(movie['link']), listitem=play_item)
+        # while not player.isPlaying():
+        #     xbmc.sleep(100)
+        xbmcplugin.endOfDirectory(plugin.handle)
 
 
 class Player(xbmc.Player):

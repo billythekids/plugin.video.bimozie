@@ -21,7 +21,7 @@ ADDON = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo('id')
 KODI_VERSION = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 addon_data_dir = os.path.join(py2_decode(xbmcvfs.translatePath('special://userdata/addon_data')), ADDON_ID)
-REQUEST_CACHE = xbmc.translatePath(os.path.join(addon_data_dir, 'requests_cache'))
+REQUEST_CACHE = xbmcvfs.translatePath(os.path.join(addon_data_dir, 'requests_cache'))
 
 
 def log(msg, level=xbmc.LOGDEBUG):
