@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
 import re
-import xbmcgui
 
-import utils.xbmc_helper as helper
-from utils.mozie_request import Request
+import xbmcgui
+from ..mozie_request import Request
 
 try:
     from urlparse import urlparse, parse_qs
@@ -14,6 +13,7 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
+from .. import xbmc_helper as helper
 
 
 def get_link(url, media):
@@ -22,11 +22,11 @@ def get_link(url, media):
     base_url = base_url.scheme + '://' + base_url.netloc
     header = {
         'Referer': url,
-        'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+        'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
         'Origin': base_url
     }
 
-    print("Apply iframeembed url %s" % url)
+    helper.log("Apply iframeembed url %s" % url)
 
     resp = request.get(url, headers=header)
     req = request.get_request()

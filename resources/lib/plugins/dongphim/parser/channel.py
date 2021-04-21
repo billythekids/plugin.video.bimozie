@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -15,7 +16,7 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         # get total page
         next_page = soup.select_one('a.more-btn.yellow-btn.btn-nav')
-        print("*********************** Get pages ")
+        helper.log("*********************** Get pages ")
         if next_page is not None:
             channel['page'] = int(page)+1
 

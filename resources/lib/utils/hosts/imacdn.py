@@ -9,15 +9,16 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
-from utils.mozie_request import Request
-from utils.pastebin import PasteBin
+from ..mozie_request import Request
+from ..pastebin import PasteBin
+from .. import xbmc_helper as helper
 
 
 def get_link(url, media):
     header = {
         'Referer': media.get('originUrl'),
         'Origin': 'https://fimfast.com',
-        'User-Agent': "Chrome/59.0.3071.115 Safari/537.36"
+        'user-agent': "Chrome/59.0.3071.115 Safari/537.36"
     }
     return url + "|%s" % urlencode(header)
 
@@ -75,7 +76,7 @@ def create_imacdn_stream(url, base_url):
     response = None
     while retry >= 0:
         try:
-            print('Retry %d' % retry)
+            helper.log('Retry %d' % retry)
             response = res.get(url)
             if response != 'error': break
         except:
@@ -89,5 +90,5 @@ def create_imacdn_stream(url, base_url):
             stream_url = base_url + m
             response = response.replace(m, stream_url)
         url = PasteBin().dpaste(response, name=url, expire=60)
-    print("------------------------------------ %s") % url
+    helper.log("------------------------------------ %s") % url
     return url

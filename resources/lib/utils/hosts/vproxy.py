@@ -5,13 +5,14 @@ try:
     from urlparse import urlparse, parse_qs
 except ImportError:
     from urllib.parse import urlparse, parse_qs
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 from . import cors
+from .. import xbmc_helper as helper
 
 
 def get_link(url, movie):
-    print("Apply VProxy parser")
+    helper.log("Apply VProxy parser")
     base_url = urlparse(url)
 
     mid = parse_qs(base_url.query).get('id')[0]

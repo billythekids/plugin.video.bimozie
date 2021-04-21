@@ -5,16 +5,17 @@ try:
     from urlparse import urlparse
 except ImportError:
     from urllib.parse import urlparse
+from .. import xbmc_helper as helper
 
 try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 
 def get_link(url, media, including_agent=True):
-    print("Apply CORS url %s" % media.get('originUrl'))
+    helper.log("Apply CORS url %s - %s" % (media.get('originUrl'), url))
     if media.get('originUrl'):
         base_url = urlparse(media.get('originUrl'))
         base_url = base_url.scheme + '://' + base_url.netloc
@@ -27,7 +28,7 @@ def get_link(url, media, including_agent=True):
         }
 
         if including_agent:
-            header['User-Agent'] = "Chrome/59.0.3071.115 Safari/537.36"
+            header['user-agent'] = "Chrome/59.0.3071.115 Safari/537.36"
 
         if 'vdicdn.com' in url:
             # url = url.replace('vdicdn.com', '8giaitri.com')
@@ -36,7 +37,7 @@ def get_link(url, media, including_agent=True):
                 # 'Referer': 'https://phim1080.me',
                 # 'Referer': media.get('originUrl'),
                 # 'Host': host_url.netloc,
-                # 'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+                # 'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
             }
 
             url = get_adaptive_link(Request().get(url, headers=header))

@@ -20,6 +20,12 @@ addon_data_dir = os.path.join(py2_decode(xbmc.translatePath('special://userdata/
 def s2u(s): return py2_decode(s) if isinstance(s, str) else s
 
 
+def log(msg, level=xbmc.LOGDEBUG):
+    xbmc.log("----------------Start Log-----------------", level=level)
+    xbmc.log("%s: %s" % ("Bimozie", msg), level=level)
+    xbmc.log("---------------- End Log -----------------", level=level)
+
+
 def getSetting(key):
     return ADDON.getSetting(key)
 
@@ -120,16 +126,16 @@ def wait(sec):
     xbmc.sleep(sec * 1000)
 
 
-def convert_js_2_json(text):
+def convert_js_2_json(str):
     try:
-        return json.loads(text)
+        return json.loads(str)
     except: pass
 
-    vstr = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', text)
-    vstr = re.sub(r'([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', vstr)
-    # vstr = vstr.replace("'", '"')
+    vstr = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)\s?([a-zA-Z][a-zA-Z0-9]*)', r'"\1"', str)
+    vstr = re.sub(r'([a-zA-Z][a-zA-Z0-9]*)(?=:)\s?([a-zA-Z][a-zA-Z0-9]*)', r'"\1"', vstr)
     vstr = re.sub(r'\t+\"', '"', vstr)
-    print(vstr)
+    vstr = vstr.replace("'", '"')
+
     return json.loads(vstr)
 
 

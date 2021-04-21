@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 
 def get_link(url):

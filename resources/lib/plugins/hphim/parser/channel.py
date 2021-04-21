@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 import re
 from kodi_six.utils import py2_encode
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -16,7 +17,7 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         # get total page
         last_page = soup.select('p.pages > a.pagelink')
-        print("*********************** Get pages ")
+        helper.log("*********************** Get pages ")
         if len(last_page) > 1:
             channel['page'] = int(last_page[-1].text.strip())
 

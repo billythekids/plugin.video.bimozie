@@ -2,7 +2,8 @@
 
 import json
 
-from utils.mozie_request import Request
+from .. import xbmc_helper as helper
+from ..mozie_request import Request
 
 try:
     from urlparse import urlparse, parse_qs
@@ -12,16 +13,16 @@ import xbmcgui
 
 
 def get_link(url, media):
-    print("*********************** Apply fantvh url %s" % url)
+    helper.log("*********************** Apply fantvh url %s" % url)
     request = Request()
     base_url = urlparse(url)
     path = urlparse(url).path.replace('/v/', '')
     base_url = base_url.scheme + '://' + base_url.netloc
 
     header = {
-        'Referer': media.get('originUrl'),
-        'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
-        'Origin': base_url
+        'referer': media.get('originUrl'),
+        'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
+        'origin': base_url
     }
 
     resp = request.post('https://fantvh.net/api/source/{}'.format(path), headers=header)

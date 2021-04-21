@@ -6,7 +6,7 @@ from utils.mozie_request import Request
 
 
 class Bilutv:
-    domain = "https://bilutvs.net"
+    domain = "https://biluhay.net"
 
     def getCategory(self):
         url = "%s/%s" % (self.domain, 'danh-sach/')
@@ -25,9 +25,9 @@ class Bilutv:
         response = Request().get(url)
         return Channel().get(response)
 
-    def getMovie(self, id):
-        url = "%s/phim/%s-0000.html" % (self.domain, id)
-        response = Request().get(url)
+    def getMovie(self, mid):
+        # url = "%s/phim/%s-0000.html" % (self.domain, id)
+        response = Request().get(mid)
         url = Movie().get_movie_link(response)
         response = Request().get(url)
         return Movie().get(response)

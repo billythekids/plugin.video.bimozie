@@ -2,8 +2,9 @@
 
 import re
 
-from utils.mozie_request import Request, AsyncRequest
-from utils.pastebin import PasteBin
+from .. import xbmc_helper as helper
+from ..mozie_request import Request, AsyncRequest
+from ..pastebin import PasteBin
 
 try:
     from urllib.parse import urlencode
@@ -12,7 +13,7 @@ except ImportError:
 
 
 def get_link(url, media):
-    print("*********************** Apply dongphim url %s" % url)
+    helper.log("*********************** Apply dongphim url %s" % url)
     header = {
         'Origin': 'http://dongphim.net'
     }

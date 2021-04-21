@@ -5,8 +5,8 @@ try:
     from urlparse import urlparse, parse_qs
 except ImportError:
     from urllib.parse import urlparse, parse_qs
-from utils.mozie_request import Request, AsyncRequest
-from utils.pastebin import PasteBin
+from ..mozie_request import Request, AsyncRequest
+from ..pastebin import PasteBin
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -18,7 +18,7 @@ def get_link(url, media, parser=False):
         'Referer': media.get('originUrl'),
     }
 
-    print("HLS parser: {}".format(url))
+    helper.log("HLS parser: {}".format(url))
 
     if parser:
         url = get_stream(url, header)

@@ -5,6 +5,8 @@ from utils.hosts.fshare import FShareVN
 
 
 class FShare:
+    api: FShareVN
+
     def __init__(self):
         if not helper.getSetting('fshare.username'):
             helper.message('Required username/password to get fshare.vn link, open addon settings', 'Login Required')

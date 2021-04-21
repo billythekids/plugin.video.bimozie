@@ -20,7 +20,7 @@ def get_link(url, movie):
 
     header = {
         'Origin': movie.get('originUrl'),
-        'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+        'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
         'Referer': movie.get('originUrl')
     }
 

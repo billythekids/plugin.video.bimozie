@@ -2,7 +2,7 @@
 import json
 import re
 
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 try:
     from urllib.parse import urlencode
@@ -20,12 +20,13 @@ def create_playlist(text, idfile, domains, headers):
     j = 0
     for i in range(len(data.get('data')[0])):
         domain = domains[j]
-        j+=1
+        j += 1
         if j >= len(domains): j = 0
         play_list += "#EXTINF:{},\n".format(data.get('data')[0][i])
         play_list += "https://{}/stream/linkv2/{}/{}/{}/{}.html\n".format(domain, data.get('quaity'),
                                                                           data.get('idplay'),
-                                                                          idfile, data.get('data')[1][i], urlencode(headers))
+                                                                          idfile, data.get('data')[1][i],
+                                                                          urlencode(headers))
 
     play_list += "#EXT-X-ENDLIST"
     return play_list
@@ -37,7 +38,6 @@ def create_master_playlist(url):
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=648224,RESOLUTION=640x360
 {}
     """.format(url)
-
 
 
 def get_link(url, media):
@@ -56,31 +56,34 @@ def get_link(url, media):
 
         # get domain list https://play.playoffsite.xyz/play/v1/5f6581f43036707a6803e61c
         # var DOMAIN_LIST =
-        link = "https://play.playoffsite.xyz/play/v1/{}".format(m_id)
+        link = "https://play.vstreamplay.xyz/play/v1/{}".format(m_id)
         response = req.get(link, headers=header)
         domains = re.search(r'var DOMAIN_LIST = (\[.*\])', response).group(1)
         idfile = re.search(r'var idfile = "(.*)";', response).group(1)
         iduser = re.search(r'var idUser = "(.*)";', response).group(1)
 
         header = {
-            'Referer': link,
+            'referer': 'https://play.vstreamplay.xyz/',
+            'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+            'verifypeer': 'false'
             # 'Content-Type': 'application/x-www-form-urlencoded'
         }
-        # get https://api.playoffsite.xyz/apiv1/views/5fc9bad50a6ad5ac5c00a8e8
-        # head https://m3u8.playoffsite.xyz/api/v1/png/5fc9bad50a6ad5ac5c00a8e8
-        # location https://m3u8.playoffsite.xyz/m3u8/v1/4/png/5fc9bad50a6ad5ac5c00a8e8.m3u8
-        response = req.post("https://api-sing.playoffsite.xyz/apiv2/{}/{}".format(iduser, idfile), headers=header, params={
-            'referrer': 'http://tvhai.org',
-            'typeend': 'html'
-        })
+        response = req.post("https://api-sing.vstreamplay.xyz/apiv2/{}/{}".format(iduser, idfile), headers=header,
+                            params={
+                                'referrer': 'http://tvhai.org',
+                                'typeend': 'html'
+                            })
         response = json.loads(response)
         url = response.get('data')
         # req.head("https://m3u8.playoffsite.xyz/api/v1/png/{}".format(idfile), headers=header)
         # url = req.get_request().history[0].headers['Location']
 
-
         # response = req.post("https://api.playoffsite.xyz/apiv1/playhq/{}".format(m_id), headers=header, params="referrer=http%3A%2F%2Ftvhayz.net")
-        # header = {'Referer': link, 'verifypeer': 'false', 'User-Agent': "Chrome/59.0.3071.115 Safari/537.36"}
+        # header = {
+        #     'referer': link,
+        #     'verifypeer': 'false',
+        #     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'
+        # }
         # playlist = create_playlist(response, idfile, domains, header)
         # url = PasteBin().dpaste(playlist, name='playoffsite', expire=60)
         # playlist = create_master_playlist(url)

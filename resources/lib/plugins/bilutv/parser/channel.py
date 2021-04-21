@@ -22,14 +22,23 @@ class Parser:
                 except:
                     pass
 
-        for movie in soup.select('div.left-content > div.block-film > ul.list-film > li > div'):
-            title = movie.select_one('p.name').text
-            type = movie.select_one('label').text
-            realtitle = movie.select_one('p.real-name').text
+        for movie in soup.select('ul.list-film > li > div'):
+            title = movie.select_one('p.name')
+            if title:
+                title = title.text
+            elif movie.select_one('div.title'):
+                title = movie.select_one('div.title').text
+            m_type = movie.select_one('label')
+            if m_type:
+                m_type = m_type.text
+            realtitle = movie.select_one('.real-name')
+            if realtitle:
+                realtitle = realtitle.text
+
             if realtitle is not None:
-                label = "[%s] %s - %s" % (type, title, realtitle)
+                label = "[%s] %s - %s" % (m_type, title, realtitle)
             else:
-                label = "[%s] %s" % (type, title)
+                label = "[%s] %s" % (m_type, title)
 
             img = movie.select_one('div.list-img').get('style')
             img = re.search(r"background-image:url\((.*)\)", img).group(1)
@@ -37,14 +46,14 @@ class Parser:
             if 'https://' not in img:
                 img = 'https://{}'.format(img)
 
-            movie_id = re.search(r"((\d{2,}))", movie.select_one('a').get('href')).group(1)
+            # movie_id = re.search(r"((\d{2,}))", movie.select_one('a').get('href')).group(1)
             channel['movies'].append({
-                'id': movie_id,
+                'id': movie.select_one('a').get('href'),
                 'label': py2_encode(label),
                 'title': py2_encode(title),
                 'realtitle': py2_encode(realtitle),
                 'thumb': img,
-                'type': py2_encode(type),
+                'type': py2_encode(m_type),
             })
 
         return channel

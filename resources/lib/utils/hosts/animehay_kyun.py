@@ -2,11 +2,12 @@
 
 import re
 
-from utils.mozie_request import Request
+from .. import xbmc_helper as helper
+from ..mozie_request import Request
 
 
 def get_link(url):
-    print("*********************** Apply animehay kyun url %s" % url)
+    helper.log("*********************** Apply animehay kyun url %s" % url)
     req = Request()
 
     response = req.get(url, redirect=True)

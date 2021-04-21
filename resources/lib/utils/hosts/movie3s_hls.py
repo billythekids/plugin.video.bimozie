@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from utils.mozie_request import Request
-from utils.pastebin import PasteBin
+from ..mozie_request import Request
+from ..pastebin import PasteBin
 try:
     from urllib.parse import urlencode
 except ImportError:

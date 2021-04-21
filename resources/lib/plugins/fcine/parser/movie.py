@@ -40,11 +40,13 @@ class Parser:
             results = AsyncRequest().get(links)
             for idx, result in enumerate(results):
                 try:
+                    link = items[idx].get('href')
                     name, size = FShareVN.get_asset_info(content=result)
                     movie['links'].append({
-                        'link': items[idx].get('href'),
+                        'link': link,
                         'title': '[%s] %s' % (size, name),
                         'type': 'Fshare',
+                        'isFolder': FShareVN.is_folder(link),
                         'subtitle': subtitle,
                         'resolve': False
                     })

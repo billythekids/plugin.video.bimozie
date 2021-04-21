@@ -2,8 +2,8 @@
 # coding=utf-8
 import re
 
-from utils.cpacker import cPacker as Packer
-from utils.mozie_request import Request
+from ..cpacker import cPacker as Packer
+from ..mozie_request import Request
 
 
 def get_link(url, media):

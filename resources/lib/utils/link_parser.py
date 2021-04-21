@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import re
 
-import utils.xbmc_helper as helper
+from . import xbmc_helper as helper
+from .link_extractor import LinkExtractor
+from .mozie_request import Request
 import xbmcaddon
 
 try:
@@ -60,6 +62,7 @@ from .hosts import fshare, \
     verystream, \
     thuckhuya, \
     donganime, \
+    beststream, \
     tvmienphi
 
 
@@ -69,7 +72,7 @@ class LinkParser:
         self.url = media['link']
 
     def get_link(self):
-        print("LinkParser:: Find link source of %s" % self.url)
+        helper.log("LinkParser:: Find link source of %s" % self.url)
         if re.search('ok.ru', self.url):
             # return self.get_link_resolveurl()
             return ok.get_link(self.url)
@@ -80,11 +83,15 @@ class LinkParser:
         if re.search('feurl.com', self.url):
             return feurl.get_link(self.url, self.media)
 
-        if 'play.playoffsite.xyz' in self.url:
+        if 'play.playoffsite.xyz' in self.url or \
+                'play.vstreamplay.xyz' in self.url:
             return playoffsite.get_link(self.url, self.media)
 
         if 'xemtivimienphi.com/' in self.url:
             return xemtivimienphi.get_link(self.url, self.media)
+
+        if 'beststream.io' in self.url:
+            return beststream.get_link(self.url, self.media)
 
         if re.search('streamtape.com', self.url):
             return streamtape.get_link(self.url, self.media)
@@ -116,7 +123,7 @@ class LinkParser:
                 or 'phimgi.tv/player/yotube.php' in self.url:
             return iframeembed.get_link(self.url, self.media)
 
-        elif 'https://proxy.playphim.info' in self.url:
+        elif 'proxy.playphim.info' in self.url:
             return proxy_playphim.get_link(self.url, self.media)
 
         elif 'fimfast.com' in self.url \
@@ -160,7 +167,8 @@ class LinkParser:
             return streamsb_biphim_club.get_link(self.url, self.media)
 
         elif '90p.tv' in self.url \
-                or 'binhluanvidamme.online' in self.url:
+                or 'binhluanvidamme.online' in self.url \
+                or 'phut91.online' in self.url:
             return phut90.get_link(self.url, self.media), '90p.tv'
 
         # Animehay
@@ -274,7 +282,6 @@ class LinkParser:
             return pzc_phimmoi.get_link(self.url, self.media)
 
         elif 'gpt.phimmoi' in self.url:
-            helper.message('Phimmoi gpt.phimmoi.net link parsing', 'Get Link')
             return pzc_phimmoi.get_link(self.url, self.media)
 
         # elif 'gpt2.phimmoi.net' in self.url:
@@ -313,21 +320,18 @@ class LinkParser:
         elif '.xyz' in self.url:
             return cors.get_link(self.url, self.media, including_agent=False)
 
-        elif 'stream3.donganime.net' in self.url:
+        elif 'donganime.net' in self.url:
             return donganime.get_link(self.url, self.media)
 
         elif 'sv.tvmienphi.tv' in self.url:
             return tvmienphi.get_link(self.url, self.media)
 
+        elif 'fb.phimtvb.net' in self.url:
+            content = Request().get(self.url)
+            return LinkExtractor.play_sources(content)[0].get('file'), 'phimtvb'
+
         elif 'thuckhuya.com' in self.url:
             return thuckhuya.get_link(self.url, self.media)
-
-        elif 'clgt.link' in self.url:
-            return self.url + "|%s" % urlencode({
-                'Origin': 'https://anime47.com',
-                'Referer': 'https://anime47.com/',
-                'verifypeer': 'false'
-            }), "CORS"
 
         elif self.url.endswith('m3u8'):
             return self.get_m3u8()
@@ -374,15 +378,16 @@ class LinkParser:
             xbmcaddon.Addon().openSettings()
             return None, None
 
-        if helper.getSetting('fshare.enable'):
-            f_url = fshare.FShareVN(
+        f_url = fshare.FShareVN(
                 self.url,
                 helper.getSetting('fshare.username'),
                 helper.getSetting('fshare.password')
             ).get_link()
-            return f_url, 'Fshare'
-        else:
-            return fshare.FShareVN(self.url).get_link(), 'Fshare'
+
+        return f_url, 'fshare'
+
+        self.media['originUrl'] = self.url
+        return cors.get_link(f_url, self.media, including_agent=True)
 
     def get_m3u8(self):
         # support to run with inputstream.adaptive

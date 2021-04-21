@@ -109,7 +109,7 @@ SITES = [
         "logo": "https://i.ibb.co/tBKrQtK/image.png",
         "className": "Hphim",
         "plugin": "hphim.plugin",
-        "version": 1
+        "version": 31
       },
       {
         "name": "tvhai.org",
@@ -191,7 +191,7 @@ SITES = [
     "sites": [
       {
         "name": "animehay.tv",
-        "logo": "https://i.ibb.co/TrRRp1v/image.png",
+        "logo": "https://i1.wp.com/www.albertgyorfi.com/wp-content/uploads/2017/05/anime-pack.png?fit=256%2C256&ssl=1",
         "className": "Animehay",
         "plugin": "animehay.plugin",
         "version": 1

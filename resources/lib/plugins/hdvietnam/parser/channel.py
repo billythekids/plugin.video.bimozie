@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from utils.mozie_request import AsyncRequest
 import utils.xbmc_helper as helper
 from kodi_six.utils import py2_encode
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -17,7 +18,7 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         # get total page
         last_page = soup.select_one('div.PageNav')
-        print("*********************** Get pages ")
+        helper.log("*********************** Get pages ")
         if last_page is not None:
             channel['page'] = int(last_page.get('data-last'))
 
@@ -49,7 +50,7 @@ class Parser:
                 else:
                     channel['movies'].append(movie)
             except:
-                print(tag)
+                helper.log(tag)
 
         if 'true' in helper.getSetting('hdvietnam.extra'):
             channel['movies'] = AsyncRequest(thread=10).get(jobs)
@@ -76,7 +77,7 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         # get total page
         last_page = soup.select_one('div.PageNav')
-        print("*********************** Get pages ")
+        helper.log("*********************** Get pages ")
         if last_page is not None:
             channel['page'] = int(last_page.get('data-last'))
 

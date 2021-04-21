@@ -4,6 +4,7 @@ import re
 
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -18,7 +19,7 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         # get total page
         pages = soup.select('ul.pagination > li > a')
-        print("*********************** Get pages ")
+        helper.log("*********************** Get pages ")
         for item in pages:
             if item.text.strip() == py2_encode("Trang kế →"): channel['page'] = int(page)+1
 

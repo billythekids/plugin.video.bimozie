@@ -3,14 +3,14 @@ import json
 import math
 import re
 
-import utils.xbmc_helper as helper
+from .. import xbmc_helper as helper
 
 try:
     from urlparse import urlparse, parse_qs
 except ImportError:
     from urllib.parse import urlparse, parse_qs
-from utils.mozie_request import Request, AsyncRequest
-from utils.pastebin import PasteBin
+from ..mozie_request import Request, AsyncRequest
+from ..pastebin import PasteBin
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -22,7 +22,7 @@ def get_link(url, media):
     base_url = base_url.scheme + '://' + base_url.netloc
     header = {
         'Origin': base_url,
-        'User-Agent': 'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'
+        'user-agent': 'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'
     }
     request = Request(header)
 
@@ -30,13 +30,13 @@ def get_link(url, media):
 
     resolutions = re.findall('RESOLUTION=\d+x(\d+)', response)
     matches = re.findall(r'(.*\.m3u8)', response)
-    print("Found total %d stream" % len(resolutions), resolutions)
+    helper.log("Found total %d stream" % len(resolutions), resolutions)
     if len(resolutions) > 1:
         if '1080' in resolutions:
             idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
             stream_url = url.replace('playlist.m3u8', matches[idx])
             stream_url = calculate_stream(request.get(stream_url), base_url, media['originUrl'])
-            print("1080 url:%s" % stream_url)
+            helper.log("1080 url:%s" % stream_url)
             if stream_url:
                 return stream_url
 
@@ -44,7 +44,7 @@ def get_link(url, media):
             idx = next((resolutions.index(i) for i in resolutions if '720' == i), -1)
             stream_url = url.replace('playlist.m3u8', matches[idx])
             stream_url = calculate_stream(request.get(stream_url), base_url, media['originUrl'])
-            print("720 url:%s" % stream_url)
+            helper.log("720 url:%s" % stream_url)
             if stream_url:
                 return stream_url
 
@@ -52,7 +52,7 @@ def get_link(url, media):
             idx = next((resolutions.index(i) for i in resolutions if '360' == i), -1)
             stream_url = url.replace('playlist.m3u8', matches[idx])
             stream_url = calculate_stream(request.get(stream_url), base_url, media['originUrl'])
-            print("360 url:%s" % stream_url)
+            helper.log("360 url:%s" % stream_url)
             if stream_url:
                 return stream_url
 

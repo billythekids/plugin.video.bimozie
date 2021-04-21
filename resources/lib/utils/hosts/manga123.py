@@ -23,7 +23,7 @@ def get_link(url, movie):
         hosturl = '%s/playlist/%s/1601558354231' % (base_url, mid)
 
         header = {
-            'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+            'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
             'Origin': base_url,
             'Referer': url
         }

@@ -29,7 +29,7 @@ class Fcine:
             'referer': 'https://fcine.net/login/',
         }, session=True)
 
-        if helper.has_file_path('fcine.bin') and helper.get_last_modified_time_file('fcine.bin') + 86400 < int(
+        if helper.has_file_path('fcine.bin') and helper.get_last_modified_time_file('fcine.bin') + 43200 < int(
                 time.time()):
             helper.remove_file('fcine.bin')
 
@@ -37,6 +37,9 @@ class Fcine:
             self.request.set_session(pickle.loads(helper.read_file('fcine.bin', True)))
         else:
             self.login()
+
+    def updateSession(self):
+        helper.write_file('fcine.bin', pickle.dumps(self.request.get_request_session()), True)
 
     def get_token(self, response=None):
         if not response:
@@ -58,9 +61,9 @@ class Fcine:
             'remember_me': 1,
             'remember_me_checkbox': 1
         }
-
-        self.request.post('%s/login/' % self.domain, params)
-        helper.write_file('fcine.bin', pickle.dumps(self.request.get_request_session()), True)
+        response = self.request.post('%s/login/' % self.domain, params)
+        self.updateSession()
+        return response
 
     def getCategory(self):
         response = self.request.get(self.domain)
@@ -73,9 +76,13 @@ class Fcine:
         response = self.request.get(url)
         return Channel().get(response, page)
 
-    def getMovie(self, id):
-        response = self.request.get(id)
-        return Movie().get(response)
+    def getMovie(self, url):
+        # self.get_token()
+        # response = self.login(
+        #     self.username,
+        #     self.password,
+        #     {'referer': id})
+        return Movie().get(self.request.get(url))
 
     def getLink(self, url):
         response = self.request.get(url)

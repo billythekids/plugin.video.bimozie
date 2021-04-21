@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from utils.link_parser import LinkParser
-import utils.xbmc_helper as helper
+from .link_parser import LinkParser
+from . import xbmc_helper as helper
 import re
 
 
@@ -18,7 +18,7 @@ class MediaHelper:
                 link, mediatype = LinkParser(media).get_link()
 
         if not link:
-            # helper.message('Cannot find media url %s' % media['link'], 'Link not found')
+            helper.message('Cannot find media url %s' % media['link'], 'Link not found')
             media['link'] = None
             return
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -15,7 +16,7 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         # get total page
         last_page = soup.select_one('div.ah-pagenavi > ul.pagination > li.last')
-        print("*********************** Get pages ")
+        helper.log("*********************** Get pages ")
         if last_page is not None:
             page = last_page.text.strip()
             channel['page'] = int(page)

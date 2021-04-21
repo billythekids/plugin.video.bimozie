@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-from six.moves.urllib.parse import quote, unquote
-from utils.mozie_request import Request
-from utils.pastebin import PasteBin
+from .. import xbmc_helper as helper
+from six.moves.urllib.parse import unquote
+from ..mozie_request import Request
+from ..pastebin import PasteBin
 
 try:
     from urllib.parse import urlencode
@@ -12,10 +13,10 @@ except ImportError:
 
 
 def get_link(url):
-    print("*********************** Apply fptplay url %s" % url)
+    helper.log("*********************** Apply fptplay url %s" % url)
     header = {
         'Origin': 'https://fptplay.vn',
-        'User-Agent':  "Chrome/59.0.3071.115 Safari/537.36"
+        'user-agent':  "Chrome/59.0.3071.115 Safari/537.36"
     }
     return str(url) + "|%s" % urlencode(header), 'hls3'
 

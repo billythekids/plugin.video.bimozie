@@ -7,13 +7,14 @@ try:
 except ImportError:
     from urllib.parse import urlparse, parse_qs
 
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 from . import cors
+from .. import xbmc_helper as helper
 
 
 def get_link(url, movie):
-    print("Apply VTVHUB parser")
+    helper.log("Apply VTVHUB parser")
     base_url = urlparse(url)
 
     is_ajax = re.search(r'embedplay', url)

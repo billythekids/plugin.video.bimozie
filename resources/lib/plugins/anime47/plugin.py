@@ -5,6 +5,7 @@ from anime47.parser.channel import Parser as Channel
 from anime47.parser.movie import Parser as Movie
 from six.moves.urllib.parse import quote_plus
 from utils.mozie_request import Request
+import utils.xbmc_helper as helper
 
 user_agent = (
     "Mozilla/5.0 (X11; Linux x86_64) "
@@ -30,14 +31,14 @@ class anime47:
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
-        print(channel)
+        helper.log(channel)
         if page > 1:
             if channel.endswith(".html"):
                 url = re.sub(r'\d+.html', '{}.html'.format(page), ('%s%s' % (self.domain, channel)))
             else:
                 url = '%s/%s&page=%d' % (self.domain, channel, page)
 
-            print(url)
+            helper.log(url)
         else:
             url = '%s/%s' % (self.domain, channel)
         response = self.request.get(url, headers=h)

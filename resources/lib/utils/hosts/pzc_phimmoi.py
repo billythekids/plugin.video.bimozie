@@ -4,13 +4,13 @@ import json
 import re
 
 from . import cors
-from utils.mozie_request import Request
+from ..mozie_request import Request
 
 
 def get_link(url, media):
     header = {
         'Referer': media.get('originUrl'),
-        # 'User-Agent': "Chrome/59.0.3071.115 Safari/537.36",
+        # 'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
         # 'Origin': media.get('originUrl')
     }
 
