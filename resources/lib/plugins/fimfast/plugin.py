@@ -59,11 +59,11 @@ class Fimfast:
 
         response = self.request.get(url, headers={
             'referer': movieurl,
-            'authority': 'phim1080zz.com',
             'x-requested-with': 'XMLHttpRequest',
+            'cookie': 'phim1080zz=%3D'
         })
 
-        return Movie().get_link(response, movieurl)
+        return Movie().get_link(response, self.domain, movieurl)
 
     def search(self, text):
         # https://fimfast.com/api/v2/search?q=nu%20hon&limit=12

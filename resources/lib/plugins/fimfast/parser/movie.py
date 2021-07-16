@@ -3,6 +3,7 @@ import json
 import re
 from kodi_six.utils import py2_encode
 from six import string_types
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -31,7 +32,7 @@ class Parser:
 
         return movie
 
-    def get_link(self, response, movieurl):
+    def get_link(self, response, domain, movieurl):
         movie = {
             'group': {},
             'episode': [],
@@ -41,7 +42,7 @@ class Parser:
         videos = json.loads(response)
         subtitle = None
         if 'subtitle' in videos and len(videos['subtitle']) > 0 and 'vi' in videos['subtitle']:
-            subtitle = 'https://phim1080.me/subtitle/%s.vtt' % videos['subtitle']['vi']
+            subtitle = '{}/subtitle/{}.vtt'.format(domain, videos['subtitle']['vi'])
 
         videos = videos['sources']
         for videotype in videos:
@@ -74,6 +75,8 @@ class Parser:
                         'subtitle': subtitle,
                         'originUrl': movieurl
                     })
+
+        helper.log(movie)
         return movie
 
     def encodeString(self, e, t):

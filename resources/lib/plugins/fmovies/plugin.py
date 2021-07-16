@@ -1,6 +1,6 @@
-from hayghes.parser.category import Parser as Category
-from hayghes.parser.channel import Parser as Channel
-from hayghes.parser.movie import Parser as Movie
+from .parser.category import Parser as Category
+from .parser.channel import Parser as Channel
+from .parser.movie import Parser as Movie
 from six.moves.urllib.parse import quote_plus
 from utils.mozie_request import Request
 
@@ -17,37 +17,38 @@ h = {
 }
 
 
-class Hayghes:
-    domain = "https://hayghex.net"
+class fmovies:
+    domain = "https://fmovies.to"
 
     def __init__(self):
         self.request = Request(h, session=True)
 
     def getCategory(self):
-        response = self.request.get('{}'.format(self.domain), headers=h)
-        return Category().get(response), Channel().get(response, 1)
+        response = self.request.get('{}/home'.format(self.domain), headers=h)
+        return Category().get(response), Channel().getTop(response)
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
+        baseurl = "{}{}".format(self.domain, channel)
 
-        if page > 1:
-            url = '%s%strang-%d.html' % (self.domain, channel, page)
+        if page == 1:
+            response = self.request.get(baseurl)
         else:
-            url = '%s%s' % (self.domain, channel)
+            baseurl = "{}?page={}".format(baseurl, page)
+            response = self.request.get(baseurl)
 
-        response = self.request.get(url, headers=h)
         return Channel().get(response, page)
 
     def getMovie(self, movie_url):
-        url = '{}xem-phim.html'.format(movie_url)
-        response = self.request.get(url, headers=h)
-        return Movie().get(response, url)
+        movie_url = '%s%s' % (self.domain, movie_url)
+
+        response = self.request.get(movie_url, headers=h)
+        return Movie().get(response, movie_url)
 
     def getLink(self, movie):
         url = movie['link'].replace(self.domain, '')
-        url = "%s%s" % (self.domain, url)
+        url = "%s/%s" % (self.domain, url)
         response = self.request.get(url, headers=h)
-
         return Movie().get_link(response, self.domain, url, self.request)
 
     def search(self, text):

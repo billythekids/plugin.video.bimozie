@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import routing
+import json
+import sys
 from kodi_six import xbmc
 
 plugin = routing.Plugin()
@@ -11,6 +13,10 @@ from .utils.xbmc_sites import SiteHandler
 from .utils.xbmc_movie import MovieHandler
 from .utils.xbmc_fshare import FshareHandler
 from .utils.xbmc_player import PlayerHandler
+from six.moves.urllib.parse import parse_qs
+
+
+ARGS = parse_qs(sys.argv[2][1:])
 
 
 def globalContextMenu():
@@ -62,6 +68,10 @@ def show_movie_server_group():
 @plugin.route('/play')
 def play(query=None):
     PlayerHandler.play(query)
+
+
+def play_remote(query=None):
+    PlayerHandler.play(ARGS)
 
 
 @plugin.route('/searchAll')
@@ -122,9 +132,11 @@ def load_plugin(args):
 
 
 def main():
-    try:
-        plugin.run()
-    except Exception as ex:
-        helper.log(ex.__class__, xbmc.LOGERROR)
-        print(ex)
-        raise ex
+    if ARGS and ARGS.get('mode') and ARGS.get('mode')[0] == 'play_item':
+        play_remote(ARGS)
+    else:
+        try:
+            plugin.run()
+        except Exception as ex:
+            helper.log(ex.__class__, xbmc.LOGERROR)
+            raise ex

@@ -21,8 +21,8 @@ h = {
 
 
 class Phimmedia:
-    replace_domain = "https://www.phimmedia.me"
-    domain = "https://www.phimmedia.me"
+    replace_domain = "https://www.phimdinhcao.com"
+    domain = "https://www.phimdinhcao.com"
     cookies = {}
 
     def __init__(self):

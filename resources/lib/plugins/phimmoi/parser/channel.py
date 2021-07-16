@@ -70,7 +70,7 @@ class Parser:
             else:
                 label = "[%s] %s" % (type, title)
 
-            thumb = re.search(r"background-image:url\('(.*)'\)", movie.select_one('div.public-film-item-thumb').get('style')).group(1)
+            thumb = re.search(r"url\((.*?)\)", movie.select_one('div.public-film-item-thumb').get('style')).group(1)
 
             channel['movies'].append({
                 'id': py2_encode(movie.get('href')),

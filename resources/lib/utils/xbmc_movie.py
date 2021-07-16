@@ -2,6 +2,7 @@
 import json
 
 from kodi_six import xbmcplugin, xbmcgui
+from six.moves.urllib.parse import urlencode
 
 from . import xbmc_helper as helper
 from .. import app
@@ -30,10 +31,13 @@ def _build_ep_list(items, movie_item, module, class_name):
             eps_title = helper.text_encode(item.get('title'))
             movie_item['title'] = "%s - %s" % (title, eps_title)
 
-            url = plugin.url_for(app.play, query=json.dumps({
-                'item': item, 'movie_item': movie_item, 'direct': 0,
-                'module': module, 'className': class_name
-            }))
+            url = plugin.url_for_path('/play?{}'.format(urlencode({
+                'mode': 'play_item',
+                'query': json.dumps({
+                    'item': item, 'movie_item': movie_item, 'direct': 0,
+                    'module': module, 'className': class_name
+                })
+            })))
             li.setProperty("IsPlayable", "true")
             xbmcplugin.addDirectoryItem(plugin.handle, url, li, isFolder=False)
         except:
@@ -43,6 +47,7 @@ def _build_ep_list(items, movie_item, module, class_name):
 class MovieHandler:
     @staticmethod
     def show_movies(movies=None, link=None, page=0, cat_name="", module=None, class_name=None):
+        xbmcplugin.setContent(plugin.handle, 'videos')
         if not movies:
             query = json.loads(plugin.args['query'][0])
             instance, module, class_name = app.load_plugin(query)
@@ -167,7 +172,7 @@ class MovieHandler:
         # save watching movie
         if 'Phut90' not in class_name and 'Thuckhuya' not in class_name:
             helper.save_last_watch_movie(query)
-        xbmcplugin.endOfDirectory(plugin.handle)
+        xbmcplugin.endOfDirectory(plugin.handle, cacheToDisc=False)
 
     @staticmethod
     def show_movie_server_group():

@@ -32,9 +32,10 @@ class FshareHandler:
             if fshare_item[1].get('type') == 1:
                 li.setInfo('video', {'title': fshare_item[0], 'plot': fshare_item[0]})
                 item['link'] = 'https://www.fshare.vn/file/{}'.format(fshare_item[1].get('linkcode'))
-                url = plugin.url_for(app.play, query=json.dumps({
-                    'item': item, 'movie_item': movie_item, 'direct': 1
-                }))
+                url = plugin.url_for(app.play,
+                                     query=json.dumps({
+                                         'item': item, 'movie_item': movie_item, 'direct': 1
+                                     }))
                 li.setProperty("IsPlayable", "true")
             else:
                 is_folder = True
@@ -63,7 +64,8 @@ class FshareHandler:
         list_item = xbmcgui.ListItem(
             label="Enter code: https://fshare.vn/file/[COLOR orange][B]%s[/B][/COLOR]" % "XXXXXXXXXX",
         )
-        xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(app.playing_with_fshare_code), list_item, isFolder=True)
+        xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(app.playing_with_fshare_code), list_item,
+                                    isFolder=True)
 
         xbmcplugin.addDirectoryItem(plugin.handle, plugin.url_for(app.clear_with_fshare_code),
                                     xbmcgui.ListItem(label="[COLOR red][B]%s[/B][/COLOR]" % "Clear all..."), True)
@@ -71,7 +73,8 @@ class FshareHandler:
         # Support to save search history
         items: dict = helper.get_last_fshare_movie()
         for item in items.values():
-            url = plugin.url_for(app.play, query=json.dumps({'item': item, 'direct': 1}))
+            url = plugin.url_for(app.play,
+                                 query=json.dumps({'item': item, 'direct': 1}))
             txt = '[%s] %s' % (item.get('size'), item.get('title'))
             list_item = xbmcgui.ListItem(label=txt)
 
@@ -113,7 +116,8 @@ class FshareHandler:
             url = 'https://fshare.vn/folder/{}'.format(text.strip().upper())
             try:
                 Fshare.get_info(url=url)
-                title = url; size = 'Folder'
+                title = url;
+                size = 'Folder'
             except:
                 return
 

@@ -27,7 +27,6 @@ def get_link(url, media):
         base_url = urlparse(url)
         base_url = base_url.scheme + '://' + base_url.netloc
         url = '{}{}'.format(base_url, sources[0].get('file'))
-        print(url)
         return url, 'donganime'
 
     content = hls.get_adaptive_link(req.get(url))

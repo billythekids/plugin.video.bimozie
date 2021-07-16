@@ -10,7 +10,7 @@ from utils.mozie_request import Request
 
 class Dongphim:
     # domain = "https://dongphim.biz"
-    domain = "https://dongphym.net"
+    domain = "https://dongphym.co"
     api = "https://dp.vodcdn.xyz"
 
     def __init__(self):

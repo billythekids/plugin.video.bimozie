@@ -1,8 +1,8 @@
-from six.moves.urllib.parse import quote_plus
-from utils.mozie_request import Request
 from phimmoi.parser.category import Parser as Category
 from phimmoi.parser.channel import Parser as Channel
 from phimmoi.parser.movie import Parser as Movie
+from six.moves.urllib.parse import quote_plus
+from utils.mozie_request import Request
 
 user_agent = (
     "Mozilla/5.0 (X11; Linux x86_64) "
@@ -17,8 +17,9 @@ h = {
     # 'Referer': 'http://www.phimmoizz.net/vn.php'
 }
 
+
 class Phimmoi:
-    domain = "http://www.phimmoizz.net"
+    domain = "https://phimmoii.org"
 
     def __init__(self):
         self.request = Request(h, session=True)
@@ -37,16 +38,22 @@ class Phimmoi:
         response = self.request.get(url, headers=h)
         return Channel().get(response, page)
 
-    def getMovie(self, id):
-        url = "%s/%sxem-phim.html" % (self.domain, id)
+    def getMovie(self, url):
+        url = url.replace(self.domain, '')
+        url = "%s%s" % (self.domain, url)
         response = self.request.get(url, headers=h)
-        return Movie().get(response, url)
+
+        instance = Movie()
+        play_link = instance.get_playlink(response, url)
+        response = self.request.get(play_link, headers=h)
+        return instance.get(response, url)
 
     def getLink(self, movie):
         url = movie['link'].replace(self.domain, '')
-        url = "%s/%s" % (self.domain, url)
+        url = url.replace('//', '')
+        url = "%s%s" % (self.domain, url)
         response = self.request.get(url, headers=h)
-        return Movie().get_link(response, url, self.request)
+        return Movie().get_link(response, url, self.request, self.domain)
 
     def search(self, text):
         url = "%s/tim-kiem/%s/" % (self.domain, quote_plus(text))

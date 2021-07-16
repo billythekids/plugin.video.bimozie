@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import re
 
+import xbmcaddon
+
 from . import xbmc_helper as helper
 from .link_extractor import LinkExtractor
 from .mozie_request import Request
-import xbmcaddon
 
 try:
     from urllib.parse import urlencode
@@ -62,6 +63,11 @@ from .hosts import fshare, \
     verystream, \
     thuckhuya, \
     donganime, \
+    mephimanh, \
+    phimmoi_pro, \
+    jimmiepradeep, \
+    streamasia, \
+    tvhaystream, \
     tvmienphi
 
 
@@ -82,12 +88,29 @@ class LinkParser:
         if re.search('feurl.com', self.url):
             return feurl.get_link(self.url, self.media)
 
+        if re.search('mephimanh.com', self.url):
+            return mephimanh.get_link(self.url, self.media)
+
         if 'play.playoffsite.xyz' in self.url or \
                 'play.vstreamplay.xyz' in self.url:
             return playoffsite.get_link(self.url, self.media)
 
         if 'xemtivimienphi.com/' in self.url:
             return xemtivimienphi.get_link(self.url, self.media)
+
+        if 'jimmiepradeep.xyz' in self.url:
+            return jimmiepradeep.get_link(self.url, self.media)
+
+        if 'streamasia.cloud' in self.url:
+            return streamasia.get_link(self.url, self.media)
+
+        if 'play.tvhaystream.xyz' in self.url:
+            return tvhaystream.get_link(self.url, self.media)
+
+        if 'phimmoi.pro' in self.url \
+                or 'streamvip.xyz' in self.url \
+                :
+            return phimmoi_pro.get_link(self.url, self.media)
 
         if re.search('streamtape.com', self.url):
             return streamtape.get_link(self.url, self.media)
@@ -326,7 +349,7 @@ class LinkParser:
             content = Request().get(self.url)
             return LinkExtractor.play_sources(content)[0].get('file'), 'phimtvb'
 
-        elif 'thuckhuya.com' in self.url:
+        elif 'thuckhuya.live' in self.url:
             return thuckhuya.get_link(self.url, self.media)
 
         elif self.url.endswith('m3u8'):
@@ -375,10 +398,10 @@ class LinkParser:
             return None, None
 
         f_url = fshare.FShareVN(
-                self.url,
-                helper.getSetting('fshare.username'),
-                helper.getSetting('fshare.password')
-            ).get_link()
+            self.url,
+            helper.getSetting('fshare.username'),
+            helper.getSetting('fshare.password')
+        ).get_link()
 
         return f_url, 'fshare'
 

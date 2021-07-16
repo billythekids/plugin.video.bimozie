@@ -47,11 +47,14 @@ class Parser:
         ep_id = re.search(r'''filmInfo.episodeID = parseInt\('(.*?)'\);''', response).group(1)
         film_id = re.search(r'''filmInfo.filmID = parseInt\('(.*?)'\);''', response).group(1)
         play_tech = re.search(r'''filmInfo.playTech = '(.*?)';''', response).group(1)
+        
         response = Request().post('{}/ajax'.format(domain), params={
             'NextEpisode': 1,
             'EpisodeID': ep_id,
             'filmID': film_id,
             'playTech': play_tech
+        }, headers={
+            'referer': referrer_url
         })
 
         link = LinkExtractor.iframe(response)
@@ -63,6 +66,7 @@ class Parser:
                 'resolve': False,
                 'originUrl': referrer_url
             })
+
 
         # if links:
         #     for link in links:

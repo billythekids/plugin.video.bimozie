@@ -30,20 +30,20 @@ def get_link(url, media, including_agent=True):
         if including_agent:
             header['user-agent'] = "Chrome/59.0.3071.115 Safari/537.36"
 
-        if 'vdicdn.com' in url:
-            # url = url.replace('vdicdn.com', '8giaitri.com')
-            # host_url = urlparse(url)
-            header = {
-                # 'Referer': 'https://phim1080.me',
-                # 'Referer': media.get('originUrl'),
-                # 'Host': host_url.netloc,
-                # 'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
-            }
-
-            url = get_adaptive_link(Request().get(url, headers=header))
-            url = host_url.scheme + '://' + host_url.netloc + url
-            # print "--------------------------- {}".format(url)
-            return url + "|%s" % urlencode(header), host_url.netloc
+        # if 'vdicdn.com' in url:
+        #     # url = url.replace('vdicdn.com', '8giaitri.com')
+        #     # host_url = urlparse(url)
+        #     header = {
+        #         # 'Referer': 'https://phim1080.me',
+        #         # 'Referer': media.get('originUrl'),
+        #         # 'Host': host_url.netloc,
+        #         # 'user-agent': "Chrome/59.0.3071.115 Safari/537.36",
+        #     }
+        #
+        #     url = get_adaptive_link(Request().get(url, headers=header))
+        #     url = host_url.scheme + '://' + host_url.netloc + url
+        #     # print "--------------------------- {}".format(url)
+        #     return url + "|%s" % urlencode(header), host_url.netloc
 
         return url + "|%s" % urlencode(header), "CORS"
     return url, 'CORS'

@@ -31,7 +31,7 @@ class FShareVN:
 
     def start_session(self):
         if helper.has_file_path('fshare.bin') \
-                and helper.get_last_modified_time_file('fshare.bin') + 60 < self.current:
+                and helper.get_last_modified_time_file('fshare.bin') + 1 < self.current:
             r = pickle.loads(helper.read_file('fshare.bin', True))
             self.request.get_request_session().cookies.set('session_id', r.get('session_id'))
             self.logout()
@@ -106,7 +106,7 @@ class FShareVN:
         # update session and token
         self.request.get_request_session().cookies.set('session_id', r.get('session_id'))
         self.token = r.get('token')
-        # helper.message('Login success', 'Fshare')
+        helper.message('Login success', 'Fshare')
 
     def get_user(self):
         r = self.request.get('{}/user/get'.format(self.api_url))
@@ -141,16 +141,18 @@ class FShareVN:
         if 'location' in item:
             url = item.get('location')
             # url = helper.get_host_address_url(item.get('location'))
-            # with self.request.get(url, stream=True) as r:
+            # with self.request.get(url, stream=True, headers={
+            #     'user-agent': user_agent,
+            # }) as r:
             #     r.raise_for_status()
             #     for chunk in r.iter_content(chunk_size=1024):
             #         return None
             helper.sleep(2000)
-            return url
+            # return url
 
             return '{}|{}'.format(url, urlencode({
                 'user-agent': user_agent,
-                'verifypeer': 'true'
+                # 'verifypeer': 'true'
             }))
         return
 

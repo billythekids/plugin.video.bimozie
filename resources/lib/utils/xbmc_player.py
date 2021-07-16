@@ -13,9 +13,12 @@ plugin = app.plugin
 
 
 class PlayerHandler:
+    @staticmethod
     def play(query=None):
         if not query:
             query = json.loads(plugin.args['query'][0])
+        else:
+            query = json.loads(query.get('query')[0])
         play_item = xbmcgui.ListItem()
 
         if int(query.get('direct')) == 0:
@@ -85,50 +88,38 @@ class PlayerHandler:
             else:
                 play_item.setSubtitles([movie['subtitle']])
         if mediatype == 'inputstream':
-            play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
-            play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
-            play_item.setContentLookup(False)
+            # play_item.setContentLookup(False)
+            # play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+            # play_item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
+            # play_item.setMimeType('video/mp4')
+            # play_item.setProperty('mimetype', 'video/mp4')
+            # play_item.setProperty('inputstream', 'inputstream.ffmpegdirect')
+            # play_item.setProperty('inputstream.ffmpegdirect.mime_type', 'video/mp4')
+            # play_item.setMimeType('application/x-mpegURL')
+            # play_item.setProperty('inputstreamclass', 'inputstream.ffmpegdirect')
+            # play_item.setProperty('inputstream.ffmpegdirect.mime_type', 'application/x-mpegURL')
+            # play_item.setProperty('inputstream.ffmpegdirect.is_realtime_stream', 'true')
+            #
             link = movie['link'].split('|')
             if link and len(link) > 1:
-                play_item.setProperty('inputstream.adaptive.stream_headers', link[1])
+                print(link)
+            #     play_item.setProperty('inputstream.adaptive.stream_headers', link[1])
 
         play_item.setProperty('IsPlayable', 'true')
         play_item.setProperty('isFolder', 'false')
         play_item.setPath(str(movie['link']))
         xbmcplugin.setResolvedUrl(plugin.handle, True, listitem=play_item)
-        # player = Player()
+
+        # playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        # playlist.clear()
+        # playlist.add(str(movie['link']), play_item)
+
+        # player_type = xbmc.PLAYER_CORE_AUTO
+        # player = xbmc.Player()
+        # player.play(playlist)
+
         # player.play(str(movie['link']), listitem=play_item)
         # while not player.isPlaying():
         #     xbmc.sleep(100)
+
         xbmcplugin.endOfDirectory(plugin.handle)
-
-
-class Player(xbmc.Player):
-    def __init__(self):
-        self.playing = False
-        self.last_file = None
-        xbmc.Player.__init__(self)
-
-    def setLastFile(self, file):
-        self.last_file = file
-
-    def getLastFile(self):
-        return self.last_file
-
-    def setPlaying(self, playing):
-        self.playing = playing
-
-    def isPlaying(self):
-        return self.playing
-
-    def onAVStarted(self):
-        if self.isPlayingVideo():
-            self.playing = True
-
-    def onPlayBackStopped(self):
-        self.playing = False
-        self.last_file = None
-
-    def onPlayBackEnded(self):
-        self.playing = False
-        self.last_file = None
