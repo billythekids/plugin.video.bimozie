@@ -116,7 +116,7 @@ SITES = [
         "logo": "https://i.ibb.co/tBKrQtK/image.png",
         "className": "Hphim",
         "plugin": "hphim.plugin",
-        "version": 31
+        "version": 1
       },
       {
         "name": "tvhai.org",
@@ -124,20 +124,6 @@ SITES = [
         "className": "Tvhay",
         "plugin": "tvhay.plugin",
         "version": 1
-      },
-      {
-        "name": "kenh88.com",
-        "logo": "http://www.kenh88.com/images/logo_kenh88.png",
-        "className": "Kenh88",
-        "plugin": "kenh88.plugin",
-        "version": 31
-      },
-      {
-        "name": "phim14.net",
-        "logo": "http://phim14.net/application/views/frontend/default/images/logo.png",
-        "className": "Phim14",
-        "plugin": "phim14.plugin",
-        "version": 31
       },
       {
         "name": "vuviphimz.com",
@@ -159,20 +145,6 @@ SITES = [
         "className": "Dongphim",
         "plugin": "dongphim.plugin",
         "version": 1
-      },
-      {
-        "name": "xemphimsoz.com",
-        "logo": "https://xemphimsoz.com/assets/themes/img/logo.png?v=66",
-        "className": "Xemphimso",
-        "plugin": "xemphimso.plugin",
-        "version": 31
-      },
-      {
-        "name": "xem-phim.tv",
-        "logo": "https://xem-phim.tv/logo2.png",
-        "className": "Xomphimhay",
-        "plugin": "xomphimhay.plugin",
-        "version": 31
       },
       {
         "name": "phim7z.tv",
