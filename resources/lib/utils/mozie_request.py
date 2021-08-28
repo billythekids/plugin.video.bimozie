@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 import traceback
-import urllib
 
 import requests
 import xbmcgui
+import time
+import concurrent.futures
+from . import xbmc_helper as helper
+# import requests_cache
+# requests_cache.install_cache(helper.REQUEST_CACHE, backend='sqlite', expire_after=604800)
 
 try:
-    from Queue import Queue
+    from queue import Queue
 except ImportError:
     import Queue
 
@@ -18,12 +22,11 @@ user_agent = (
     "Chrome/59.0.3071.115 Safari/537.36"
 )
 
-
 class Request:
     TIMEOUT = 30
 
     DEFAULT_HEADERS = {
-        'User-Agent': user_agent,
+        'user-agent': user_agent,
     }
     session = None
     r = None
@@ -38,7 +41,7 @@ class Request:
             self.session.cookies.update(cookies)
 
     def get(self, url, headers=None, params=None, redirect=True, cookies=None, verify=True, stream=False):
-        print("Request URL: %s" % url)
+        helper.log("Request URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
 
@@ -49,13 +52,15 @@ class Request:
             self.r = requests.get(url, headers=headers, timeout=self.TIMEOUT, params=params, allow_redirects=redirect,
                                   cookies=cookies, stream=stream)
 
-        # print("---------------- Encoding ----------------")
-        # print(self.r.encoding)
-        # print("---------------- -------- ----------------")
+        # helper.log("---------------- Encoding ----------------")
+        # helper.log(self.r.encoding)
+        # helper.log("---------------- -------- ----------------")
+        if stream:
+            return self.r
         return self.r.text
 
     def post(self, url, params=None, headers=None, redirect=True, cookies=None, json=None, verify=True, data=None):
-        print("Post URL: %s" % url)
+        helper.log("Post URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
 
@@ -63,14 +68,14 @@ class Request:
             self.r = self.session.post(url, data=params, headers=headers, timeout=self.TIMEOUT,
                                        allow_redirects=redirect, cookies=cookies, json=json, verify=verify)
             # for resp in self.r.history:
-            #     print(resp.status_code, resp.url)
+            #     helper.log(resp.status_code, resp.url)
         else:
             self.r = requests.post(url, data=params, headers=headers, timeout=self.TIMEOUT, allow_redirects=redirect,
                                    cookies=cookies, json=json)
         return self.r.text
 
     def head(self, url, params=None, headers=None, redirect=True, cookies=None, verify=True):
-        print("Head URL: %s" % url)
+        helper.log("Head URL: %s" % url)
         if not headers:
             headers = self.DEFAULT_HEADERS
 
@@ -82,7 +87,7 @@ class Request:
         return self.r
 
     def options(self, url, params=None, headers=None, redirect=True, cookies=None, verify=True):
-        print("Options URL: %s" % url)
+        helper.log("Options URL: %s" % url)
         # if headers:
         #     headers = self.DEFAULT_HEADERS.update(headers)
         if self.session:
@@ -113,7 +118,7 @@ class AsyncRequest:
         self.MIN_THREAD = thread
 
     def __create_queue(self, urls):
-        print("*********************** Start Queue %d" % len(urls))
+        helper.log("*********************** Start Queue %d" % len(urls))
         self.length = len(urls)
         self.q = Queue(maxsize=self.length)
         self.num_theads = min(self.MIN_THREAD, self.length)
@@ -124,18 +129,19 @@ class AsyncRequest:
             self.q.put((i, urls[i]))
 
     def __start_thread(self, *args):
+        start_time = time.time()
         for i in range(self.num_theads):
             worker = Thread(target=self.__request, args=args)
             worker.setDaemon(True)
             worker.start()
 
         self.q.join()
-        print("*********************** All %s threads done" % self.length)
         self.dialog.close()
+        helper.log("*********************** All %s threads done in %s" % (self.length, time.time() - start_time))
 
     def __request(self, action, params=None, headers=None, redirect=False, parser=None, args=None, json=None,
                   cookies=None, verify=True):
-        print("params {}, headers {}, json: {}, redirect {}, cookies {}, verify {}" \
+        helper.log("params {}, headers {}, json: {}, redirect {}, cookies {}, verify {}" \
               .format(params, headers, json, redirect, cookies, verify))
 
         while not self.q.empty():
@@ -156,18 +162,18 @@ class AsyncRequest:
                 url = work[1]['url']
 
             retry = self.RETRY
-            print("url {}, params {}, headers {}, json: {}, redirect {}, cookies {}, verify {}, required_header {}" \
+            helper.log("url {}, params {}, headers {}, json: {}, redirect {}, cookies {}, verify {}, required_header {}" \
                   .format(url, params, headers, json, redirect, cookies, verify, required_response_header))
 
             while retry > 0:
                 try:
-                    if action is 'head':
+                    if action == 'head':
                         data = self.request.head(url, params=params, headers=headers, redirect=redirect,
                                                  cookies=cookies, verify=verify)
-                    if action is 'get':
+                    if action == 'get':
                         data = self.request.get(url, params=params, headers=headers, redirect=redirect, cookies=cookies,
                                                 verify=verify)
-                    if action is 'post':
+                    if action == 'post':
                         data = self.request.post(url, params=params, headers=headers, json=json, redirect=redirect,
                                                  cookies=cookies, verify=verify)
                     if parser:
@@ -176,12 +182,12 @@ class AsyncRequest:
                             data = parser(data, args, response_headers)
                         else:
                             data = parser(data, args)
-                    print('Async Requested %s' % work[1])
+                    helper.log('Async Requested %s' % work[1])
                     self.results[work[0]] = data
                     retry = 0
                 except Exception as inst:
-                    print(inst)
-                    print('Async Request %s fail retry %d' % (work[1], retry))
+                    helper.log(inst)
+                    helper.log('Async Request %s fail retry %d' % (work[1], retry))
                     traceback.print_exc()
                     self.results[work[0]] = {}
                 finally:

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import re
 
+import xbmcaddon
+
 from . import xbmc_helper as helper
 from .link_extractor import LinkExtractor
 from .mozie_request import Request
-import xbmcaddon
 
 try:
     from urllib.parse import urlencode
@@ -62,7 +63,13 @@ from .hosts import fshare, \
     verystream, \
     thuckhuya, \
     donganime, \
-    beststream, \
+    mephimanh, \
+    phimmoi_pro, \
+    jimmiepradeep, \
+    streamasia, \
+    tvhaystream, \
+    vidsugar, \
+    gotphim, \
     tvmienphi
 
 
@@ -83,15 +90,29 @@ class LinkParser:
         if re.search('feurl.com', self.url):
             return feurl.get_link(self.url, self.media)
 
+        if re.search('mephimanh.com', self.url):
+            return mephimanh.get_link(self.url, self.media)
+
         if 'play.playoffsite.xyz' in self.url or \
                 'play.vstreamplay.xyz' in self.url:
             return playoffsite.get_link(self.url, self.media)
 
-        if 'xemtivimienphi.com/' in self.url:
+        if 'xemtivimienphi' in self.url:
             return xemtivimienphi.get_link(self.url, self.media)
 
-        if 'beststream.io' in self.url:
-            return beststream.get_link(self.url, self.media)
+        if 'jimmiepradeep.xyz' in self.url:
+            return jimmiepradeep.get_link(self.url, self.media)
+
+        if 'streamasia.cloud' in self.url:
+            return streamasia.get_link(self.url, self.media)
+
+        if 'play.tvhaystream.xyz' in self.url:
+            return tvhaystream.get_link(self.url, self.media)
+
+        if 'phimmoi.pro' in self.url \
+                or 'streamvip.xyz' in self.url \
+                :
+            return phimmoi_pro.get_link(self.url, self.media)
 
         if re.search('streamtape.com', self.url):
             return streamtape.get_link(self.url, self.media)
@@ -123,13 +144,17 @@ class LinkParser:
                 or 'phimgi.tv/player/yotube.php' in self.url:
             return iframeembed.get_link(self.url, self.media)
 
-        elif 'proxy.playphim.info' in self.url:
+        elif 'https://proxy.playphim.info' in self.url:
             return proxy_playphim.get_link(self.url, self.media)
+
+        elif 'vidsugar.com' in self.url \
+            or '8giaitri' in self.url :
+            return vidsugar.get_link(self.url, self.media)
 
         elif 'fimfast.com' in self.url \
                 or 'cdnplay.xyz' in self.url \
                 or 'vodcdn.xyz' in self.url \
-                or 'vdicdn.com' in self.url \
+                or '8giaitri.com' in self.url \
                 or 'phimngay.com' in self.url \
                 or 'beverly-downing' in self.url \
                 or 'play.xomphimhay.com/load-stream' in self.url \
@@ -167,6 +192,7 @@ class LinkParser:
             return streamsb_biphim_club.get_link(self.url, self.media)
 
         elif '90p.tv' in self.url \
+                or 'mitom.1h30m.link' in self.url \
                 or 'binhluanvidamme.online' in self.url \
                 or 'phut91.online' in self.url:
             return phut90.get_link(self.url, self.media), '90p.tv'
@@ -194,10 +220,13 @@ class LinkParser:
             return aparat.get_link(self.url)
 
         elif 'motphim.net' in self.url:
-            return motphim.get_link(self.url)
+            return motphim.get_link(self.url, self.media)
 
         elif 'upstream.to' in self.url:
             return upstream.get_link(self.url)
+
+        elif 'gotphim.com' in self.url:
+            return gotphim.get_link(self.url, self.media)
 
         elif 'voe.sx' in self.url:
             return voe.get_link(self.url)
@@ -209,7 +238,7 @@ class LinkParser:
 
         elif re.search('hphim.org', self.url) \
                 or re.search('facebookstream.cloud', self.url) \
-                or re.search('http://biphim.club/', self.url):
+                or re.search('http?s://biphim.club/', self.url):
             return vanlongstreaming.get_link(self.url, self.media)
 
         elif re.search('openload.co', self.url):
@@ -330,7 +359,7 @@ class LinkParser:
             content = Request().get(self.url)
             return LinkExtractor.play_sources(content)[0].get('file'), 'phimtvb'
 
-        elif 'thuckhuya.com' in self.url:
+        elif 'thuckhuya' in self.url:
             return thuckhuya.get_link(self.url, self.media)
 
         elif self.url.endswith('m3u8'):
@@ -379,10 +408,10 @@ class LinkParser:
             return None, None
 
         f_url = fshare.FShareVN(
-                self.url,
-                helper.getSetting('fshare.username'),
-                helper.getSetting('fshare.password')
-            ).get_link()
+            self.url,
+            helper.getSetting('fshare.username'),
+            helper.getSetting('fshare.password')
+        ).get_link()
 
         return f_url, 'fshare'
 

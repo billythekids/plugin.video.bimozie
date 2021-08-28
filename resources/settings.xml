@@ -2,7 +2,7 @@
 <settings>
     <category label="Sharing host">
 		<setting label="Fshare Account" type="lsep"/>
-        <setting label="Use my Fshare" type="bool" id="fshare.enable" default="false"/>
+        <setting label="Use my Fshare" type="bool" id="fshare.enable" default="true"/>
         <setting label="Fshare username" type="text" id="fshare.username" default=""/>
         <setting label="Fshare password" type="text" id="fshare.password" option="hidden"  enable="!eq(-1,)" default=""/>
     </category>

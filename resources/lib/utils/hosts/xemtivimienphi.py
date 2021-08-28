@@ -34,7 +34,6 @@ def get_link(url, media):
         url = helper.convert_js_2_json(sources.group(1))[0]
 
     sources = re.search(r';link=(\[.*?\]);', response)
-
     if sources:
         url = helper.convert_js_2_json(sources.group(1))[0]
 
@@ -46,12 +45,21 @@ def get_link(url, media):
     base_url = base_url.netloc
 
     header = {
-        # 'origin': 'http://www.xemtivimienphi.com',
+        'origin': 'http://www.xemtivimienphi.com',
+        'Accept-Language': 'en-US,en;q=0.9,vi;q=0.8',
         # 'x-forwarded-host': base_url,
         # 'referer': base_url,
-        # 'verifypeer': 'false',
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.74'
     }
+    #
+    # loop = 20
+    # while loop > 0:
+    #     req.get(url, headers=header)
+    #     helper.log(req.get_request().status_code)
+    #     helper.log(loop)
+    #     helper.sleep(1000)
+    #     loop = loop - 1
+    #     if req.get_request().status_code != 403:
+    #         loop = 0
 
-    helper.log(req.get(url, headers=header))
     return url + "|%s" % urlencode(header), 'TVOnline'

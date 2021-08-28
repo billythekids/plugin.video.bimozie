@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
-from .link_parser import LinkParser
-from . import xbmc_helper as helper
 import re
+
+from . import xbmc_helper as helper
+from .link_parser import LinkParser
+from six.moves.urllib.parse import quote
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 class MediaHelper:

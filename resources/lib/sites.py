@@ -16,8 +16,8 @@ SITES = [
         "searchable": False
       },
       {
-        "name": "thuckhuya.com",
-        "logo": "https://thuckhuya.com/wp-content/themes/itfs/assets/images/34191045_981163082042209_6351080930731360256_n.png",
+        "name": "thuckhuya.live",
+        "logo": "https://thuckhuya.live/wp-content/themes/itfs/assets/images/thuckhuya-logo.png",
         "className": "Thuckhuya",
         "plugin": "thuckhuya.plugin",
         "version": 1,
@@ -56,6 +56,13 @@ SITES = [
     "searchable": True,
     "sites": [
       {
+        "name": "fmovies.to",
+        "logo": "https://i.ibb.co/JzZDxGM/image.png",
+        "className": "fmovies",
+        "plugin": "fmovies.plugin",
+        "version": 31
+      },
+      {
         "name": "hayghes.com",
         "logo": "https://hayghes.com/favicon.png",
         "className": "Hayghes",
@@ -88,7 +95,7 @@ SITES = [
         "logo": "https://bilutvzz.net/Theme/images/bilutvznet-logo.png?v=1.0",
         "className": "Bilutv",
         "plugin": "bilutv.plugin",
-        "version": 1
+        "version": 31
       },
       {
         "name": "phimmedia.tv",
@@ -102,14 +109,14 @@ SITES = [
         "logo": "http://www.phimmoizz.net/logo/phimmoi-square.png",
         "className": "Phimmoi",
         "plugin": "phimmoi.plugin",
-        "version": 1
+        "version": 31
       },
       {
         "name": "biphimz.tv",
         "logo": "https://i.ibb.co/tBKrQtK/image.png",
         "className": "Hphim",
         "plugin": "hphim.plugin",
-        "version": 31
+        "version": 1
       },
       {
         "name": "tvhai.org",
@@ -117,20 +124,6 @@ SITES = [
         "className": "Tvhay",
         "plugin": "tvhay.plugin",
         "version": 1
-      },
-      {
-        "name": "kenh88.com",
-        "logo": "http://www.kenh88.com/images/logo_kenh88.png",
-        "className": "Kenh88",
-        "plugin": "kenh88.plugin",
-        "version": 31
-      },
-      {
-        "name": "phim14.net",
-        "logo": "http://phim14.net/application/views/frontend/default/images/logo.png",
-        "className": "Phim14",
-        "plugin": "phim14.plugin",
-        "version": 31
       },
       {
         "name": "vuviphimz.com",
@@ -141,7 +134,7 @@ SITES = [
       },
       {
         "name": "phimgi.tv",
-        "logo": "https://cdn-img.phimgi.net/wp-content/uploads/2019/01/phimgi-02.png",
+        "logo": "https://xemphimgi.net/wp-content/uploads/phim-gi-logo-01-625x136.png",
         "className": "Phimgi",
         "plugin": "phimgi.plugin",
         "version": 31
@@ -152,20 +145,6 @@ SITES = [
         "className": "Dongphim",
         "plugin": "dongphim.plugin",
         "version": 1
-      },
-      {
-        "name": "xemphimsoz.com",
-        "logo": "https://xemphimsoz.com/assets/themes/img/logo.png?v=66",
-        "className": "Xemphimso",
-        "plugin": "xemphimso.plugin",
-        "version": 1
-      },
-      {
-        "name": "xem-phim.tv",
-        "logo": "https://xem-phim.tv/logo2.png",
-        "className": "Xomphimhay",
-        "plugin": "xomphimhay.plugin",
-        "version": 31
       },
       {
         "name": "phim7z.tv",

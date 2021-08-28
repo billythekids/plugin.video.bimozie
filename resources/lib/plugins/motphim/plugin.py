@@ -29,8 +29,11 @@ class Motphim:
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
         if page > 1:
-            channel = channel.replace(".html", "")
-            url = '%s%s/%d' % (self.domain, channel, page)
+            if channel.endswith('.html'):
+                channel = channel.replace(".html", "")
+                url = '%s%s-%d.html' % (self.domain, channel, page)
+            else:
+                url = '%s%s/%d' % (self.domain, channel, page)
         else:
             url = '%s%s' % (self.domain, channel)
 

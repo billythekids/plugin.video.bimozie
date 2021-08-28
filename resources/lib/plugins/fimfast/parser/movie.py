@@ -3,6 +3,7 @@ import json
 import re
 from kodi_six.utils import py2_encode
 from six import string_types
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -31,7 +32,7 @@ class Parser:
 
         return movie
 
-    def get_link(self, response, movieurl):
+    def get_link(self, response, domain, movieurl):
         movie = {
             'group': {},
             'episode': [],
@@ -41,12 +42,16 @@ class Parser:
         videos = json.loads(response)
         subtitle = None
         if 'subtitle' in videos and len(videos['subtitle']) > 0 and 'vi' in videos['subtitle']:
-            subtitle = 'https://phim1080.me/subtitle/%s.vtt' % videos['subtitle']['vi']
+            subtitle = '{}/subtitle/{}.vtt'.format(domain, videos['subtitle']['vi'])
 
         videos = videos['sources']
         for videotype in videos:
+            if 'm3u8' in videotype:
+                continue
+
             if videos[videotype] and ('hls' in videotype or 'htt' in videotype or 'hff' in videotype):
                 url = self.encodeString(videos[videotype], 69)
+                url = url.replace('vdicdn', '8giaitri')
                 movie['links'].append({
                     'link': url,
                     'title': 'Link {}'.format(videotype),
@@ -63,6 +68,8 @@ class Parser:
                     except:
                         link = key
 
+                    print(link)
+
                     match = re.search(r'(&title=.*)&?', link['src'])
                     if match:
                         link['src'] = link['src'].replace(match.group(1), '')
@@ -74,6 +81,8 @@ class Parser:
                         'subtitle': subtitle,
                         'originUrl': movieurl
                     })
+
+        helper.log(movie)
         return movie
 
     def encodeString(self, e, t):

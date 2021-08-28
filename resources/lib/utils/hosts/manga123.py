@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 import re
+
+from .. import proxy_helper as proxy
+from ..pastebin import PasteBin
+
 try:
     from urlparse import urlparse, parse_qs
 except ImportError:
@@ -12,7 +16,7 @@ except ImportError:
 
 
 def get_link(url, movie):
-#     https://loadbalance.manga123.net/hls/08bb5dbe0b1b06c71d5d960d280d2c81/08bb5dbe0b1b06c71d5d960d280d2c81.m3u8
+    #     https://loadbalance.manga123.net/hls/08bb5dbe0b1b06c71d5d960d280d2c81/08bb5dbe0b1b06c71d5d960d280d2c81.m3u8
     base_url = urlparse(url)
     base_url = base_url.scheme + '://' + base_url.netloc
 
@@ -28,12 +32,10 @@ def get_link(url, movie):
             'Referer': url
         }
 
-        # return hls_parser.get_link(hosturl, movie)
-
-        return hosturl + "|%s" % urlencode(header), 'manga123'
-
+        adaptive_link = proxy.get_adaptive_link(hosturl)
+        playlist = proxy.replace_proxy_link(adaptive_link, headers=header)
+        return PasteBin().dpaste(playlist, name='adaptivestream', expire=60), 'manga123'
     except:
         pass
 
     return url, 'manga123.net'
-

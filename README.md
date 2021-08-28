@@ -14,7 +14,7 @@ Repository helps you installing an addon more easier and also allows the addon u
 You can use both following methods
 
 #### Install from source repo
- - Donwload bimozie repo from this url https://github.com/billythekids/kodi.repository/raw/master/zips/repository.bimozie/repository.bimozie-1.0.zip on store it on your usb drive
+ - Donwload bimozie repo from this url https://github.com/billythekids/kodi.repository/raw/master/zips/repository.bimozie/repository.bimozie-1.1.zip on store it on your usb drive
  - Go to SYSTEM –> Add-ons and select ` Install from zip file`
  
     ![Add repo zip](https://www.wirelesshack.org/wp-content/uploads/2015/12/Kodi-Install-From-Zip-File-.jpg)

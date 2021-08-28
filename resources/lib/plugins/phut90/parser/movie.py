@@ -6,7 +6,7 @@ from kodi_six.utils import py2_encode
 
 class Parser:
 
-    def get(self, response, url):
+    def get(self, response, url, domain):
         movie = {
             'group': {},
             'episode': [],
@@ -16,17 +16,16 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
 
         # get episode if possible
-        episodes = soup.select('ul.live-nav-links > li.item > a')
+        episodes = soup.select('ul.live-nav-links > li.item')
         found = False
         if len(episodes) > 1:
             for episode in episodes:
-                if 'javascript' in episode.get('href') or 'dangky' in episode.get('href'):
-                    continue
-                else:
+                print(episode)
+                if episode.get('data-url'):
                     found = True
                     movie['links'].append({
-                        'link': "%s%s" % (url, episode.get('href')),
-                        'title': py2_encode(episode.text.strip()),
+                        'link': "%s" % (episode.get('data-url')),
+                        'title': py2_encode(episode.select_one('a').text.strip()),
                         'type': 'Unknown',
                         'originUrl': url,
                         'resolve': False
@@ -40,34 +39,5 @@ class Parser:
                 'resolve': False,
                 'originUrl': url
             })
-
-        return movie
-
-    def get_link(self, response, originUrl):
-        movie = {
-            'group': {},
-            'episode': [],
-            'links': [],
-        }
-
-        sources = re.search(r'sources:\s?(.*?),', response)
-        if sources:
-            sources = json.loads(sources.group(1).replace('}],', '}]'))
-            try:
-                sources = sorted(sources, key=lambda elem: int(elem['label'][0:-1]), reverse=True)
-            except:
-                pass
-
-            if len(sources) > 0:
-                for source in sources:
-                    label = 'label' in source and source['label'] or ''
-                    movie['links'].append({
-                        'link': source['file'].strip(),
-                        'title': 'Link %s' % py2_encode(label),
-                        'type': py2_encode(label),
-                        'resolve': False,
-                        'originUrl': originUrl
-                    })
-            return movie
 
         return movie

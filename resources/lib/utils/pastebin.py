@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import requests
-import utils.xbmc_helper as helper
+from . import xbmc_helper as helper
 
 
 class PasteBin:
@@ -26,11 +26,11 @@ class PasteBin:
 
         if r.status_code == requests.codes.ok:
             url = r.text.replace('\n', '') + '/raw'
-            print('Dpaste url: %s' % url)
+            helper.log('Dpaste url: %s' % url)
             return url
 
     def dpaste_deprecated_2(self, content, name="", expire=1440):
-        print("Uploading playlist")
+        helper.log("Uploading playlist")
         url = 'https://hastebin.com/documents'
         params = content
         r = requests.post(url,
@@ -39,11 +39,11 @@ class PasteBin:
 
         resp = json.loads(r.text)
         url = "https://hastebin.com/raw/%s" % resp['key']
-        print('hastebin url: %s' % url)
+        helper.log('hastebin url: %s' % url)
         return url
 
     def dpaste(self, content, name="", expire=1440):
-        print("Uploading playlist")
+        helper.log("Uploading playlist")
         url = 'https://paste.kodi.tv/documents'
         params = content
         r = requests.post(url,
@@ -52,5 +52,5 @@ class PasteBin:
 
         resp = json.loads(r.text)
         url = "https://paste.kodi.tv/raw/%s" % resp['key']
-        print('hastebin url: %s' % url)
+        helper.log('hastebin url: %s' % url)
         return url

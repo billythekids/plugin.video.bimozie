@@ -8,9 +8,10 @@ except ImportError:
 from ..mozie_request import Request
 from ..aes import CryptoAES
 from .. import xbmc_helper as helper
+from . import vidsugar
 
 
-def get_link(url):
+def get_link(url, media):
     req = Request()
     url = url.replace('motphim.net', 'motphimzzz.com')
     url = url.replace('motphimzzz.com', 'motphjm.net')
@@ -24,6 +25,10 @@ def get_link(url):
         'origin': "https://motphjm.net"
     })
     url = CryptoAES().decrypt(json.loads(response).get('d'), '{}45904818772018'.format(base_url.netloc))
+
+    if 'vidsugar.com' in url:
+        return vidsugar.get_link(url, media)
+
     return url, 'motphim'
 
 

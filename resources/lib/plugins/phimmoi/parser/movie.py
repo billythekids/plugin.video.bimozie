@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-import json
 import re
 
 import utils.xbmc_helper as helper
 from bs4 import BeautifulSoup
-from six.moves.urllib.parse import unquote
-from utils.aes import CryptoAES
-from utils.mozie_request import Request
-from utils.wisepacker import WisePacker
-from kodi_six.utils import py2_encode, py2_decode
+from kodi_six.utils import py2_encode
+from utils.link_extractor import LinkExtractor
+
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
 
 
 def from_char_code(*args):
@@ -16,6 +17,10 @@ def from_char_code(*args):
 
 
 class Parser:
+    def get_playlink(self, response, url):
+        soup = BeautifulSoup(response, "html.parser")
+        return soup.select_one('a#btn-film-watch').get('href')
+
     def get(self, response, url, skipEps=False):
         movie = {
             'group': {},
@@ -26,14 +31,16 @@ class Parser:
         self.originURL = url
 
         try:
-            error = py2_encode(soup.select_one('div.error-not-available div.alert-subheading').find(text=True, recursive=False))
+            error = py2_encode(
+                soup.select_one('div.error-not-available div.alert-subheading').find(text=True, recursive=False))
             if error:
                 helper.message(error, 'Not Found')
                 return movie
-        except: pass
+        except:
+            pass
 
         # get episode if possible
-        servers = soup.select('div.list-server > div.server')
+        servers = soup.select('div.list-server > div.server.clearfix')
         if skipEps is False and len(servers) > 0:
             helper.log("***********************Get Movie Episode*****************************")
             found = False
@@ -55,81 +62,35 @@ class Parser:
 
         return movie
 
-    def get_link(self, response, url, request):
+    def get_link(self, response, url, request, domain):
         helper.log("***********************Get Movie Link*****************************")
         movie = {
             'group': {},
             'episode': [],
             'links': [],
         }
-        self.originURL = url
-        url = self.get_token_url(response)
-        response = Request().get(url)
 
-        self.key = self.get_decrypt_key(response)
+        filmid = re.search(r'filmID\s?=\s?parseInt\((\d+)\);', response).group(1)
+        epid = re.search(r'episodeID\s?=\s?parseInt\((\d+)\);', response).group(1)
+        svid = re.search(r'svID\s?=\s?parseInt\((\d+)\);', response).group(1)
 
-        self.key
-        if not self.key:
-            return movie
+        ajax_url = '{}/ajax/player'.format(domain)
+        resp = request.post(ajax_url, params={
+            'id': filmid,
+            'ep': epid,
+            'sv': svid,
+        })
 
-        jsonresponse = re.search("_responseJson='(.*)';", response).group(1)
-        jsonresponse = json.loads(py2_decode(jsonresponse))
+        frame_url = urlparse(LinkExtractor.iframe(resp))
 
-        # if jsonresponse['medias']:
-        #     media = sorted(jsonresponse['medias'], key=lambda elem: elem['resolution'], reverse=True)
-        #     for item in media:
-        #         url = CryptoAES().decrypt(item['url'], bytes(self.key.encode('utf-8')))
-        #         if not re.search('hls.phimmoi.net', url):
-        #             movie['links'].append({
-        #                 'link': url,
-        #                 'title': 'Link %s' % item['resolution'],
-        #                 'type': item['resolution'],
-        #                 'resolve': False,
-        #                 'originUrl': self.originURL
-        #             })
-        #         else:
-        #             # hls.phimmoi.net
-        #             movie['links'].append({
-        #                 'link': url,
-        #                 'title': 'Link hls',
-        #                 'type': 'hls',
-        #                 'resolve': False,
-        #                 'originUrl': self.originURL
-        #             })
-
-        # if jsonresponse.get('embedUrls'):
-        #     for item in jsonresponse.get('embedUrls'):
-        #         url = self.get_url(CryptoAES().decrypt(item, bytes(self.key.encode('utf-8'))))
-        #         if not re.search('hydrax', url):
-        #             movie['links'].append({
-        #                 'link': url,
-        #                 'title': 'Link Unknow',
-        #                 'type': 'mp4',
-        #                 'resolve': False,
-        #                 'originUrl': self.originURL
-        #             })
-        #         else:
-        #             movie['links'].append({
-        #                 'link': url,
-        #                 'title': 'Link hydrax',
-        #                 'type': 'hls',
-        #                 'resolve': False,
-        #                 'originUrl': self.originURL
-        #             })
-
-        if jsonresponse['thirdParty']:
-            jobs = []
-            self.key = "@@@3rd"
-            for item in jsonresponse['thirdParty']:
-                movie_url = self.get_url(CryptoAES().decrypt(item.get('embed'), self.key))
-                if 'hydrax.html' not in movie_url:
-                    movie['links'].append({
-                        'link': movie_url,
-                        'title': 'Link {}'.format(item.get('label', 'HD')),
-                        'type': item.get('type'),
-                        'resolve': False,
-                        'originUrl': self.originURL
-                    })
+        movie_url = parse_qs(frame_url.query).get('url')[0]
+        movie['links'].append({
+            'link': movie_url,
+            'title': 'Link {}'.format('HD'),
+            'type': 'hls',
+            'resolve': False,
+            'originUrl': url
+        })
 
         return movie
 
@@ -151,56 +112,3 @@ class Parser:
                     })
 
         return items
-
-    def get_decrypt_key(self, response):
-        try:
-            a = WisePacker.decode(response)
-            return re.search("setDecryptKey\('(.*)'\);watching", a).group(1)
-        except:
-            helper.message(response, "Phimmoi", 15000)
-
-    def get_token_url(self, response):
-        a = WisePacker.decode(response)
-        return re.search("'url':'(.*)','method'", a).group(1).replace("ip='+window.CLIENT_IP+'&", "")
-
-    def get_url(self, url):
-        r = re.search(r'http://www.phimmoi.net/player.html\?v=1.00#url=(.*)', url)
-        if r:
-            return unquote(r.group(1))
-
-        return url
-
-    def parse_thirdparty_link(self, response, movie_links):
-        source = re.search(r'var\sVIDEO_URL="(.*?)";', response)
-        if source:
-            movie_links.append({
-                    'link': source.group(1),
-                    'title': 'Link {}'.format('Third Party'),
-                    'type': 'hls',
-                    'resolve': False,
-                    'originUrl': self.originURL
-                })
-
-        sources = re.search(r'var\slistFile=(\[.*?\]);', response)
-        if sources:
-            sources = json.loads(sources.group(1))
-            for item in sources:
-                movie_links.append({
-                    'link': item.get('file'),
-                    'title': 'Link {}'.format(item.get('label')),
-                    'type': item.get('type'),
-                    'resolve': False,
-                    'originUrl': self.originURL
-                })
-
-        source = re.search(r'var\sVIDEO_URL=swapServer\("(.*)"\);', response)
-        if source:
-            movie_links.append({
-                    'link': source.group(1),
-                    'title': 'Link {}'.format('Third Party'),
-                    'type': 'hls',
-                    'resolve': False,
-                    'originUrl': self.originURL
-                })
-
-

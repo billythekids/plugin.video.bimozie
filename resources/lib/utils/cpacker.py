@@ -2,6 +2,7 @@
 
 import re
 
+from . import xbmc_helper as helper
 from six.moves.urllib.parse import unquote
 
 
@@ -100,7 +101,7 @@ class cPacker():
 def UnpackingError(Exception):
     # Badly packed source or general error.#
     # xbmc.log(str(Exception))
-    print(Exception)
+    helper.log(Exception)
     pass
 
 

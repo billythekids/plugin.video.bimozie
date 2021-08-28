@@ -4,6 +4,7 @@ from utils.mozie_request import AsyncRequest, Request
 import utils.xbmc_helper as helper
 import re
 import json
+from kodi_six.utils import py2_encode
 
 
 def from_char_code(*args):
@@ -26,14 +27,14 @@ class Parser:
         # get all server list
         servers = soup.select("div.halim-server")
         for server in servers:
-            server_name = server.select_one('span.halim-server-name').getText().strip().encode('utf-8')
+            server_name = py2_encode(server.select_one('span.halim-server-name').getText().strip())
             if server_name not in movie['group']: movie['group'][server_name] = []
             for ep in server.select('ul.halim-list-eps > li > span'):
                 # postid|serverid|epid|nounce
                 id = "%s|%s|%s|%s" % (ep.get('data-post-id'), ep.get('data-server'), ep.get('data-episode'), nonce)
                 movie['group'][server_name].append({
                     'link': id,
-                    'title': ep.text.strip().encode('utf-8'),
+                    'title': py2_encode(ep.text.strip()),
                 })
 
         return movie
@@ -62,14 +63,15 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         servers = soup.select("span")
         for server in servers:
+            print(server)
             params = {
-                # 'action': 'halim_ajax_player',
-                'action': 'halim_play_listsv',
+                'action': 'halim_ajax_player',
+                # 'action': 'halim_play_listsv',
                 'episode': data[2],
                 'server': data[1],
                 'postid': data[0],
                 'nonce': data[3],
-                'ep_link': server.get('data-url')
+                # 'ep_link': server.get('data-url')
             }
             jobs.append({'url': url, 'params': params, 'parser': Parser.extract_link})
         AsyncRequest().post(jobs, args=movie['links'])
@@ -84,7 +86,7 @@ class Parser:
             if source:
                 movie_links.append({
                     'link': source,
-                    'title': 'Link %s' % source.encode('utf-8'),
+                    'title': 'Link %s' % py2_encode(source),
                     'type': 'Unknow',
                     'resolve': False,
                     'originUrl': source

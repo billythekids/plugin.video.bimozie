@@ -5,7 +5,7 @@ from utils.mozie_request import Request
 
 
 class TVOnline:
-    domain = "http://www.xemtivimienphi.com"
+    domain = "http://www.xemtivimienphi.net"
     token = None
     member_id = None
 

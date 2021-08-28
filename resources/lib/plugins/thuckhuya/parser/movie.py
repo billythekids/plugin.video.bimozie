@@ -28,7 +28,7 @@ class Parser:
                         'link': episode.get('href'),
                         'title': py2_encode(episode.text.strip()),
                         'type': 'Unknown',
-                        'originUrl': 'https://play.thuckhuya.com/',
+                        'originUrl': 'https://play.thuckhuya.live/',
                         'resolve': False
                     })
 
@@ -38,7 +38,7 @@ class Parser:
                 'title': 'Direct link',
                 'type': 'Unknown',
                 'resolve': False,
-                'originUrl': 'https://play.thuckhuya.com/'
+                'originUrl': 'https://play.thuckhuya.live/'
             })
 
         return movie

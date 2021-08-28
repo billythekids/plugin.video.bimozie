@@ -1,5 +1,6 @@
 # -*- coding: latin1 -*-
 from bs4 import BeautifulSoup
+import utils.xbmc_helper as helper
 
 
 class Parser:
@@ -16,7 +17,7 @@ class Parser:
         return movie
 
     def get_link(self, response, domain, referrer_url, request):
-        print("***********************Get Movie Link*****************************")
+        helper.log("***********************Get Movie Link*****************************")
         movie = {
             'group': {},
             'episode': [],
