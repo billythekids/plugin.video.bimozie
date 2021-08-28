@@ -62,10 +62,10 @@ def send_back_header(context, response, is_range_support=False, range_seek=0):
 
     if 'Content-Length' in response_headers:
         content_length = int(response_headers['Content-Length']) - range_seek
-        context.send_header('Content-length', content_length)
+        context.send_header('Content-Length', content_length)
     else:
         content_length = len(response.content) - range_seek
-        context.send_header('Content-length', len(response.content))
+        context.send_header('Content-Length', len(response.content))
 
     if (is_range_support or ('Content-Range' in response_headers)) and content_length > 0:
         if 'Content-Range' in response_headers and content_length:
