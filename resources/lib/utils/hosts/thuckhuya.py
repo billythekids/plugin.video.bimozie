@@ -30,8 +30,6 @@ def get_link(url, media):
         url = LinkExtractor.iframe(match.group(1))
         response = req.get(url, headers=header)
 
-        print(response)
-
     match = re.search(r'''var urlStream = "(.*?)"''', response)
     if match:
         live_url = match.group(1)

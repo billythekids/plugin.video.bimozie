@@ -270,3 +270,6 @@ def save_last_fshare_movie(query, file):
 
     write_file(file, json.dumps(item))
 
+
+def clear_last_watch_movie():
+    write_file('watched.json', '')

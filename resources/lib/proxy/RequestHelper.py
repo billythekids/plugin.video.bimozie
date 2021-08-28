@@ -48,7 +48,7 @@ def send_back_header(context, response, is_range_support=False, range_seek=0):
     #     data = response_headers['Keep-Alive']
     #     context.send_header('Keep-Alive', data)
 
-    if 'Accept-Ranges' in response_headers:
+    if 'Accept-Ranges' in response_headers or 'Accept-Ranges'.lower() in response_headers:
         data = response_headers['Accept-Ranges']
         context.send_header('Accept-Ranges', data)
     # else:
@@ -60,12 +60,12 @@ def send_back_header(context, response, is_range_support=False, range_seek=0):
     # else:
     context.send_header('Content-Type', 'application/vnd.apple.mpegurl; charset=utf-8')
 
-    if 'Content-Length' in response_headers:
+    if 'Content-Length' in response_headers or 'Content-Length'.lower() in response_headers:
         content_length = int(response_headers['Content-Length']) - range_seek
-        context.send_header('Content-length', content_length)
+        context.send_header('Content-Length', content_length)
     else:
         content_length = len(response.content) - range_seek
-        context.send_header('Content-length', len(response.content))
+        context.send_header('Content-Length', len(response.content))
 
     if (is_range_support or ('Content-Range' in response_headers)) and content_length > 0:
         if 'Content-Range' in response_headers and content_length:
@@ -76,14 +76,14 @@ def send_back_header(context, response, is_range_support=False, range_seek=0):
                                          from_range - range_seek, content_length - 1, content_length)
                                      )
 
-    print(context._headers_buffer)
     context.end_headers()
 
 
 def extract_request_header(context):
     headers = {}
     for key in context.headers:
-        if 'Host' not in key:
+        if 'Host' not in key \
+                and 'host' not in key:
             headers[key] = context.headers[key]
 
     return headers

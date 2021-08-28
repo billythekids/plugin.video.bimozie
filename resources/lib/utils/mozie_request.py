@@ -4,13 +4,12 @@ import traceback
 import requests
 import xbmcgui
 import time
-import concurrent.futures
 from . import xbmc_helper as helper
 # import requests_cache
 # requests_cache.install_cache(helper.REQUEST_CACHE, backend='sqlite', expire_after=604800)
 
 try:
-    from queue import Queue
+    from Queue import Queue
 except ImportError:
     import Queue
 

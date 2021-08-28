@@ -1,7 +1,10 @@
 import time
-from http import HTTPStatus
-from http.server import BaseHTTPRequestHandler
-from urllib.parse import parse_qsl, urlparse
+import BaseHTTPServer
+import httplib as HTTPStatus
+try:
+    from urlparse import urlparse, parse_qsl
+except ImportError:
+    from urllib.parse import urlparse, parse_qsl
 
 from .GetRequestHandler import GetRequestHandler
 from .HeadRequestHandler import HeadRequestHandler
@@ -9,7 +12,7 @@ from .HeadRequestHandler import HeadRequestHandler
 streaming = False
 
 
-class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
+class ProxyHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     protocol_version = 'HTTP/1.1'
     handler = None
     # wbufsize = 1024 * 1024

@@ -33,7 +33,7 @@ class GetRequestHandler:
         # is_range_support = RequestHelper.is_support_range(url)
         is_range_support = False
         request_headers = self.prepare_download_header(is_range_support, range_seek=range_seek)
-        # print('request_headers', request_headers)
+        print('request_headers', request_headers)
 
         response = requests.get(url, allow_redirects=True, headers=request_headers)
         content = response.content

@@ -2,6 +2,7 @@
 import time
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
+from kodi_six.utils import py2_encode
 
 
 class Parser:
@@ -22,8 +23,8 @@ class Parser:
             if movie:
                 murl = item.select_one('a').get('href')
                 start_time = int(item.get('data-runtime'))
-                title = movie.select_one('div.title').text.strip()
-                movie_type = movie.select_one('div.t_time').text.strip()
+                title = py2_encode(movie.select_one('div.title').text.strip())
+                movie_type = py2_encode(movie.select_one('div.t_time').text.strip())
                 label = "{} - {}".format(movie_type, title)
 
                 if current_time >= start_time:
