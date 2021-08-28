@@ -164,7 +164,7 @@ def wait(sec):
 
 def convert_js_2_json(str):
     try:
-        return json.loads(str)
+        return json.loads(str.replace("'", '"'))
     except: pass
 
     vstr = re.sub(r'(?<={|,)\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)\s?([a-zA-Z][a-zA-Z0-9]*)', r'"\1"', str)
@@ -172,7 +172,6 @@ def convert_js_2_json(str):
     vstr = re.sub(r'(?<={|,)?\s?([a-zA-Z][a-zA-Z0-9]*)(?=:)\s?', r'"\1"', vstr)
     vstr = re.sub(r'\t+\"', '"', vstr)
     vstr = vstr.replace("'", '"')
-
     return json.loads(vstr)
 
 

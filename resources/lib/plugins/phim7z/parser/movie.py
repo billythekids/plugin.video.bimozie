@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 from kodi_six.utils import py2_encode
+from utils.link_extractor import LinkExtractor
 
 
 class Parser:
@@ -37,7 +38,7 @@ class Parser:
         source = re.search(r'iframe.*src=\\"(.*?)\\"', response)
         if source:
             source = source.group(1).replace('\\', '')
-            source = "https:{}".format(source)
+            print(source)
             movie['links'].append({
                 'link': source,
                 'title': 'Link',

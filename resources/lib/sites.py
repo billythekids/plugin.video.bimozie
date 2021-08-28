@@ -95,7 +95,7 @@ SITES = [
         "logo": "https://bilutvzz.net/Theme/images/bilutvznet-logo.png?v=1.0",
         "className": "Bilutv",
         "plugin": "bilutv.plugin",
-        "version": 1
+        "version": 31
       },
       {
         "name": "phimmedia.tv",
@@ -109,7 +109,7 @@ SITES = [
         "logo": "http://www.phimmoizz.net/logo/phimmoi-square.png",
         "className": "Phimmoi",
         "plugin": "phimmoi.plugin",
-        "version": 1
+        "version": 31
       },
       {
         "name": "biphimz.tv",
@@ -137,7 +137,7 @@ SITES = [
         "logo": "https://xemphimgi.net/wp-content/uploads/phim-gi-logo-01-625x136.png",
         "className": "Phimgi",
         "plugin": "phimgi.plugin",
-        "version": 1
+        "version": 31
       },
       {
         "name": "dongphim.net",

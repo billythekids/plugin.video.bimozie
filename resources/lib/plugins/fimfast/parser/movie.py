@@ -46,8 +46,12 @@ class Parser:
 
         videos = videos['sources']
         for videotype in videos:
+            if 'm3u8' in videotype:
+                continue
+
             if videos[videotype] and ('hls' in videotype or 'htt' in videotype or 'hff' in videotype):
                 url = self.encodeString(videos[videotype], 69)
+                url = url.replace('vdicdn', '8giaitri')
                 movie['links'].append({
                     'link': url,
                     'title': 'Link {}'.format(videotype),
@@ -63,6 +67,8 @@ class Parser:
                         link = videos[videotype][key]
                     except:
                         link = key
+
+                    print(link)
 
                     match = re.search(r'(&title=.*)&?', link['src'])
                     if match:

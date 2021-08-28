@@ -10,29 +10,34 @@ except ImportError:
     from urllib.parse import urlparse
 
 
-def replace_proxy_content(content):
-    urls = re.findall(r'(http.*)', content)
+def prepend_url(url, ext=None):
+    return 'http://127.0.0.1:8964?u={}{}'.format(quote(url), ext or '')
+
+
+def _prepare_content(content, base_url=None):
+    urls = re.findall(r'extinf.*\n(.*)', content, re.IGNORECASE)
     for url in urls:
-        proxy_url = 'http://127.0.0.1:8964?u={}'.format(quote(url))
+        if not 'http' in url:
+            full_url = "{}/{}".format(base_url, url)
+            content = content.replace(url, full_url)
+            url = full_url
+
+        proxy_url = prepend_url(url)
         content = content.replace(url, proxy_url)
 
     return content
+
+
+def replace_proxy_content(content, base_url=None):
+    return _prepare_content(content, base_url)
 
 
 def replace_proxy_link(url, headers=None):
     content = Request().get(url, headers=headers)
     base_url = urlparse(url)
-    base_url = base_url.scheme + '://' + base_url.netloc
+    base_url = '{}://{}/{}'.format(base_url.scheme, base_url.netloc, '/'.join(base_url.path.split('/')[1:-1]))
 
-    urls = re.findall(r'(http.*)', content)
-    for url in urls:
-        if not base_url in url:
-            url = "{}/{}".format(base_url, url)
-
-        proxy_url = 'http://127.0.0.1:8964?u={}'.format(quote(url))
-        content = content.replace(url, proxy_url)
-
-    return content
+    return _prepare_content(content, base_url)
 
 
 def get_adaptive_link(url, headers=None):

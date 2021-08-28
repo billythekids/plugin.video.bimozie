@@ -31,7 +31,9 @@ def get_link(url, media):
     content = create_playlist(repsonse, iduser, base_url_rd)
     playlist = proxy.replace_proxy_content(content)
 
-    return PasteBin().dpaste(playlist, name='adaptivestream', expire=60), 'tvhaystream'
+    url = PasteBin().dpaste(playlist, name='adaptivestream', expire=60)
+    url = proxy.prepend_url(url, '-dl')
+    return url, 'tvhaystream'
 
 
 def create_playlist(text, idfile, domains):

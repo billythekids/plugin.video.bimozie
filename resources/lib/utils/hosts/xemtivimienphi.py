@@ -34,7 +34,6 @@ def get_link(url, media):
         url = helper.convert_js_2_json(sources.group(1))[0]
 
     sources = re.search(r';link=(\[.*?\]);', response)
-
     if sources:
         url = helper.convert_js_2_json(sources.group(1))[0]
 

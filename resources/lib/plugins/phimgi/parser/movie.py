@@ -63,14 +63,15 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         servers = soup.select("span")
         for server in servers:
+            print(server)
             params = {
-                # 'action': 'halim_ajax_player',
-                'action': 'halim_play_listsv',
+                'action': 'halim_ajax_player',
+                # 'action': 'halim_play_listsv',
                 'episode': data[2],
                 'server': data[1],
                 'postid': data[0],
                 'nonce': data[3],
-                'ep_link': server.get('data-url')
+                # 'ep_link': server.get('data-url')
             }
             jobs.append({'url': url, 'params': params, 'parser': Parser.extract_link})
         AsyncRequest().post(jobs, args=movie['links'])

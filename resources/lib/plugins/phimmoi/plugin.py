@@ -23,7 +23,7 @@ class Phimmoi:
 
     def __init__(self):
         self.request = Request(h, session=True)
-        self.request.get('{}/vn.php'.format(self.domain))
+        # self.request.get('{}/vn.php'.format(self.domain))
 
     def getCategory(self):
         response = self.request.get('{}/'.format(self.domain), headers=h)
