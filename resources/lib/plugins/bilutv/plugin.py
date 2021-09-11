@@ -6,7 +6,7 @@ from utils.mozie_request import Request
 
 
 class Bilutv:
-    domain = "https://biluhay.net"
+    domain = "http://bilutvs.com"
 
     def getCategory(self):
         url = "%s/%s" % (self.domain, 'danh-sach/')

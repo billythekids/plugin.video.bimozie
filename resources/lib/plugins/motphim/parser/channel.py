@@ -31,6 +31,7 @@ class Parser:
             channel['movies'].append({
                 'id': movie_id,
                 'label': Parser.text(label),
+                'intro': Parser.text(label),
                 'title': Parser.text(title),
                 'realtitle': Parser.text(title),
                 'thumb': img,

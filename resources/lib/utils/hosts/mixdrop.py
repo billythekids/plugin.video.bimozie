@@ -2,7 +2,7 @@
 # coding=utf-8
 import re
 
-from ..cpacker import cPacker as Packer
+from .. import cpacker as Packer
 from ..mozie_request import Request
 
 
@@ -12,7 +12,7 @@ def get_link(url, media):
 
     if enc:
         sources = enc.group(1)
-        sources = Packer().unpack(sources)
+        sources = Packer.unpack(sources)
     else:
         sources = response
 

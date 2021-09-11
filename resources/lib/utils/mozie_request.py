@@ -17,9 +17,9 @@ except ImportError:
 from threading import Thread
 
 user_agent = (
-    "Mozilla/5.0 (X11; Linux x86_64) "
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/59.0.3071.115 Safari/537.36"
+    "Chrome/86.0.4240.75 Safari/537.36"
 )
 
 class Request:
@@ -112,10 +112,11 @@ class AsyncRequest:
     MIN_THREAD = 50
     RETRY = 1
 
-    def __init__(self, request=None, retry=1, thread=50):
+    def __init__(self, request=None, retry=1, thread=50, delay=0):
         self.request = request or Request()
         self.RETRY = retry
         self.MIN_THREAD = thread
+        self.Delay = delay
 
     def __create_queue(self, urls):
         helper.log("*********************** Start Queue %d" % len(urls))
@@ -185,10 +186,12 @@ class AsyncRequest:
                     helper.log('Async Requested %s' % work[1])
                     self.results[work[0]] = data
                     retry = 0
+                    time.sleep(self.Delay)
+
                 except Exception as inst:
-                    helper.log(inst)
+                    # helper.log(inst)
                     helper.log('Async Request %s fail retry %d' % (work[1], retry))
-                    traceback.print_exc()
+                    # traceback.print_exc()
                     self.results[work[0]] = {}
                 finally:
                     retry -= 1
@@ -197,6 +200,7 @@ class AsyncRequest:
             progress = int(100 - (done * 100 / self.length))
             self.dialog.update(progress, 'Processing %d/%d urls' % (self.length - done, self.length))
             self.q.task_done()
+
         return True
 
     def head(self, urls, params=None, headers=None, redirect=False, parser=None, args=None, cookies=None, verify=True):

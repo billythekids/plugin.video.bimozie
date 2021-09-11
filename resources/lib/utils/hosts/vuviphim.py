@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 import json
 import re
-import urllib
+from six.moves.urllib.parse import quote_plus
 
 from .. import xbmc_helper as helper
-from ..cpacker import cPacker as Packer
+from .. import cpacker as Packer
 from ..mozie_request import Request
 
 
-def get_link(url):
-    response = Request().get(url)
+def get_link(url, media):
+    response = Request().get(url, headers={
+                    'referer': media.get('originUrl')
+                })
     enc = re.search(r'(eval\(function\(p,a,c,k,e,d\).*)\s+?</script>', response)
     enc2 = re.search(r'sources:\s?(\[.*?\]),', response)
     found = False
@@ -18,7 +20,7 @@ def get_link(url):
 
     if enc:
         sources = enc.group(1)
-        sources = Packer().unpack(sources)
+        sources = Packer.unpack(sources)
         sources = re.search(r'sources:\s?(.*?\]),', sources)
         found = True
 
@@ -48,8 +50,8 @@ def get_link(url):
                 if index == -1:
                     return None, 'mp4'
                 else:
-                    return sources[index]['file'] + '|referer=' + urllib.quote_plus(url), sources[index]['type']
+                    return sources[index]['file'] + '|referer=' + quote_plus(url), sources[index]['type']
             else:
-                return sources[0]['file'] + '|referer=' + urllib.quote_plus(url), sources[0]['type']
+                return sources[0]['file'] + '|referer=' + quote_plus(url), sources[0]['type']
 
     return url, 'vuviphim'

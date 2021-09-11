@@ -21,7 +21,7 @@ class Vkool:
     # replace_domain = "http://phim.vkool.net"
 
     def __init__(self):
-        self.request = Request(h, session=True)
+        self.request = Request(h, session=False)
 
     def getCategory(self):
         response = self.request.get(self.domain)

@@ -126,11 +126,11 @@ SITES = [
         "version": 1
       },
       {
-        "name": "vuviphimz.com",
-        "logo": "https://vuviphimz.com/wp-content/uploads/2020/07/logo-4.png",
+        "name": "vuviphimx.com",
+        "logo": "https://i2.wp.com/vuviphimx.com/wp-content/uploads/2021/08/vuviphimx.png",
         "className": "Vuviphim",
         "plugin": "vuviphim.plugin",
-        "version": 31
+        "version": 1
       },
       {
         "name": "phimgi.tv",
@@ -151,7 +151,7 @@ SITES = [
         "logo": "https://phim7z.tv/wp-content/themes/khophim/assets/images/logo-dark.png",
         "className": "Phim7z",
         "plugin": "phim7z.plugin",
-        "version": 1
+        "version": 31
       },
       {
         "name": "motphjm.net",

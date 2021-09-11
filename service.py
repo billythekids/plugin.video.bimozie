@@ -28,8 +28,9 @@ def run():
     monitor = xbmc.Monitor()
     helper.message('Local proxy started', 'Proxy')
 
-    while not monitor.waitForAbort(3):
-        pass
+    while not monitor.abortRequested():
+        if monitor.waitForAbort(1):
+            break
 
     httpd.shutdown()
     server_thread.join()

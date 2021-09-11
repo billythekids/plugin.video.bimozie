@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-from utils.mozie_request import Request
+from utils.mozie_request import Request, AsyncRequest
 from kodi_six.utils import py2_encode
 import utils.xbmc_helper as helper
 import re
 import json
+from utils.link_extractor import LinkExtractor
 
 
 def from_char_code(*args):
@@ -22,7 +23,7 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         movie['group']['Dongphim'] = []
         eps = soup.select('div.movie-eps-wrapper > a.movie-eps-item')
-        for i in reversed(range(len(eps))):
+        for i in range(len(eps)):
             ep = eps[i]
             if 'disabled' in ep.get('class'): continue
             movie['group']['Dongphim'].append({
@@ -32,6 +33,44 @@ class Parser:
 
         return movie
 
+    def get_link2(self, response, originUrl, api):
+        movie = {
+            'group': {},
+            'episode': [],
+            'links': [],
+        }
+
+        soup = BeautifulSoup(response, "html.parser")
+        links = soup.select('div.video-footer a.btn-sv')
+
+        jobs = []
+        movie_links = []
+
+        for link in links:
+            url = link.get('data-href')
+            jobs.append({'url': url, 'parser': Parser.parse_link, 'headers': {
+                'referer': originUrl
+            }})
+
+        AsyncRequest().get(jobs, args=movie_links)
+        for link in movie_links:
+            movie['links'].append({
+                'link': link,
+                'title': 'Link hls',
+                'type': 'hls',
+                'resolve': False,
+                'originUrl': originUrl
+            })
+
+        return movie
+
+    @staticmethod
+    def parse_link(response, movie_links):
+        m_url = LinkExtractor.iframe(response)
+        if m_url and 'dongphymtv.com' not in m_url:
+            movie_links.append(m_url)
+
+    # deprecated
     def get_link(self, response, originUrl, api):
         movie = {
             'group': {},

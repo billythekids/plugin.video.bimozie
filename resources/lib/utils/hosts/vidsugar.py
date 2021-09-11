@@ -15,7 +15,7 @@ def get_link(url, media):
 
     playlist = proxy.replace_proxy_link(adaptive_link)
     url = PasteBin().dpaste(playlist, name='adaptivestream', expire=60)
-
+    url = proxy.prepend_url(url, '-dl')
     return url, 'png'
 
 

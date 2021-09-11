@@ -7,8 +7,8 @@ from utils.mozie_request import Request
 
 
 class Fimfast:
-    domain = "https://phim1080zz.com"
-    api = "https://phim1080zz.com/api/v2"
+    domain = "https://fim1080.com"
+    api = "https://fim1080.com/api/v2"
 
     def __init__(self):
         self.request = Request(session=True)

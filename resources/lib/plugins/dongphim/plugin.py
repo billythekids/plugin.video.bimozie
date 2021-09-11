@@ -10,7 +10,7 @@ from utils.mozie_request import Request
 
 class Dongphim:
     # domain = "https://dongphim.biz"
-    domain = "https://dongphym.co"
+    domain = "https://dongphymtv.com"
     api = "https://dp.vodcdn.xyz"
 
     def __init__(self):
@@ -29,8 +29,10 @@ class Dongphim:
         response = self.request.get(url)
         return Channel().get(response, page)
 
-    def getMovie(self, id):
-        response = self.request.get(id)
+    def getMovie(self, url):
+        url = url.replace(self.domain, "")
+        url = '{}{}'.format(self.domain, url)
+        response = self.request.get(url)
         eps = Movie().get(response)
 
         if len(eps.get('group').get(list(eps.get('group').keys())[0])) == 0:
@@ -47,7 +49,7 @@ class Dongphim:
     def getLink(self, movie):
         link = "{}{}".format(self.domain, movie['link'].replace(self.domain, ""))
         response = self.request.get(link)
-        return Movie().get_link(response, movie['link'], self.api)
+        return Movie().get_link2(response, movie['link'], self.api)
 
     def search(self, text):
         url = "%s/content/search?t=kw&q=%s" % (self.domain, quote_plus(text))

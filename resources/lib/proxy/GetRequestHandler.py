@@ -1,6 +1,11 @@
 import time
 
 import requests
+
+try:
+    from cloudscraper2 import CloudScraper
+except:
+    import cloudscraper as CloudScraper
 from requests import HTTPError
 
 from . import RequestHelper
@@ -11,9 +16,11 @@ streaming = False
 class GetRequestHandler:
     def __init__(self, context):
         self.context = context
-
-    def stream_content(self, url, need_truncate=False, headers=None):
-        pass
+        self.scraper = CloudScraper.create_scraper(browser={
+            'browser': 'firefox',
+            'platform': 'windows',
+            'mobile': False
+        }, allow_brotli=False)
 
     def prepare_download_header(self, is_range_support, range_seek=0):
         request_headers = RequestHelper.extract_request_header(self.context)
@@ -27,15 +34,26 @@ class GetRequestHandler:
                 'Range': 'bytes=%s-%s' % (from_range + range_seek, to_range)
             })
 
+        request_headers.update({
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36 Edg/93.0.961.38'
+        })
+
         return request_headers
 
     def download_content(self, url, range_seek=8):
         # is_range_support = RequestHelper.is_support_range(url)
         is_range_support = False
-        request_headers = self.prepare_download_header(is_range_support, range_seek=range_seek)
+        # request_headers = self.prepare_download_header(is_range_support, range_seek=range_seek)
         # print('request_headers', request_headers)
+        url, request_headers = RequestHelper.parse_url(url)
+        if not request_headers:
+            request_headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36 Edg/93.0.961.38'
+            }
 
-        response = requests.get(url, allow_redirects=True, headers=request_headers)
+        self.scraper.headers.update(request_headers)
+        response = self.scraper.get(url)
+        # response = requests.get(url, headers=request_headers)
         content = response.content
         if not is_range_support and range_seek > 0:
             content = content[range_seek:]
@@ -52,10 +70,6 @@ class GetRequestHandler:
 
         response = requests.head(url, allow_redirects=True, headers=request_headers)
         RequestHelper.send_back_header(self.context, response)
-
-        def stream2():
-            r = requests.get(url, stream=True)
-            self.context.wfile.write(r.raw.read())
 
         def stream(retry=3):
             seek = False

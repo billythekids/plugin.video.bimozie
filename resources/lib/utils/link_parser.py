@@ -70,11 +70,20 @@ from .hosts import fshare, \
     tvhaystream, \
     vidsugar, \
     gotphim, \
+    bitvtom100, \
+    dood, \
     tvmienphi
 
 
 class LinkParser:
-    def __init__(self, media):
+    media = None
+    url = None
+
+    def __init__(self, media=None):
+        if media:
+            self.set_media(media)
+
+    def set_media(self, media):
         self.media = media
         self.url = media['link']
 
@@ -96,6 +105,12 @@ class LinkParser:
         if 'play.playoffsite.xyz' in self.url or \
                 'play.vstreamplay.xyz' in self.url:
             return playoffsite.get_link(self.url, self.media)
+
+        if 'bitvtom100.xyz' in self.url:
+            return bitvtom100.get_link(self.url, self.media)
+
+        if 'dood' in self.url:
+            return dood.get_link(self.url, self.media)
 
         if 'xemtivimienphi' in self.url:
             return xemtivimienphi.get_link(self.url, self.media)
@@ -148,7 +163,7 @@ class LinkParser:
             return proxy_playphim.get_link(self.url, self.media)
 
         elif 'vidsugar.com' in self.url \
-            or '8giaitri' in self.url :
+                or '8giaitri' in self.url:
             return vidsugar.get_link(self.url, self.media)
 
         elif 'fimfast.com' in self.url \
@@ -193,6 +208,7 @@ class LinkParser:
 
         elif '90p.tv' in self.url \
                 or 'mitom.1h30m.link' in self.url \
+                or 'mitom.1tiengruoi.link' in self.url \
                 or 'binhluanvidamme.online' in self.url \
                 or 'phut91.online' in self.url:
             return phut90.get_link(self.url, self.media), '90p.tv'
@@ -220,7 +236,7 @@ class LinkParser:
             return aparat.get_link(self.url)
 
         elif 'motphim.net' in self.url:
-            return motphim.get_link(self.url, self.media)
+            return motphim.get_link(self.url, self.media, self)
 
         elif 'upstream.to' in self.url:
             return upstream.get_link(self.url)
@@ -291,10 +307,11 @@ class LinkParser:
             return hdclub.get_link(self.url)
 
         elif re.search('vuviphim.xyz', self.url) \
+                or re.search('vuviphims.net', self.url) \
                 or re.search('vuviphimmoi.com', self.url) \
                 or re.search('vuviphimzz.com', self.url) \
                 or re.search('thoctv.com', self.url):
-            return vuviphim.get_link(self.url)
+            return vuviphim.get_link(self.url, self.media)
 
         elif re.search('fptplay.net', self.url):
             helper.message('FPTPlay hls link parsing', 'Get Link')

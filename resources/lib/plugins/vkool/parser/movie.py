@@ -61,7 +61,7 @@ class Parser:
             }
             jobs.append({'url': url, 'params': params, 'parser': Parser.extract_link})
 
-        AsyncRequest(request=request).post(jobs, args=links)
+        AsyncRequest(request=request, delay=1, retry=3).post(jobs, args=links)
         jobs = []
         movie_links = []
 
@@ -104,6 +104,7 @@ class Parser:
         sources = json.loads(response)
         if 'link' in sources:
             if isinstance(sources['link'], list):
+                print(sources['link'])
                 for source in sources['link']:
                     if 'http' in source['link']:
                         movie_links.append((source['link'], source['label']))

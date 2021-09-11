@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import json
+
 try:
     from urlparse import urlparse, parse_qs
 except ImportError:
     from urllib.parse import urlparse, parse_qs
 from ..mozie_request import Request
 from ..aes import CryptoAES
-from .. import xbmc_helper as helper
-from . import vidsugar
+from six.moves.urllib.parse import unquote
+import xbmcgui
 
 
-def get_link(url, media):
+def get_link(url, media, link_parser):
     req = Request()
     url = url.replace('motphim.net', 'motphimzzz.com')
     url = url.replace('motphimzzz.com', 'motphjm.net')
@@ -19,18 +20,30 @@ def get_link(url, media):
     base_url = urlparse(url)
 
     parsed = urlparse(url)
-    response = req.post("https://iapi.mpapis.xyz/cloud/", params={
-        'd': parse_qs(parsed.query)['d']
+    response = req.post("https://cloud.mpapis.xyz/api", params={
+        'key': parse_qs(parsed.query)['d'][0]
     }, headers={
         'origin': "https://motphjm.net"
     })
-    url = CryptoAES().decrypt(json.loads(response).get('d'), '{}45904818772018'.format(base_url.netloc))
 
-    if 'vidsugar.com' in url:
-        return vidsugar.get_link(url, media)
+    listitems = []
+    movie_items = []
+    for data in json.loads(response):
+        name = unquote(data[0])
+        if 'Hydrax' not in name:
+            url = CryptoAES().decrypt(data[1], '{}45904818772018'.format(base_url.netloc))
+            movie_items.append((url, name))
+            listitems.append("%s (%s)" % (name, url))
 
-    return url, 'motphim'
+    selected_item = None
+    if len(listitems) > 1:
+        index = xbmcgui.Dialog().select("Select stream", listitems)
+        if index == -1:
+            return None, None
+        else:
+            selected_item = movie_items[index]
 
+    media['link'] = selected_item[0]
+    link_parser.set_media(media)
+    return link_parser.get_link()
 
-def create_playlist(data):
-    helper.log(data)

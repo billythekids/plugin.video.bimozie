@@ -13,6 +13,7 @@ except ImportError:
     from urllib import urlencode
 
 from .. import xbmc_helper as helper
+from .. import proxy_helper as proxy
 from ..mozie_request import Request, user_agent
 
 
@@ -147,8 +148,9 @@ class FShareVN:
             #     r.raise_for_status()
             #     for chunk in r.iter_content(chunk_size=1024):
             #         return None
-            helper.sleep(2000)
-            # return url
+            # helper.sleep(2000)
+            # return proxy.prepend_url(url, '-no')
+            return url
 
             return '{}|{}'.format(url, urlencode({
                 'user-agent': user_agent,

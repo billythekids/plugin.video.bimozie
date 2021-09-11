@@ -1,4 +1,5 @@
 import requests, re
+from six.moves.urllib.parse import unquote
 
 
 def is_support_range(url):
@@ -78,6 +79,14 @@ def send_back_header(context, response, is_range_support=False, range_seek=0):
 
     print(context._headers_buffer)
     context.end_headers()
+
+
+def parse_url(url):
+    if '|' in url:
+        parts = url.split('|')
+        return parts[0], unquote(parts[1])
+
+    return url, None
 
 
 def extract_request_header(context):
