@@ -207,7 +207,7 @@ class LinkParser:
             return streamsb_biphim_club.get_link(self.url, self.media)
 
         elif '90p.tv' in self.url \
-                or 'mitom.1h30m.link' in self.url \
+                or '90phut' in self.url \
                 or 'mitom.1tiengruoi.link' in self.url \
                 or 'binhluanvidamme.online' in self.url \
                 or 'phut91.online' in self.url:
@@ -349,7 +349,6 @@ class LinkParser:
             return self.get_youtube()
 
         elif re.search('imacdn.com', self.url):
-            helper.message('imacdn HFF', 'Movie Found')
             return imacdn.get_link(self.url, self.media), 'imacdn'
 
         elif re.search('vtv16.com', self.url):

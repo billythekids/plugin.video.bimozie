@@ -20,8 +20,7 @@ def from_char_code(*args):
 class Parser:
     def get_movie_link(self, response):
         soup = BeautifulSoup(response, "html.parser")
-        return soup.select_one('div#ah-pif > div.ah-pif-head > div.ah-pif-ftool > div.ah-float-left > span > a').get(
-            'href')
+        return soup.select_one('div.info-movie div.flex.ah-frame-bg div.flex.flex-1 a.button-default').get('href')
 
     def get(self, response, skipEps=False):
         movie = {

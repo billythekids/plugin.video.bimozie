@@ -17,7 +17,7 @@ h = {
 
 
 class Vkool:
-    domain = "http://tv.vkool.net"
+    domain = "http://mv.vkool.net"
     # replace_domain = "http://phim.vkool.net"
 
     def __init__(self):

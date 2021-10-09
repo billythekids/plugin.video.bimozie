@@ -5,7 +5,7 @@ from thuckhuya.parser.movie import Parser as Movie
 
 
 class Thuckhuya:
-    domain = "https://thuckhuya.live"
+    domain = "http://thuckhuya.me"
 
     def getCategory(self):
         channel = Channel.get(Request().get(self.domain))

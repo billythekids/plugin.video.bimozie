@@ -42,6 +42,7 @@ class Parser:
             channel['movies'].append({
                 'id': movie.select_one('a').get('href').replace(replace_domain, domain),
                 'label': py2_encode(label),
+                'intro': py2_encode(label),
                 'title': py2_encode(title),
                 'realtitle': py2_encode(realtitle),
                 'thumb': thumbnail,

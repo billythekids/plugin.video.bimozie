@@ -63,7 +63,7 @@ SITES = [
         "version": 31
       },
       {
-        "name": "hayghes.com",
+        "name": "hayghex.net",
         "logo": "https://hayghes.com/favicon.png",
         "className": "Hayghes",
         "plugin": "hayghes.plugin",
@@ -112,7 +112,7 @@ SITES = [
         "version": 31
       },
       {
-        "name": "biphimz.tv",
+        "name": "biphim.co",
         "logo": "https://i.ibb.co/tBKrQtK/image.png",
         "className": "Hphim",
         "plugin": "hphim.plugin",
@@ -126,7 +126,7 @@ SITES = [
         "version": 1
       },
       {
-        "name": "vuviphimx.com",
+        "name": "vuvichill.com",
         "logo": "https://i2.wp.com/vuviphimx.com/wp-content/uploads/2021/08/vuviphimx.png",
         "className": "Vuviphim",
         "plugin": "vuviphim.plugin",

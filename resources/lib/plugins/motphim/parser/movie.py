@@ -7,11 +7,11 @@ from kodi_six.utils import py2_encode
 
 
 class Parser:
-    key = 'motphjm.net45904818772018'
+    key = 'motchill.net45904818772018'
 
     def get_movie_link(self, response):
         soup = BeautifulSoup(response, "html.parser")
-        return soup.select_one("a.btn-see.btn-danger.adspruce-streamlink").get('href')
+        return soup.select_one("a.btn-see.btn-danger.btn-stream-link").get('href')
 
     def get(self, response):
         movie = {

@@ -12,6 +12,22 @@ from . import RequestHelper
 
 streaming = False
 
+import logging
+# The only thing missing will be the response.body which is not logged.
+try:
+    import http.client as http_client
+except ImportError:
+    # Python 2
+    import httplib as http_client
+http_client.HTTPConnection.debuglevel = 1
+
+# You must initialize logging, otherwise you'll not see debug output.
+# logging.basicConfig()
+# logging.getLogger().setLevel(logging.DEBUG)
+# requests_log = logging.getLogger("requests.packages.urllib3")
+# requests_log.setLevel(logging.DEBUG)
+# requests_log.propagate = True
+
 
 class GetRequestHandler:
     def __init__(self, context):
@@ -19,8 +35,9 @@ class GetRequestHandler:
         self.scraper = CloudScraper.create_scraper(browser={
             'browser': 'firefox',
             'platform': 'windows',
-            'mobile': False
+            'mobile': True
         }, allow_brotli=False)
+        # self.scraper = requests.session()
 
     def prepare_download_header(self, is_range_support, range_seek=0):
         request_headers = RequestHelper.extract_request_header(self.context)

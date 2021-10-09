@@ -14,7 +14,7 @@ def from_char_code(*args):
 class Parser:
     def get_movie_link(self, response):
         soup = BeautifulSoup(response, "html.parser")
-        return soup.select_one('div.content > a.xemphim').get('href')
+        return soup.select_one('div.content > a.xemphimz').get('href')
 
     def get(self, response, skipEps=False):
         movie = {

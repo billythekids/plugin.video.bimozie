@@ -1,5 +1,5 @@
 import requests, re
-from six.moves.urllib.parse import unquote
+from six.moves.urllib.parse import parse_qsl
 
 
 def is_support_range(url):
@@ -36,6 +36,8 @@ def extract_response_header_range(text):
 def send_back_header(context, response, is_range_support=False, range_seek=0):
     # print("Response status %s" % response.status_code)
     context.send_response(response.status_code)
+    if response.status_code != 200:
+        print(response.body)
     # context.send_response(200)
     response_headers = response.headers
     # print(response_headers)
@@ -84,7 +86,7 @@ def send_back_header(context, response, is_range_support=False, range_seek=0):
 def parse_url(url):
     if '|' in url:
         parts = url.split('|')
-        return parts[0], unquote(parts[1])
+        return parts[0], dict(parse_qsl(parts[1]))
 
     return url, None
 

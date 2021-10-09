@@ -7,7 +7,7 @@ from utils.mozie_request import Request
 
 
 class Hphim:
-    domain = "http://biphimz.tv"
+    domain = "http://biphim.co"
 
     def getCategory(self):
         response = Request().get(self.domain)

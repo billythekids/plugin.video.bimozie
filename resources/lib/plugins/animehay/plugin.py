@@ -4,16 +4,26 @@ from animehay.parser.category import Parser as Category
 from animehay.parser.channel import Parser as Channel
 from animehay.parser.movie import Parser as Movie
 from utils.mozie_request import Request
+from six.moves.urllib.parse import quote_plus
+try:
+    from cloudscraper2 import CloudScraper
+except:
+    import cloudscraper as CloudScraper
 
 
 class Animehay:
-    domain = "https://animehay.tv"
+    domain = "https://animehay.site"
 
     def __init__(self):
         self.username = helper.getSetting('animehay.username')
         self.password = helper.getSetting('animehay.password')
-        self.request = Request(session=True)
-        self.login()
+        # self.request = Request(session=True)
+        self.request = CloudScraper.create_scraper(browser={
+            'browser': 'firefox',
+            'platform': 'windows',
+            'mobile': True
+        }, allow_brotli=False)
+        # self.login()
 
     def login(self, redirect=None):
         params = {
@@ -21,12 +31,12 @@ class Animehay:
             'password': self.password,
             'send_log': "Đăng Nhập"
         }
-        response = self.request.post('%s//dang-nhap?ref=/' % self.domain, params)
+        response = self.request.post('%s/dang-nhap?ref=/' % self.domain, params)
         return response
 
     def getCategory(self):
         response = self.request.get(self.domain)
-        return Category().get(response), Channel().get(response, 1)
+        return Category().get(response.content), Channel().get(response.content, 1)
 
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
@@ -35,18 +45,18 @@ class Animehay:
         else:
             url = '%s%s' % (self.domain, channel)
         response = self.request.get(url)
-        return Channel().get(response, page)
+        return Channel().get(response.content, page)
 
-    def getMovie(self, id):
-        url = Movie().get_movie_link(Request().get(id))
+    def getMovie(self, mid):
+        url = Movie().get_movie_link(self.request.get(mid).content)
         response = self.request.get(url)
-        return Movie().get(response)
+        return Movie().get(response.content)
 
     def getLink(self, movie):
         response = self.request.get(movie['link'])
-        return Movie().get_link(response, movie['link'])
+        return Movie().get_link(response.content, movie['link'])
 
     def search(self, text):
         url = "%s/tim-kiem?q=%s" % (self.domain, quote_plus(text))
         response = self.request.get(url)
-        return Channel().get(response, 1)
+        return Channel().get(response.content, 1)

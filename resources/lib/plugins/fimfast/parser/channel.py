@@ -35,6 +35,7 @@ class Parser:
             channel['movies'].append({
                 'id': movie.get('href'),
                 'label': label,
+                'intro': label,
                 'title': title,
                 'realtitle': title,
                 'thumb': thumb,

@@ -8,15 +8,15 @@ class Parser:
         category = []
         soup = BeautifulSoup(response, "html.parser")
 
-        cats = soup.select('div#ah-cat ul.nav > ul.ah-ulsm > li')
-        subcats = soup.select('div#ah-cat ul.nav > ul.ah-ulsm > ul.ah-ulsm')
+        cats = soup.select('div#drop-down-1 > a')
+        # subcats = soup.select('div#ah-cat ul.nav > ul.ah-ulsm > ul.ah-ulsm')
 
-        for idx, item in enumerate(cats):
-            menu = item.select_one('a')
+        for idx, menu in enumerate(cats):
+            # menu = item.select_one('a')
             category.append({
                 'title': py2_encode(menu.text),
                 'link': menu.get("href"),
-                'subcategory': idx < len(subcats) and self.getsubmenu(subcats[idx]) or []
+                # 'subcategory': idx < len(subcats) and self.getsubmenu(subcats[idx]) or []
             })
         return category
 

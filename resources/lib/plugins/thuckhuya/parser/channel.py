@@ -17,13 +17,22 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
         current_time = int(round(time.time()))
 
-        for item in soup.select('div#ajax-content-lives > div.list-channel'):
-            movie = item.select_one('a div.info')
+        for movie in soup.select('div.matches__item'):
             if movie:
-                murl = item.select_one('a').get('href')
-                start_time = int(item.get('data-runtime'))
-                title = movie.select_one('div.title').text.strip()
-                movie_type = movie.select_one('div.t_time').text.strip()
+                ref = movie.select_one('a')
+                title = ref.get('title')
+                if not title:
+                    continue
+
+                murl = ref.get('href')
+                if movie.get('data-runtime'):
+                    start_time = int(movie.get('data-runtime'))
+                else:
+                    start_time = current_time + 1
+
+                movie_type = ''
+                if movie.select_one('div.matches__status--normal span.t_time'):
+                    movie_type = movie.select_one('div.matches__status--normal span.t_time').get('data-time').strip()
                 label = "{} - {}".format(movie_type, title)
 
                 if current_time >= start_time:

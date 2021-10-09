@@ -9,7 +9,7 @@ from utils.mozie_request import Request
 
 
 class Motphim:
-    domain = "https://motphjm.net"
+    domain = "https://motchill.net"
     api = "https://api.mpapis.xyz"
 
     def __init__(self):
