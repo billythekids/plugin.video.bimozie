@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
+from six.moves.urllib.parse import unquote
+import re
 
 
 class Parser:
@@ -26,7 +28,7 @@ class Parser:
             mtype = movie.select_one('span.label').text
             label = "[%s] %s" % (mtype, title)
 
-            img = movie.select_one('a > img').get('src')
+            img = Parser.extract_image(str(movie.select_one('a > img').get('data-original')))
             movie_id = movie.select_one('a').get('href')
             channel['movies'].append({
                 'id': movie_id,
@@ -46,3 +48,11 @@ class Parser:
             return py2_encode(txt)
         except:
             return py2_encode(txt, 'latin1')
+
+    @staticmethod
+    def extract_image(url):
+        match = re.search(r"url=(.*)", url)
+        if match:
+            return unquote(match.group(1))
+
+        return url

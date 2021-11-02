@@ -70,6 +70,7 @@ class Parser:
             channel['movies'].append({
                 'id': py2_encode(movie.get('href')),
                 'label': py2_encode(label),
+                'intro': py2_encode(label),
                 'title': py2_encode(title),
                 'realtitle': py2_encode(realtitle),
                 'thumb': thumb,
@@ -87,8 +88,9 @@ class Parser:
 
         try:
             soup = BeautifulSoup(response, "html.parser")
+            print(response)
             for movie in soup.select('li.movie-item'):
-                tag = movie.select_one('> a')
+                tag = movie.select_one('a')
                 title = py2_encode(tag.get('title').strip())
                 thumb = re.search(r':url\((.*?)\);', movie.select_one('div.movie-thumbnail').get('style')).group(1)
 
@@ -97,6 +99,7 @@ class Parser:
                     'label': title,
                     'title': title,
                     'realtitle': title,
+                    'intro': title,
                     'thumb': thumb,
                     'type': ''
                 })

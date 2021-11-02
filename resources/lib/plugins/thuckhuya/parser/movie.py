@@ -16,7 +16,7 @@ class Parser:
         soup = BeautifulSoup(response, "html.parser")
 
         # get episode if possible
-        episodes = soup.select('ul.list-stream > li > a.btn')
+        episodes = soup.select('#play_main a.text-uppercase.action ')
         found = False
         if len(episodes) > 1:
             for episode in episodes:
@@ -28,7 +28,7 @@ class Parser:
                         'link': episode.get('href'),
                         'title': py2_encode(episode.text.strip()),
                         'type': 'Unknown',
-                        'originUrl': 'https://play.thuckhuya.live/',
+                        'originUrl': 'https://mitom1.tv/',
                         'resolve': False
                     })
 

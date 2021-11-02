@@ -57,15 +57,16 @@ class Parser:
             'referer': referrer_url
         })
 
-        link = LinkExtractor.iframe(response)
-        if link:
-            movie['links'].append({
-                'link': link,
-                'title': 'Link HD',
-                'type': 'stream',
-                'resolve': False,
-                'originUrl': referrer_url
-            })
+        links = LinkExtractor.iframe(response, True)
+        if len(links) > 0:
+            for link in links:
+                movie['links'].append({
+                    'link': link,
+                    'title': 'Link HD',
+                    'type': 'stream',
+                    'resolve': False,
+                    'originUrl': referrer_url
+                })
 
 
         # if links:

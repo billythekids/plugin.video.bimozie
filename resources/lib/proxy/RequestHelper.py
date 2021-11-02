@@ -36,8 +36,8 @@ def extract_response_header_range(text):
 def send_back_header(context, response, is_range_support=False, range_seek=0):
     # print("Response status %s" % response.status_code)
     context.send_response(response.status_code)
-    if response.status_code != 200:
-        print(response.body)
+    # if response.status_code != 200:
+    #     print(response.body)
     # context.send_response(200)
     response_headers = response.headers
     # print(response_headers)
@@ -79,7 +79,6 @@ def send_back_header(context, response, is_range_support=False, range_seek=0):
                                          from_range - range_seek, content_length - 1, content_length)
                                      )
 
-    print(context._headers_buffer)
     context.end_headers()
 
 

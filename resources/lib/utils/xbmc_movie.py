@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import hashlib
 
 from kodi_six import xbmcplugin, xbmcgui
 from six.moves.urllib.parse import urlencode
@@ -31,13 +32,20 @@ def _build_ep_list(items, movie_item, module, class_name):
             eps_title = helper.text_encode(item.get('title'))
             movie_item['title'] = "%s - %s" % (title, eps_title)
 
-            url = plugin.url_for_path('/play?{}'.format(urlencode({
-                'mode': 'play_item',
-                'query': json.dumps({
-                    'item': item, 'movie_item': movie_item, 'direct': 0,
-                    'module': module, 'className': class_name
-                })
-            })))
+            movie_id = hashlib.md5(item.get('link').encode())
+
+            url = plugin.url_for(app.play, query=json.dumps({
+                'item': item, 'movie_item': movie_item, 'direct': 0,
+                'module': module, 'className': class_name
+            }), movie_id=movie_id.hexdigest())
+
+            # url = plugin.url_for_path('/play?{}'.format(urlencode({
+            #     'mode': 'play_item',
+            #     'query': json.dumps({
+            #         'item': item, 'movie_item': movie_item, 'direct': 0,
+            #         'module': module, 'className': class_name
+            #     })
+            # })))
             li.setProperty("IsPlayable", "true")
             xbmcplugin.addDirectoryItem(plugin.handle, url, li, isFolder=False)
         except:
@@ -76,7 +84,9 @@ class MovieHandler:
                             }))
                         else:
                             list_item.setInfo('video', {'title': item.get('title')})
-                            url = plugin.url_for(app.play, query=json.dumps({
+
+                            movie_id = hashlib.md5(item.get('link').encode())
+                            url = plugin.url_for(app.play, movie_id=movie_id.hexdigest(), query=json.dumps({
                                 'item': item, 'movie_item': item, 'direct': 1
                             }))
                             list_item.setProperty("IsPlayable", "true")
@@ -162,7 +172,8 @@ class MovieHandler:
                     li.setProperty("IsPlayable", "false")
                     xbmcplugin.addDirectoryItem(plugin.handle, url, li, True)
                 else:
-                    url = plugin.url_for(app.play, query=json.dumps({
+                    movie_id = hashlib.md5(item.get('link').encode())
+                    url = plugin.url_for(app.play, movie_id=movie_id.hexdigest(), query=json.dumps({
                         'item': item, 'movie_item': movie_item, 'direct': 1,
                         'module': module, 'className': class_name
                     }))

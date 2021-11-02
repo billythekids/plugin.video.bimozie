@@ -18,7 +18,7 @@ h = {
 
 
 class Hayghes:
-    domain = "https://hayghex.net"
+    domain = "https://haychill.com"
 
     def __init__(self):
         self.request = Request(h, session=True)
@@ -51,6 +51,6 @@ class Hayghes:
         return Movie().get_link(response, self.domain, url, self.request)
 
     def search(self, text):
-        url = "%s/tim-nang-cao/?keyword=%s" % (self.domain, quote_plus(text))
+        url = "%s/tim-kiem/%s/" % (self.domain, quote_plus(text))
         response = self.request.get(url, headers=h)
         return Channel().get(response, 1)

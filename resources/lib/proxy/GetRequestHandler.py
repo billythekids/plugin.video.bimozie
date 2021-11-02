@@ -63,10 +63,14 @@ class GetRequestHandler:
         # request_headers = self.prepare_download_header(is_range_support, range_seek=range_seek)
         # print('request_headers', request_headers)
         url, request_headers = RequestHelper.parse_url(url)
+
+        print('request url', url)
         if not request_headers:
             request_headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36 Edg/93.0.961.38'
             }
+        else:
+            print('custom request header', request_headers)
 
         self.scraper.headers.update(request_headers)
         response = self.scraper.get(url)

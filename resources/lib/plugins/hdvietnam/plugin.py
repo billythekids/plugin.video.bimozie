@@ -12,7 +12,7 @@ from utils.mozie_request import Request
 
 
 class Hdvietnam:
-    domain = "http://www.hdvietnam.com"
+    domain = "https://www.hdvietnam.com"
 
     def __init__(self):
         if not helper.getSetting('hdvietnam.username'):
@@ -97,11 +97,10 @@ class Hdvietnam:
         params = {
             'keywords': text,
             'nodes[]': [337, 116, 150, 33, 57, 123],
-            'type': 'post',
-            'order': 'date',
             'child_nodes': 1
         }
 
         url = "%s/search/search" % self.domain
         response = Request().post(url, params=params)
+        print(response)
         return Channel().get_search(response)

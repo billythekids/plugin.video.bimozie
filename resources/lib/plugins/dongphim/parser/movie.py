@@ -21,15 +21,18 @@ class Parser:
         }
 
         soup = BeautifulSoup(response, "html.parser")
-        movie['group']['Dongphim'] = []
-        eps = soup.select('div.movie-eps-wrapper > a.movie-eps-item')
-        for i in range(len(eps)):
-            ep = eps[i]
-            if 'disabled' in ep.get('class'): continue
-            movie['group']['Dongphim'].append({
-                'link': py2_encode(ep.get('href')),
-                'title': py2_encode(ep.get('title')),
-            })
+        #get server group
+        for server_group in soup.select('div.movie-rate'):
+            group_name = py2_encode(server_group.select_one('div.rate').text.strip())
+            movie['group'][group_name] = []
+            eps = server_group.select('div.movie-eps-wrapper > a.movie-eps-item')
+            for i in range(len(eps)):
+                ep = eps[i]
+                if 'disabled' in ep.get('class'): continue
+                movie['group'][group_name].append({
+                    'link': py2_encode(ep.get('href')),
+                    'title': py2_encode(ep.get('title')),
+                })
 
         return movie
 

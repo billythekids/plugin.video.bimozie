@@ -375,7 +375,7 @@ class LinkParser:
             content = Request().get(self.url)
             return LinkExtractor.play_sources(content)[0].get('file'), 'phimtvb'
 
-        elif 'thuckhuya' in self.url:
+        elif 'mitom1.tv' in self.url:
             return thuckhuya.get_link(self.url, self.media)
 
         elif self.url.endswith('m3u8'):

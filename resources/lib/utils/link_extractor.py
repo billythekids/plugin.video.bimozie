@@ -9,11 +9,15 @@ class LinkExtractor:
         pass
 
     @staticmethod
-    def iframe(txt):
-        reg = re.search(r'''<iframe.*src=['|"](.*?)['|"]''', txt)
-        if reg:
-            helper.log("Found iframe source: {}".format(reg.group(1)))
-            return reg.group(1)
+    def iframe(txt, all=False):
+        pattern = r'''<iframe(?:(?!<iframe).*?src=['|"](.*?)['|"])'''
+        if all:
+            return re.findall(pattern, txt)
+        else:
+            reg = re.search(pattern, txt)
+            if reg:
+                helper.log("Found iframe source: {}".format(reg.group(1)))
+                return reg.group(1)
 
         return None
 

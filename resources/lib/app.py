@@ -65,9 +65,9 @@ def show_movie_server_group():
     MovieHandler.show_movie_server_group()
 
 
-@plugin.route('/play')
-def play(query=None):
-    PlayerHandler.play(query)
+@plugin.route('/play/<movie_id>')
+def play(movie_id=None):
+    PlayerHandler.play(None)
 
 
 def play_remote(query=None):

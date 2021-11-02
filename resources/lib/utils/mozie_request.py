@@ -22,8 +22,9 @@ user_agent = (
     "Chrome/86.0.4240.75 Safari/537.36"
 )
 
+
 class Request:
-    TIMEOUT = 30
+    TIMEOUT = 60
 
     DEFAULT_HEADERS = {
         'user-agent': user_agent,

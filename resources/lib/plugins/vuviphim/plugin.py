@@ -6,7 +6,7 @@ from vuviphim.parser.movie import Parser as Movie
 
 
 class Vuviphim:
-    domain = "https://vuvichill.com"
+    domain = "https://vphimmoi.net"
 
     def getCategory(self):
         response = Request().get(self.domain)
@@ -35,9 +35,6 @@ class Vuviphim:
 
     def search(self, text):
         # text = urllib.quote_plus(text)
-        url = "%s/wp-json/dooplay/search/" % self.domain
-        response = Request().get(url, params={
-            'keyword': text,
-            'nonce': '1b88282004'
-        })
+        url = "%s/?s=%s" % (self.domain, text)
+        response = Request().get(url)
         return Channel().search_result(response)

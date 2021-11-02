@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 from kodi_six.utils import py2_encode
 import utils.xbmc_helper as helper
+import re
 
 
 class Parser:
@@ -15,10 +16,11 @@ class Parser:
 
         soup = BeautifulSoup(response, "html.parser")
         # get total page
-        next_page = soup.select_one('a.more-btn.yellow-btn.btn-nav')
-        helper.log("*********************** Get pages ")
-        if next_page is not None:
-            channel['page'] = int(page)+1
+        pages = soup.select_one('ul.pagination')
+        m = re.findall(r'-(\d+)', str(pages))
+        if m:
+            m = [int(x) for x in m]
+            channel['page'] = max(m)
 
         for movie in soup.select('div.flex-wrap-movielist > a.movie-item'):
 

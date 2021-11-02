@@ -23,7 +23,7 @@ class Dongphim:
     def getChannel(self, channel, page=1):
         channel = channel.replace(self.domain, "")
         if page > 1:
-            url = '%s%s&p=%d' % (self.domain, channel, page - 1)
+            url = '%s%s/trang-%d' % (self.domain, channel, page)
         else:
             url = '%s%s' % (self.domain, channel)
         response = self.request.get(url)
@@ -52,6 +52,6 @@ class Dongphim:
         return Movie().get_link2(response, movie['link'], self.api)
 
     def search(self, text):
-        url = "%s/content/search?t=kw&q=%s" % (self.domain, quote_plus(text))
+        url = "%s/search?q=%s" % (self.domain, quote_plus(text))
         response = self.request.get(url)
         return Channel().get(response, 1)

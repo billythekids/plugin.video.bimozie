@@ -22,7 +22,7 @@ class Parser:
             channel['page'] = int(page)
 
         for movie in soup.select('div.module > div.content > div.items > article.item'):
-            tag = movie.select_one('div.poster > noscript > img')
+            tag = movie.select_one('div.poster > img')
             title = movie.select_one('div.data > h3 > a').text.strip()
             thumb = ""
             if tag and tag.get('src'):
@@ -61,17 +61,32 @@ class Parser:
             'page_patten': None,
             'movies': []
         }
+        soup = BeautifulSoup(response, "html.parser")
+        for movie in soup.select('div.search-page > div.result-item'):
+            tag = movie.select_one('div.image img')
+            title = movie.select_one('div.details > div.title > a').text.strip()
+            thumb = ""
+            if tag and tag.get('src'):
+                thumb = self.parse_url(tag.get('src'))
 
-        response = json.loads(response)
+            try:
+                type = movie.select_one('div.image a > span.post').text.strip()
+            except:
+                type = ""
+            label = "[%s] %s" % (type, title)
+            try:
+                intro = movie.select_one('div.contenido').find(text=True, recursive=False).strip()
+            except:
+                intro = label
 
-        for key, movie in response.iteritems():
             channel['movies'].append({
-                'id': movie.get('url'),
-                'label': movie.get('title'),
-                'title': movie.get('title'),
-                'realtitle': movie.get('title'),
-                'thumb': movie.get('img'),
-                'type': ''
+                'id': movie.select_one('div.details > div.title > a').get('href'),
+                'label': label,
+                'title': title,
+                'realtitle': title,
+                'thumb': thumb,
+                'type': type,
+                'intro': intro,
             })
 
         return channel
