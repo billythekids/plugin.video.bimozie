@@ -70,7 +70,7 @@ class GetRequestHandler:
             print('custom request header', request_headers)
 
         self.scraper.headers.update(request_headers)
-        response = self.scraper.get(url, proxies={'http':'209.141.55.228:80'})
+        response = self.scraper.get(url)
         # response = requests.get(url, headers=request_headers)
         content = response.content
         if not is_range_support and range_seek > 0:
