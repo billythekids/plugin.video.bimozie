@@ -73,13 +73,13 @@ def create_playlist(text, idfile, domains):
         if j >= len(domains): j = 0
         play_list += "#EXTINF:{},\n".format(data.get('data')[0][i])
 
-        play_list += "https://{}/stream/v5/{}.html|{}\n".format(
+        play_list += "https://{}/stream/v5/{}.html\n".format(
             domain,
             data.get('data')[1][i],
-            urlencode({
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36 Edg/94.0.992.38',
-                'origin': 'https://play.tvhaystream.xyz'
-            })
+            # urlencode({
+            #     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36 Edg/94.0.992.38',
+            #     'origin': 'https://play.tvhaystream.xyz'
+            # })
         )
 
     play_list += "#EXT-X-ENDLIST"

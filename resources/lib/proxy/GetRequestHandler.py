@@ -14,12 +14,12 @@ streaming = False
 
 import logging
 # The only thing missing will be the response.body which is not logged.
-try:
-    import http.client as http_client
-except ImportError:
-    # Python 2
-    import httplib as http_client
-http_client.HTTPConnection.debuglevel = 1
+# try:
+#     import http.client as http_client
+# except ImportError:
+#     # Python 2
+#     import httplib as http_client
+# http_client.HTTPConnection.debuglevel = 1
 
 # You must initialize logging, otherwise you'll not see debug output.
 # logging.basicConfig()
@@ -32,11 +32,8 @@ http_client.HTTPConnection.debuglevel = 1
 class GetRequestHandler:
     def __init__(self, context):
         self.context = context
-        self.scraper = CloudScraper.create_scraper(browser={
-            'browser': 'firefox',
-            'platform': 'windows',
-            'mobile': True
-        }, allow_brotli=False)
+        session = requests.Session()
+        self.scraper = CloudScraper.create_scraper(debug=False, sess=session)
         # self.scraper = requests.session()
 
     def prepare_download_header(self, is_range_support, range_seek=0):
@@ -73,7 +70,7 @@ class GetRequestHandler:
             print('custom request header', request_headers)
 
         self.scraper.headers.update(request_headers)
-        response = self.scraper.get(url)
+        response = self.scraper.get(url, proxies={'http':'209.141.55.228:80'})
         # response = requests.get(url, headers=request_headers)
         content = response.content
         if not is_range_support and range_seek > 0:
@@ -113,7 +110,6 @@ class GetRequestHandler:
                     self.context.wfile.flush()
                     print("Streaming completed.")
             except HTTPError as e:
-                print(e)
                 if retry > 0:
                     print('retry %s' % retry)
                     time.sleep(3000)

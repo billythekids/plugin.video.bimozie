@@ -67,11 +67,11 @@ def show_movie_server_group():
 
 @plugin.route('/play/<movie_id>')
 def play(movie_id=None):
-    PlayerHandler.play(None)
+    return PlayerHandler.play(None)
 
 
 def play_remote(query=None):
-    PlayerHandler.play(ARGS)
+    return PlayerHandler.play(ARGS)
 
 
 @plugin.route('/searchAll')

@@ -17,8 +17,7 @@ def _build_ep_list(items, movie_item, module, class_name):
 
     for item in items:
         try:
-            li = xbmcgui.ListItem(label=item['title'])
-            li.setInfo('video', {'title': item['title']})
+            li = xbmcgui.ListItem(item['title'])
             if item.get('thumb'): thumb = item.get('thumb')
             li.setProperty('fanart_image', thumb)
             li.setArt({'thumb': thumb})
@@ -47,6 +46,7 @@ def _build_ep_list(items, movie_item, module, class_name):
             #     })
             # })))
             li.setProperty("IsPlayable", "true")
+            li.setProperty('isResumable', "1")
             xbmcplugin.addDirectoryItem(plugin.handle, url, li, isFolder=False)
         except:
             helper.log(items)
@@ -55,7 +55,7 @@ def _build_ep_list(items, movie_item, module, class_name):
 class MovieHandler:
     @staticmethod
     def show_movies(movies=None, link=None, page=0, cat_name="", module=None, class_name=None):
-        xbmcplugin.setContent(plugin.handle, 'videos')
+        xbmcplugin.setContent(plugin.handle, 'movies')
         if not movies:
             query = json.loads(plugin.args['query'][0])
             instance, module, class_name = app.load_plugin(query)
@@ -127,7 +127,8 @@ class MovieHandler:
 
         xbmcplugin.setPluginCategory(plugin.handle,
                                      '{} / {} / {}'.format(class_name, query.get('cat_name'), movie_item.get('title')))
-        xbmcplugin.setContent(plugin.handle, 'movies')
+        xbmcplugin.setContent(plugin.handle, 'Videos')
+        cachable = False
 
         if len(movie['group']) > 0:
             helper.log("*********************** Display movie episode/group")
@@ -156,9 +157,10 @@ class MovieHandler:
         else:
             helper.log("*********************** Display movie links")
             thumb = movie_item.get('thumb')
+
             for item in movie['links']:
 
-                li = xbmcgui.ListItem(label=item['title'])
+                li = xbmcgui.ListItem(item['title'])
                 li.setInfo('video', {'title': item['title']})
                 li.setProperty('fanart_image', thumb)
                 li.setArt({'thumb': thumb})
@@ -171,6 +173,7 @@ class MovieHandler:
                     }))
                     li.setProperty("IsPlayable", "false")
                     xbmcplugin.addDirectoryItem(plugin.handle, url, li, True)
+                    cachable=True
                 else:
                     movie_id = hashlib.md5(item.get('link').encode())
                     url = plugin.url_for(app.play, movie_id=movie_id.hexdigest(), query=json.dumps({
@@ -183,7 +186,7 @@ class MovieHandler:
         # save watching movie
         if 'Phut90' not in class_name and 'Thuckhuya' not in class_name:
             helper.save_last_watch_movie(query)
-        xbmcplugin.endOfDirectory(plugin.handle, cacheToDisc=False)
+        xbmcplugin.endOfDirectory(plugin.handle, cacheToDisc=cachable)
 
     @staticmethod
     def show_movie_server_group():
@@ -197,7 +200,7 @@ class MovieHandler:
         label = "[COLOR red][B][---- %s : [COLOR yellow]%d eps[/COLOR] ----][/B][/COLOR]" % (
             query.get('server'), len(query.get('items'))
         )
-        sli = xbmcgui.ListItem(label=label)
+        sli = xbmcgui.ListItem(label)
         xbmcplugin.addDirectoryItem(plugin.handle, None, sli, isFolder=False)
         _build_ep_list(query.get('items'), query.get('movie_item'), module, class_name)
         xbmcplugin.endOfDirectory(plugin.handle)

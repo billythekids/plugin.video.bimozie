@@ -121,7 +121,8 @@ class LinkParser:
         if 'streamasia.cloud' in self.url:
             return streamasia.get_link(self.url, self.media)
 
-        if 'play.tvhaystream.xyz' in self.url:
+        if 'play.tvhaystream.xyz' in self.url \
+            or 'play.plhqtvhay.xyz' in self.url:
             return tvhaystream.get_link(self.url, self.media)
 
         if 'phimmoi.pro' in self.url \
