@@ -206,7 +206,7 @@ class MovieHandler:
         xbmcplugin.endOfDirectory(plugin.handle, cacheToDisc=cachable)
 
     @staticmethod
-    def show_movie_server_group():
+    def show_movie_server_group(movie_id=None):
         query = json.loads(plugin.args['query'][0])
         instance, module, class_name = app.load_plugin(query)
 
@@ -218,6 +218,7 @@ class MovieHandler:
             query.get('server'), len(query.get('items'))
         )
         sli = xbmcgui.ListItem(label)
+        print(query)
         xbmcplugin.addDirectoryItem(plugin.handle, None, sli, isFolder=False)
-        _build_ep_list(query.get('items'), query.get('movie_item'), module, class_name)
+        _build_ep_list(query.get('items'), query.get('movie_item'), module, class_name, movie_id=movie_id)
         xbmcplugin.endOfDirectory(plugin.handle)
