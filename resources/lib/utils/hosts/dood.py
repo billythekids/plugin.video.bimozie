@@ -30,7 +30,7 @@ def get_link(url, movie):
 
     response = scraper.get(url).text
     match = re.search(r'''\$.get\('(/pass_md5/.*?)',''', response)
-    print(response)
+    # print(response)
     token = re.search(r'''return a\+"(.*?)"''', response, re.MULTILINE).group(1)
     if match:
         header = {

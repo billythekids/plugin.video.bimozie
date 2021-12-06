@@ -28,7 +28,12 @@ class Parser:
             mtype = movie.select_one('span.label').text
             label = "[%s] %s" % (mtype, title)
 
-            img = Parser.extract_image(str(movie.select_one('a > img').get('data-original')))
+            img_tag = movie.select_one('a > img').get('src')
+            if not img_tag:
+                img_tag = movie.select_one('a > img').get('data-original')
+                print(movie.select_one('a > img'))
+
+            img = Parser.extract_image(img_tag)
             movie_id = movie.select_one('a').get('href')
             channel['movies'].append({
                 'id': movie_id,

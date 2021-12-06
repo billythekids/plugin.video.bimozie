@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import hashlib
 import json
 from threading import Thread
 
@@ -126,10 +127,14 @@ class Search:
                         'thumb': item['thumb'],
                     })
 
-                    url = app.plugin.url_for(app.show_movie, query=json.dumps({
-                        'movie_item': item, 'cat_name': 'Search',
-                        'module': module, 'className': class_name
-                    }))
+                    movie_id = hashlib.md5(item.get('id').encode())
+                    url = app.plugin.url_for(
+                        app.show_movie,
+                        movie_id=movie_id.hexdigest(),
+                        query=json.dumps({
+                            'movie_item': item, 'cat_name': 'Search',
+                            'module': module, 'className': class_name
+                        }))
                     xbmcplugin.addDirectoryItem(app.plugin.handle, url, list_item, isFolder=True)
                 except:
                     helper.log(item)
@@ -197,13 +202,20 @@ class Search:
                     list_item.setArt({
                         'thumb': item['thumb'],
                     })
-                    url = app.plugin.url_for(app.show_movie, query=json.dumps({
-                        'movie_item': item, 'cat_name': 'Search',
-                        'module': module, 'className': class_name
-                    }))
+                    movie_id = hashlib.md5(item.get('id').encode())
+
+                    url = app.plugin.url_for(
+                        app.show_movie,
+                        movie_id=movie_id.hexdigest(),
+                        query=json.dumps({
+                            'movie_item': item, 'cat_name': 'Search',
+                            'module': module, 'className': class_name
+                        }))
                     xbmcplugin.addDirectoryItem(app.plugin.handle, url, list_item, isFolder=True)
-                except:
-                    helper.log(item)
+                except Exception as e:
+                    helper.log(e.with_traceback())
+                    raise e
+
         else:
             return
 
@@ -220,7 +232,8 @@ class Search:
         if items:
             xbmcplugin.addDirectoryItem(app.plugin.handle, app.plugin.url_for(app.clear_last_watched),
                                         xbmcgui.ListItem(label="[COLOR red][B]%s[/B][/COLOR]" % "Clear list ..."), True)
-            for item in items.values():
+            for key in items.keys():
+                item = items.get(key)
                 movie = item.get('movie_item')
                 list_item = xbmcgui.ListItem(label=movie.get('label'))
                 list_item.addContextMenuItems(app.globalContextMenu())
@@ -231,10 +244,13 @@ class Search:
                 if 'intro' in movie:
                     list_item.setInfo(type='video', infoLabels={'plot': movie.get('intro')})
 
-                url = app.plugin.url_for(app.show_movie, query=json.dumps({
-                    'movie_item': movie, 'cat_name': 'Watching',
-                    'module': item.get('module'), 'className': item.get('className')
-                }))
+                url = app.plugin.url_for(
+                    app.show_movie,
+                    movie_id=key,
+                    query=json.dumps({
+                        'movie_item': movie, 'cat_name': 'Watching',
+                        'module': item.get('module'), 'className': item.get('className')
+                    }))
                 xbmcplugin.addDirectoryItem(app.plugin.handle, url, list_item, isFolder=True)
 
         xbmcplugin.endOfDirectory(app.plugin.handle)

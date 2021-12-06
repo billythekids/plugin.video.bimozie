@@ -14,12 +14,12 @@ plugin = app.plugin
 
 class PlayerHandler:
     @staticmethod
-    def play(query=None):
+    def play(query=None, movie_id=None, link_id=None):
         if not query:
             query = json.loads(plugin.args['query'][0])
         else:
             query = json.loads(query.get('query')[0])
-        play_item = xbmcgui.ListItem()
+        # play_item = xbmcgui.ListItem()
 
         if int(query.get('direct')) == 0:
             instance, module, class_name = app.load_plugin(query)
@@ -61,54 +61,39 @@ class PlayerHandler:
 
                     index = xbmcgui.Dialog().select("Select stream", listitems)
                     if index == -1:
-                        return None
+                        return False
                     else:
                         movie = appened_list[index]
                 else:
                     movie = movie['links'][0]
 
-                play_item.setArt({'thumb': thumb})
-                play_item.setLabel(title)
-                play_item.setLabel2(realtitle)
-                play_item.setInfo('Video', {
-                    'title': title,
-                    'originaltitle': realtitle,
-                    'plot': movie_item.get('intro')
-                })
+                # play_item.setArt({'thumb': thumb})
+                # play_item.setLabel(title)
+                # play_item.setLabel2(realtitle)
+                # play_item.setInfo(type='video', infoLabels={
+                #     'title': title,
+                #     'originaltitle': realtitle,
+                #     'plot': movie_item.get('intro')
+                # })
         else:
             movie = query.get('item')
 
         # Parse link
         mediatype = MediaHelper.resolve_link(movie)
-
         if not movie['link']: return
+
+        play_item = xbmcgui.ListItem(path=(movie['link']))
+        play_item.setPath(str(movie['link']))
+        xbmcplugin.setResolvedUrl(plugin.handle, True, listitem=play_item)
+
         if movie.get('subtitle'):
             if isinstance(movie['subtitle'], list):
                 play_item.setSubtitles(movie['subtitle'])
             else:
                 play_item.setSubtitles([movie['subtitle']])
-        if mediatype == 'inputstream':
-            # play_item.setContentLookup(False)
-            # play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
-            # play_item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
-            # play_item.setMimeType('video/mp4')
-            # play_item.setProperty('mimetype', 'video/mp4')
-            # play_item.setProperty('inputstream', 'inputstream.ffmpegdirect')
-            # play_item.setProperty('inputstream.ffmpegdirect.mime_type', 'video/mp4')
-            # play_item.setMimeType('application/x-mpegURL')
-            # play_item.setProperty('inputstreamclass', 'inputstream.ffmpegdirect')
-            # play_item.setProperty('inputstream.ffmpegdirect.mime_type', 'application/x-mpegURL')
-            # play_item.setProperty('inputstream.ffmpegdirect.is_realtime_stream', 'true')
-            #
-            link = movie['link'].split('|')
-            if link and len(link) > 1:
-                print(link)
-            #     play_item.setProperty('inputstream.adaptive.stream_headers', link[1])
 
-        play_item.setProperty('IsPlayable', 'true')
-        play_item.setProperty('isFolder', 'false')
-        play_item.setPath(str(movie['link']))
-        xbmcplugin.setResolvedUrl(plugin.handle, True, listitem=play_item)
+        # play_item.setProperty('IsPlayable', 'true')
+        # play_item.setProperty('isFolder', 'false')
 
         # playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         # playlist.clear()
@@ -122,4 +107,5 @@ class PlayerHandler:
         # while not player.isPlaying():
         #     xbmc.sleep(100)
 
-        xbmcplugin.endOfDirectory(plugin.handle)
+        # xbmcplugin.endOfDirectory(plugin.handle)
+        # return True

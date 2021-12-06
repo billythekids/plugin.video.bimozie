@@ -77,7 +77,8 @@ class Parser:
                     links.append(source)
         else:
             source = re.search(r"<iframe.*src=\"(.*?)\"", response)
-            if source:
+            print(source)
+            if source and '/biphim.co/player.html' not in source.group(1):
                 source = (source.group(1), 'hls')
                 links.append(source)
 

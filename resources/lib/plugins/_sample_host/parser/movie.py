@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import utils.xbmc_helper as helper
 

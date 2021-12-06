@@ -23,6 +23,8 @@ def get_link(url, media):
     req = Request()
     # base_url = urlparse(url)
     # base_url = base_url.scheme + '://' + base_url.netloc
+    if 'embedsp.php?link=' in url:
+        url = re.search(r'embedsp.php\?link=(.*)', url).group(1)
 
     repsonse = req.get(url)
     idfile = re.search(r'idfile\s?=\s?"(.*)";', repsonse).group(1)

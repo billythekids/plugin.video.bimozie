@@ -102,5 +102,5 @@ class Hdvietnam:
 
         url = "%s/search/search" % self.domain
         response = Request().post(url, params=params)
-        print(response)
+        # print(response)
         return Channel().get_search(response)

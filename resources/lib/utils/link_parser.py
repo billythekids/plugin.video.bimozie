@@ -74,6 +74,8 @@ from .hosts import fshare, \
     dood, \
     tvmienphi
 
+import urlresolver
+import resolveurl
 
 class LinkParser:
     media = None
@@ -89,8 +91,15 @@ class LinkParser:
 
     def get_link(self):
         helper.log("LinkParser:: Find link source of %s" % self.url)
+
+        if 'ok.ru' not in self.url:
+            if urlresolver.HostedMediaFile(url=self.url):
+                return urlresolver.resolve(self.url), 'urlresolver'
+
+            if resolveurl.HostedMediaFile(self.url):
+                return resolveurl.resolve(self.url), 'resolveurl'
+
         if re.search('ok.ru', self.url):
-            # return self.get_link_resolveurl()
             return ok.get_link(self.url)
 
         if re.search('drive.google.com', self.url):

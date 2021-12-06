@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import hashlib
 import json
 
 from kodi_six import xbmcplugin, xbmcgui, xbmc
@@ -32,7 +33,10 @@ class FshareHandler:
             if fshare_item[1].get('type') == 1:
                 li.setInfo('video', {'title': fshare_item[0], 'plot': fshare_item[0]})
                 item['link'] = 'https://www.fshare.vn/file/{}'.format(fshare_item[1].get('linkcode'))
+                movie_id = hashlib.md5(item.get('link').encode())
                 url = plugin.url_for(app.play,
+                                     movie_id=movie_id.hexdigest(),
+                                     link_id=movie_id.hexdigest(),
                                      query=json.dumps({
                                          'item': item, 'movie_item': movie_item, 'direct': 1
                                      }))
@@ -73,7 +77,10 @@ class FshareHandler:
         # Support to save search history
         items: dict = helper.get_last_fshare_movie()
         for item in items.values():
+            movie_id = hashlib.md5(item.get('link').encode())
             url = plugin.url_for(app.play,
+                                 movie_id=movie_id.hexdigest(),
+                                 link_id=movie_id.hexdigest(),
                                  query=json.dumps({'item': item, 'direct': 1}))
             txt = '[%s] %s' % (item.get('size'), item.get('title'))
             list_item = xbmcgui.ListItem(label=txt)

@@ -173,7 +173,7 @@ SITES = [
         "logo": "https://i1.wp.com/www.albertgyorfi.com/wp-content/uploads/2017/05/anime-pack.png?fit=256%2C256&ssl=1",
         "className": "Animehay",
         "plugin": "animehay.plugin",
-        "version": 1
+        "version": 31
       },
       {
         "name": "anime47.com",
@@ -181,6 +181,13 @@ SITES = [
         "className": "anime47",
         "plugin": "anime47.plugin",
         "version": 31
+      },
+      {
+        "name": "hhkungfu.tv",
+        "logo": "https://1.bp.blogspot.com/-H3dUNhId3b8/XnYlJNnNc1I/AAAAAAAAAyk/D7y03lFi2gcb-Rde0Kh5O12NVpRBSsNLgCLcBGAsYHQ/s1600/Logo.png",
+        "className": "hhkungfu",
+        "plugin": "hhkungfu.plugin",
+        "version": 1
       }
     ]
   },

@@ -14,16 +14,22 @@ def prepend_url(url, ext=None):
     return 'http://127.0.0.1:8964?u={}{}'.format(quote(url), ext or '')
 
 
-def _prepare_content(content, base_url=None):
-    urls = re.findall(r'extinf.*\n(.*)', content, re.IGNORECASE)
-    for url in urls:
-        if not 'http' in url:
-            full_url = "{}/{}".format(base_url, url)
-            content = content.replace(url, full_url)
-            url = full_url
+def _prepare_content(content, base_url=None, replace_fn=None):
+    extinf_blocks = re.findall(r'(?s)(#extinf.*?)(?=\n#extinf)', content, re.IGNORECASE)
+    for extinf_block in extinf_blocks:
+        if 'EXT-X-BYTERANGE' in extinf_block.upper():
+            continue
 
-        proxy_url = prepend_url(url)
-        content = content.replace(url, proxy_url)
+        origin_url = extinf_block.split('\n')[-1]
+        if not 'http' in origin_url:
+            full_url = "{}/{}".format(base_url, origin_url)
+            content = content.replace(origin_url, full_url)
+            origin_url = full_url
+
+        if callable(replace_fn):
+            content = content.replace(origin_url, prepend_url(replace_fn(origin_url)))
+        else:
+            content = content.replace(origin_url, prepend_url(origin_url))
 
     return content
 
@@ -32,12 +38,12 @@ def replace_proxy_content(content, base_url=None):
     return _prepare_content(content, base_url)
 
 
-def replace_proxy_link(url, headers=None):
+def replace_proxy_link(url, headers=None, replace_fn=None):
     content = Request().get(url, headers=headers)
     base_url = urlparse(url)
     base_url = '{}://{}/{}'.format(base_url.scheme, base_url.netloc, '/'.join(base_url.path.split('/')[1:-1]))
 
-    return _prepare_content(content, base_url)
+    return _prepare_content(content, base_url=base_url, replace_fn=replace_fn)
 
 
 def get_adaptive_link(url, headers=None):

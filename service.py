@@ -16,7 +16,6 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 
 def run():
-    pass
     server_address = ('', 8964)
     httpd = ThreadingHTTPServer(server_address, ProxyHTTPRequestHandler)
 
@@ -33,7 +32,10 @@ def run():
             break
 
     httpd.shutdown()
+    httpd.socket.close()
     server_thread.join()
+    server_thread = None
+    httpd = None
 
 
 if __name__ == "__main__":

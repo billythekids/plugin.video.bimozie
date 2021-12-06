@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.bimozie-next" name="BimoZie Next" version="1.0.16" provider-name="billy.nguyen">
+<addon id="plugin.video.bimozie-next" name="BimoZie Next" version="1.0.17" provider-name="billy.nguyen">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.six" version="1.14.0"/>
@@ -10,11 +10,14 @@
         <import addon="script.module.pycryptodome" version="3.4.3"/>
         <import addon="script.module.routing" version="0.2.3"/>
         <import addon="script.module.cloudscraper" version="1.2.52"/>
+        <import addon="script.module.urlresolver" version="7.0.00"/>
+        <import addon="script.module.resolveurl" version="5.1.00"/>
+        <import addon="script.common.plugin.cache" version="2.5.5"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
     </extension>
-    <extension point="xbmc.service" library="service.py"/>
+    <extension point="xbmc.service" library="service.py" start="login"/>
     <extension point="xbmc.addon.metadata">
         <summary lang="en">Bimozie addon for Kodi 19</summary>
         <description lang="en">

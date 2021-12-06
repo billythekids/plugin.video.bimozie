@@ -100,7 +100,7 @@ def search_history_save(search_key):
     if not search_key:
         return
 
-    content = read_file('history.json')
+    content = read_file('historys.json')
     if content:
         content = json.loads(content)
     else:
@@ -113,15 +113,15 @@ def search_history_save(search_key):
         content.pop()
 
     content.insert(0, search_key)
-    write_file('history.json', json.dumps(content))
+    write_file('historys.json', json.dumps(content))
 
 
 def search_history_clear():
-    write_file('history.json', json.dumps([]))
+    write_file('historys.json', json.dumps([]))
 
 
 def search_history_get():
-    content = read_file('history.json')
+    content = read_file('historys.json')
     if content:
         content = json.loads(content)
     else:
@@ -130,23 +130,23 @@ def search_history_get():
     return content
 
 
-def save_last_watch_movie(query):
-    if not query:
+def save_last_watch_movie(data):
+    if not data:
         return
-    content = read_file('watched.json')
+    content = read_file('watcheds.json')
     if content:
         content = json.loads(content, object_pairs_hook=OrderedDict)
     else:
         content = OrderedDict()
 
-    cache_id = hashlib.md5(query.get('movie_item').get('id').encode("utf-8")).hexdigest()
+    cache_id, query = data
     content.update({cache_id: query})
     content.move_to_end(cache_id, last=False)
-    write_file('watched.json', json.dumps(content))
+    write_file('watcheds.json', json.dumps(content))
 
 
 def get_last_watch_movie():
-    content = read_file('watched.json')
+    content = read_file('watcheds.json')
     if content:
         content = json.loads(content)
     else:
@@ -155,7 +155,7 @@ def get_last_watch_movie():
 
 
 def clear_last_watch_movie():
-    write_file('watched.json', '')
+    write_file('watcheds.json', '')
 
 
 def wait(sec):

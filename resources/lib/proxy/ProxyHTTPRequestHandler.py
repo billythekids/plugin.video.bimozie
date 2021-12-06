@@ -78,7 +78,6 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
         else:
             handler.send_back_header(url)
 
-        print("finish do_HEAD")
         return
 
     def do_GET(self):
@@ -86,18 +85,16 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
         if not self.handler:
             self.handler = GetRequestHandler(self)
 
-        print('proxy request get: %s' % url)
+        # print('proxy request get: %s' % url)
 
         if self._is_truncate():
-            print("Downloading with truncate do_GET")
+            # print("Downloading with truncate do_GET")
             self.handler.download_content(url)
-            # self.handler.stream_content(url, 8)
         elif self._is_downloadable():
-            print("Downloading do_GET")
+            # print("Downloading do_GET")
             self.handler.download_content(url, 0)
         elif self._is_streaming():
-            print("Streaming do_GET")
+            # print("Streaming do_GET")
             self.handler.stream_content(url)
 
-        print("finish do_GET")
         return

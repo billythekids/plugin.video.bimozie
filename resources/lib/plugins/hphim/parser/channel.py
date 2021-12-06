@@ -88,7 +88,7 @@ class Parser:
 
         try:
             soup = BeautifulSoup(response, "html.parser")
-            print(response)
+            # print(response)
             for movie in soup.select('li.movie-item'):
                 tag = movie.select_one('a')
                 title = py2_encode(tag.get('title').strip())

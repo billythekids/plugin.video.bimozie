@@ -50,9 +50,9 @@ def show_movies(movies=None, link=None, page=0, cat_name="", module=None, class_
     MovieHandler.show_movies(movies, link, page, cat_name, module, class_name)
 
 
-@plugin.route('/movie')
-def show_movie():
-    MovieHandler.show_movie()
+@plugin.route('/movie/<movie_id>')
+def show_movie(movie_id=None):
+    MovieHandler.show_movie(movie_id)
 
 
 @plugin.route('/movieItemFolder')
@@ -60,14 +60,14 @@ def show_fshare_folder():
     FshareHandler.show_fshare_folder()
 
 
-@plugin.route('/server_group')
-def show_movie_server_group():
-    MovieHandler.show_movie_server_group()
+@plugin.route('/server_group/<movie_id>')
+def show_movie_server_group(movie_id=None):
+    MovieHandler.show_movie_server_group(movie_id)
 
 
-@plugin.route('/play/<movie_id>')
-def play(movie_id=None):
-    return PlayerHandler.play(None)
+@plugin.route('/play/<movie_id>/<link_id>')
+def play(movie_id=None, link_id=None):
+    return PlayerHandler.play(None, movie_id=movie_id, link_id=link_id)
 
 
 def play_remote(query=None):
