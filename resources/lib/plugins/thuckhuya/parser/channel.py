@@ -20,6 +20,9 @@ class Parser:
         for movie in soup.select('div.matches__item'):
             if movie:
                 ref = movie.select_one('a')
+                if not ref:
+                    continue
+
                 title = ref.get('title')
                 if not title:
                     continue

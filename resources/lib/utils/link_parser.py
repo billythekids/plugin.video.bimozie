@@ -72,6 +72,8 @@ from .hosts import fshare, \
     gotphim, \
     bitvtom100, \
     dood, \
+    archive, \
+    viupload, \
     tvmienphi
 
 import urlresolver
@@ -98,6 +100,12 @@ class LinkParser:
 
             if resolveurl.HostedMediaFile(self.url):
                 return resolveurl.resolve(self.url), 'resolveurl'
+
+        if re.search('archive.org', self.url):
+            return archive.get_link(self.url)
+
+        if re.search('viupload.net', self.url):
+            return viupload.get_link(self.url, self.media)
 
         if re.search('ok.ru', self.url):
             return ok.get_link(self.url)
