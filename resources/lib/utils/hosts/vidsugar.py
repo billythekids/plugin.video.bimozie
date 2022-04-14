@@ -25,11 +25,6 @@ def get_link(url, media, noneTruncate=False):
     if not noneTruncate:
         adaptive_link = proxy.get_adaptive_link(url, headers=headers)
         playlist = proxy.replace_proxy_link(adaptive_link, headers=headers, replace_fn=replacement)
-    else:
-        adaptive_link = proxy.get_adaptive_link(url, headers=headers)
-        print(adaptive_link)
-
-    return None, None
 
     url = PasteBin().dpaste(playlist, name='adaptivestream', expire=60)
     url = proxy.prepend_url(url, '-dl')
