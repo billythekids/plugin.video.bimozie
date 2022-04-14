@@ -7,71 +7,71 @@ class Parser:
         category = [
             {
                 'title': '4K',
-                'link': 'https://www.hdvietnam.com/forums/4k.337/'
+                'link': 'https://hdvietnam.org/forums/4k.337/'
             },
             {
                 'title': 'Bluray Remux 4K',
-                'link': 'https://www.hdvietnam.com/forums/bluray-remux-4k.345/'
+                'link': 'https://hdvietnam.org/forums/bluray-remux-4k.345/'
             },
             {
                 'title': 'WEB-DL, HDTV 4K',
-                'link': 'https://www.hdvietnam.com/forums/web-dl-hdtv-4k.344/'
+                'link': 'https://hdvietnam.org/forums/web-dl-hdtv-4k.344/'
             },
             {
                 'title': 'Bluray Nguyên Gốc 4K',
-                'link': 'https://www.hdvietnam.com/forums/bluray-nguyen-goc-4k.346/'
+                'link': 'https://hdvietnam.org/forums/bluray-nguyen-goc-4k.346/'
             },
             {
                 'title': 'Fshare.vn',
-                'link': 'https://www.hdvietnam.com/forums/fshare-vn.33/'
+                'link': 'https://hdvietnam.org/forums/fshare-vn.33/'
             },
             {
                 'title': 'Fshare.vn - WEB-DL, HDTV',
-                'link': 'https://www.hdvietnam.com/forums/web-dl-hdtv.271/'
+                'link': 'https://hdvietnam.org/forums/web-dl-hdtv.271/'
             },
             {
                 'title': 'Fshare.vn - Bluray Remux',
-                'link': 'https://www.hdvietnam.com/forums/bluray-remux.324/'
+                'link': 'https://hdvietnam.org/forums/bluray-remux.324/'
             },
             {
                 'title': 'Fshare.vn -HD, SD',
-                'link': 'https://www.hdvietnam.com/forums/mhd-sd.77/'
+                'link': 'https://hdvietnam.org/forums/mhd-sd.77/'
             },
             {
                 'title': 'Fshare.vn -Bluray nguyên gốc',
-                'link': 'https://www.hdvietnam.com/forums/bluray-nguyen-goc.78/'
+                'link': 'https://hdvietnam.org/forums/bluray-nguyen-goc.78/'
             },
             {
                 'title': 'Phim có audio Việt',
-                'link': 'https://www.hdvietnam.com/forums/phim-co-audio-viet.265/'
+                'link': 'https://hdvietnam.org/forums/phim-co-audio-viet.265/'
             },
             {
                 'title': 'Phim bộ - Series',
-                'link': 'https://www.hdvietnam.com/forums/phim-bo-series.57/'
+                'link': 'https://hdvietnam.org/forums/phim-bo-series.57/'
             },
             {
                 'title': 'Phim bộ - mHD, SD',
-                'link': 'https://www.hdvietnam.com/forums/mhd-sd.104/'
+                'link': 'https://hdvietnam.org/forums/mhd-sd.104/'
             },
             {
                 'title': 'Phim hoạt hình',
-                'link': 'https://www.hdvietnam.com/forums/phim-hoat-hinh.123/'
+                'link': 'https://hdvietnam.org/forums/phim-hoat-hinh.123/'
             },
             {
                 'title': 'Phim hoạt hình - mHD, SD',
-                'link': 'https://www.hdvietnam.com/forums/mhd-sd.124/'
+                'link': 'https://hdvietnam.org/forums/mhd-sd.124/'
             },
             {
                 'title': 'Phim tài liệu - Documentaries',
-                'link': 'https://www.hdvietnam.com/forums/phim-tai-lieu-documentaries.116/'
+                'link': 'https://hdvietnam.org/forums/phim-tai-lieu-documentaries.116/'
             },
             {
                 'title': '3D',
-                'link': 'https://www.hdvietnam.com/forums/3d.110/'
+                'link': 'https://hdvietnam.org/forums/3d.110/'
             },
             {
                 'title': 'Phim cho iOS/Android',
-                'link': 'https://www.hdvietnam.com/forums/phim-cho-ios-android.157/'
+                'link': 'https://hdvietnam.org/forums/phim-cho-ios-android.157/'
             },
         ]
 
