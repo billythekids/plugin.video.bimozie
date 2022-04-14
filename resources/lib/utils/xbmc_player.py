@@ -84,13 +84,14 @@ class PlayerHandler:
 
         play_item = xbmcgui.ListItem(path=(movie['link']))
         play_item.setPath(str(movie['link']))
-        xbmcplugin.setResolvedUrl(plugin.handle, True, listitem=play_item)
-
         if movie.get('subtitle'):
             if isinstance(movie['subtitle'], list):
                 play_item.setSubtitles(movie['subtitle'])
             else:
                 play_item.setSubtitles([movie['subtitle']])
+                
+        xbmcplugin.setResolvedUrl(plugin.handle, True, listitem=play_item)
+
 
         # play_item.setProperty('IsPlayable', 'true')
         # play_item.setProperty('isFolder', 'false')

@@ -1,12 +1,12 @@
 import re
 
-from hhkungfunew.parser.category import Parser as Category
-from hhkungfunew.parser.channel import Parser as Channel
-from hhkungfunew.parser.movie import Parser as Movie
+from hhkungfu.parser.category import Parser as Category
+from hhkungfu.parser.channel import Parser as Channel
+from hhkungfu.parser.movie import Parser as Movie
 from utils.mozie_request import Request
 
 
-class Hhhkungfu:
+class hhkungfu:
     domain = "https://hhhkungfu.tv"
 
     def getCategory(self):

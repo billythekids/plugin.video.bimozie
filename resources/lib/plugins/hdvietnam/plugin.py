@@ -12,7 +12,7 @@ from utils.mozie_request import Request
 
 
 class Hdvietnam:
-    domain = "https://www.hdvietnam.com"
+    domain = "https://hdvietnam.org"
 
     def __init__(self):
         if not helper.getSetting('hdvietnam.username'):

@@ -91,14 +91,14 @@ SITES = [
         "version": 1
       },
       {
-        "name": "bilutvzz.net",
+        "name": "biluu.org",
         "logo": "https://bilutvzz.net/Theme/images/bilutvznet-logo.png?v=1.0",
         "className": "Bilutv",
         "plugin": "bilutv.plugin",
         "version": 31
       },
       {
-        "name": "phimmedia.tv",
+        "name": "phimdinhcao.com",
         "logo": "https://www.phimmedia.me/templates/themes/phim/images/phimmedia-s.png",
         "className": "Phimmedia",
         "plugin": "phimmedia.plugin",
@@ -126,14 +126,14 @@ SITES = [
         "version": 1
       },
       {
-        "name": "vuvichill.com",
+        "name": "vphimmoi.tv",
         "logo": "https://i2.wp.com/vuviphimx.com/wp-content/uploads/2021/08/vuviphimx.png",
         "className": "Vuviphim",
         "plugin": "vuviphim.plugin",
         "version": 1
       },
       {
-        "name": "phimgi.tv",
+        "name": "phimgi.org",
         "logo": "https://xemphimgi.net/wp-content/uploads/phim-gi-logo-01-625x136.png",
         "className": "Phimgi",
         "plugin": "phimgi.plugin",

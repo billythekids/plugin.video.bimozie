@@ -23,16 +23,20 @@ def get_link(url, media):
 
     # https://play.gotphim.com/iframe/video/6129aecd13c48c06d44cdaf5
     # https://play.gotphim.com/cdn01/hls/6129aecd13c48c06d44cdaf5/main.m3u8
-    url = '%s/iframe/video/%s' % (base_url, m_id)
+    url = '%s/player/%s/playlist.m3u8' % (base_url, m_id)
     headers = header = {
         'Origin': base_url,
     }
 
-    content = json.loads(Request().post(url, headers=headers))
-    part_url = content.get('data').get('url')
-    url = '%s%s' % (base_url, part_url)
-    base_url = 'https://flash.imgtv.club{}'.format(part_url.replace('/main.m3u8', ''))
-    playlist = proxy.replace_proxy_content(Request().get(url), base_url)
-    url = PasteBin().dpaste(playlist, name='adaptivestream', expire=60)
-    url = proxy.prepend_url(url, '-dl')
+    content = Request().get(url, headers=headers)
+    print(content)
+    return None, None
+
+    # content = json.loads(Request().post(url, headers=headers))
+    # part_url = content.get('data').get('url')
+    # url = '%s%s' % (base_url, part_url)
+    # base_url = 'https://flash.imgtv.club{}'.format(part_url.replace('/main.m3u8', ''))
+    # playlist = proxy.replace_proxy_content(Request().get(url), base_url)
+    # url = PasteBin().dpaste(playlist, name='adaptivestream', expire=60)
+    # url = proxy.prepend_url(url, '-dl')
     return url, 'gotphim'

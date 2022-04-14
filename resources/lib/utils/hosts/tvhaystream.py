@@ -75,7 +75,9 @@ def create_playlist(text, idfile, domains):
         if j >= len(domains): j = 0
         play_list += "#EXTINF:{},\n".format(data.get('data')[0][i])
 
-        play_list += "https://{}/stream/v5/{}.html\n".format(
+        # https://cdn-rd.apirdtvhai.xyz/rdv1/5ee31dd5665f2d19d5af4a99/178fe16a337841fab01243df979675bd962004c295c7cc76ed1714f7b016c777f771e471485f2e0a0df61644449441a9/f6fe273fd76228c6542e23e1332ee116
+
+        play_list += "https://{}/{}\n".format(
             domain,
             data.get('data')[1][i],
             # urlencode({

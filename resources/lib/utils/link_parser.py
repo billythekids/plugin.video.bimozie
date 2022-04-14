@@ -74,10 +74,9 @@ from .hosts import fshare, \
     dood, \
     archive, \
     viupload, \
+    streame, \
     tvmienphi
 
-import urlresolver
-import resolveurl
 
 class LinkParser:
     media = None
@@ -95,6 +94,8 @@ class LinkParser:
         helper.log("LinkParser:: Find link source of %s" % self.url)
 
         if 'ok.ru' not in self.url:
+            import urlresolver
+            import resolveurl
             if urlresolver.HostedMediaFile(url=self.url):
                 return urlresolver.resolve(self.url), 'urlresolver'
 
@@ -139,7 +140,7 @@ class LinkParser:
             return streamasia.get_link(self.url, self.media)
 
         if 'play.tvhaystream.xyz' in self.url \
-            or 'play.plhqtvhay.xyz' in self.url:
+                or 'play.plhqtvhay.xyz' in self.url:
             return tvhaystream.get_link(self.url, self.media)
 
         if 'phimmoi.pro' in self.url \
@@ -182,12 +183,12 @@ class LinkParser:
 
         elif 'vidsugar.com' in self.url \
                 or '8giaitri' in self.url:
+            self.url = self.url.replace('8giaitri', 'vdicdn')
             return vidsugar.get_link(self.url, self.media)
 
         elif 'fimfast.com' in self.url \
                 or 'cdnplay.xyz' in self.url \
                 or 'vodcdn.xyz' in self.url \
-                or '8giaitri.com' in self.url \
                 or 'phimngay.com' in self.url \
                 or 'beverly-downing' in self.url \
                 or 'play.xomphimhay.com/load-stream' in self.url \
@@ -261,6 +262,9 @@ class LinkParser:
 
         elif 'gotphim.com' in self.url:
             return gotphim.get_link(self.url, self.media)
+
+        elif 'streame.cloud' in self.url:
+            return streame.get_link(self.url, self.media)
 
         elif 'voe.sx' in self.url:
             return voe.get_link(self.url)

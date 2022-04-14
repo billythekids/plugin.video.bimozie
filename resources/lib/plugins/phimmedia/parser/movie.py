@@ -88,7 +88,6 @@ class Parser:
 
     def decode(self, link):
         r = base64.b64decode(link).decode('utf8')
-        helper.log(r)
         r = r.replace("https://bit.ly/2zE7Kmg?test=", "")
         r = r.replace("https://bit.ly/2zE7Kmg?temp=", "")
         r = r.replace("ms.com?test=", "")

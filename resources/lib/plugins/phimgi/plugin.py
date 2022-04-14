@@ -6,8 +6,8 @@ from phimgi.parser.movie import Parser as Movie
 
 
 class Phimgi:
-    domain = "https://xemphimgi.net"
-    replace_domain = "https://phimnhe.net"
+    domain = "https://xemphimgii.net"
+    replace_domain = "https://xemphimgii.net"
 
     def getCategory(self):
         response = Request().get(self.domain)
