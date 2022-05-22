@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.bimozie-next" name="BimoZie Next" version="1.0.22" provider-name="billy.nguyen">
+<addon id="plugin.video.bimozie-next" name="BimoZie Next" version="1.0.23" provider-name="billy.nguyen">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.six" version="1.14.0"/>

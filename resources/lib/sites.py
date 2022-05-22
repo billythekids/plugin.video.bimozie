@@ -12,7 +12,7 @@ SITES = [
         "logo": "https://i.imgur.com/jyM3inb.png",
         "className": "Phut90",
         "plugin": "phut90.plugin",
-        "version": 1,
+        "version": 31,
         "searchable": False
       },
       {
